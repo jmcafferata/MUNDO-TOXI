@@ -1,0 +1,742 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import GUI from 'lil-gui';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
+import TWEEN from '@tweenjs/tween.js';
+
+// Debug Parameters
+const debugParams = {
+    noiseScale: 0.03,
+    noiseSpeed: 0.05,
+    heightScale: 1.5,
+    backgroundColor: '#000000',
+    pointColor: '#444444',
+    logoY: 5,
+    logoFloatSpeed: 0.5,
+    logoFloatAmp: 1,
+    fogNear: 20,
+    fogFar: 60,
+    bloomStrength: 1.0,
+    bloomRadius: 0.2,
+    bloomThreshold: 0.7
+};
+
+const gui = new GUI();
+gui.add(debugParams, 'noiseScale', 0.001, 0.2);
+gui.add(debugParams, 'noiseSpeed', 0.0, 2.0);
+gui.add(debugParams, 'heightScale', 0.0, 10.0);
+gui.addColor(debugParams, 'backgroundColor').onChange(c => {
+    scene.background.set(c);
+    scene.fog.color.set(c);
+});
+gui.addColor(debugParams, 'pointColor');
+gui.add(debugParams, 'logoY', 0, 20);
+gui.add(debugParams, 'logoFloatSpeed', 0, 5);
+gui.add(debugParams, 'logoFloatAmp', 0, 5);
+gui.add(debugParams, 'fogNear', 0, 100).onChange(v => scene.fog.near = v);
+gui.add(debugParams, 'fogFar', 0, 200).onChange(v => scene.fog.far = v);
+
+const bloomFolder = gui.addFolder('Bloom');
+bloomFolder.add(debugParams, 'bloomStrength', 0, 3).onChange(v => bloomPass.strength = v);
+bloomFolder.add(debugParams, 'bloomRadius', 0, 1).onChange(v => bloomPass.radius = v);
+bloomFolder.add(debugParams, 'bloomThreshold', 0, 1).onChange(v => bloomPass.threshold = v);
+
+// Simple Noise implementation if package not available, or use a library.
+// Since I cannot easily install new packages without user input, I will include a small noise utility here.
+
+// --- Simplex Noise Utility (Minimal) ---
+// Ported from standard implementations
+class SimplexNoise {
+    constructor() {
+        this.grad3 = [[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
+                      [1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
+                      [0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
+        this.p = [];
+        for (let i=0; i<256; i++) {
+            this.p[i] = Math.floor(Math.random()*256);
+        }
+        this.perm = [];
+        for(let i=0; i<512; i++) {
+            this.perm[i]=this.p[i & 255];
+        }
+    }
+    dot(g, x, y) {
+        return g[0]*x + g[1]*y;
+    }
+    noise(xin, yin) {
+        let n0, n1, n2; // Noise contributions from the three corners
+        // Skew the input space to determine which simplex cell we're in
+        const F2 = 0.5*(Math.sqrt(3.0)-1.0);
+        const s = (xin+yin)*F2; // Hairy factor for 2D
+        const i = Math.floor(xin+s);
+        const j = Math.floor(yin+s);
+        const G2 = (3.0-Math.sqrt(3.0))/6.0;
+        const t = (i+j)*G2;
+        const X0 = i-t; // Unskew the cell origin back to (x,y) space
+        const Y0 = j-t;
+        const x0 = xin-X0; // The x,y distances from the cell origin
+        const y0 = yin-Y0;
+        // For the 2D case, the simplex shape is an equilateral triangle.
+        // Determine which simplex we are in.
+        let i1, j1; // Offsets for second (middle) corner of simplex in (i,j) coords
+        if(x0>y0) {i1=1; j1=0;} // lower triangle, XY order: (0,0)->(1,0)->(1,1)
+        else {i1=0; j1=1;}      // upper triangle, YX order: (0,0)->(0,1)->(1,1)
+        // A step of (1,0) in (i,j) means a step of (1-c,-c) in (x,y), and
+        // a step of (0,1) in (i,j) means a step of (-c,1-c) in (x,y), where
+        // c = (3-sqrt(3))/6
+        const x1 = x0 - i1 + G2; // Offsets for middle corner in (x,y) unskewed coords
+        const y1 = y0 - j1 + G2;
+        const x2 = x0 - 1.0 + 2.0 * G2; // Offsets for last corner in (x,y) unskewed coords
+        const y2 = y0 - 1.0 + 2.0 * G2;
+        // Work out the hashed gradient indices of the three simplex corners
+        const ii = i & 255;
+        const jj = j & 255;
+        const gi0 = this.perm[ii+this.perm[jj]] % 12;
+        const gi1 = this.perm[ii+i1+this.perm[jj+j1]] % 12;
+        const gi2 = this.perm[ii+1+this.perm[jj+1]] % 12;
+        // Calculate the contribution from the three corners
+        let t0 = 0.5 - x0*x0 - y0*y0;
+        if(t0<0) n0 = 0.0;
+        else {
+            t0 *= t0;
+            n0 = t0 * t0 * this.dot(this.grad3[gi0], x0, y0);
+        }
+        let t1 = 0.5 - x1*x1 - y1*y1;
+        if(t1<0) n1 = 0.0;
+        else {
+            t1 *= t1;
+            n1 = t1 * t1 * this.dot(this.grad3[gi1], x1, y1);
+        }
+        let t2 = 0.5 - x2*x2 - y2*y2;
+        if(t2<0) n2 = 0.0;
+        else {
+            t2 *= t2;
+            n2 = t2 * t2 * this.dot(this.grad3[gi2], x2, y2);
+        }
+        // Add contributions from each corner to get the final noise value.
+        // The result is scaled to return values in the interval [-1,1].
+        return 70.0 * (n0 + n1 + n2);
+    }
+}
+
+const simplex = new SimplexNoise();
+
+// Scene setup
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000); // Black background
+scene.fog = new THREE.Fog(0x000000, 20, 60); // Black fog
+
+// Camera setup for Perspective view
+const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
+
+// Initial position
+camera.position.set(0, 30, 0); // High angle, looking down
+camera.lookAt(scene.position); // Look at center (0,0,0)
+
+// Renderer setup
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+
+// Post-processing (Bloom)
+const renderScene = new RenderPass(scene, camera);
+
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+bloomPass.threshold = debugParams.bloomThreshold;
+bloomPass.strength = debugParams.bloomStrength;
+bloomPass.radius = debugParams.bloomRadius;
+
+const renderTarget = new THREE.WebGLRenderTarget(
+    window.innerWidth,
+    window.innerHeight,
+    {
+        type: THREE.HalfFloatType,
+        format: THREE.RGBAFormat,
+        samples: 8
+    }
+);
+
+const composer = new EffectComposer(renderer, renderTarget);
+composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+composer.addPass(renderScene);
+composer.addPass(bloomPass);
+
+// Label Renderer
+const labelRenderer = new CSS2DRenderer();
+labelRenderer.setSize(window.innerWidth, window.innerHeight);
+labelRenderer.domElement.style.position = 'absolute';
+labelRenderer.domElement.style.top = '0px';
+labelRenderer.domElement.style.pointerEvents = 'none'; // Allow clicks to pass through
+document.body.appendChild(labelRenderer.domElement);
+
+// Controls
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.enableRotate = false; // Disable rotation
+controls.enableZoom = false;   // Disable zoom (using custom FOV zoom)
+controls.enablePan = true;     // Enable panning
+
+// Remap controls for panning with left click and touch
+controls.mouseButtons = {
+    LEFT: THREE.MOUSE.PAN,
+    MIDDLE: THREE.MOUSE.DOLLY,
+    RIGHT: THREE.MOUSE.PAN
+};
+
+controls.touches = {
+    ONE: THREE.TOUCH.PAN,
+    TWO: THREE.TOUCH.DOLLY_PAN
+};
+
+// Custom FOV Zoom (Wheel & Pinch)
+const minFov = 15;
+const maxFov = 90;
+let targetFov = camera.fov;
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Plane y=0
+
+// Camera Auto-Reset
+let resetTimeout;
+let cameraTween, targetTween, fovTween;
+const defaultCamPos = new THREE.Vector3(0, 30, 0);
+const defaultTarget = new THREE.Vector3(0, 0, 0);
+
+function startReset() {
+    console.log("Starting camera reset...");
+    
+    // Disable damping to prevent conflict during animation
+    controls.enableDamping = false;
+
+    // Stop any active tweens
+    if (cameraTween) cameraTween.stop();
+    if (targetTween) targetTween.stop();
+    if (fovTween) fovTween.stop();
+
+    // Animate Position
+    cameraTween = new TWEEN.Tween(camera.position)
+        .to({ x: defaultCamPos.x, y: defaultCamPos.y, z: defaultCamPos.z }, 1500)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onComplete(() => {
+            controls.enableDamping = true;
+        })
+        .start();
+
+    // Animate Target
+    targetTween = new TWEEN.Tween(controls.target)
+        .to({ x: defaultTarget.x, y: defaultTarget.y, z: defaultTarget.z }, 1500)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start();
+
+    // Reset FOV
+    const fovObj = { val: targetFov };
+    fovTween = new TWEEN.Tween(fovObj)
+        .to({ val: 90 }, 1500)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onUpdate(() => {
+            targetFov = fovObj.val;
+            camera.fov = targetFov;
+            camera.updateProjectionMatrix();
+        })
+        .start();
+}
+
+function scheduleReset() {
+    clearTimeout(resetTimeout);
+    // Stop tweens if user interacts
+    if (cameraTween) cameraTween.stop();
+    if (targetTween) targetTween.stop();
+    if (fovTween) fovTween.stop();
+    
+    resetTimeout = setTimeout(startReset, 1000);
+}
+
+// Listeners
+controls.addEventListener('start', () => {
+    clearTimeout(resetTimeout);
+    if (cameraTween) cameraTween.stop();
+    if (targetTween) targetTween.stop();
+    if (fovTween) fovTween.stop();
+    controls.enableDamping = true; // Re-enable damping on interaction
+});
+
+controls.addEventListener('end', scheduleReset);
+
+// Handle Touch (debounce)
+renderer.domElement.addEventListener('touchstart', () => clearTimeout(resetTimeout));
+renderer.domElement.addEventListener('touchend', scheduleReset);
+
+// Track mouse position
+renderer.domElement.addEventListener('mousemove', (event) => {
+    const rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+});
+
+renderer.domElement.addEventListener('wheel', (event) => {
+    event.preventDefault();
+    targetFov += event.deltaY * 0.05;
+    targetFov = Math.max(minFov, Math.min(maxFov, targetFov));
+}, { passive: false });
+
+// Simple Touch Pinch handler
+let initialPinchDist = 0;
+let initialFov = 0;
+
+renderer.domElement.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 2) {
+        const dx = e.touches[0].pageX - e.touches[1].pageX;
+        const dy = e.touches[0].pageY - e.touches[1].pageY;
+        initialPinchDist = Math.sqrt(dx * dx + dy * dy);
+        initialFov = camera.fov;
+    }
+}, { passive: false });
+
+renderer.domElement.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].pageX - e.touches[1].pageX;
+        const dy = e.touches[0].pageY - e.touches[1].pageY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        if (initialPinchDist > 0) {
+            const scale = initialPinchDist / dist;
+            camera.fov = Math.max(minFov, Math.min(maxFov, initialFov * scale));
+            camera.updateProjectionMatrix();
+        }
+    }
+}, { passive: false });
+
+// Lights
+const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+scene.add(ambientLight);
+
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(-20, 40, -12);
+directionalLight.castShadow = true;
+directionalLight.shadow.mapSize.width = 2048;
+directionalLight.shadow.mapSize.height = 2048;
+directionalLight.shadow.camera.near = 0.5;
+directionalLight.shadow.camera.far = 500;
+directionalLight.shadow.camera.left = -100;
+directionalLight.shadow.camera.right = 100;
+directionalLight.shadow.camera.top = 100;
+directionalLight.shadow.camera.bottom = -100;
+scene.add(directionalLight);
+
+// Visual representation of the light
+const lightSphereGeometry = new THREE.SphereGeometry(1, 16, 16);
+const lightSphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+const lightSphere = new THREE.Mesh(lightSphereGeometry, lightSphereMaterial);
+lightSphere.position.copy(directionalLight.position);
+scene.add(lightSphere);
+
+// Transform Controls for Light
+const transformControl = new TransformControls(camera, renderer.domElement);
+let isDraggingLight = false;
+transformControl.addEventListener('dragging-changed', function (event) {
+    controls.enabled = !event.value;
+    isDraggingLight = event.value;
+});
+transformControl.attach(lightSphere);
+scene.add(transformControl);
+
+// Shadow Plane (invisible but receives shadows)
+const planeGeometry = new THREE.PlaneGeometry(200, 200);
+const planeMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
+const shadowPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+shadowPlane.rotation.x = -Math.PI / 2;
+shadowPlane.position.y = -2; // Slightly below the points
+shadowPlane.receiveShadow = true;
+scene.add(shadowPlane);
+
+// Digital Ocean - Sea of Nodes
+const gridSize = 100; // Increased grid size for points
+const spacing = 1.0;
+const particleCount = (gridSize * 2 + 1) ** 2;
+
+const geometry = new THREE.BufferGeometry();
+const positions = new Float32Array(particleCount * 3);
+const colors = new Float32Array(particleCount * 3);
+const initialPositions = []; // To store x, z for noise
+
+let idx = 0;
+for (let x = -gridSize; x <= gridSize; x++) {
+    for (let z = -gridSize; z <= gridSize; z++) {
+        const px = x * spacing;
+        const pz = z * spacing;
+        
+        positions[idx] = px;
+        positions[idx + 1] = 0;
+        positions[idx + 2] = pz;
+        
+        // Default color
+        colors[idx] = 0;
+        colors[idx + 1] = 0;
+        colors[idx + 2] = 0;
+
+        initialPositions.push({ x: px, z: pz });
+        
+        idx += 3;
+    }
+}
+
+geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+const material = new THREE.PointsMaterial({ 
+    size: 0.1, 
+    vertexColors: true,
+    sizeAttenuation: true
+});
+
+const points = new THREE.Points(geometry, material);
+scene.add(points);
+
+// Load 3D Logo
+let logoModel;
+const loader = new GLTFLoader();
+loader.load('/logo.glb', (gltf) => {
+    logoModel = gltf.scene;
+    
+    // Center and scale
+    logoModel.position.set(0, 0, 0); // Float above the waves
+    logoModel.scale.set(5, 5, 5); // Make it big
+    // rotate 270 degrees on X to stand upright
+    logoModel.rotation.x = -Math.PI / 2; // Rotate -90 degrees
+
+    // Make it shiny and cheto
+    logoModel.traverse((child) => {
+        if (child.isMesh) {
+            // Create a shiny material preserving the original color map if it exists
+            const oldMat = child.material;
+            
+            const newMat = new THREE.MeshPhysicalMaterial({
+                color: oldMat.color,
+                map: oldMat.map, // Keep texture if any
+                metalness: 0,
+                roughness: 0.5,
+                clearcoat: 1.0,
+                clearcoatRoughness: 0.1,
+                emissive: oldMat.color,
+                emissiveIntensity: 0.2
+            });
+            
+            child.material = newMat;
+            child.castShadow = true;
+            child.receiveShadow = true;
+        }
+    });
+
+    scene.add(logoModel);
+}, undefined, (error) => {
+    console.error('An error occurred loading the logo:', error);
+});
+
+// Pillars with Labels
+const clickableObjects = [];
+
+function createPillar(name, x, z, color) {
+    // Pillar Geometry - Flat Cylinder (Button)
+    const geometry = new THREE.CylinderGeometry(3, 3, 0.5, 32);
+    const material = new THREE.MeshStandardMaterial({ 
+        color: color,
+        roughness: 0.2,
+        metalness: 0.8
+    });
+    const pillar = new THREE.Mesh(geometry, material);
+    pillar.position.set(x, 1, z); // Positioned slightly above to clear waves
+    pillar.userData = { color: color }; // Store color for click interaction
+    pillar.castShadow = true;
+    pillar.receiveShadow = true;
+    scene.add(pillar);
+    clickableObjects.push(pillar);
+
+    // Label
+    const div = document.createElement('div');
+    div.className = 'label';
+    div.textContent = name;
+    div.style.marginTop = '-1em';
+    const label = new CSS2DObject(div);
+    label.position.set(0, 2, 0); // Above the pillar
+    pillar.add(label);
+    
+    return pillar;
+}
+
+// Content Buttons (Initially hidden)
+const contentButtons = [];
+
+function createContentButton(name, x, z, color, onClick) {
+    // Smaller button for content
+    const geometry = new THREE.CylinderGeometry(1.5, 1.5, 0.3, 32);
+    const material = new THREE.MeshStandardMaterial({ 
+        color: color,
+        roughness: 0.2,
+        metalness: 0.8
+    });
+    const button = new THREE.Mesh(geometry, material);
+    button.position.set(x, -5, z); // Start hidden below
+    button.userData = { color: color, isContent: true, onClick: onClick };
+    button.castShadow = true;
+    button.receiveShadow = true;
+    scene.add(button);
+    clickableObjects.push(button);
+
+    // Label
+    const div = document.createElement('div');
+    div.className = 'label';
+    div.textContent = name;
+    div.style.fontSize = '10px';
+    div.style.marginTop = '-0.5em';
+    const label = new CSS2DObject(div);
+    label.position.set(0, 1.5, 0);
+    button.add(label);
+    
+    contentButtons.push(button);
+    return button;
+}
+
+// Create "GAME OF DRONES" button (Red category)
+// createContentButton('GAME OF DRONES', -12, 18, 0xff0000, () => {
+//     openModal(
+//         'GAME OF DRONES',
+//         'CkOrL-2W8bo',
+//         '<strong>Desafío:</strong> El primero que gane el best se gana 5 USD.<br>Trailer del juego.'
+//     );
+// });
+
+// Create "EL DETECTIVE NO-IR" button (Green category)
+// createContentButton('EL DETECTIVE NO-IR', 0, 18, 0x00ff00, () => {
+//     openModal(
+//         'EL DETECTIVE NO-IR',
+//         '-XxviGKO-Kc',
+//         '<strong>Créditos:</strong><br>Juan Manuel Cafferata (Cámara, Edición, Dirección)<br>Chavo Escrotito (Guion, Actuación, Dirección)'
+//     );
+// });
+
+// Create "FIESTA EN LA COCINA" button (Blue category)
+// createContentButton('FIESTA EN LA COCINA', 12, 18, 0x0000ff, () => {
+//     openModal(
+//         'FIESTA EN LA COCINA',
+//         'I4kiBizQsl4',
+//         '<strong>Artista:</strong> KABRADEPATA'
+//     );
+// });
+
+// Position pillars side by side
+// createPillar('TOXI GAMING', -12, 12, 0xff0000); // Red
+// createPillar('TOXI ACADEMY', 0, 12, 0x00ff00); // Green
+// createPillar('TOXI KIDS', 12, 12, 0x0000ff); // Blue
+
+// Modal Logic
+const modal = document.getElementById('video-modal');
+const closeButton = document.querySelector('.close-button');
+const videoFrame = document.getElementById('video-frame');
+const videoTitle = document.getElementById('video-title');
+const videoCredits = document.getElementById('video-credits');
+
+function openModal(title, videoId, creditsHtml) {
+    videoTitle.textContent = title;
+    videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    videoCredits.innerHTML = creditsHtml;
+    modal.classList.remove('hidden');
+}
+
+function closeModal() {
+    modal.classList.add('hidden');
+    videoFrame.src = ''; // Stop video
+}
+
+closeButton.addEventListener('click', closeModal);
+window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+        closeModal();
+    }
+});
+
+// Handle clicks on pillars
+renderer.domElement.addEventListener('click', (event) => {
+    // Raycaster is already set up with mouse position from mousemove
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(clickableObjects);
+    
+    if (intersects.length > 0) {
+        const object = intersects[0].object;
+        
+        if (object.userData.isContent) {
+            // It's a content button, execute its action
+            object.userData.onClick();
+        } else {
+            // It's a category pillar
+            const color = object.userData.color;
+            
+            // Filter logic:
+            // 1. Move non-matching pillars down, matching pillar stays up
+            clickableObjects.forEach(obj => {
+                if (!obj.userData.isContent) {
+                    // It's a pillar
+                    if (obj.userData.color !== color) {
+                        // Animate down
+                        new TWEEN.Tween(obj.position)
+                            .to({ y: -5 }, 500)
+                            .easing(TWEEN.Easing.Quadratic.Out)
+                            .start();
+                    } else {
+                        // Ensure it's up
+                        new TWEEN.Tween(obj.position)
+                            .to({ y: 1 }, 500)
+                            .easing(TWEEN.Easing.Quadratic.Out)
+                            .start();
+                    }
+                } else {
+                    // It's a content button
+                    // Show if it matches the color, hide otherwise
+                    if (obj.userData.color === color) {
+                        new TWEEN.Tween(obj.position)
+                            .to({ y: 1 }, 500)
+                            .easing(TWEEN.Easing.Quadratic.Out)
+                            .start();
+                    } else {
+                        new TWEEN.Tween(obj.position)
+                            .to({ y: -5 }, 500)
+                            .easing(TWEEN.Easing.Quadratic.Out)
+                            .start();
+                    }
+                }
+            });
+        }
+    }
+});
+
+// Animation Loop
+const clock = new THREE.Clock();
+
+function animate() {
+    requestAnimationFrame(animate);
+    
+    TWEEN.update(); // Update tweens
+    controls.update(); // Update controls for damping
+
+    // Smooth Zoom Logic
+    const fovDiff = targetFov - camera.fov;
+    if (Math.abs(fovDiff) > 0.01) {
+        // 1. Find where mouse points currently
+        raycaster.setFromCamera(mouse, camera);
+        const target = new THREE.Vector3();
+        const hit = raycaster.ray.intersectPlane(plane, target);
+
+        // 2. Apply smooth zoom
+        camera.fov += fovDiff * 0.1; // Smoothing factor
+        camera.updateProjectionMatrix();
+
+        // 3. Compensate position if we hit the plane
+        if (hit) {
+            raycaster.setFromCamera(mouse, camera);
+            const newTarget = new THREE.Vector3();
+            const newHit = raycaster.ray.intersectPlane(plane, newTarget);
+            
+            if (newHit) {
+                const offset = new THREE.Vector3().subVectors(target, newTarget);
+                camera.position.add(offset);
+                controls.target.add(offset);
+            }
+        }
+    }
+
+    const time = clock.getElapsedTime();
+
+    // Animate Light
+    if (!isDraggingLight) {
+        lightSphere.position.x = Math.sin(time * 0.5) * 40;
+    }
+
+    // Sync light with sphere (which is controlled by TransformControls)
+    directionalLight.position.copy(lightSphere.position);
+    
+    const lx = lightSphere.position.x;
+    const ly = lightSphere.position.y;
+    const lz = lightSphere.position.z;
+
+    // Animate Logo
+    if (logoModel) {
+        // logoModel.rotation.y = time * 0.3; // Rotate
+        logoModel.position.y = debugParams.logoY + Math.sin(time * debugParams.logoFloatSpeed) * debugParams.logoFloatAmp; // Float up and down
+    }
+    
+    // Animate points
+    const positions = points.geometry.attributes.position.array;
+    const colors = points.geometry.attributes.color.array;
+    
+    let idx = 0;
+    
+    // Noise parameters
+    const { noiseScale, noiseSpeed, heightScale } = debugParams;
+    const pointColor = new THREE.Color(debugParams.pointColor);
+
+    for (let j = 0; j < initialPositions.length; j++) {
+        const { x: initialX, z: initialZ } = initialPositions[j];
+        
+        // Calculate noise value
+        const noiseVal = simplex.noise(
+            initialX * noiseScale + time * noiseSpeed, 
+            initialZ * noiseScale + time * noiseSpeed
+        );
+        
+        const y = noiseVal * heightScale;
+                  
+        // Update Y position
+        positions[idx + 1] = y;
+        
+        // Color variation based on height and light influence
+        // Calculate distance to light (ignoring Y for a "spotlight on ocean" effect)
+        const dx = initialX - lx;
+        const dz = initialZ - lz;
+        const dist = Math.sqrt(dx*dx + dz*dz);
+        
+        // Light attenuation
+        let lightIntensity = Math.max(0, 1 - dist / 50); // 50 is the light radius on the water
+        lightIntensity = Math.pow(lightIntensity, 2); // Sharpen the falloff
+
+        // Base color from debugParams
+        const r = pointColor.r;
+        const g = pointColor.g;
+        const b = pointColor.b;
+
+        // Mix base color with light intensity (making it brighter near light)
+        // We can just multiply or add. Let's add to make it glow.
+        colors[idx] = Math.min(1, r + lightIntensity);
+        colors[idx + 1] = Math.min(1, g + lightIntensity);
+        colors[idx + 2] = Math.min(1, b + lightIntensity);
+
+        idx += 3;
+    }
+
+    points.geometry.attributes.position.needsUpdate = true;
+    points.geometry.attributes.color.needsUpdate = true;
+
+    // renderer.render(scene, camera);
+    composer.render();
+    labelRenderer.render(scene, camera);
+}
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+    composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    labelRenderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+animate();
