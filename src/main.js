@@ -2,49 +2,10 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
-import GUI from 'lil-gui';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import TWEEN from '@tweenjs/tween.js';
-
-// Debug Parameters
-const debugParams = {
-    noiseScale: 0.03,
-    noiseSpeed: 0.05,
-    heightScale: 1.5,
-    backgroundColor: '#000000',
-    pointColor: '#444444',
-    logoY: 5,
-    logoFloatSpeed: 0.5,
-    logoFloatAmp: 1,
-    fogNear: 20,
-    fogFar: 60,
-    bloomStrength: 1.0,
-    bloomRadius: 0.2,
-    bloomThreshold: 0.7
-};
-
-const gui = new GUI();
-gui.add(debugParams, 'noiseScale', 0.001, 0.2);
-gui.add(debugParams, 'noiseSpeed', 0.0, 2.0);
-gui.add(debugParams, 'heightScale', 0.0, 10.0);
-gui.addColor(debugParams, 'backgroundColor').onChange(c => {
-    scene.background.set(c);
-    scene.fog.color.set(c);
-});
-gui.addColor(debugParams, 'pointColor');
-gui.add(debugParams, 'logoY', 0, 20);
-gui.add(debugParams, 'logoFloatSpeed', 0, 5);
-gui.add(debugParams, 'logoFloatAmp', 0, 5);
-gui.add(debugParams, 'fogNear', 0, 100).onChange(v => scene.fog.near = v);
-gui.add(debugParams, 'fogFar', 0, 200).onChange(v => scene.fog.far = v);
-
-const bloomFolder = gui.addFolder('Bloom');
-bloomFolder.add(debugParams, 'bloomStrength', 0, 3).onChange(v => bloomPass.strength = v);
-bloomFolder.add(debugParams, 'bloomRadius', 0, 1).onChange(v => bloomPass.radius = v);
-bloomFolder.add(debugParams, 'bloomThreshold', 0, 1).onChange(v => bloomPass.threshold = v);
 
 // Simple Noise implementation if package not available, or use a library.
 // Since I cannot easily install new packages without user input, I will include a small noise utility here.
@@ -150,9 +111,9 @@ document.body.appendChild(renderer.domElement);
 const renderScene = new RenderPass(scene, camera);
 
 const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-bloomPass.threshold = debugParams.bloomThreshold;
-bloomPass.strength = debugParams.bloomStrength;
-bloomPass.radius = debugParams.bloomRadius;
+bloomPass.threshold = 0.7;
+bloomPass.strength = 1.0;
+bloomPass.radius = 0.2;
 
 const renderTarget = new THREE.WebGLRenderTarget(
     window.innerWidth,
@@ -204,76 +165,6 @@ let targetFov = camera.fov;
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0); // Plane y=0
-
-// Camera Auto-Reset
-let resetTimeout;
-let cameraTween, targetTween, fovTween;
-const defaultCamPos = new THREE.Vector3(0, 30, 0);
-const defaultTarget = new THREE.Vector3(0, 0, 0);
-
-function startReset() {
-    console.log("Starting camera reset...");
-    
-    // Disable damping to prevent conflict during animation
-    controls.enableDamping = false;
-
-    // Stop any active tweens
-    if (cameraTween) cameraTween.stop();
-    if (targetTween) targetTween.stop();
-    if (fovTween) fovTween.stop();
-
-    // Animate Position
-    cameraTween = new TWEEN.Tween(camera.position)
-        .to({ x: defaultCamPos.x, y: defaultCamPos.y, z: defaultCamPos.z }, 1500)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onComplete(() => {
-            controls.enableDamping = true;
-        })
-        .start();
-
-    // Animate Target
-    targetTween = new TWEEN.Tween(controls.target)
-        .to({ x: defaultTarget.x, y: defaultTarget.y, z: defaultTarget.z }, 1500)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .start();
-
-    // Reset FOV
-    const fovObj = { val: targetFov };
-    fovTween = new TWEEN.Tween(fovObj)
-        .to({ val: 90 }, 1500)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onUpdate(() => {
-            targetFov = fovObj.val;
-            camera.fov = targetFov;
-            camera.updateProjectionMatrix();
-        })
-        .start();
-}
-
-function scheduleReset() {
-    clearTimeout(resetTimeout);
-    // Stop tweens if user interacts
-    if (cameraTween) cameraTween.stop();
-    if (targetTween) targetTween.stop();
-    if (fovTween) fovTween.stop();
-    
-    resetTimeout = setTimeout(startReset, 1000);
-}
-
-// Listeners
-controls.addEventListener('start', () => {
-    clearTimeout(resetTimeout);
-    if (cameraTween) cameraTween.stop();
-    if (targetTween) targetTween.stop();
-    if (fovTween) fovTween.stop();
-    controls.enableDamping = true; // Re-enable damping on interaction
-});
-
-controls.addEventListener('end', scheduleReset);
-
-// Handle Touch (debounce)
-renderer.domElement.addEventListener('touchstart', () => clearTimeout(resetTimeout));
-renderer.domElement.addEventListener('touchend', scheduleReset);
 
 // Track mouse position
 renderer.domElement.addEventListener('mousemove', (event) => {
@@ -332,23 +223,6 @@ directionalLight.shadow.camera.right = 100;
 directionalLight.shadow.camera.top = 100;
 directionalLight.shadow.camera.bottom = -100;
 scene.add(directionalLight);
-
-// Visual representation of the light
-const lightSphereGeometry = new THREE.SphereGeometry(1, 16, 16);
-const lightSphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-const lightSphere = new THREE.Mesh(lightSphereGeometry, lightSphereMaterial);
-lightSphere.position.copy(directionalLight.position);
-scene.add(lightSphere);
-
-// Transform Controls for Light
-const transformControl = new TransformControls(camera, renderer.domElement);
-let isDraggingLight = false;
-transformControl.addEventListener('dragging-changed', function (event) {
-    controls.enabled = !event.value;
-    isDraggingLight = event.value;
-});
-transformControl.attach(lightSphere);
-scene.add(transformControl);
 
 // Shadow Plane (invisible but receives shadows)
 const planeGeometry = new THREE.PlaneGeometry(200, 200);
@@ -656,21 +530,16 @@ function animate() {
     const time = clock.getElapsedTime();
 
     // Animate Light
-    if (!isDraggingLight) {
-        lightSphere.position.x = Math.sin(time * 0.5) * 40;
-    }
-
-    // Sync light with sphere (which is controlled by TransformControls)
-    directionalLight.position.copy(lightSphere.position);
+    directionalLight.position.x = Math.sin(time * 0.5) * 40;
     
-    const lx = lightSphere.position.x;
-    const ly = lightSphere.position.y;
-    const lz = lightSphere.position.z;
+    const lx = directionalLight.position.x;
+    const ly = directionalLight.position.y;
+    const lz = directionalLight.position.z;
 
     // Animate Logo
     if (logoModel) {
         // logoModel.rotation.y = time * 0.3; // Rotate
-        logoModel.position.y = debugParams.logoY + Math.sin(time * debugParams.logoFloatSpeed) * debugParams.logoFloatAmp; // Float up and down
+        logoModel.position.y = 5 + Math.sin(time * 0.5) * 1; // Float up and down
     }
     
     // Animate points
@@ -680,8 +549,10 @@ function animate() {
     let idx = 0;
     
     // Noise parameters
-    const { noiseScale, noiseSpeed, heightScale } = debugParams;
-    const pointColor = new THREE.Color(debugParams.pointColor);
+    const noiseScale = 0.03;
+    const noiseSpeed = 0.05;
+    const heightScale = 1.5;
+    const pointColor = new THREE.Color('#444444');
 
     for (let j = 0; j < initialPositions.length; j++) {
         const { x: initialX, z: initialZ } = initialPositions[j];
