@@ -93,7 +93,9 @@ scene.background = new THREE.Color(0x000000); // Black background
 scene.fog = new THREE.Fog(0x000000, 20, 60); // Black fog
 
 // Camera setup for Perspective view
-const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
+const isMobile = window.innerWidth < 768;
+const startFov = isMobile ? 120 : 90;
+const camera = new THREE.PerspectiveCamera(startFov, window.innerWidth / window.innerHeight, 1, 1000);
 
 // Initial position
 camera.position.set(0, 30, 0); // High angle, looking down
@@ -160,7 +162,7 @@ controls.touches = {
 
 // Custom FOV Zoom (Wheel & Pinch)
 const minFov = 15;
-const maxFov = 90;
+const maxFov = isMobile ? 120 : 90;
 let targetFov = camera.fov;
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -202,6 +204,7 @@ renderer.domElement.addEventListener('touchmove', (e) => {
         if (initialPinchDist > 0) {
             const scale = initialPinchDist / dist;
             camera.fov = Math.max(minFov, Math.min(maxFov, initialFov * scale));
+            targetFov = camera.fov; // Update targetFov to prevent snapback
             camera.updateProjectionMatrix();
         }
     }
@@ -540,6 +543,7 @@ function animate() {
     if (logoModel) {
         // logoModel.rotation.y = time * 0.3; // Rotate
         logoModel.position.y = 5 + Math.sin(time * 0.5) * 1; // Float up and down
+        logoModel.rotation.y = Math.sin(time * 0.5) * (2 * Math.PI / 180); // Rotate Z 5 degrees back and forth
     }
     
     // Animate points
@@ -552,7 +556,7 @@ function animate() {
     const noiseScale = 0.03;
     const noiseSpeed = 0.05;
     const heightScale = 1.5;
-    const pointColor = new THREE.Color('#444444');
+    const pointColor = new THREE.Color('#000000');
 
     for (let j = 0; j < initialPositions.length; j++) {
         const { x: initialX, z: initialZ } = initialPositions[j];
