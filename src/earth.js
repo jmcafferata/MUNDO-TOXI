@@ -17,6 +17,11 @@ scene.background = new THREE.Color(0x000000); // Black background
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.set(60, 0, 0);
 
+// VR Dolly
+const dolly = new THREE.Group();
+scene.add(dolly);
+dolly.add(camera);
+
 // Renderer setup
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -24,6 +29,32 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.xr.enabled = true;
 document.body.appendChild(renderer.domElement);
 document.body.appendChild(VRButton.createButton(renderer));
+
+// VR Controllers
+const controller1 = renderer.xr.getController(0);
+const controller2 = renderer.xr.getController(1);
+
+// Store input sources to access gamepads
+const controllerInputSources = { left: null, right: null };
+
+function onControllerConnected(event) {
+    const handedness = event.data.handedness;
+    if (handedness) {
+        controllerInputSources[handedness] = event.data;
+    }
+}
+
+function onControllerDisconnected(event) {
+    const handedness = event.data.handedness;
+    if (handedness) {
+        controllerInputSources[handedness] = null;
+    }
+}
+
+controller1.addEventListener('connected', onControllerConnected);
+controller1.addEventListener('disconnected', onControllerDisconnected);
+controller2.addEventListener('connected', onControllerConnected);
+controller2.addEventListener('disconnected', onControllerDisconnected);
 
 // Post-processing (Bloom)
 const renderScene = new RenderPass(scene, camera);
@@ -507,7 +538,35 @@ function animate() {
 
     earthPoints.geometry.attributes.color.needsUpdate = true;
 
+    // VR Controller Movement
     if (renderer.xr.isPresenting) {
+        const moveSpeed = 10 * delta; // Units per second
+        const rotSpeed = 1.5 * delta; // Radians per second
+
+        // Left Controller: Strafe (X) and Forward/Back (Z)
+        if (controllerInputSources.left && controllerInputSources.left.gamepad) {
+            const gp = controllerInputSources.left.gamepad;
+            // Standard mapping: axes[2] = thumbstick X, axes[3] = thumbstick Y
+            // Fallback to [0], [1] if not standard
+            const x = gp.axes[2] !== undefined ? gp.axes[2] : (gp.axes[0] || 0);
+            const z = gp.axes[3] !== undefined ? gp.axes[3] : (gp.axes[1] || 0);
+
+            // Deadzone
+            if (Math.abs(x) > 0.1) dolly.translateX(x * moveSpeed);
+            if (Math.abs(z) > 0.1) dolly.translateZ(z * moveSpeed);
+        }
+
+        // Right Controller: Rotate (X) and Lift/Descend (Y)
+        if (controllerInputSources.right && controllerInputSources.right.gamepad) {
+            const gp = controllerInputSources.right.gamepad;
+            const x = gp.axes[2] !== undefined ? gp.axes[2] : (gp.axes[0] || 0);
+            const y = gp.axes[3] !== undefined ? gp.axes[3] : (gp.axes[1] || 0);
+
+            // Deadzone
+            if (Math.abs(x) > 0.1) dolly.rotateY(-x * rotSpeed);
+            if (Math.abs(y) > 0.1) dolly.translateY(-y * moveSpeed);
+        }
+        
         renderer.render(scene, camera);
     } else {
         composer.render();
@@ -523,6 +582,28 @@ window.addEventListener('resize', () => {
     composer.setSize(window.innerWidth, window.innerHeight);
     composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     labelRenderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// VR Session Handling
+renderer.xr.addEventListener('sessionstart', () => {
+    // Move dolly to current camera position so VR user starts there
+    const pos = camera.position.clone();
+    dolly.position.copy(pos);
+    dolly.lookAt(0, 0, 0);
+    
+    // Reset camera local position (WebXR will override, but good to be clean)
+    camera.position.set(0, 0, 0);
+    
+    controls.enabled = false;
+});
+
+renderer.xr.addEventListener('sessionend', () => {
+    dolly.position.set(0, 0, 0);
+    dolly.rotation.set(0, 0, 0);
+    camera.position.set(60, 0, 0); // Reset to default
+    camera.lookAt(0, 0, 0);
+    controls.enabled = true;
+    controls.reset();
 });
 
 renderer.setAnimationLoop(animate);
