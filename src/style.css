@@ -62,7 +62,7 @@ canvas {
 
 .modal-content {
   background-color: #1a1a1a;
-  padding: 20px;
+  padding: 40px;
   border: 1px solid #333;
   border-radius: 8px;
   width: 80%;
@@ -91,7 +91,7 @@ canvas {
   position: relative;
   padding-bottom: 56.25%; /* 16:9 */
   height: 0;
-  margin-bottom: 15px;
+  margin-bottom: 30px;
 }
 
 .video-container iframe {
@@ -106,10 +106,48 @@ canvas {
   font-size: 14px;
   line-height: 1.5;
   color: #ccc;
+  margin-bottom: 30px;
 }
 
 #video-title {
   margin-top: 0;
-  margin-bottom: 15px;
+  margin-bottom: 30px;
   font-size: 24px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #333;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+#release-date {
+  color: #888;
+  font-size: 14px;
+  margin: 0;
+}
+
+.qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#qr-code {
+  width: 80px;
+  height: 80px;
+  background-color: #fff;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.qr-container span {
+  font-size: 10px;
+  color: #888;
+  margin-top: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
@@ -96,6 +97,8 @@ scene.fog = new THREE.Fog(0x000000, 20, 60); // Black fog
 const isMobile = window.innerWidth < 768;
 const startFov = isMobile ? 120 : 90;
 const camera = new THREE.PerspectiveCamera(startFov, window.innerWidth / window.innerHeight, 1, 1000);
+scene.add(camera); // Add camera to scene so children are rendered
+
 
 // Initial position
 camera.position.set(0, 30, 0); // High angle, looking down
@@ -138,7 +141,17 @@ labelRenderer.setSize(window.innerWidth, window.innerHeight);
 labelRenderer.domElement.style.position = 'absolute';
 labelRenderer.domElement.style.top = '0px';
 labelRenderer.domElement.style.pointerEvents = 'none'; // Allow clicks to pass through
+labelRenderer.domElement.style.zIndex = '1'; // Ensure it's above WebGL but below UI
 document.body.appendChild(labelRenderer.domElement);
+
+// CSS3D Renderer
+const css3dRenderer = new CSS3DRenderer();
+css3dRenderer.setSize(window.innerWidth, window.innerHeight);
+css3dRenderer.domElement.style.position = 'absolute';
+css3dRenderer.domElement.style.top = '0px';
+css3dRenderer.domElement.style.pointerEvents = 'none'; // Allow clicks to pass through to WebGL
+css3dRenderer.domElement.style.zIndex = '1'; // Ensure it's above WebGL but below UI
+document.body.appendChild(css3dRenderer.domElement);
 
 // Controls
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -159,6 +172,35 @@ controls.touches = {
     ONE: THREE.TOUCH.PAN,
     TWO: THREE.TOUCH.DOLLY_PAN
 };
+
+// Function to show thumbnails on interaction
+function showThumbnails() {
+    console.log('showThumbnails triggered');
+    if (thumbnailsVisible) return;
+    thumbnailsVisible = true;
+    
+    // Show Thumbnails
+    thumbnailDivs.forEach(div => {
+        div.style.opacity = '1';
+    });
+
+    // Remove listeners as we only need to trigger this once
+    controls.removeEventListener('change', showThumbnails);
+    window.removeEventListener('touchstart', showThumbnails);
+    window.removeEventListener('mousedown', showThumbnails);
+    window.removeEventListener('wheel', showThumbnails);
+    window.removeEventListener('pointerdown', showThumbnails);
+    window.removeEventListener('mousemove', showThumbnails);
+    window.removeEventListener('keydown', showThumbnails);
+}
+
+controls.addEventListener('change', showThumbnails);
+window.addEventListener('touchstart', showThumbnails);
+window.addEventListener('mousedown', showThumbnails);
+window.addEventListener('wheel', showThumbnails);
+window.addEventListener('pointerdown', showThumbnails);
+window.addEventListener('mousemove', showThumbnails);
+window.addEventListener('keydown', showThumbnails);
 
 // Custom FOV Zoom (Wheel & Pinch)
 const minFov = 15;
@@ -352,6 +394,9 @@ function createPillar(name, x, z, color) {
 
 // Content Buttons (Initially hidden)
 const contentButtons = [];
+const hoverThumbnails = [];
+const thumbnailDivs = [];
+let thumbnailsVisible = false;
 
 function createContentButton(name, x, z, color, onClick) {
     // Smaller button for content
@@ -383,6 +428,71 @@ function createContentButton(name, x, z, color, onClick) {
     return button;
 }
 
+function createVideoThumbnail(title, videoId, credits, thumbUrl, x, y, z) {
+    const div = document.createElement('div');
+    div.style.width = '1280px';
+    div.style.height = '720px';
+    div.style.backgroundColor = '#000';
+    
+    // Initial visibility state
+    div.style.opacity = '0';
+    // Force pointer-events: none with !important to ensure it passes through
+    div.style.setProperty('pointer-events', 'none', 'important');
+    div.style.setProperty('user-select', 'none', 'important');
+    div.style.transition = 'opacity 1s ease-in-out';
+    thumbnailDivs.push(div);
+
+    const img = document.createElement('img');
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+    img.src = thumbUrl;
+    // Prevent native dragging of the image
+    img.draggable = false;
+    img.style.setProperty('user-select', 'none', 'important');
+    img.style.setProperty('pointer-events', 'none', 'important');
+    div.appendChild(img);
+
+    const object = new CSS3DObject(div);
+    object.position.set(x, y, z);
+    const baseScale = 0.02;
+    const hoverScale = baseScale * 1.08;
+    object.scale.set(baseScale, baseScale, baseScale);
+    
+    object.rotation.y = Math.PI;
+    object.rotation.x = Math.PI / 2;
+    object.rotation.z = Math.PI;
+
+    scene.add(object);
+
+    // Create Hitbox for Raycasting
+    const planeGeo = new THREE.PlaneGeometry(1280 * baseScale, 720 * baseScale);
+    const planeMat = new THREE.MeshBasicMaterial({ 
+        visible: false, 
+        side: THREE.DoubleSide 
+    });
+    const hitbox = new THREE.Mesh(planeGeo, planeMat);
+    hitbox.position.copy(object.position);
+    hitbox.rotation.copy(object.rotation);
+    scene.add(hitbox);
+    
+    // Add to clickableObjects
+    hitbox.userData = { 
+        isContent: true, 
+        onClick: () => {
+            console.log('Thumbnail clicked:', title);
+            openModal(title, videoId, credits);
+        }
+    };
+    clickableObjects.push(hitbox);
+
+    // Hover Logic
+    const hoverData = { object, baseScale, hoverScale, targetScale: baseScale, hitbox };
+    hoverThumbnails.push(hoverData);
+
+    return object;
+}
+
 // Create "GAME OF DRONES" button (Red category)
 // createContentButton('GAME OF DRONES', -12, 18, 0xff0000, () => {
 //     openModal(
@@ -392,14 +502,14 @@ function createContentButton(name, x, z, color, onClick) {
 //     );
 // });
 
-// Create "EL DETECTIVE NO-IR" button (Green category)
-// createContentButton('EL DETECTIVE NO-IR', 0, 18, 0x00ff00, () => {
-//     openModal(
-//         'EL DETECTIVE NO-IR',
-//         '-XxviGKO-Kc',
-//         '<strong>Créditos:</strong><br>Juan Manuel Cafferata (Cámara, Edición, Dirección)<br>Chavo Escrotito (Guion, Actuación, Dirección)'
-//     );
-// });
+// Create "EL DETECTIVE NO-IR" 3D Thumbnail (Green category)
+// createVideoThumbnail(
+//     'EL DETECTIVE NO-IR',
+//     '-XxviGKO-Kc',
+//     '<strong>Créditos:</strong><br>Juan Manuel Cafferata (Cámara, Edición, Dirección)<br>Chavo Escrotito (Guion, Actuación, Dirección)',
+//     './detective-thumb.jpg',
+//     0, 5, 20
+// );
 
 // Create "FIESTA EN LA COCINA" button (Blue category)
 // createContentButton('FIESTA EN LA COCINA', 12, 18, 0x0000ff, () => {
@@ -421,17 +531,32 @@ const closeButton = document.querySelector('.close-button');
 const videoFrame = document.getElementById('video-frame');
 const videoTitle = document.getElementById('video-title');
 const videoCredits = document.getElementById('video-credits');
+const releaseDate = document.getElementById('release-date');
+const qrCode = document.getElementById('qr-code');
 
 function openModal(title, videoId, creditsHtml) {
-    videoTitle.textContent = title;
-    videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-    videoCredits.innerHTML = creditsHtml;
-    modal.classList.remove('hidden');
+    console.log('Opening modal for:', title);
+    if (videoTitle) videoTitle.textContent = title;
+    if (videoFrame) videoFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    if (videoCredits) videoCredits.innerHTML = creditsHtml;
+    
+    // Set static release date
+    if (releaseDate) releaseDate.textContent = 'Estreno: 20 Nov 2025';
+    
+    // Generate QR Code
+    if (qrCode) {
+        const shareUrl = `${window.location.origin}${window.location.pathname}?video=${videoId}`;
+        qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(shareUrl)}`;
+    }
+    
+    if (modal) modal.classList.remove('hidden');
+    if (animationId) cancelAnimationFrame(animationId);
 }
 
 function closeModal() {
     modal.classList.add('hidden');
     videoFrame.src = ''; // Stop video
+    animate();
 }
 
 closeButton.addEventListener('click', closeModal);
@@ -441,8 +566,22 @@ window.addEventListener('click', (event) => {
     }
 });
 
+// Track dragging state to distinguish click vs drag
+let isDragging = false;
+controls.addEventListener('change', () => {
+    isDragging = true;
+});
+renderer.domElement.addEventListener('mousedown', () => {
+    isDragging = false;
+});
+renderer.domElement.addEventListener('touchstart', () => {
+    isDragging = false;
+});
+
 // Handle clicks on pillars
 renderer.domElement.addEventListener('click', (event) => {
+    if (isDragging) return;
+
     // Raycaster is already set up with mouse position from mousemove
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(clickableObjects);
@@ -495,11 +634,20 @@ renderer.domElement.addEventListener('click', (event) => {
     }
 });
 
+// HUD Elements
+const hudElements = [];
+
+function createHUD() {
+}
+
+createHUD();
+
 // Animation Loop
 const clock = new THREE.Clock();
+let animationId;
 
 function animate() {
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
     
     TWEEN.update(); // Update tweens
     controls.update(); // Update controls for damping
@@ -599,9 +747,34 @@ function animate() {
     points.geometry.attributes.position.needsUpdate = true;
     points.geometry.attributes.color.needsUpdate = true;
 
+    // Hover Raycasting
+    raycaster.setFromCamera(mouse, camera);
+    const hitboxes = hoverThumbnails.map(h => h.hitbox);
+    const intersects = raycaster.intersectObjects(hitboxes);
+    
+    hoverThumbnails.forEach(data => {
+        // Removed hover scaling logic as requested
+        // if (intersects.find(i => i.object === data.hitbox)) {
+        //     data.targetScale = data.hoverScale;
+        //     document.body.style.cursor = 'pointer';
+        // } else {
+        //     data.targetScale = data.baseScale;
+        // }
+
+        // const current = data.object.scale.x;
+        // const target = data.targetScale;
+        // const next = THREE.MathUtils.lerp(current, target, 0.1);
+        // data.object.scale.set(next, next, next);
+    });
+
+    // if (intersects.length === 0) {
+    //     document.body.style.cursor = 'default';
+    // }
+
     // renderer.render(scene, camera);
     composer.render();
     labelRenderer.render(scene, camera);
+    css3dRenderer.render(scene, camera);
 }
 
 // Handle window resize
@@ -612,6 +785,7 @@ window.addEventListener('resize', () => {
     composer.setSize(window.innerWidth, window.innerHeight);
     composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     labelRenderer.setSize(window.innerWidth, window.innerHeight);
+    css3dRenderer.setSize(window.innerWidth, window.innerHeight);
 });
 
 animate();

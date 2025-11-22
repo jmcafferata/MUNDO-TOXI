@@ -28,7 +28,14 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.xr.enabled = true;
 document.body.appendChild(renderer.domElement);
-document.body.appendChild(VRButton.createButton(renderer));
+
+if ('xr' in navigator) {
+    navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+        if (supported) {
+            document.body.appendChild(VRButton.createButton(renderer));
+        }
+    });
+}
 
 // VR Controllers
 const controller1 = renderer.xr.getController(0);
