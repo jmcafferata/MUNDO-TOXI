@@ -279,7 +279,7 @@ scene.add(points);
 // Load 3D Logo
 let logoModel;
 const loader = new GLTFLoader();
-loader.load('/logo.glb', (gltf) => {
+loader.load('./logo.glb', (gltf) => {
     logoModel = gltf.scene;
     
     // Center and scale
