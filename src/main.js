@@ -757,7 +757,8 @@ function animate() {
     });
 
     // Check if camera crosses the x=-5 plane (on z and y)
-    // If camera.x < -5, open the line page
+
+    // If camera.x < -50, open the line page
     if (!window._linePageOpened && camera.position.x < -50) {
         window._linePageOpened = true;
         window.location.href = 'line.html';
@@ -767,6 +768,18 @@ function animate() {
     if (!window._earthPageOpened && camera.position.x > 50) {
         window._earthPageOpened = true;
         window.location.href = 'earth.html';
+    }
+
+    // If camera.y > 50, open the plantform page
+    if (!window._plantformPageOpened && camera.position.z < -50) {
+        window._plantformPageOpened = true;
+        window.location.href = 'https://toxi.media/plantform';
+    }
+
+    // If camera.y < -50, open the instagram page
+    if (!window._instagramPageOpened && camera.position.z > 50) {
+        window._instagramPageOpened = true;
+        window.location.href = 'https://www.instagram.com/toxi.media/';
     }
 
     composer.render();
