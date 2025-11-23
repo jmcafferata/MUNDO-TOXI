@@ -4,7 +4,7 @@
     "location": "Kester Spach",
     "start": "2025-11-22T22:30:00",
     "end": "2025-11-23T00:00:00",
-    "color": "#ffffff",
+    "color": "#ff0000",
     "link": "https://www.youtube.com/watch?v=my-WpE_IuwU"
   },
   {
@@ -12,7 +12,7 @@
     "location": "Nacho Michalowicz",
     "start": "2025-12-01T16:00:00",
     "end": "2025-12-01T18:00:00",
-    "color": "#ffffff",
+    "color": "#00ff00",
     "link": "https://www.toxi.media/project/el-jardin-de-andarillo"
   },
   {
@@ -20,32 +20,42 @@
     "location": "TOXI Gaming",
     "start": "2025-12-01T18:00:00",
     "end": "2025-12-01T20:00:00",
-    "color": "#ffffff"
+    "color": "#ff0000"
   }
   ,
   {
-    "title": "Clase abierta: cómo filmar un evento de música infantil en vivo (Xplora Academy)",
+    "title": "Clase abierta: cómo filmar un evento de música infantil en vivo",
     "location": "Café Berlín, Villa Devoto",
     "start": "2025-11-30T13:00:00",
     "end": "2025-11-30T15:00:00",
-    "color": "#00ff99",
+    "color": "#00ff00",
     "description": "Clase abierta para aprender a filmar un show de música infantil en vivo."
   },
   {
-    "title": "Preparación de rodaje (Xplora Academy)",
+    "title": "Preparación de rodaje",
     "location": "Café Berlín, Villa Devoto",
     "start": "2025-11-30T15:00:00",
     "end": "2025-11-30T16:00:00",
-    "color": "#00ff99",
+    "color": "#00ff00",
     "description": "Preparación técnica y logística para el rodaje del show en vivo."
   },
   {
-    "title": "Abracadabra Kabradepata en Café Berlín (Xplora Academy)",
+    "title": "Abracadabra Kabradepata en Café Berlín",
     "location": "Café Berlín, Villa Devoto",
     "start": "2025-11-30T16:00:00",
-    "end": "2025-11-30T18:00:00",
-    "color": "#00ff99",
+    "end": "2025-11-30T17:00:00",
+    "color": "#0088ff",
     "link": "https://livepass.com.ar/events/abracadabra-kabradepata-en-cafe-berlin",
     "description": "Vamos a filmar y enseñar cómo se filma un show en vivo, en el marco de Xplora Academy."
+  }
+  ,
+  {
+    "title": "Pizza y Pagni",
+    "location": "",
+    "start": "2025-11-24T20:00:00",
+    "end": "2025-11-25T00:00:00",
+    "color": "#00ff00",
+    "link": "https://www.instagram.com/p/DNOPZAbRh8v/",
+    "description": "Lunes de 20 a 00."
   }
 ]
