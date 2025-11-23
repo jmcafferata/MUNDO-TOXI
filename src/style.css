@@ -1,3 +1,6 @@
+/* Centrado global para #app y canvas/labelRenderer */
+
+
 @font-face {
   font-family: 'Helvetica Now';
   src: url('/HelveticaNowDisplay-Bold.otf') format('opentype');

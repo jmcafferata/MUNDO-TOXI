@@ -310,7 +310,7 @@ scene.add(presentLine);
 const presentDiv = document.createElement('div');
 presentDiv.className = 'label';
 presentDiv.style.position = 'absolute';
-presentDiv.style.bottom = '15%';
+presentDiv.style.bottom = '4%';
 presentDiv.style.left = '0';
 presentDiv.style.width = '100%';
 presentDiv.style.textAlign = 'center';
@@ -418,14 +418,15 @@ nextBtn.addEventListener('click', () => {
     // Find the first event that starts after the current simulated time
     // Add a small buffer (e.g. 1 minute) to ensure we jump to the next one if we are currently AT the start of one
     const nextEvent = sortedEvents.find(e => e.startDate.getTime() > currentSimulatedTime + 60000);
-    
+
     if (nextEvent) {
-        // Jump to the start of the event
-        timeOffset = nextEvent.startDate.getTime() - Date.now();
+        // Center on the middle of the event
+        const eventCenter = (nextEvent.startDate.getTime() + nextEvent.endDate.getTime()) / 2;
+        timeOffset = eventCenter - Date.now();
         velocity = 0; // Stop any movement
     }
 });
-document.body.appendChild(nextBtn);
+// document.body.appendChild(nextBtn); // Moved inside fetch
 
 // Previous Event Button
 const prevBtn = document.createElement('button');
@@ -455,18 +456,17 @@ prevBtn.addEventListener('click', () => {
     const currentSimulatedTime = Date.now() + timeOffset;
     // Sort events by start time
     const sortedEvents = [...eventsData].sort((a, b) => a.startDate - b.startDate);
-    // Find the last event that starts before the current simulated time
-    // Use a buffer to jump to the previous one if we are currently at the start of one
-    // We reverse the array to find the first one that satisfies "start < current" which corresponds to the closest past event
-    const prevEvent = [...sortedEvents].reverse().find(e => e.startDate.getTime() < currentSimulatedTime - 60000);
-    
-    if (prevEvent) {
-        // Jump to the start of the event
-        timeOffset = prevEvent.startDate.getTime() - Date.now();
+    // Find the index of the current event (the last event that starts before or at current time)
+    const currentIndex = sortedEvents.findLastIndex(e => e.startDate.getTime() <= currentSimulatedTime);
+    if (currentIndex > 0) {
+        const prevEvent = sortedEvents[currentIndex - 1];
+        // Center on the middle of the event
+        const eventCenter = (prevEvent.startDate.getTime() + prevEvent.endDate.getTime()) / 2;
+        timeOffset = eventCenter - Date.now();
         velocity = 0; // Stop any movement
     }
 });
-document.body.appendChild(prevBtn);
+// document.body.appendChild(prevBtn); // Moved inside fetch
 
 function getEmbedUrl(url, startTime = 0) {
     let embedUrl = url;
@@ -499,12 +499,7 @@ fetch('events.json?t=' + Date.now())
     .then(data => {
         eventsData = data.map(e => {
             const startDate = new Date(e.start);
-            const hour = startDate.getHours();
-            let colorHex = '#ffffff';
-            if (hour >= 6 && hour < 12) colorHex = '#0088ff'; // Blue (TOXI Kids)
-            else if (hour >= 12 && hour < 18) colorHex = '#00ff00'; // Green (TOXI Academy)
-            else if (hour >= 18) colorHex = '#ff0000'; // Red (TOXI Gaming)
-            
+            const colorHex = e.color || '#ffffff';
             return {
                 ...e,
                 startDate: startDate,
@@ -542,11 +537,11 @@ fetch('events.json?t=' + Date.now())
             if (event.link) {
                 eventDiv.style.cursor = 'pointer';
                 eventDiv.style.pointerEvents = 'auto';
-                
+
                 // Prevent drag when interacting with the link
                 eventDiv.addEventListener('mousedown', (e) => e.stopPropagation());
                 eventDiv.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
-                
+
                 eventDiv.addEventListener('click', () => {
                     const currentSimulatedTime = Date.now() + timeOffset;
                     const elapsedMs = currentSimulatedTime - event.startDate.getTime();
@@ -554,12 +549,17 @@ fetch('events.json?t=' + Date.now())
 
                     const finalUrl = getEmbedUrl(event.link, elapsedSeconds);
                     console.log('Opening video at:', finalUrl);
-                    
-                    overlay.style.display = 'flex';
-                    // Small delay to ensure overlay is visible before loading iframe
-                    requestAnimationFrame(() => {
-                        iframe.src = finalUrl;
-                    });
+
+                    // Only use overlay for YouTube embeds, otherwise open in new tab
+                    if (finalUrl.includes('youtube.com/embed/')) {
+                        overlay.style.display = 'flex';
+                        // Small delay to ensure overlay is visible before loading iframe
+                        requestAnimationFrame(() => {
+                            iframe.src = finalUrl;
+                        });
+                    } else {
+                        window.open(event.link, '_blank', 'noopener');
+                    }
                 });
             } else {
                 eventDiv.style.pointerEvents = 'none';
@@ -570,6 +570,10 @@ fetch('events.json?t=' + Date.now())
             scene.add(labelObj);
             eventLabels.push(labelObj);
         });
+
+        // Add navigation buttons after events are loaded
+        document.body.appendChild(nextBtn);
+        document.body.appendChild(prevBtn);
     })
     .catch(err => console.error('Error loading events:', err));
 
@@ -715,8 +719,13 @@ function animate() {
 
     const pad = (n) => n.toString().padStart(2, '0');
 
+    // Get day name in Spanish
+    const dayNames = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+    const dayName = dayNames[nowDate.getDay()];
+
     presentDiv.innerHTML = `
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 25px; margin-bottom: 60px;">
+            <div style="font-size: 1.2em; font-weight: bold; letter-spacing: 2px; color: #fff; margin-bottom: 8px; text-transform: uppercase; font-family: 'Helvetica Now', sans-serif;">${dayName}</div>
             <div style="display: flex; gap: 30px; justify-content: center; width:100%;">
                 <div style="display: flex; flex-direction: column; align-items: center;">
                     <span style="font-size: 2.5em; font-weight: 300; line-height: 1; display:inline-block; transform:translateY(-12px);">${year}</span>
@@ -813,34 +822,25 @@ function animate() {
                 markerPositions[(i + 1) * 3 + 2] = 0;
 
                 // Update marker color
-                let inEvent = false;
+                let eventColor = null;
                 for (const range of activeRanges) {
                     if (xPos >= range.start && xPos <= range.end) {
-                        inEvent = true;
+                        eventColor = range.color;
                         break; // First match wins
                     }
                 }
 
-                if (inEvent) {
-                    const markerTime = new Date(nowDate.getTime() + diffMinutes * 60000);
-                    const h = markerTime.getHours();
-                    let r=1, g=1, b=1;
-                    if (h >= 6 && h < 12) { r=0; g=0.53; b=1; } // #0088ff
-                    else if (h >= 12 && h < 18) { r=0; g=1; b=0; } // #00ff00
-                    else if (h >= 18) { r=1; g=0; b=0; } // #ff0000
-
-                    markerColorsArray[i * 3] = r;
-                    markerColorsArray[i * 3 + 1] = g;
-                    markerColorsArray[i * 3 + 2] = b;
-                    
-                    markerColorsArray[(i + 1) * 3] = r;
-                    markerColorsArray[(i + 1) * 3 + 1] = g;
-                    markerColorsArray[(i + 1) * 3 + 2] = b;
+                if (eventColor) {
+                    markerColorsArray[i * 3] = eventColor.r;
+                    markerColorsArray[i * 3 + 1] = eventColor.g;
+                    markerColorsArray[i * 3 + 2] = eventColor.b;
+                    markerColorsArray[(i + 1) * 3] = eventColor.r;
+                    markerColorsArray[(i + 1) * 3 + 1] = eventColor.g;
+                    markerColorsArray[(i + 1) * 3 + 2] = eventColor.b;
                 } else {
                     markerColorsArray[i * 3] = 1;
                     markerColorsArray[i * 3 + 1] = 1;
                     markerColorsArray[i * 3 + 2] = 1;
-                    
                     markerColorsArray[(i + 1) * 3] = 1;
                     markerColorsArray[(i + 1) * 3 + 1] = 1;
                     markerColorsArray[(i + 1) * 3 + 2] = 1;
@@ -871,30 +871,26 @@ function animate() {
 
     const colors = geometry.attributes.color.array;
 
+
     for (let i = 0; i < numPoints; i++) {
-        const xPos = pos[i * 3]; // world X position of this event
-        
-        // Check if this point is within any event time range
-        let inEvent = false;
-        for (const range of activeRanges) {
-            if (xPos >= range.start && xPos <= range.end) {
-                inEvent = true;
+        const xPos = pos[i * 3];
+        let foundColor = null;
+        // Find the event this point belongs to (use eventsData for exact color)
+        for (let e = 0; e < eventsData.length; e++) {
+            const event = eventsData[e];
+            const diffStartMinutes = (event.startDate - nowDate) / 60000;
+            const diffEndMinutes = (event.endDate - nowDate) / 60000;
+            const xStart = diffStartMinutes * spacing;
+            const xEnd = diffEndMinutes * spacing;
+            if (xPos >= xStart && xPos <= xEnd) {
+                foundColor = event.colorObj;
                 break;
             }
         }
-
-        if (inEvent) {
-            const diffMinutes = xPos / spacing;
-            const pointTime = new Date(nowDate.getTime() + diffMinutes * 60000);
-            const h = pointTime.getHours();
-            let r=1, g=1, b=1;
-            if (h >= 6 && h < 12) { r=0; g=0.53; b=1; } // #0088ff
-            else if (h >= 12 && h < 18) { r=0; g=1; b=0; } // #00ff00
-            else if (h >= 18) { r=1; g=0; b=0; } // #ff0000
-
-            colors[i * 3] = r;
-            colors[i * 3 + 1] = g;
-            colors[i * 3 + 2] = b;
+        if (foundColor) {
+            colors[i * 3] = foundColor.r;
+            colors[i * 3 + 1] = foundColor.g;
+            colors[i * 3 + 2] = foundColor.b;
         } else {
             colors[i * 3] = 1;
             colors[i * 3 + 1] = 1;
