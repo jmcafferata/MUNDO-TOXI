@@ -12,7 +12,8 @@
     "location": "Nacho Michalowicz",
     "start": "2025-12-01T16:00:00",
     "end": "2025-12-01T18:00:00",
-    "color": "#ffffff"
+    "color": "#ffffff",
+    "link": "https://www.toxi.media/project/el-jardin-de-andarillo"
   },
   {
     "title": "Campeonato Superhot VR",
@@ -20,5 +21,31 @@
     "start": "2025-12-01T18:00:00",
     "end": "2025-12-01T20:00:00",
     "color": "#ffffff"
+  }
+  ,
+  {
+    "title": "Clase abierta: cómo filmar un evento de música infantil en vivo (Xplora Academy)",
+    "location": "Café Berlín, Villa Devoto",
+    "start": "2025-11-30T13:00:00",
+    "end": "2025-11-30T15:00:00",
+    "color": "#00ff99",
+    "description": "Clase abierta para aprender a filmar un show de música infantil en vivo."
+  },
+  {
+    "title": "Preparación de rodaje (Xplora Academy)",
+    "location": "Café Berlín, Villa Devoto",
+    "start": "2025-11-30T15:00:00",
+    "end": "2025-11-30T16:00:00",
+    "color": "#00ff99",
+    "description": "Preparación técnica y logística para el rodaje del show en vivo."
+  },
+  {
+    "title": "Abracadabra Kabradepata en Café Berlín (Xplora Academy)",
+    "location": "Café Berlín, Villa Devoto",
+    "start": "2025-11-30T16:00:00",
+    "end": "2025-11-30T18:00:00",
+    "color": "#00ff99",
+    "link": "https://livepass.com.ar/events/abracadabra-kabradepata-en-cafe-berlin",
+    "description": "Vamos a filmar y enseñar cómo se filma un show en vivo, en el marco de Xplora Academy."
   }
 ]
