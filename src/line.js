@@ -494,7 +494,7 @@ function getEmbedUrl(url, startTime = 0) {
 let eventsData = [];
 const eventLabels = [];
 
-fetch('./src/events.json?t=' + Date.now())
+fetch('events.json?t=' + Date.now())
     .then(response => response.json())
     .then(data => {
         eventsData = data.map(e => {
