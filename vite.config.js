@@ -38,7 +38,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         earth: resolve(__dirname, 'earth.html'),
-        line: resolve(__dirname, 'line.html'),
+        line: resolve(__dirname, 'public/line.html'),
         point: resolve(__dirname, 'point.html'),
       },
     },
