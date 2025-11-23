@@ -751,27 +751,24 @@ function animate() {
     raycaster.setFromCamera(mouse, camera);
     const hitboxes = hoverThumbnails.map(h => h.hitbox);
     const intersects = raycaster.intersectObjects(hitboxes);
-    
+
     hoverThumbnails.forEach(data => {
         // Removed hover scaling logic as requested
-        // if (intersects.find(i => i.object === data.hitbox)) {
-        //     data.targetScale = data.hoverScale;
-        //     document.body.style.cursor = 'pointer';
-        // } else {
-        //     data.targetScale = data.baseScale;
-        // }
-
-        // const current = data.object.scale.x;
-        // const target = data.targetScale;
-        // const next = THREE.MathUtils.lerp(current, target, 0.1);
-        // data.object.scale.set(next, next, next);
     });
 
-    // if (intersects.length === 0) {
-    //     document.body.style.cursor = 'default';
-    // }
+    // Check if camera crosses the x=-5 plane (on z and y)
+    // If camera.x < -5, open the line page
+    if (!window._linePageOpened && camera.position.x < -50) {
+        window._linePageOpened = true;
+        window.location.href = 'line.html';
+    }
 
-    // renderer.render(scene, camera);
+    // If camera.x > 50, open the earth page
+    if (!window._earthPageOpened && camera.position.x > 50) {
+        window._earthPageOpened = true;
+        window.location.href = 'earth.html';
+    }
+
     composer.render();
     labelRenderer.render(scene, camera);
     css3dRenderer.render(scene, camera);
