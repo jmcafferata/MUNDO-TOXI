@@ -21,6 +21,13 @@ body {
   background-color: #000;
 }
 
+/* Page fade-in from black */
+body {
+  /* start visually black/hidden, hold black for 2s, then fade in over 5s (total 7s) */
+  opacity: 0;
+  animation: pageFade 7s ease-out 0s forwards;
+}
+
 canvas {
   display: block;
 }
@@ -184,4 +191,17 @@ canvas {
 
 .audio-unmute-btn:active {
   background: rgba(255,255,255,0.2);
+}
+
+@keyframes pageFade {
+  0% {
+    opacity: 0;
+  }
+  /* Hold fully black for first 2 seconds: 2/7 ≈ 28.571% */
+  28.571% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
