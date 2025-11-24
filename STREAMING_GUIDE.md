@@ -1,4 +1,4 @@
-# Guía de Streaming con Icecast para Mundo Toxi
+# Guía de Streaming con Icecast para TOXI Media
 
 Para transmitir audio desde tu PC a la web, necesitas 3 componentes funcionando juntos:
 

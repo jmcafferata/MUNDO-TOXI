@@ -12,8 +12,8 @@ export default defineConfig({
       },
       includeAssets: ['world.svg', 'logo.glb'],
       manifest: {
-        name: 'Mundo Toxi',
-        short_name: 'MundoToxi',
+        name: 'TOXI Media',
+        short_name: 'TOXIMedia',
         description: 'Digital Ocean Three.js Scene',
         theme_color: '#000000',
         background_color: '#000000',

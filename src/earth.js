@@ -39,6 +39,37 @@ if ('xr' in navigator) {
     });
 }
 
+// Fade overlay for Escape navigation (fade to black then go to main)
+const fadeDiv = document.createElement('div');
+fadeDiv.style.position = 'fixed';
+fadeDiv.style.top = '0';
+fadeDiv.style.left = '0';
+fadeDiv.style.width = '100%';
+fadeDiv.style.height = '100%';
+fadeDiv.style.backgroundColor = 'black';
+fadeDiv.style.opacity = '0';
+fadeDiv.style.pointerEvents = 'none';
+fadeDiv.style.zIndex = '1100';
+fadeDiv.style.transition = 'opacity 1s ease-out';
+document.body.appendChild(fadeDiv);
+
+function navigateToMainFromEarth(url = 'index.html') {
+    if (window._navigating) return;
+    window._navigating = true;
+    fadeDiv.style.pointerEvents = 'auto';
+    fadeDiv.style.opacity = '1';
+    setTimeout(() => {
+        window.location.href = url;
+    }, 1000);
+}
+
+// Escape key -> fade then go to main
+window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+        navigateToMainFromEarth();
+    }
+});
+
 // VR Controllers
 const controller1 = renderer.xr.getController(0);
 const controller2 = renderer.xr.getController(1);
