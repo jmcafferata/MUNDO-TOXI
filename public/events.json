@@ -58,4 +58,13 @@
     "link": "https://www.instagram.com/p/DNOPZAbRh8v/",
     "description": "Lunes de 20 a 00."
   }
+  ,
+  {
+    "title": "Presentación de la web 3D de TOXI",
+    "location": "TOXI",
+    "start": "2025-11-23T23:45:00",
+    "end": "2025-11-24T00:05:00",
+    "color": "#FFD700",
+    "description": "Presentación de la web 3D de TOXI"
+  }
 ]
