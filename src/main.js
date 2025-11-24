@@ -127,17 +127,25 @@ fadeDiv.style.zIndex = '1000';
 fadeDiv.style.transition = 'opacity 3s ease-out';
 document.body.appendChild(fadeDiv);
 
-// Helper to fade to black then navigate (3s)
-function navigateWithFade(url) {
+// Helper to fade to black then navigate. Options: { force, duration }
+function navigateWithFade(url, { force = false, duration = 3000 } = {}) {
     if (!url) return;
-    if (window._navigating) return;
+    if (window._navigating && !force) return;
     window._navigating = true;
+
+    // ensure transition duration matches requested duration
+    fadeDiv.style.transition = `opacity ${duration}ms ease-out`;
     // enable pointer events so user can't interact during fade
     fadeDiv.style.pointerEvents = 'auto';
-    fadeDiv.style.opacity = '1';
+
+    // trigger the fade (use rAF to ensure computed style before change)
+    requestAnimationFrame(() => {
+        fadeDiv.style.opacity = '1';
+    });
+
     setTimeout(() => {
         window.location.href = url;
-    }, 3000);
+    }, duration);
 }
 
 // Post-processing (Bloom)
@@ -238,35 +246,28 @@ const maxSpeed = 2.5;
 const acceleration = 0.1; // Higher acceleration
 
 window.addEventListener('keydown', (event) => {
+    // Immediate navigation on arrow keys: left/right/up/down
+    // Left -> line.html
+    // Right -> earth.html
+    // Up -> plantform
+    // Down -> instagram
     switch (event.key) {
         case 'ArrowLeft':
             event.preventDefault();
-            targetPosition = new THREE.Vector3(-50, camera.position.y, camera.position.z);
-            movementStartTime = performance.now();
-            currentSpeed = 0.5; // Start with some speed
-            controls.enabled = false;
-            break;
+            navigateWithFade('line.html', { force: true, duration: 3000 });
+            return;
         case 'ArrowRight':
             event.preventDefault();
-            targetPosition = new THREE.Vector3(50, camera.position.y, camera.position.z);
-            movementStartTime = performance.now();
-            currentSpeed = 0.5;
-            controls.enabled = false;
-            break;
+            navigateWithFade('earth.html', { force: true, duration: 3000 });
+            return;
         case 'ArrowUp':
             event.preventDefault();
-            targetPosition = new THREE.Vector3(camera.position.x, camera.position.y, -50);
-            movementStartTime = performance.now();
-            currentSpeed = 0.5;
-            controls.enabled = false;
-            break;
+            navigateWithFade('https://toxi.media/plantform', { force: true, duration: 3000 });
+            return;
         case 'ArrowDown':
             event.preventDefault();
-            targetPosition = new THREE.Vector3(camera.position.x, camera.position.y, 50);
-            movementStartTime = performance.now();
-            currentSpeed = 0.5;
-            controls.enabled = false;
-            break;
+            navigateWithFade('https://www.instagram.com/toxi.media/', { force: true, duration: 3000 });
+            return;
         default:
             return;
     }
