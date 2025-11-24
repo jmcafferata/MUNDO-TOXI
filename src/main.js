@@ -102,6 +102,7 @@ scene.add(camera); // Add camera to scene so children are rendered
 
 // Initial position
 camera.position.set(0, 30, 0); // High angle, looking down
+camera.up.set(0, 1, 0); // Ensure up is Y
 camera.lookAt(scene.position); // Look at center (0,0,0)
 
 // Renderer setup
@@ -111,6 +112,33 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
+
+// Fade overlay
+const fadeDiv = document.createElement('div');
+fadeDiv.style.position = 'fixed';
+fadeDiv.style.top = '0';
+fadeDiv.style.left = '0';
+fadeDiv.style.width = '100%';
+fadeDiv.style.height = '100%';
+fadeDiv.style.backgroundColor = 'black';
+fadeDiv.style.opacity = '0';
+fadeDiv.style.pointerEvents = 'none';
+fadeDiv.style.zIndex = '1000';
+fadeDiv.style.transition = 'opacity 3s ease-out';
+document.body.appendChild(fadeDiv);
+
+// Helper to fade to black then navigate (3s)
+function navigateWithFade(url) {
+    if (!url) return;
+    if (window._navigating) return;
+    window._navigating = true;
+    // enable pointer events so user can't interact during fade
+    fadeDiv.style.pointerEvents = 'auto';
+    fadeDiv.style.opacity = '1';
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
 
 // Post-processing (Bloom)
 const renderScene = new RenderPass(scene, camera);
@@ -201,6 +229,48 @@ window.addEventListener('wheel', showThumbnails);
 window.addEventListener('pointerdown', showThumbnails);
 window.addEventListener('mousemove', showThumbnails);
 window.addEventListener('keydown', showThumbnails);
+
+// Arrow key movement
+let targetPosition = null;
+let movementStartTime = null;
+let currentSpeed = 0;
+const maxSpeed = 2.5;
+const acceleration = 0.1; // Higher acceleration
+
+window.addEventListener('keydown', (event) => {
+    switch (event.key) {
+        case 'ArrowLeft':
+            event.preventDefault();
+            targetPosition = new THREE.Vector3(-50, camera.position.y, camera.position.z);
+            movementStartTime = performance.now();
+            currentSpeed = 0.5; // Start with some speed
+            controls.enabled = false;
+            break;
+        case 'ArrowRight':
+            event.preventDefault();
+            targetPosition = new THREE.Vector3(50, camera.position.y, camera.position.z);
+            movementStartTime = performance.now();
+            currentSpeed = 0.5;
+            controls.enabled = false;
+            break;
+        case 'ArrowUp':
+            event.preventDefault();
+            targetPosition = new THREE.Vector3(camera.position.x, camera.position.y, -50);
+            movementStartTime = performance.now();
+            currentSpeed = 0.5;
+            controls.enabled = false;
+            break;
+        case 'ArrowDown':
+            event.preventDefault();
+            targetPosition = new THREE.Vector3(camera.position.x, camera.position.y, 50);
+            movementStartTime = performance.now();
+            currentSpeed = 0.5;
+            controls.enabled = false;
+            break;
+        default:
+            return;
+    }
+});
 
 // Custom FOV Zoom (Wheel & Pinch)
 const minFov = 15;
@@ -645,12 +715,75 @@ createHUD();
 // Animation Loop
 const clock = new THREE.Clock();
 let animationId;
+// Intro: camera comes from below -> up (will pass through the logo)
+const introMainDuration = 10.0; // seconds
+const cameraDefaultPos = camera.position.clone();
+// Start below but slightly forward in Z so we don't cross navigation thresholds (z stays in safe range)
+const cameraStartPos = cameraDefaultPos.clone().add(new THREE.Vector3(0, 0, 10)); // start far below and a bit toward +Z
+camera.position.copy(cameraStartPos);
+let introMainDone = false;
 
 function animate() {
     animationId = requestAnimationFrame(animate);
     
     TWEEN.update(); // Update tweens
+    // Disable controls during the intro movement to avoid user interruption
+    if (!introMainDone) controls.enabled = false;
     controls.update(); // Update controls for damping
+
+    // Intro camera movement (front -> back)
+    if (!introMainDone) {
+        const tRaw = Math.min(clock.getElapsedTime() / introMainDuration, 1);
+        const easedT = 1 - Math.pow(1 - tRaw, 2); // ease-out quad
+        camera.position.lerpVectors(cameraStartPos, cameraDefaultPos, easedT);
+        camera.lookAt(scene.position);
+        if (tRaw >= 1) {
+            introMainDone = true;
+            controls.enabled = true; // re-enable controls after intro
+        }
+    }
+
+    // Manual camera movement
+    if (targetPosition) {
+        const delta = clock.getDelta();
+        currentSpeed = Math.min(maxSpeed, currentSpeed + acceleration * delta);
+        const direction = targetPosition.clone().sub(camera.position).normalize();
+        const distance = camera.position.distanceTo(targetPosition);
+        const moveDistance = currentSpeed * delta;
+        if (moveDistance >= distance) {
+            camera.position.copy(targetPosition);
+            camera.up.set(0, 1, 0);
+            camera.lookAt(scene.position);
+            targetPosition = null;
+            movementStartTime = null;
+            currentSpeed = 0;
+            controls.enabled = true;
+        } else {
+            camera.position.add(direction.multiplyScalar(moveDistance));
+            camera.up.set(0, 1, 0);
+            camera.lookAt(scene.position);
+        }
+
+        // Check for fade after 10 seconds
+        if (movementStartTime) {
+            const elapsed = (performance.now() - movementStartTime) / 1000;
+            if (elapsed >= 10) {
+                    // Decide destination and navigate with fade
+                    let url;
+                    if (targetPosition && targetPosition.x === -50) {
+                        url = 'line.html';
+                    } else if (targetPosition && targetPosition.x === 50) {
+                        url = 'earth.html';
+                    } else if (targetPosition && targetPosition.z === -50) {
+                        url = 'https://toxi.media/plantform';
+                    } else if (targetPosition && targetPosition.z === 50) {
+                        url = 'https://www.instagram.com/toxi.media/';
+                    }
+                    navigateWithFade(url);
+                // Don't stop movement
+            }
+        }
+    }
 
     // Smooth Zoom Logic
     const fovDiff = targetFov - camera.fov;
@@ -758,28 +891,31 @@ function animate() {
 
     // Check if camera crosses the x=-5 plane (on z and y)
 
-    // If camera.x < -50, open the line page
-    if (!window._linePageOpened && camera.position.x < -50) {
-        window._linePageOpened = true;
-        window.location.href = 'line.html';
-    }
+    // Navigation triggers — only enabled after intro finishes to avoid accidental redirects
+    if (introMainDone) {
+        // If camera.x < -50, open the line page
+        if (!window._linePageOpened && camera.position.x < -50) {
+            window._linePageOpened = true;
+            navigateWithFade('line.html');
+        }
 
-    // If camera.x > 50, open the earth page
-    if (!window._earthPageOpened && camera.position.x > 50) {
-        window._earthPageOpened = true;
-        window.location.href = 'earth.html';
-    }
+        // If camera.x > 50, open the earth page
+        if (!window._earthPageOpened && camera.position.x > 50) {
+            window._earthPageOpened = true;
+            navigateWithFade('earth.html');
+        }
 
-    // If camera.y > 50, open the plantform page
-    if (!window._plantformPageOpened && camera.position.z < -50) {
-        window._plantformPageOpened = true;
-        window.location.href = 'https://toxi.media/plantform';
-    }
+        // If camera.z < -50, open the plantform page
+        if (!window._plantformPageOpened && camera.position.z < -50) {
+            window._plantformPageOpened = true;
+            navigateWithFade('https://toxi.media/plantform');
+        }
 
-    // If camera.y < -50, open the instagram page
-    if (!window._instagramPageOpened && camera.position.z > 50) {
-        window._instagramPageOpened = true;
-        window.location.href = 'https://www.instagram.com/toxi.media/';
+        // If camera.z > 50, open the instagram page
+        if (!window._instagramPageOpened && camera.position.z > 50) {
+            window._instagramPageOpened = true;
+            navigateWithFade('https://www.instagram.com/toxi.media/');
+        }
     }
 
     composer.render();

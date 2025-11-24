@@ -361,6 +361,20 @@ overlay.style.alignItems = 'center';
 overlay.style.flexDirection = 'column';
 document.body.appendChild(overlay);
 
+// White flash that appears when the simulated date crosses a day boundary
+const dayFlashDiv = document.createElement('div');
+dayFlashDiv.style.position = 'fixed';
+dayFlashDiv.style.top = '0';
+dayFlashDiv.style.left = '0';
+dayFlashDiv.style.width = '100%';
+dayFlashDiv.style.height = '100%';
+dayFlashDiv.style.backgroundColor = 'white';
+dayFlashDiv.style.opacity = '0';
+dayFlashDiv.style.pointerEvents = 'none';
+dayFlashDiv.style.zIndex = '2000';
+dayFlashDiv.style.display = 'none';
+document.body.appendChild(dayFlashDiv);
+
 const closeBtn = document.createElement('button');
 closeBtn.textContent = 'CERRAR';
 closeBtn.style.position = 'absolute';
@@ -468,6 +482,43 @@ prevBtn.addEventListener('click', () => {
 });
 // document.body.appendChild(prevBtn); // Moved inside fetch
 
+// Present (Now) Button - centered square
+const presentBtn = document.createElement('button');
+presentBtn.textContent = '■';
+presentBtn.title = 'Ir al presente';
+presentBtn.style.position = 'absolute';
+presentBtn.style.bottom = '30px';
+presentBtn.style.left = '50%';
+presentBtn.style.transform = 'translateX(-50%)';
+presentBtn.style.width = '52px';
+presentBtn.style.height = '52px';
+presentBtn.style.padding = '0';
+presentBtn.style.display = 'flex';
+presentBtn.style.justifyContent = 'center';
+presentBtn.style.alignItems = 'center';
+presentBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.12)';
+presentBtn.style.color = 'white';
+presentBtn.style.border = '1px solid white';
+presentBtn.style.cursor = 'pointer';
+presentBtn.style.fontFamily = '"Helvetica Now", sans-serif';
+presentBtn.style.fontSize = '18px';
+presentBtn.style.backdropFilter = 'blur(5px)';
+presentBtn.style.transition = 'all 0.18s ease';
+presentBtn.style.zIndex = '999';
+
+presentBtn.addEventListener('mouseover', () => {
+    presentBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.28)';
+});
+presentBtn.addEventListener('mouseout', () => {
+    presentBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.12)';
+});
+
+presentBtn.addEventListener('click', () => {
+    // Jump to real present
+    timeOffset = 0;
+    velocity = 0;
+});
+
 function getEmbedUrl(url, startTime = 0) {
     let embedUrl = url;
     let videoId = null;
@@ -571,15 +622,21 @@ fetch('events.json?t=' + Date.now())
             eventLabels.push(labelObj);
         });
 
-        // Add navigation buttons after events are loaded
-        document.body.appendChild(nextBtn);
+        // Add navigation buttons after events are loaded (left = prev, middle = present, right = next)
         document.body.appendChild(prevBtn);
+        document.body.appendChild(presentBtn);
+        document.body.appendChild(nextBtn);
     })
     .catch(err => console.error('Error loading events:', err));
 
 
 // Timing for physics
 let lastTime = performance.now() / 1000;
+
+// Day-cross flash configuration
+const DAY_FLASH_FRAMES = 4; // frames to interpolate in (and 4 to interpolate out)
+let _dayFlashFrame = -1; // -1 = inactive, 0..(DAY_FLASH_FRAMES*2-1) = active
+let _lastDisplayedDay = null;
 
 // --- Lighting (match earth.js) ---
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
@@ -756,6 +813,34 @@ function animate() {
             </div>
         </div>
     `;
+
+    // Detect day crossing and trigger white flash
+    if (_lastDisplayedDay === null) {
+        _lastDisplayedDay = day;
+    } else if (day !== _lastDisplayedDay) {
+        _lastDisplayedDay = day;
+        _dayFlashFrame = 0;
+        dayFlashDiv.style.display = 'block';
+        dayFlashDiv.style.opacity = '0';
+    }
+
+    // Animate day flash (fade in for DAY_FLASH_FRAMES, then fade out for DAY_FLASH_FRAMES)
+    if (_dayFlashFrame >= 0) {
+        const totalFrames = DAY_FLASH_FRAMES * 2;
+        let alpha = 0;
+        if (_dayFlashFrame < DAY_FLASH_FRAMES) {
+            alpha = (_dayFlashFrame + 1) / DAY_FLASH_FRAMES;
+        } else if (_dayFlashFrame < totalFrames) {
+            alpha = 1 - ((_dayFlashFrame - DAY_FLASH_FRAMES + 1) / DAY_FLASH_FRAMES);
+        }
+        dayFlashDiv.style.opacity = String(Math.max(0, Math.min(1, alpha)));
+        _dayFlashFrame += 1;
+        if (_dayFlashFrame >= totalFrames) {
+            dayFlashDiv.style.display = 'none';
+            dayFlashDiv.style.opacity = '0';
+            _dayFlashFrame = -1;
+        }
+    }
 
     // Update Event Labels Positions
     // Pre-calculate ranges for coloring

@@ -15,7 +15,9 @@ scene.background = new THREE.Color(0x000000); // Black background
 
 // Camera setup
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(60, 0, 0);
+// Start the camera farther away; it will move in over `introDuration` seconds
+camera.position.set(200, 0, 0);
+// (No FOV intro — handled elsewhere if needed)
 
 // VR Dolly
 const dolly = new THREE.Group();
@@ -174,16 +176,7 @@ const material = new THREE.PointsMaterial({
 const earthPoints = new THREE.Points(geometry, material);
 scene.add(earthPoints);
 
-// Black Planet (Occluder)
-const blackPlanetGeometry = new THREE.SphereGeometry(radius - 0.1, 64, 64);
-const blackPlanetMaterial = new THREE.MeshBasicMaterial({ 
-    color: 0x000000, 
-    transparent: true, 
-    opacity: 0
-});
-const blackPlanet = new THREE.Mesh(blackPlanetGeometry, blackPlanetMaterial);
-blackPlanet.renderOrder = -1; // Render before points
-earthPoints.add(blackPlanet);
+// (Removed inner black occluder per request)
 
 // --- City Markers ---
 function latLonToVector3(lat, lon, radius) {
@@ -402,7 +395,15 @@ loader.load('./logo.glb', (gltf) => {
 
 // Animation Loop
 const clock = new THREE.Clock();
+// Desired camera position after the intro movement
 const startCameraPos = new THREE.Vector3(60, 0, 0);
+// Intro movement settings
+const introDuration = 10.0; // seconds
+const cameraInitialPos = new THREE.Vector3(200, 0, 0); // must match initial camera set above
+let introDone = false;
+
+// (inner occluder removed; no fade variables needed)
+
 let earthRotationY = 0;
 let currentRotationSpeed = 0.05;
 
@@ -414,23 +415,28 @@ function animate() {
     const delta = clock.getDelta();
     const time = clock.getElapsedTime();
 
+    // Intro camera movement: move camera from `cameraInitialPos` to `startCameraPos` over `introDuration`
+    if (!introDone) {
+        const tRaw = Math.min(clock.getElapsedTime() / introDuration, 1);
+        // Smooth easing (ease-out quad) for a natural deceleration: eased = 1 - (1-t)^2
+        const easedT = 1 - Math.pow(1 - tRaw, 2);
+        camera.position.lerpVectors(cameraInitialPos, startCameraPos, easedT);
+
+            if (tRaw >= 1) {
+                introDone = true;
+            }
+    }
+
     // Check camera position
     const dist = camera.position.distanceTo(startCameraPos);
     const isMoved = dist > 1.0;
 
-    // Interpolate Opacity
-    const targetOpacity = isMoved ? 1 : 0;
-    blackPlanet.material.opacity = THREE.MathUtils.lerp(blackPlanet.material.opacity, targetOpacity, delta * 2);
-    
-    // Toggle visibility/depth write to avoid invisible occlusion
-    if (blackPlanet.material.opacity > 0.01) {
-        blackPlanet.visible = true;
-    } else {
-        blackPlanet.visible = false;
-    }
+    // (inner occluder removed; no opacity transition)
 
     // Interpolate Rotation Speed
-    const targetSpeed = isMoved ? 0 : 0.05;
+    // Allow rotation during the intro movement. Only stop rotation if the camera
+    // has been moved by the user after the intro finished.
+    const targetSpeed = (isMoved && introDone) ? 0 : 0.05;
     currentRotationSpeed = THREE.MathUtils.lerp(currentRotationSpeed, targetSpeed, delta * 2);
     
     earthRotationY += currentRotationSpeed * delta;
