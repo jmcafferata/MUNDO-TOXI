@@ -1,0 +1,6 @@
+{
+  "cities": [
+    { "name": "Buenos Aires", "lat": -34.6037, "lon": -58.3816 },
+    { "name": "Venado Tuerto", "lat": -33.7378, "lon": -61.9672 }
+  ]
+}
