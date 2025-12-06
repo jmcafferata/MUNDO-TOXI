@@ -260,6 +260,87 @@ countries.forEach(country => {
     earthPoints.add(marker); // Add to earthPoints so they rotate with it
 });
 
+// --- City Level (loaded from JSON) ---
+const cityGroup = new THREE.Group();
+const cityLabels = [];
+earthPoints.add(cityGroup);
+
+function loadCityLevel(url = './cities.json') {
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            const cities = data.cities || data;
+            if (!Array.isArray(cities) || cities.length === 0) return;
+
+            const cityMarkerGeometry = new THREE.SphereGeometry(0.14, 8, 8);
+            const cityMaterialBase = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
+
+            // Create markers
+            const positions = [];
+            cities.forEach(city => {
+                const pos = latLonToVector3(city.lat, city.lon, radius);
+                positions.push(pos);
+
+                const mat = cityMaterialBase.clone();
+                const mesh = new THREE.Mesh(cityMarkerGeometry, mat);
+                mesh.position.copy(pos);
+
+                const div = document.createElement('div');
+                div.textContent = city.name;
+                div.style.marginTop = '-1em';
+                div.style.color = 'white';
+                div.style.fontSize = '11px';
+                div.style.fontWeight = '300';
+                div.style.fontFamily = '"Helvetica Now", sans-serif';
+                div.style.pointerEvents = 'none';
+                div.style.opacity = '0';
+
+                const label = new CSS2DObject(div);
+                label.position.set(0, 0.45, 0);
+                mesh.add(label);
+                cityLabels.push(div);
+
+                cityGroup.add(mesh);
+            });
+
+            // If there are at least two cities, connect the first two and add a traveling dot
+            if (positions.length >= 2) {
+                const v1 = positions[0].clone();
+                const v2 = positions[1].clone();
+                const distCities = v1.distanceTo(v2);
+                const controlC = v1.clone().add(v2).multiplyScalar(0.5).normalize().multiplyScalar(radius + distCities * 0.25);
+                const cityCurve = new THREE.QuadraticBezierCurve3(v1, controlC, v2);
+                const cityPoints = cityCurve.getPoints(60);
+                const cityLineGeometry = new THREE.BufferGeometry().setFromPoints(cityPoints);
+                const cityLineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
+                const cityLine = new THREE.Line(cityLineGeometry, cityLineMaterial);
+                cityGroup.add(cityLine);
+
+                // Traveling dot
+                const cityDotGeometry = new THREE.SphereGeometry(0.06, 8, 8);
+                const cityDotMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
+                const cityDot = new THREE.Mesh(cityDotGeometry, cityDotMaterial);
+                cityGroup.add(cityDot);
+
+                const curveLengthCity = cityCurve.getLength();
+                const speedCity = 0.03;
+                animatedDots.push({
+                    curve: cityCurve,
+                    mesh: cityDot,
+                    t: Math.random(),
+                    direction: 1,
+                    speed: speedCity / curveLengthCity
+                });
+            }
+        })
+        .catch(err => {
+            console.warn('Failed to load city level from', url, err);
+        });
+}
+
+// Load the cities JSON (path relative to served site root)
+loadCityLevel('./cities.json');
+
 // --- Connections ---
 const connections = [
     ['Argentina', 'Chile'],
@@ -286,6 +367,7 @@ const connectionMaterial = new THREE.LineBasicMaterial({
 const animatedDots = [];
 const dotGeometry = new THREE.SphereGeometry(0.08, 8, 8);
 const dotMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true });
+
 
 connections.forEach(pair => {
     const p1 = countryMap[pair[0]];
@@ -488,6 +570,29 @@ function animate() {
     countryLabels.forEach(div => {
         div.style.opacity = elementsOpacity;
     });
+
+    // City visibility based on camera altitude (distance). Visible when user is closer.
+    // cityVisibility: 0 at dist >= 50, 1 at dist <= 40
+    const cityVisibility = THREE.MathUtils.clamp((50 - distToCenter) / 10, 0, 1);
+
+    // Update city markers and labels
+    cityLabels.forEach(div => {
+        div.style.opacity = cityVisibility;
+    });
+    // Update city materials/line if group exists
+    if (cityGroup) {
+        cityGroup.traverse((obj) => {
+            if (obj.isMesh && obj.material && 'opacity' in obj.material) {
+                obj.material.opacity = cityVisibility;
+                obj.material.needsUpdate = true;
+            }
+            if (obj.type === 'Line') {
+                obj.material.opacity = cityVisibility * 0.95;
+                obj.material.needsUpdate = true;
+            }
+        });
+        cityGroup.visible = cityVisibility > 0.01;
+    }
 
     // Rotate Logo
     if (logoModel) {
