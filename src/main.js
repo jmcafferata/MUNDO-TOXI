@@ -106,9 +106,26 @@ camera.up.set(0, 1, 0); // Ensure up is Y
 camera.lookAt(scene.position); // Look at center (0,0,0)
 
 // Renderer setup
+const MAX_CANVAS_WIDTH = 1920;
+const MAX_CANVAS_HEIGHT = 1080;
+
+function getClampedDimensions() {
+    const cw = Math.min(window.innerWidth, MAX_CANVAS_WIDTH);
+    const ch = Math.min(window.innerHeight, MAX_CANVAS_HEIGHT);
+    const devicePR = window.devicePixelRatio || 1;
+    const maxPR = Math.min(devicePR, 2);
+    // Ensure backing buffer doesn't exceed max resolution
+    const allowedPR = Math.min(maxPR, MAX_CANVAS_WIDTH / cw, MAX_CANVAS_HEIGHT / ch);
+    const finalPR = Math.max(1, allowedPR);
+    return { cw, ch, finalPR };
+}
+
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+const { cw: initialW, ch: initialH, finalPR: initialPR } = getClampedDimensions();
+renderer.setPixelRatio(initialPR);
+renderer.setSize(initialW, initialH, false); // drawing buffer size (CSS will remain full-screen)
+renderer.domElement.style.width = '100%';
+renderer.domElement.style.height = '100%';
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
@@ -151,14 +168,15 @@ function navigateWithFade(url, { force = false, duration = 3000 } = {}) {
 // Post-processing (Bloom)
 const renderScene = new RenderPass(scene, camera);
 
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+const { cw: _bw, ch: _bh, finalPR: _bpr } = getClampedDimensions();
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(Math.floor(_bw * _bpr), Math.floor(_bh * _bpr)), 1.5, 0.4, 0.85);
 bloomPass.threshold = 0.7;
 bloomPass.strength = 1.0;
 bloomPass.radius = 0.2;
 
 const renderTarget = new THREE.WebGLRenderTarget(
-    window.innerWidth,
-    window.innerHeight,
+    Math.floor(_bw * _bpr),
+    Math.floor(_bh * _bpr),
     {
         type: THREE.HalfFloatType,
         format: THREE.RGBAFormat,
@@ -167,7 +185,7 @@ const renderTarget = new THREE.WebGLRenderTarget(
 );
 
 const composer = new EffectComposer(renderer, renderTarget);
-composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+composer.setPixelRatio(_bpr);
 composer.addPass(renderScene);
 composer.addPass(bloomPass);
 
@@ -926,11 +944,25 @@ function animate() {
 
 // Handle window resize
 window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
+    const { cw, ch, finalPR } = getClampedDimensions();
+    camera.aspect = cw / ch;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    composer.setSize(window.innerWidth, window.innerHeight);
-    composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    renderer.setPixelRatio(finalPR);
+    renderer.setSize(cw, ch, false); // keep DOM/CSS full-screen, only change drawing buffer
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+
+    composer.setPixelRatio(finalPR);
+    composer.setSize(cw, ch);
+
+    // Update bloom pass resolution if supported
+    if (bloomPass && typeof bloomPass.setSize === 'function') {
+        bloomPass.setSize(Math.floor(cw * finalPR), Math.floor(ch * finalPR));
+    } else if (bloomPass && bloomPass.resolution && typeof bloomPass.resolution.set === 'function') {
+        bloomPass.resolution.set(Math.floor(cw * finalPR), Math.floor(ch * finalPR));
+    }
+
     labelRenderer.setSize(window.innerWidth, window.innerHeight);
     css3dRenderer.setSize(window.innerWidth, window.innerHeight);
 });
