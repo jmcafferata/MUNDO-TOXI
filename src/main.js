@@ -280,7 +280,7 @@ window.addEventListener('keydown', (event) => {
             return;
         case 'ArrowUp':
             event.preventDefault();
-            navigateWithFade('https://toxi.media/plantform', { force: true, duration: 3000 });
+            navigateWithFade('https://toxii.webflow.io/plantform', { force: true, duration: 3000 });
             return;
         case 'ArrowDown':
             event.preventDefault();
