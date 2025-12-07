@@ -110,14 +110,24 @@ const MAX_CANVAS_WIDTH = 1920;
 const MAX_CANVAS_HEIGHT = 1080;
 
 function getClampedDimensions() {
-    const cw = Math.min(window.innerWidth, MAX_CANVAS_WIDTH);
-    const ch = Math.min(window.innerHeight, MAX_CANVAS_HEIGHT);
-    const devicePR = window.devicePixelRatio || 1;
-    const maxPR = Math.min(devicePR, 2);
-    // Ensure backing buffer doesn't exceed max resolution
-    const allowedPR = Math.min(maxPR, MAX_CANVAS_WIDTH / cw, MAX_CANVAS_HEIGHT / ch);
-    const finalPR = Math.max(1, allowedPR);
-    return { cw, ch, finalPR };
+    const w = window.innerWidth || 1;
+    const h = window.innerHeight || 1;
+    const aspect = w / h;
+    
+    let cw = w;
+    let ch = h;
+    
+    // Clamp max resolution while maintaining aspect ratio
+    if (cw > MAX_CANVAS_WIDTH) {
+        cw = MAX_CANVAS_WIDTH;
+        ch = cw / aspect;
+    }
+    if (ch > MAX_CANVAS_HEIGHT) {
+        ch = MAX_CANVAS_HEIGHT;
+        cw = ch * aspect;
+    }
+    
+    return { cw: Math.floor(cw), ch: Math.floor(ch), finalPR: 1 };
 }
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
