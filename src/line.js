@@ -152,6 +152,9 @@ const labelRenderer = new CSS2DRenderer();
 }
 labelRenderer.domElement.style.position = 'absolute';
 labelRenderer.domElement.style.top = '0px';
+labelRenderer.domElement.style.left = '0px';
+labelRenderer.domElement.style.width = '100%';
+labelRenderer.domElement.style.height = '100%';
 // labelRenderer.domElement.style.pointerEvents = 'none'; // Enable pointer events for interaction
 document.body.appendChild(labelRenderer.domElement);
 
@@ -221,8 +224,7 @@ window.addEventListener('touchend', onPointerUp);
 
 interactionElement.addEventListener('wheel', onWheel, { passive: false });
 
-// Handle window resize with clamped backing resolution
-window.addEventListener('resize', () => {
+function updateRendererSizes() {
     const { cw, ch, finalPR } = getClampedDimensions();
     camera.aspect = cw / ch;
     camera.updateProjectionMatrix();
@@ -231,7 +233,15 @@ window.addEventListener('resize', () => {
     composer.setPixelRatio(finalPR);
     composer.setSize(cw, ch);
     labelRenderer.setSize(cw, ch);
-});
+    labelRenderer.domElement.style.width = '100%';
+    labelRenderer.domElement.style.height = '100%';
+}
+
+// Handle window resize with clamped backing resolution
+window.addEventListener('resize', updateRendererSizes);
+
+// Initial sizing to avoid first-frame misalignment
+updateRendererSizes();
 
 /*
 // OrbitControls
