@@ -34,13 +34,24 @@ const MAX_CANVAS_WIDTH = 1920;
 const MAX_CANVAS_HEIGHT = 1080;
 
 function getClampedDimensions() {
-    const cw = Math.min(window.innerWidth, MAX_CANVAS_WIDTH);
-    const ch = Math.min(window.innerHeight, MAX_CANVAS_HEIGHT);
-    const devicePR = window.devicePixelRatio || 1;
-    const maxPR = Math.min(devicePR, 2);
-    const allowedPR = Math.min(maxPR, MAX_CANVAS_WIDTH / cw, MAX_CANVAS_HEIGHT / ch);
-    const finalPR = Math.max(1, allowedPR);
-    return { cw, ch, finalPR };
+    const w = window.innerWidth || 1;
+    const h = window.innerHeight || 1;
+    const aspect = w / h;
+    
+    let cw = w;
+    let ch = h;
+    
+    // Clamp max resolution while maintaining aspect ratio
+    if (cw > MAX_CANVAS_WIDTH) {
+        cw = MAX_CANVAS_WIDTH;
+        ch = cw / aspect;
+    }
+    if (ch > MAX_CANVAS_HEIGHT) {
+        ch = MAX_CANVAS_HEIGHT;
+        cw = ch * aspect;
+    }
+    
+    return { cw: Math.floor(cw), ch: Math.floor(ch), finalPR: 1 };
 }
 
 const { cw: initW, ch: initH, finalPR: initPR } = getClampedDimensions();
@@ -860,17 +871,47 @@ function animate() {
     }
 }
 
-// Handle window resize
-window.addEventListener('resize', () => {
+function updateRendererSizes() {
     const { cw, ch, finalPR } = getClampedDimensions();
-    camera.aspect = cw / ch;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    
     renderer.setPixelRatio(finalPR);
     renderer.setSize(cw, ch, false);
+    
     composer.setPixelRatio(finalPR);
     composer.setSize(cw, ch);
-    labelRenderer.setSize(cw, ch);
-});
+    
+    labelRenderer.setSize(w, h);
+
+    // Stretch canvas to fill viewport
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.transform = '';
+
+    labelRenderer.domElement.style.width = '100%';
+    labelRenderer.domElement.style.height = '100%';
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.top = '0';
+    labelRenderer.domElement.style.left = '0';
+    labelRenderer.domElement.style.transform = '';
+}
+
+// Handle window resize
+window.addEventListener('resize', updateRendererSizes);
+
+// Initial sizing to avoid first-frame misalignment
+updateRendererSizes();
+// Force an update on the next frame to ensure window dimensions are stable
+requestAnimationFrame(updateRendererSizes);
+// And a backup timeout for good measure
+setTimeout(updateRendererSizes, 100);
 
 // VR Session Handling
 renderer.xr.addEventListener('sessionstart', () => {

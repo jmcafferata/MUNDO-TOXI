@@ -95,13 +95,22 @@ const MAX_CANVAS_HEIGHT = 1080;
 function getClampedDimensions() {
     const w = window.innerWidth || 1;
     const h = window.innerHeight || 1;
-    const cw = Math.min(w, MAX_CANVAS_WIDTH);
-    const ch = Math.min(h, MAX_CANVAS_HEIGHT);
-    const devicePR = window.devicePixelRatio || 1;
-    const maxPR = Math.min(devicePR, 2);
-    const allowedPR = Math.min(maxPR, MAX_CANVAS_WIDTH / cw, MAX_CANVAS_HEIGHT / ch);
-    const finalPR = Math.max(1, allowedPR);
-    return { cw, ch, finalPR };
+    const aspect = w / h;
+    
+    let cw = w;
+    let ch = h;
+    
+    // Clamp max resolution while maintaining aspect ratio
+    if (cw > MAX_CANVAS_WIDTH) {
+        cw = MAX_CANVAS_WIDTH;
+        ch = cw / aspect;
+    }
+    if (ch > MAX_CANVAS_HEIGHT) {
+        ch = MAX_CANVAS_HEIGHT;
+        cw = ch * aspect;
+    }
+    
+    return { cw: Math.floor(cw), ch: Math.floor(ch), finalPR: 1 };
 }
 
 const { cw: initW, ch: initH, finalPR: initPR } = getClampedDimensions();
@@ -228,30 +237,34 @@ interactionElement.addEventListener('wheel', onWheel, { passive: false });
 
 function updateRendererSizes() {
     const { cw, ch, finalPR } = getClampedDimensions();
-    camera.aspect = cw / ch;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    camera.aspect = w / h;
     camera.updateProjectionMatrix();
+    
     renderer.setPixelRatio(finalPR);
     renderer.setSize(cw, ch, false);
+    
     composer.setPixelRatio(finalPR);
     composer.setSize(cw, ch);
-    labelRenderer.setSize(cw, ch);
+    
+    labelRenderer.setSize(w, h);
 
-    // Prevent stretching on displays larger than the clamped render buffer.
-    const cssWidth = `${cw}px`;
-    const cssHeight = `${ch}px`;
+    // Stretch canvas to fill viewport
+    renderer.domElement.style.width = '100%';
+    renderer.domElement.style.height = '100%';
     renderer.domElement.style.position = 'absolute';
-    renderer.domElement.style.left = '50%';
-    renderer.domElement.style.top = '50%';
-    renderer.domElement.style.transform = 'translate(-50%, -50%)';
-    renderer.domElement.style.width = cssWidth;
-    renderer.domElement.style.height = cssHeight;
+    renderer.domElement.style.top = '0';
+    renderer.domElement.style.left = '0';
+    renderer.domElement.style.transform = '';
 
+    labelRenderer.domElement.style.width = '100%';
+    labelRenderer.domElement.style.height = '100%';
     labelRenderer.domElement.style.position = 'absolute';
-    labelRenderer.domElement.style.left = '50%';
-    labelRenderer.domElement.style.top = '50%';
-    labelRenderer.domElement.style.transform = 'translate(-50%, -50%)';
-    labelRenderer.domElement.style.width = cssWidth;
-    labelRenderer.domElement.style.height = cssHeight;
+    labelRenderer.domElement.style.top = '0';
+    labelRenderer.domElement.style.left = '0';
+    labelRenderer.domElement.style.transform = '';
 }
 
 // Handle window resize with clamped backing resolution
