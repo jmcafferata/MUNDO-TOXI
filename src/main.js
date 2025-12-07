@@ -8,6 +8,57 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import TWEEN from '@tweenjs/tween.js';
 
+// Simple page loader overlay (black background with white progress bar)
+function createPageLoader() {
+    document.body.classList.add('body-loading');
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay';
+
+    const bar = document.createElement('div');
+    bar.className = 'loading-bar';
+    const fill = document.createElement('div');
+    fill.className = 'loading-bar__fill';
+    bar.appendChild(fill);
+    overlay.appendChild(bar);
+    document.body.appendChild(overlay);
+
+    let current = 0;
+    const setProgress = (value) => {
+        current = Math.max(0, Math.min(100, value));
+        fill.style.width = `${current}%`;
+    };
+
+    const finish = () => {
+        setProgress(100);
+        overlay.classList.add('loading-overlay--done');
+        setTimeout(() => {
+            if (overlay.parentElement) overlay.remove();
+            document.body.classList.remove('body-loading');
+        }, 550);
+    };
+
+    return { setProgress, finish };
+}
+
+const pageLoader = createPageLoader();
+let loaderDone = false;
+let loaderFakeProgress = 0;
+const loaderInterval = setInterval(() => {
+    loaderFakeProgress = Math.min(90, loaderFakeProgress + 8);
+    pageLoader.setProgress(loaderFakeProgress);
+    if (loaderFakeProgress >= 90) {
+        clearInterval(loaderInterval);
+    }
+}, 140);
+
+function finishLoader() {
+    if (loaderDone) return;
+    loaderDone = true;
+    clearInterval(loaderInterval);
+    pageLoader.finish();
+}
+window.addEventListener('load', finishLoader);
+
 // Simple Noise implementation if package not available, or use a library.
 // Since I cannot easily install new packages without user input, I will include a small noise utility here.
 
@@ -741,9 +792,12 @@ const cameraDefaultPos = camera.position.clone();
 const cameraStartPos = cameraDefaultPos.clone().add(new THREE.Vector3(0, 0, 10)); // start far below and a bit toward +Z
 camera.position.copy(cameraStartPos);
 let introMainDone = false;
+// Expose intro state to other modules so UI (labels) can wait until intro finishes
+window._introMainDone = false;
 
 function animate() {
     animationId = requestAnimationFrame(animate);
+    finishLoader();
     
     TWEEN.update(); // Update tweens
     // Disable controls during the intro movement to avoid user interruption
@@ -758,6 +812,7 @@ function animate() {
         camera.lookAt(scene.position);
         if (tRaw >= 1) {
             introMainDone = true;
+            window._introMainDone = true;
             controls.enabled = true; // re-enable controls after intro
         }
     }

@@ -9,6 +9,57 @@ import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRe
 // --- 3D TOXI Logo ---
 let logoModel;
 
+// Simple page loader overlay (black background with white progress bar)
+function createPageLoader() {
+    document.body.classList.add('body-loading');
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay';
+
+    const bar = document.createElement('div');
+    bar.className = 'loading-bar';
+    const fill = document.createElement('div');
+    fill.className = 'loading-bar__fill';
+    bar.appendChild(fill);
+    overlay.appendChild(bar);
+    document.body.appendChild(overlay);
+
+    let current = 0;
+    const setProgress = (value) => {
+        current = Math.max(0, Math.min(100, value));
+        fill.style.width = `${current}%`;
+    };
+
+    const finish = () => {
+        setProgress(100);
+        overlay.classList.add('loading-overlay--done');
+        setTimeout(() => {
+            if (overlay.parentElement) overlay.remove();
+            document.body.classList.remove('body-loading');
+        }, 550);
+    };
+
+    return { setProgress, finish };
+}
+
+const pageLoader = createPageLoader();
+let loaderDone = false;
+let loaderFakeProgress = 0;
+const loaderInterval = setInterval(() => {
+    loaderFakeProgress = Math.min(90, loaderFakeProgress + 8);
+    pageLoader.setProgress(loaderFakeProgress);
+    if (loaderFakeProgress >= 90) {
+        clearInterval(loaderInterval);
+    }
+}, 140);
+
+function finishLoader() {
+    if (loaderDone) return;
+    loaderDone = true;
+    clearInterval(loaderInterval);
+    pageLoader.finish();
+}
+window.addEventListener('load', finishLoader);
+
 // Simplex Noise Utility (Minimal, copy from main.js)
 class SimplexNoise {
     constructor() {
@@ -85,6 +136,8 @@ camera.position.set(0, 0, 20);
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
+const raycaster = new THREE.Raycaster();
+const pointerNdc = new THREE.Vector2();
 
 // Clamp backing resolution to this maximum (match main/earth)
 const MAX_CANVAS_WIDTH = 1920;
@@ -353,20 +406,24 @@ scene.add(presentLine);
 // Present Label (Fixed on screen)
 const presentDiv = document.createElement('div');
 presentDiv.className = 'label';
-presentDiv.style.position = 'absolute';
-presentDiv.style.bottom = '4%';
+presentDiv.style.position = 'fixed';
+presentDiv.style.bottom = '0';
+presentDiv.style.height = '25vh';
 presentDiv.style.left = '0';
 presentDiv.style.width = '100%';
 presentDiv.style.textAlign = 'center';
 presentDiv.style.display = 'flex';
+presentDiv.style.flexDirection = 'column';
 presentDiv.style.justifyContent = 'center';
 presentDiv.style.alignItems = 'center';
 presentDiv.style.color = 'white';
-presentDiv.style.fontSize = '16px';
+presentDiv.style.fontSize = '1.8vh';
 presentDiv.style.fontWeight = 'bold';
 presentDiv.style.fontFamily = '"Helvetica Now", sans-serif';
 presentDiv.style.background = 'transparent';
 presentDiv.style.border = 'none';
+presentDiv.style.gap = '1.2vh';
+presentDiv.style.padding = '1vh 0 12vh';
 presentDiv.style.boxShadow = 'none';
 presentDiv.style.pointerEvents = 'none';
 document.body.appendChild(presentDiv);
@@ -404,6 +461,124 @@ overlay.style.justifyContent = 'center';
 overlay.style.alignItems = 'center';
 overlay.style.flexDirection = 'column';
 document.body.appendChild(overlay);
+
+// Description popup overlay
+const descOverlay = document.createElement('div');
+descOverlay.style.position = 'fixed';
+descOverlay.style.top = '0';
+descOverlay.style.left = '0';
+descOverlay.style.width = '100%';
+descOverlay.style.height = '100%';
+descOverlay.style.background = 'rgba(0, 0, 0, 0.65)';
+descOverlay.style.backdropFilter = 'blur(4px)';
+descOverlay.style.display = 'none';
+descOverlay.style.justifyContent = 'center';
+descOverlay.style.alignItems = 'center';
+descOverlay.style.zIndex = '1100';
+descOverlay.style.padding = '20px';
+
+const descCard = document.createElement('div');
+descCard.style.background = '#0f0f0f';
+descCard.style.color = '#f5f5f5';
+descCard.style.border = '1px solid rgba(255,255,255,0.12)';
+descCard.style.borderRadius = '12px';
+descCard.style.padding = '20px';
+descCard.style.maxWidth = '520px';
+descCard.style.width = '100%';
+descCard.style.boxShadow = '0 20px 50px rgba(0,0,0,0.45)';
+descCard.style.fontFamily = '"Helvetica Now", sans-serif';
+descCard.style.display = 'flex';
+descCard.style.flexDirection = 'column';
+descCard.style.gap = '10px';
+
+const descTitle = document.createElement('div');
+descTitle.style.fontSize = '20px';
+descTitle.style.fontWeight = 'bold';
+
+const descMeta = document.createElement('div');
+descMeta.style.fontSize = '13px';
+descMeta.style.color = '#c7c7c7';
+
+const descBody = document.createElement('div');
+descBody.style.fontSize = '15px';
+descBody.style.lineHeight = '1.5';
+descBody.style.color = '#e6e6e6';
+
+const descActions = document.createElement('div');
+descActions.style.display = 'flex';
+descActions.style.gap = '10px';
+descActions.style.marginTop = '8px';
+
+const descClose = document.createElement('button');
+descClose.textContent = 'Cerrar';
+descClose.style.padding = '10px 14px';
+descClose.style.border = '1px solid rgba(255,255,255,0.2)';
+descClose.style.background = 'rgba(255,255,255,0.08)';
+descClose.style.color = '#fff';
+descClose.style.cursor = 'pointer';
+descClose.style.borderRadius = '6px';
+descClose.style.fontWeight = 'bold';
+
+const descLinkBtn = document.createElement('button');
+descLinkBtn.textContent = 'Abrir link';
+descLinkBtn.style.padding = '10px 14px';
+descLinkBtn.style.border = '1px solid rgba(255,255,255,0.2)';
+descLinkBtn.style.background = 'rgba(0, 255, 0, 0.15)';
+descLinkBtn.style.color = '#9dff9d';
+descLinkBtn.style.cursor = 'pointer';
+descLinkBtn.style.borderRadius = '6px';
+descLinkBtn.style.fontWeight = 'bold';
+
+descActions.appendChild(descClose);
+descActions.appendChild(descLinkBtn);
+
+descCard.appendChild(descTitle);
+descCard.appendChild(descMeta);
+descCard.appendChild(descBody);
+descCard.appendChild(descActions);
+descOverlay.appendChild(descCard);
+document.body.appendChild(descOverlay);
+
+let currentDescEvent = null;
+
+function hideDescriptionModal() {
+    descOverlay.style.display = 'none';
+    currentDescEvent = null;
+}
+
+function formatRange(event) {
+    const start = event.startDate || new Date(event.start);
+    const end = event.endDate || new Date(event.end);
+    const opts = { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' };
+    return `${start.toLocaleString(undefined, opts)} - ${end.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}`;
+}
+
+function showDescriptionModal(event) {
+    if (!event) return;
+    currentDescEvent = event;
+    descTitle.textContent = event.title || 'Evento';
+    const parts = [];
+    if (event.location) parts.push(event.location);
+    if (event.start || event.startDate) parts.push(formatRange(event));
+    descMeta.textContent = parts.join(' · ');
+    descBody.textContent = event.description || 'Sin descripción';
+
+    if (event.link) {
+        descLinkBtn.style.display = 'inline-block';
+    } else {
+        descLinkBtn.style.display = 'none';
+    }
+
+    descOverlay.style.display = 'flex';
+}
+
+descClose.addEventListener('click', hideDescriptionModal);
+descOverlay.addEventListener('click', (e) => {
+    if (e.target === descOverlay) hideDescriptionModal();
+});
+descLinkBtn.addEventListener('click', () => {
+    if (currentDescEvent) openEventLink(currentDescEvent);
+});
 
 // Fade overlay for Escape navigation (fade to black then go to main)
 const fadeDiv = document.createElement('div');
@@ -617,6 +792,28 @@ function getEmbedUrl(url, startTime = 0) {
     return embedUrl;
 }
 
+function openEventLink(event) {
+    if (!event || !event.link) return;
+
+    const currentSimulatedTime = Date.now() + timeOffset;
+    const elapsedMs = currentSimulatedTime - event.startDate.getTime();
+    const elapsedSeconds = Math.max(0, Math.floor(elapsedMs / 1000));
+
+    const finalUrl = getEmbedUrl(event.link, elapsedSeconds);
+    console.log('Opening video at:', finalUrl);
+
+    // Only use overlay for YouTube embeds, otherwise open in new tab
+    if (finalUrl.includes('youtube.com/embed/')) {
+        overlay.style.display = 'flex';
+        // Small delay to ensure overlay is visible before loading iframe
+        requestAnimationFrame(() => {
+            iframe.src = finalUrl;
+        });
+    } else {
+        window.open(event.link, '_blank', 'noopener');
+    }
+}
+
 // --- Events Management ---
 let eventsData = [];
 const eventLabels = [];
@@ -649,6 +846,9 @@ fetch('events.json?t=' + Date.now())
                 text += `<br><span style="font-size:0.9em; color:#ddd; font-weight: normal;">${event.location}</span>`;
             }
             eventDiv.innerHTML = text;
+            if (event.description) {
+                eventDiv.title = event.description; // quick way to read the description (native tooltip)
+            }
             eventDiv.style.color = event.computedColor;
             eventDiv.style.fontSize = '14px';
             eventDiv.style.fontFamily = '"Helvetica Now", sans-serif';
@@ -660,37 +860,18 @@ fetch('events.json?t=' + Date.now())
             eventDiv.style.position = 'absolute';
             eventDiv.style.transform = 'translate(-50%, -50%)';
             eventDiv.style.whiteSpace = 'nowrap';
-            
-            if (event.link) {
-                eventDiv.style.cursor = 'pointer';
-                eventDiv.style.pointerEvents = 'auto';
 
-                // Prevent drag when interacting with the link
-                eventDiv.addEventListener('mousedown', (e) => e.stopPropagation());
-                eventDiv.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
+            eventDiv.style.cursor = 'pointer';
+            eventDiv.style.pointerEvents = 'auto';
 
-                eventDiv.addEventListener('click', () => {
-                    const currentSimulatedTime = Date.now() + timeOffset;
-                    const elapsedMs = currentSimulatedTime - event.startDate.getTime();
-                    const elapsedSeconds = Math.max(0, Math.floor(elapsedMs / 1000));
+            // Prevent drag when interacting with the label
+            eventDiv.addEventListener('mousedown', (e) => e.stopPropagation());
+            eventDiv.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: false });
 
-                    const finalUrl = getEmbedUrl(event.link, elapsedSeconds);
-                    console.log('Opening video at:', finalUrl);
-
-                    // Only use overlay for YouTube embeds, otherwise open in new tab
-                    if (finalUrl.includes('youtube.com/embed/')) {
-                        overlay.style.display = 'flex';
-                        // Small delay to ensure overlay is visible before loading iframe
-                        requestAnimationFrame(() => {
-                            iframe.src = finalUrl;
-                        });
-                    } else {
-                        window.open(event.link, '_blank', 'noopener');
-                    }
-                });
-            } else {
-                eventDiv.style.pointerEvents = 'none';
-            }
+            eventDiv.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showDescriptionModal(event);
+            });
 
             const labelObj = new CSS2DObject(eventDiv);
             labelObj.position.set(0, 0.5, 0); // Initial position
@@ -782,6 +963,25 @@ loader.load('./logo.glb', (gltf) => {
     }
 });
 
+function handleLogoClick(event) {
+    if (!logoModel) return;
+    // Ignore when overlays are open
+    if (overlay.style.display === 'flex' || descOverlay.style.display === 'flex') return;
+
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointerNdc.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointerNdc.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(pointerNdc, camera);
+    const intersects = raycaster.intersectObject(logoModel, true);
+    if (intersects.length > 0) {
+        navigateToMainFromLine('index.html');
+    }
+}
+
+renderer.domElement.addEventListener('click', handleLogoClick);
+labelRenderer.domElement.addEventListener('click', handleLogoClick, true);
+
 // --- Starfield ---
 const starsGeometry = new THREE.BufferGeometry();
 const starsCount = 3000;
@@ -815,6 +1015,7 @@ scene.add(stars);
 // Animate
 function animate() {
     requestAnimationFrame(animate);
+    finishLoader();
     const timeMs = performance.now();
     const time = timeMs / 1000; // seconds
     const dt = time - lastTime;

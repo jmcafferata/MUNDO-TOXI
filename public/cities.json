@@ -1,6 +1,72 @@
 {
   "cities": [
     { "name": "Buenos Aires", "lat": -34.6037, "lon": -58.3816 },
-    { "name": "Venado Tuerto", "lat": -33.7378, "lon": -61.9672 }
+    { "name": "Venado Tuerto", "lat": -33.7378, "lon": -61.9672 },
+    { "name": "Santiago de Chile", "lat": -33.4489, "lon": -70.6693 },
+    { "name": "San Carlos de Bariloche", "lat": -41.1335, "lon": -71.3103 },
+    { "name": "New York City", "lat": 40.7128, "lon": -74.0060 },
+    { "name": "Rosario", "lat": -32.9442, "lon": -60.6505 },
+    { "name": "Paraná", "lat": -31.7319, "lon": -60.5238 },
+    { "name": "San Francisco", "lat": 37.7749, "lon": -122.4194 },
+    { "name": "Arusha", "lat": -3.3869, "lon": 36.6820 },
+    { "name": "Johannesburg", "lat": -26.2041, "lon": 28.0473 },
+    { "name": "Rio de Janeiro", "lat": -22.9068, "lon": -43.1729 },
+    { "name": "Kizimkazi", "lat": -6.3279, "lon": 39.4231 },
+    { "name": "Kent, UK", "lat": 51.2788, "lon": 0.5218 },
+    { "name": "Quequén", "lat": -38.5667, "lon": -58.7000 },
+    { "name": "Montevideo", "lat": -34.9011, "lon": -56.1645 },
+    { "name": "Cabo Polonio", "lat": -34.3970, "lon": -53.7820 }
+  ],
+  "links": [
+    { "from": "Santiago de Chile", "to": "Venado Tuerto" },
+    { "from": "Venado Tuerto", "to": "Santiago de Chile" },
+
+    { "from": "San Carlos de Bariloche", "to": "Buenos Aires" },
+    { "from": "Buenos Aires", "to": "San Carlos de Bariloche" },
+
+    { "from": "San Carlos de Bariloche", "to": "New York City" },
+    { "from": "New York City", "to": "San Carlos de Bariloche" },
+
+    { "from": "Rosario", "to": "Buenos Aires" },
+    { "from": "Buenos Aires", "to": "Rosario" },
+
+    { "from": "Rosario", "to": "Venado Tuerto" },
+    { "from": "Venado Tuerto", "to": "Rosario" },
+
+    { "from": "Paraná", "to": "Buenos Aires" },
+    { "from": "Buenos Aires", "to": "Paraná" },
+
+    { "from": "San Francisco", "to": "Buenos Aires" },
+    { "from": "Buenos Aires", "to": "San Francisco" },
+
+    { "from": "Arusha", "to": "Buenos Aires" },
+    { "from": "Buenos Aires", "to": "Arusha" },
+
+    { "from": "Arusha", "to": "Johannesburg" },
+    { "from": "Johannesburg", "to": "Arusha" },
+
+    { "from": "Buenos Aires", "to": "Rio de Janeiro" },
+    { "from": "Rio de Janeiro", "to": "Buenos Aires" },
+
+    { "from": "Buenos Aires", "to": "Johannesburg" },
+    { "from": "Johannesburg", "to": "Buenos Aires" },
+
+    { "from": "Arusha", "to": "Kizimkazi" },
+    { "from": "Kizimkazi", "to": "Arusha" },
+
+    { "from": "Kent, UK", "to": "Buenos Aires" },
+    { "from": "Buenos Aires", "to": "Kent, UK" },
+
+    { "from": "Quequén", "to": "Buenos Aires" },
+    { "from": "Buenos Aires", "to": "Quequén" },
+
+    { "from": "Quequen", "to": "Venado Tuerto" },
+    { "from": "Venado Tuerto", "to": "Quequen" },
+
+    { "from": "Buenos Aires", "to": "Montevideo" },
+    { "from": "Montevideo", "to": "Buenos Aires" },
+
+    { "from": "Montevideo", "to": "Cabo Polonio" },
+    { "from": "Cabo Polonio", "to": "Montevideo" }
   ]
 }

@@ -66,5 +66,29 @@
     "end": "2025-11-24T00:45:00",
     "color": "#FFD700",
     "description": "Presentación de la web 3D de TOXI"
+  },
+  {
+    "title": "Cierre de envíos Meta Horizon Competition 2025",
+    "location": "",
+    "start": "2025-12-09T17:00:00",
+    "end": "2025-12-09T18:00:00",
+    "color": "#00ff00",
+    "description": "App a enviar todavía indefinido."
+  },
+  {
+    "title": "Entrevista virtual candidatos Internship Trainee",
+    "location": "",
+    "start": "2025-12-12T16:00:00",
+    "end": "2025-12-12T17:00:00",
+    "color": "#00ff00",
+    "description": "Entrevista virtual con candidatos a Internship Trainee."
+  },
+  {
+    "title": "Entrevista presencial candidatos internship trainee",
+    "location": "",
+    "start": "2025-12-12T17:00:00",
+    "end": "2025-12-12T18:00:00",
+    "color": "#00ff00",
+    "description": "Entrevista presencial con ejercicios de improvisacion."
   }
 ]
