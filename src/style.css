@@ -205,3 +205,58 @@ canvas {
     opacity: 1;
   }
 }
+
+/* Minimal edge arrow hints (left/right) */
+.edge-hint {
+  position: fixed;
+  /* per-side classes control exact positioning and transform to avoid conflicts */
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  border-radius: 10px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease, background 200ms ease;
+  z-index: 1002;
+  backdrop-filter: blur(4px);
+}
+.edge-hint--left {
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.edge-hint--right {
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.edge-hint--top {
+  top: calc(18px + env(safe-area-inset-top, 0px));
+  bottom: auto; /* ensure not affected by other rules */
+  left: 50%;
+  transform: translateX(-50%);
+}
+.edge-hint--bottom {
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  top: auto; /* ensure not affected by other rules */
+  left: 50%;
+  transform: translateX(-50%);
+}
+.edge-hint svg { display: block; width: 20px; height: 20px; }
+.edge-hint.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.edge-hint:hover { background: rgba(255,255,255,0.08); }
+
+/* Slightly smaller on very narrow screens */
+@media (max-width: 480px) {
+  .edge-hint { width: 48px; height: 48px; }
+}
+
+/* Utility: visually-hidden for accessibility */
+.visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; }
