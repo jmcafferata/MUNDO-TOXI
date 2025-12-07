@@ -9,57 +9,6 @@ import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRe
 // --- 3D TOXI Logo ---
 let logoModel;
 
-// Simple page loader overlay (black background with white progress bar)
-function createPageLoader() {
-    document.body.classList.add('body-loading');
-    const overlay = document.createElement('div');
-    overlay.className = 'loading-overlay';
-
-    const bar = document.createElement('div');
-    bar.className = 'loading-bar';
-    const fill = document.createElement('div');
-    fill.className = 'loading-bar__fill';
-    bar.appendChild(fill);
-    overlay.appendChild(bar);
-    document.body.appendChild(overlay);
-
-    let current = 0;
-    const setProgress = (value) => {
-        current = Math.max(0, Math.min(100, value));
-        fill.style.width = `${current}%`;
-    };
-
-    const finish = () => {
-        setProgress(100);
-        overlay.classList.add('loading-overlay--done');
-        setTimeout(() => {
-            if (overlay.parentElement) overlay.remove();
-            document.body.classList.remove('body-loading');
-        }, 550);
-    };
-
-    return { setProgress, finish };
-}
-
-const pageLoader = createPageLoader();
-let loaderDone = false;
-let loaderFakeProgress = 0;
-const loaderInterval = setInterval(() => {
-    loaderFakeProgress = Math.min(90, loaderFakeProgress + 8);
-    pageLoader.setProgress(loaderFakeProgress);
-    if (loaderFakeProgress >= 90) {
-        clearInterval(loaderInterval);
-    }
-}, 140);
-
-function finishLoader() {
-    if (loaderDone) return;
-    loaderDone = true;
-    clearInterval(loaderInterval);
-    pageLoader.finish();
-}
-window.addEventListener('load', finishLoader);
-
 // Simplex Noise Utility (Minimal, copy from main.js)
 class SimplexNoise {
     constructor() {
@@ -1015,7 +964,6 @@ scene.add(stars);
 // Animate
 function animate() {
     requestAnimationFrame(animate);
-    finishLoader();
     const timeMs = performance.now();
     const time = timeMs / 1000; // seconds
     const dt = time - lastTime;

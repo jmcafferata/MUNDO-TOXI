@@ -8,57 +8,6 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import TWEEN from '@tweenjs/tween.js';
 
-// Simple page loader overlay (black background with white progress bar)
-function createPageLoader() {
-    document.body.classList.add('body-loading');
-    const overlay = document.createElement('div');
-    overlay.className = 'loading-overlay';
-
-    const bar = document.createElement('div');
-    bar.className = 'loading-bar';
-    const fill = document.createElement('div');
-    fill.className = 'loading-bar__fill';
-    bar.appendChild(fill);
-    overlay.appendChild(bar);
-    document.body.appendChild(overlay);
-
-    let current = 0;
-    const setProgress = (value) => {
-        current = Math.max(0, Math.min(100, value));
-        fill.style.width = `${current}%`;
-    };
-
-    const finish = () => {
-        setProgress(100);
-        overlay.classList.add('loading-overlay--done');
-        setTimeout(() => {
-            if (overlay.parentElement) overlay.remove();
-            document.body.classList.remove('body-loading');
-        }, 550);
-    };
-
-    return { setProgress, finish };
-}
-
-const pageLoader = createPageLoader();
-let loaderDone = false;
-let loaderFakeProgress = 0;
-const loaderInterval = setInterval(() => {
-    loaderFakeProgress = Math.min(90, loaderFakeProgress + 8);
-    pageLoader.setProgress(loaderFakeProgress);
-    if (loaderFakeProgress >= 90) {
-        clearInterval(loaderInterval);
-    }
-}, 140);
-
-function finishLoader() {
-    if (loaderDone) return;
-    loaderDone = true;
-    clearInterval(loaderInterval);
-    pageLoader.finish();
-}
-window.addEventListener('load', finishLoader);
-
 // Simple Noise implementation if package not available, or use a library.
 // Since I cannot easily install new packages without user input, I will include a small noise utility here.
 
@@ -797,8 +746,6 @@ window._introMainDone = false;
 
 function animate() {
     animationId = requestAnimationFrame(animate);
-    finishLoader();
-    
     TWEEN.update(); // Update tweens
     // Disable controls during the intro movement to avoid user interruption
     if (!introMainDone) controls.enabled = false;
@@ -1029,7 +976,7 @@ animate();
     const HIDE_DELAY = 3000; // ms
     let hideTimer = null;
 
-    function createHint(side) {
+    function createHint(side, labelText) {
         const d = document.createElement('div');
         d.className = `edge-hint edge-hint--${side}`;
         d.setAttribute('aria-hidden', 'true');
@@ -1060,10 +1007,18 @@ animate();
         d.appendChild(svg);
 
         // keep hints non-focusable but accessible for screen readers via label
-        const label = document.createElement('span');
-        label.className = 'visually-hidden';
-        label.textContent = side === 'left' ? 'Ir a la línea de tiempo (presiona ←)' : 'Ir a la Tierra (presiona →)';
-        d.appendChild(label);
+        const srLabel = document.createElement('span');
+        srLabel.className = 'visually-hidden';
+        srLabel.textContent = labelText || (side === 'left' ? 'Ir a la línea de tiempo (presiona ←)' : 'Ir a la Tierra (presiona →)');
+        d.appendChild(srLabel);
+
+        // Visible label chip
+        if (labelText) {
+            const chip = document.createElement('div');
+            chip.className = 'edge-hint__label';
+            chip.textContent = labelText;
+            d.appendChild(chip);
+        }
 
         // hover behavior: keep visible while hovering
         d.addEventListener('mouseenter', () => {
@@ -1077,10 +1032,10 @@ animate();
         return d;
     }
 
-    const leftHint = createHint('left');
-    const rightHint = createHint('right');
-    const topHint = createHint('top');
-    const bottomHint = createHint('bottom');
+    const leftHint = createHint('left', 'Agenda');
+    const rightHint = createHint('right', 'Mapa');
+    const topHint = createHint('top', 'Plataforma');
+    const bottomHint = createHint('bottom', 'Instagram');
     document.body.appendChild(leftHint);
     document.body.appendChild(rightHint);
     document.body.appendChild(topHint);

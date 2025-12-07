@@ -27,9 +27,8 @@ body {
 
 /* Page fade-in from black */
 body {
-  /* start visually black/hidden, hold black for 2s, then fade in over 5s (total 7s) */
   opacity: 0;
-  animation: pageFade 7s ease-out 0s forwards;
+  animation: pageFade 4s ease-out forwards;
 }
 
 canvas {
@@ -197,52 +196,8 @@ canvas {
   background: rgba(255,255,255,0.2);
 }
 
-/* Loading overlay: black backdrop with simple white progress bar */
-.loading-overlay {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #000;
-  z-index: 1400;
-  opacity: 1;
-  transition: opacity 0.4s ease;
-}
-
-.loading-overlay--done {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.loading-bar {
-  width: min(420px, 72vw);
-  height: 8px;
-  border: 1px solid rgba(255,255,255,0.6);
-  background: rgba(255,255,255,0.08);
-  overflow: hidden;
-  box-shadow: 0 0 12px rgba(255,255,255,0.2);
-}
-
-.loading-bar__fill {
-  height: 100%;
-  width: 0%;
-  background: #fff;
-  transition: width 0.2s ease;
-}
-
-/* Prevent body fade animation while loader is visible */
-.body-loading {
-  animation: none !important;
-  opacity: 1 !important;
-}
-
 @keyframes pageFade {
   0% {
-    opacity: 0;
-  }
-  /* Hold fully black for first 2 seconds: 2/7 ≈ 28.571% */
-  28.571% {
     opacity: 0;
   }
   100% {
@@ -267,6 +222,9 @@ canvas {
   transition: opacity 300ms ease, background 200ms ease;
   z-index: 1002;
   backdrop-filter: blur(4px);
+  /* allow absolute positioning of labels */
+  overflow: visible;
+  outline: none;
 }
 .edge-hint--left {
   left: 14px;
@@ -295,7 +253,46 @@ canvas {
   opacity: 1;
   pointer-events: auto;
 }
+.edge-hint:focus { outline: none; box-shadow: none; }
 .edge-hint:hover { background: rgba(255,255,255,0.08); }
+
+.edge-hint__label {
+  position: absolute;
+  padding: 6px 10px;
+  background: #000;
+  color: #fff;
+  border-radius: 6px;
+  font-family: 'Helvetica Now', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.edge-hint--bottom .edge-hint__label {
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.edge-hint--top .edge-hint__label {
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.edge-hint--right .edge-hint__label {
+  right: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.edge-hint--left .edge-hint__label {
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+}
 
 /* Slightly smaller on very narrow screens */
 @media (max-width: 480px) {

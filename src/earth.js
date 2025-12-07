@@ -8,57 +8,6 @@ import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
-// Simple page loader overlay (black background with white progress bar)
-function createPageLoader() {
-    document.body.classList.add('body-loading');
-    const overlay = document.createElement('div');
-    overlay.className = 'loading-overlay';
-
-    const bar = document.createElement('div');
-    bar.className = 'loading-bar';
-    const fill = document.createElement('div');
-    fill.className = 'loading-bar__fill';
-    bar.appendChild(fill);
-    overlay.appendChild(bar);
-    document.body.appendChild(overlay);
-
-    let current = 0;
-    const setProgress = (value) => {
-        current = Math.max(0, Math.min(100, value));
-        fill.style.width = `${current}%`;
-    };
-
-    const finish = () => {
-        setProgress(100);
-        overlay.classList.add('loading-overlay--done');
-        setTimeout(() => {
-            if (overlay.parentElement) overlay.remove();
-            document.body.classList.remove('body-loading');
-        }, 550);
-    };
-
-    return { setProgress, finish };
-}
-
-const pageLoader = createPageLoader();
-let loaderDone = false;
-let loaderFakeProgress = 0;
-const loaderInterval = setInterval(() => {
-    loaderFakeProgress = Math.min(90, loaderFakeProgress + 8);
-    pageLoader.setProgress(loaderFakeProgress);
-    if (loaderFakeProgress >= 90) {
-        clearInterval(loaderInterval);
-    }
-}, 140);
-
-function finishLoader() {
-    if (loaderDone) return;
-    loaderDone = true;
-    clearInterval(loaderInterval);
-    pageLoader.finish();
-}
-window.addEventListener('load', finishLoader);
-
 // Scene setup
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000); // Black background
@@ -77,6 +26,8 @@ dolly.add(camera);
 
 // Renderer setup
 const renderer = new THREE.WebGLRenderer({ antialias: true });
+const raycaster = new THREE.Raycaster();
+const pointerNdc = new THREE.Vector2();
 
 // Clamp backing resolution to this maximum (same as main.js)
 const MAX_CANVAS_WIDTH = 1920;
@@ -139,6 +90,24 @@ window.addEventListener('keydown', (e) => {
     }
 });
 
+// Click directly on the TOXI logo to fade out and return to main
+function handleLogoClick(event) {
+    if (window._navigating) return;
+    if (!logoMeshes.length) return;
+
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointerNdc.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointerNdc.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(pointerNdc, camera);
+    const hit = raycaster.intersectObjects(logoMeshes, true);
+    if (!hit.length) return;
+
+    navigateToMainFromEarth();
+}
+
+window.addEventListener('click', handleLogoClick);
+
 // VR Controllers
 const controller1 = renderer.xr.getController(0);
 const controller2 = renderer.xr.getController(1);
@@ -164,6 +133,9 @@ controller1.addEventListener('connected', onControllerConnected);
 controller1.addEventListener('disconnected', onControllerDisconnected);
 controller2.addEventListener('connected', onControllerConnected);
 controller2.addEventListener('disconnected', onControllerDisconnected);
+
+// Logo raycast target list
+const logoMeshes = [];
 
 // Post-processing (Bloom)
 const renderScene = new RenderPass(scene, camera);
@@ -657,6 +629,8 @@ loader.load('./logo.glb', (gltf) => {
                 emissiveMap: oldMat.map,
                 emissiveIntensity: 0
             });
+
+            logoMeshes.push(child);
         }
     });
 
@@ -679,7 +653,6 @@ let currentRotationSpeed = 0.05;
 
 function animate() {
     // requestAnimationFrame(animate); // Removed for VR compatibility
-    finishLoader();
     
     controls.update();
 
