@@ -102,8 +102,21 @@ window.addEventListener('keydown', (e) => {
 });
 
 // Click directly on the TOXI logo to fade out and return to main
-function handleLogoClick(event) {
+let mouseDownPos = new THREE.Vector2();
+
+function onPointerDown(event) {
+    mouseDownPos.set(event.clientX, event.clientY);
+}
+
+function onPointerUp(event) {
     if (window._navigating) return;
+    
+    const mouseUpPos = new THREE.Vector2(event.clientX, event.clientY);
+    const distance = mouseDownPos.distanceTo(mouseUpPos);
+    
+    // Only trigger if movement is minimal (click, not drag)
+    if (distance > 5) return;
+
     if (!logoMeshes.length) return;
 
     const rect = renderer.domElement.getBoundingClientRect();
@@ -117,7 +130,8 @@ function handleLogoClick(event) {
     navigateToMainFromEarth();
 }
 
-window.addEventListener('click', handleLogoClick);
+window.addEventListener('pointerdown', onPointerDown);
+window.addEventListener('pointerup', onPointerUp);
 
 // VR Controllers
 const controller1 = renderer.xr.getController(0);
