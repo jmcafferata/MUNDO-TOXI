@@ -968,3 +968,123 @@ window.addEventListener('resize', () => {
 });
 
 animate();
+
+// --- Edge arrow hints: show on hover/touch, auto-hide after 3s ---
+(function setupEdgeHints() {
+    const HIDE_DELAY = 3000; // ms
+    let hideTimer = null;
+
+    function createHint(side) {
+        const d = document.createElement('div');
+        d.className = `edge-hint edge-hint--${side}`;
+        d.setAttribute('aria-hidden', 'true');
+        d.setAttribute('role', 'button');
+        d.tabIndex = -1;
+
+        // Arrow SVG (points right). We'll rotate for left via CSS transform when needed.
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('aria-hidden', 'true');
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', 'M8 5l8 7-8 7');
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', 'currentColor');
+        path.setAttribute('stroke-width', '2');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+        svg.appendChild(path);
+
+        // Rotate the arrow SVG depending on requested side
+        switch (side) {
+            case 'left': svg.style.transform = 'rotate(180deg)'; break; // point left
+            case 'top': svg.style.transform = 'rotate(-90deg)'; break; // point up
+            case 'bottom': svg.style.transform = 'rotate(90deg)'; break; // point down
+            default: svg.style.transform = 'rotate(0deg)'; break; // right
+        }
+
+        d.appendChild(svg);
+
+        // keep hints non-focusable but accessible for screen readers via label
+        const label = document.createElement('span');
+        label.className = 'visually-hidden';
+        label.textContent = side === 'left' ? 'Ir a la línea de tiempo (presiona ←)' : 'Ir a la Tierra (presiona →)';
+        d.appendChild(label);
+
+        // hover behavior: keep visible while hovering
+        d.addEventListener('mouseenter', () => {
+            if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+        });
+        d.addEventListener('mouseleave', () => {
+            if (hideTimer) { clearTimeout(hideTimer); }
+            hideTimer = setTimeout(hideHints, HIDE_DELAY);
+        });
+
+        return d;
+    }
+
+    const leftHint = createHint('left');
+    const rightHint = createHint('right');
+    const topHint = createHint('top');
+    const bottomHint = createHint('bottom');
+    document.body.appendChild(leftHint);
+    document.body.appendChild(rightHint);
+    document.body.appendChild(topHint);
+    document.body.appendChild(bottomHint);
+
+    function showHints() {
+        // make visible and reset hide timer
+        leftHint.classList.add('visible');
+        rightHint.classList.add('visible');
+        topHint.classList.add('visible');
+        bottomHint.classList.add('visible');
+        leftHint.setAttribute('aria-hidden', 'false');
+        rightHint.setAttribute('aria-hidden', 'false');
+        topHint.setAttribute('aria-hidden', 'false');
+        bottomHint.setAttribute('aria-hidden', 'false');
+
+        if (hideTimer) { clearTimeout(hideTimer); }
+        hideTimer = setTimeout(hideHints, HIDE_DELAY);
+    }
+
+    function hideHints() {
+        leftHint.classList.remove('visible');
+        rightHint.classList.remove('visible');
+        topHint.classList.remove('visible');
+        bottomHint.classList.remove('visible');
+        leftHint.setAttribute('aria-hidden', 'true');
+        rightHint.setAttribute('aria-hidden', 'true');
+        topHint.setAttribute('aria-hidden', 'true');
+        bottomHint.setAttribute('aria-hidden', 'true');
+        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+    }
+
+    // Show on meaningful interaction: mousemove, touchstart
+    let lastShown = 0;
+    function onInteraction() {
+        const now = Date.now();
+        // throttle to avoid DOM thrash
+        if (now - lastShown < 250) return;
+        lastShown = now;
+        showHints();
+    }
+
+    window.addEventListener('mousemove', onInteraction, { passive: true });
+    window.addEventListener('touchstart', onInteraction, { passive: true });
+
+    // Also show when focusing via keyboard (accessibility)
+    window.addEventListener('keydown', (e) => {
+        // if arrow keys, no need to show hints
+        if (e.key && e.key.startsWith('Arrow')) return;
+        onInteraction();
+    });
+
+    // Optional: tap hints to trigger navigation (but do not change behavior if user doesn't want)
+    leftHint.addEventListener('click', () => navigateWithFade('line.html', { force: true, duration: 800 }));
+    rightHint.addEventListener('click', () => navigateWithFade('earth.html', { force: true, duration: 800 }));
+    topHint.addEventListener('click', () => navigateWithFade('https://toxii.webflow.io/plantform', { force: true, duration: 800 }));
+    bottomHint.addEventListener('click', () => navigateWithFade('https://www.instagram.com/toxi.media/', { force: true, duration: 800 }));
+
+    // Hide on initial load after a short delay if they were shown
+    setTimeout(hideHints, HIDE_DELAY + 5000);
+
+})();
