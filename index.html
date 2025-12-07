@@ -10,13 +10,11 @@
     <meta name="theme-color" content="#000000" />
     <title>TOXI Media</title>
     <script>
-      // Redirect any /project/* path to the matching Webflow URL, otherwise send to project home.
+      // Only redirect /project/* paths to Webflow; keep toxi.media root on this page.
       (function() {
         const { pathname, search, hash } = window.location;
         if (pathname.startsWith('/project/')) {
           window.location.replace(`https://toxii.webflow.io${pathname}${search}${hash}`);
-        } else {
-          window.location.replace('https://toxii.webflow.io/project/');
         }
       })();
     </script>
