@@ -8,6 +8,57 @@ import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
+// Simple page loader overlay (black background with white progress bar)
+function createPageLoader() {
+    document.body.classList.add('body-loading');
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay';
+
+    const bar = document.createElement('div');
+    bar.className = 'loading-bar';
+    const fill = document.createElement('div');
+    fill.className = 'loading-bar__fill';
+    bar.appendChild(fill);
+    overlay.appendChild(bar);
+    document.body.appendChild(overlay);
+
+    let current = 0;
+    const setProgress = (value) => {
+        current = Math.max(0, Math.min(100, value));
+        fill.style.width = `${current}%`;
+    };
+
+    const finish = () => {
+        setProgress(100);
+        overlay.classList.add('loading-overlay--done');
+        setTimeout(() => {
+            if (overlay.parentElement) overlay.remove();
+            document.body.classList.remove('body-loading');
+        }, 550);
+    };
+
+    return { setProgress, finish };
+}
+
+const pageLoader = createPageLoader();
+let loaderDone = false;
+let loaderFakeProgress = 0;
+const loaderInterval = setInterval(() => {
+    loaderFakeProgress = Math.min(90, loaderFakeProgress + 8);
+    pageLoader.setProgress(loaderFakeProgress);
+    if (loaderFakeProgress >= 90) {
+        clearInterval(loaderInterval);
+    }
+}, 140);
+
+function finishLoader() {
+    if (loaderDone) return;
+    loaderDone = true;
+    clearInterval(loaderInterval);
+    pageLoader.finish();
+}
+window.addEventListener('load', finishLoader);
+
 // Scene setup
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000); // Black background
@@ -279,11 +330,16 @@ countries.forEach(country => {
     const div = document.createElement('div');
     div.textContent = country.name;
     div.style.marginTop = '-1em';
+    div.style.backgroundColor = 'black';
     div.style.color = 'white';
+    div.style.padding = '4px 8px';
+    div.style.borderRadius = '4px';
     div.style.fontSize = '12px';
-    div.style.fontWeight = '300';
+    div.style.fontWeight = '700';
     div.style.fontFamily = '"Helvetica Now", sans-serif';
     div.style.pointerEvents = 'none'; // Let clicks pass through
+    div.style.zIndex = '2000';
+    // div.style.transition = 'opacity 1s ease-in-out';
     countryLabels.push(div);
     
     const label = new CSS2DObject(div);
@@ -321,12 +377,17 @@ function loadCityLevel(url = './cities.json') {
                 const div = document.createElement('div');
                 div.textContent = city.name;
                 div.style.marginTop = '-1em';
+                div.style.backgroundColor = 'black';
                 div.style.color = 'white';
+                div.style.padding = '3px 6px';
+                div.style.borderRadius = '4px';
                 div.style.fontSize = '11px';
-                div.style.fontWeight = '300';
+                div.style.fontWeight = '700';
                 div.style.fontFamily = '"Helvetica Now", sans-serif';
                 div.style.pointerEvents = 'none';
+                div.style.zIndex = '2000';
                 div.style.opacity = '0';
+                // div.style.transition = 'opacity 1s ease-in-out';
 
                 const label = new CSS2DObject(div);
                 label.position.set(0, 0.45, 0);
@@ -363,6 +424,69 @@ function loadCityLevel(url = './cities.json') {
                     t: Math.random(),
                     direction: 1,
                     speed: speedCity / curveLengthCity
+                });
+            }
+
+            // Process explicit city-to-city links from the JSON (supports bi-directional pairs)
+            const links = data.links || [];
+            if (Array.isArray(links) && links.length > 0) {
+                // Count occurrences per unordered pair so we can create one arc
+                // and one or two animated dots depending on direction count.
+                const pairCounts = {};
+                links.forEach(l => {
+                    if (!l || !l.from || !l.to) return;
+                    const a = l.from;
+                    const b = l.to;
+                    const key = [a, b].sort().join('||');
+                    pairCounts[key] = (pairCounts[key] || 0) + 1;
+                });
+
+                // Helper map of city data by name
+                const cityByName = {};
+                cities.forEach(c => { if (c && c.name) cityByName[c.name] = c; });
+
+                Object.keys(pairCounts).forEach(key => {
+                    const parts = key.split('||');
+                    if (parts.length !== 2) return;
+                    const nameA = parts[0];
+                    const nameB = parts[1];
+                    const cityA = cityByName[nameA];
+                    const cityB = cityByName[nameB];
+                    if (!cityA || !cityB) {
+                        console.warn('City link references unknown city:', nameA, nameB);
+                        return;
+                    }
+
+                    const v1 = latLonToVector3(cityA.lat, cityA.lon, radius);
+                    const v2 = latLonToVector3(cityB.lat, cityB.lon, radius);
+
+                    const distance = v1.distanceTo(v2);
+                    const control = v1.clone().add(v2).multiplyScalar(0.5).normalize().multiplyScalar(radius + distance * 0.25);
+                    const curve = new THREE.QuadraticBezierCurve3(v1, control, v2);
+                    const pts = curve.getPoints(60);
+                    const geom = new THREE.BufferGeometry().setFromPoints(pts);
+                    const mat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
+                    const line = new THREE.Line(geom, mat);
+                    cityGroup.add(line);
+
+                    const dirCount = pairCounts[key];
+                    const dotSpeed = 0.03;
+                    // Create one dot for a single-direction link, two dots for bidirectional
+                    const dotsToCreate = dirCount >= 2 ? 2 : 1;
+                    for (let i = 0; i < dotsToCreate; i++) {
+                        const dGeom = new THREE.SphereGeometry(0.06, 8, 8);
+                        const dMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1 });
+                        const dot = new THREE.Mesh(dGeom, dMat);
+                        cityGroup.add(dot);
+
+                        animatedDots.push({
+                            curve: curve,
+                            mesh: dot,
+                            t: i === 0 ? Math.random() : Math.random(),
+                            direction: i === 0 ? 1 : -1,
+                            speed: dotSpeed / curve.getLength()
+                        });
+                    }
                 });
             }
         })
@@ -555,6 +679,7 @@ let currentRotationSpeed = 0.05;
 
 function animate() {
     // requestAnimationFrame(animate); // Removed for VR compatibility
+    finishLoader();
     
     controls.update();
 
@@ -601,7 +726,10 @@ function animate() {
     material.opacity = elementsOpacity * 0.9;
     
     countryLabels.forEach(div => {
-        div.style.opacity = elementsOpacity;
+        // Keep labels hidden until the intro zoom finishes.
+        // If `window._introMainDone` is undefined (this page doesn't run main.js), allow labels.
+        const allow = (typeof window._introMainDone === 'undefined') || !!window._introMainDone;
+        div.style.opacity = allow ? elementsOpacity : 0;
     });
 
     // City visibility based on camera altitude (distance). Visible when user is closer.
@@ -610,7 +738,10 @@ function animate() {
 
     // Update city markers and labels
     cityLabels.forEach(div => {
-        div.style.opacity = cityVisibility;
+        // Keep city labels hidden until intro completes.
+        // If `window._introMainDone` is undefined (this page doesn't run main.js), allow labels.
+        const allow = (typeof window._introMainDone === 'undefined') || !!window._introMainDone;
+        div.style.opacity = allow ? cityVisibility : 0;
     });
     // Update city materials/line if group exists
     if (cityGroup) {
