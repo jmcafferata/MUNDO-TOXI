@@ -233,8 +233,23 @@ function updateRendererSizes() {
     composer.setPixelRatio(finalPR);
     composer.setSize(cw, ch);
     labelRenderer.setSize(cw, ch);
-    labelRenderer.domElement.style.width = '100%';
-    labelRenderer.domElement.style.height = '100%';
+
+    // Prevent stretching on displays larger than the clamped render buffer.
+    const cssWidth = `${cw}px`;
+    const cssHeight = `${ch}px`;
+    renderer.domElement.style.position = 'absolute';
+    renderer.domElement.style.left = '50%';
+    renderer.domElement.style.top = '50%';
+    renderer.domElement.style.transform = 'translate(-50%, -50%)';
+    renderer.domElement.style.width = cssWidth;
+    renderer.domElement.style.height = cssHeight;
+
+    labelRenderer.domElement.style.position = 'absolute';
+    labelRenderer.domElement.style.left = '50%';
+    labelRenderer.domElement.style.top = '50%';
+    labelRenderer.domElement.style.transform = 'translate(-50%, -50%)';
+    labelRenderer.domElement.style.width = cssWidth;
+    labelRenderer.domElement.style.height = cssHeight;
 }
 
 // Handle window resize with clamped backing resolution
