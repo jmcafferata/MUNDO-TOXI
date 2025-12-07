@@ -85,37 +85,69 @@ camera.position.set(0, 0, 20);
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+// Clamp backing resolution to this maximum (match main/earth)
+const MAX_CANVAS_WIDTH = 1920;
+const MAX_CANVAS_HEIGHT = 1080;
+
+function getClampedDimensions() {
+    const cw = Math.min(window.innerWidth, MAX_CANVAS_WIDTH);
+    const ch = Math.min(window.innerHeight, MAX_CANVAS_HEIGHT);
+    const devicePR = window.devicePixelRatio || 1;
+    const maxPR = Math.min(devicePR, 2);
+    const allowedPR = Math.min(maxPR, MAX_CANVAS_WIDTH / cw, MAX_CANVAS_HEIGHT / ch);
+    const finalPR = Math.max(1, allowedPR);
+    return { cw, ch, finalPR };
+}
+
+const { cw: initW, ch: initH, finalPR: initPR } = getClampedDimensions();
+renderer.setPixelRatio(initPR);
+renderer.setSize(initW, initH, false);
+renderer.domElement.style.width = '100%';
+renderer.domElement.style.height = '100%';
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
 // Post-processing (Bloom) with multisampled render target for antialiasing
 const renderScene = new RenderPass(scene, camera);
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
-bloomPass.threshold = 0.5;
-bloomPass.strength = 1.0;
-bloomPass.radius = 0.4;
+let bloomPass = null;
+{
+    const { cw, ch, finalPR } = getClampedDimensions();
+    bloomPass = new UnrealBloomPass(new THREE.Vector2(Math.floor(cw * finalPR), Math.floor(ch * finalPR)), 1.5, 0.4, 0.85);
+    bloomPass.threshold = 0.5;
+    bloomPass.strength = 1.0;
+    bloomPass.radius = 0.4;
+}
 
-const renderTarget = new THREE.WebGLRenderTarget(
-    window.innerWidth,
-    window.innerHeight,
-    {
-        type: THREE.HalfFloatType,
-        format: THREE.RGBAFormat,
-        samples: 8
-    }
-);
+const renderTarget = (() => {
+    const { cw, ch, finalPR } = getClampedDimensions();
+    return new THREE.WebGLRenderTarget(
+        Math.floor(cw * finalPR),
+        Math.floor(ch * finalPR),
+        {
+            type: THREE.HalfFloatType,
+            format: THREE.RGBAFormat,
+            samples: 8
+        }
+    );
+})();
 
 const composer = new EffectComposer(renderer, renderTarget);
-composer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+{
+    const { cw, ch, finalPR } = getClampedDimensions();
+    composer.setPixelRatio(finalPR);
+    composer.setSize(cw, ch);
+}
 composer.addPass(renderScene);
 composer.addPass(bloomPass);
 
 // Label Renderer
 const labelRenderer = new CSS2DRenderer();
-labelRenderer.setSize(window.innerWidth, window.innerHeight);
+{
+    const { cw, ch } = getClampedDimensions();
+    labelRenderer.setSize(cw, ch);
+}
 labelRenderer.domElement.style.position = 'absolute';
 labelRenderer.domElement.style.top = '0px';
 // labelRenderer.domElement.style.pointerEvents = 'none'; // Enable pointer events for interaction
@@ -186,6 +218,18 @@ window.addEventListener('mouseup', onPointerUp);
 window.addEventListener('touchend', onPointerUp);
 
 interactionElement.addEventListener('wheel', onWheel, { passive: false });
+
+// Handle window resize with clamped backing resolution
+window.addEventListener('resize', () => {
+    const { cw, ch, finalPR } = getClampedDimensions();
+    camera.aspect = cw / ch;
+    camera.updateProjectionMatrix();
+    renderer.setPixelRatio(finalPR);
+    renderer.setSize(cw, ch, false);
+    composer.setPixelRatio(finalPR);
+    composer.setSize(cw, ch);
+    labelRenderer.setSize(cw, ch);
+});
 
 /*
 // OrbitControls
