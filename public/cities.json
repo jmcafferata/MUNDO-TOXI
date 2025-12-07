@@ -60,8 +60,8 @@
     { "from": "Quequén", "to": "Buenos Aires" },
     { "from": "Buenos Aires", "to": "Quequén" },
 
-    { "from": "Quequen", "to": "Venado Tuerto" },
-    { "from": "Venado Tuerto", "to": "Quequen" },
+    { "from": "Quequén", "to": "Venado Tuerto" },
+    { "from": "Venado Tuerto", "to": "Quequén" },
 
     { "from": "Buenos Aires", "to": "Montevideo" },
     { "from": "Montevideo", "to": "Buenos Aires" },
