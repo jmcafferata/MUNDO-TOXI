@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/project/:slug*",
+      "destination": "https://toxii.webflow.io/project/:slug*",
+      "permanent": true
+    }
+  ]
+}
