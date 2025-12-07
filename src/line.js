@@ -93,8 +93,10 @@ const MAX_CANVAS_WIDTH = 1920;
 const MAX_CANVAS_HEIGHT = 1080;
 
 function getClampedDimensions() {
-    const cw = Math.min(window.innerWidth, MAX_CANVAS_WIDTH);
-    const ch = Math.min(window.innerHeight, MAX_CANVAS_HEIGHT);
+    const w = window.innerWidth || 1;
+    const h = window.innerHeight || 1;
+    const cw = Math.min(w, MAX_CANVAS_WIDTH);
+    const ch = Math.min(h, MAX_CANVAS_HEIGHT);
     const devicePR = window.devicePixelRatio || 1;
     const maxPR = Math.min(devicePR, 2);
     const allowedPR = Math.min(maxPR, MAX_CANVAS_WIDTH / cw, MAX_CANVAS_HEIGHT / ch);
@@ -257,6 +259,10 @@ window.addEventListener('resize', updateRendererSizes);
 
 // Initial sizing to avoid first-frame misalignment
 updateRendererSizes();
+// Force an update on the next frame to ensure window dimensions are stable
+requestAnimationFrame(updateRendererSizes);
+// And a backup timeout for good measure
+setTimeout(updateRendererSizes, 100);
 
 /*
 // OrbitControls
