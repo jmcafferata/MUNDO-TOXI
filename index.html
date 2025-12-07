@@ -10,8 +10,15 @@
     <meta name="theme-color" content="#000000" />
     <title>TOXI Media</title>
     <script>
-      // Simple immediate redirect to the external page to avoid blocked asset loads
-      window.location.replace('https://toxii.webflow.io/project/');
+      // Redirect any /project/* path to the matching Webflow URL, otherwise send to project home.
+      (function() {
+        const { pathname, search, hash } = window.location;
+        if (pathname.startsWith('/project/')) {
+          window.location.replace(`https://toxii.webflow.io${pathname}${search}${hash}`);
+        } else {
+          window.location.replace('https://toxii.webflow.io/project/');
+        }
+      })();
     </script>
     <link rel="stylesheet" href="./src/style.css" />
   </head>
