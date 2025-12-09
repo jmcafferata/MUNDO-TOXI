@@ -43,7 +43,9 @@ export default async function handler(req, res) {
     console.log('[TOXI][MP] preferencia creada', response.body.id);
     return res.status(200).json({ preferenceId: response.body.id, initPoint: response.body.init_point });
   } catch (error) {
-    console.error('[TOXI][MP] error creando preferencia', error);
-    return res.status(500).json({ error: 'Failed to create preference' });
+    const mpMessage = error?.response?.body?.message || error?.message || 'Unknown error';
+    const mpStatus = error?.status || error?.response?.status || 500;
+    console.error('[TOXI][MP] error creando preferencia', mpStatus, mpMessage, error);
+    return res.status(500).json({ error: 'Failed to create preference', detail: mpMessage, status: mpStatus });
   }
 }
