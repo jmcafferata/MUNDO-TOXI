@@ -146,13 +146,19 @@
               body: JSON.stringify(payload)
             });
 
+            let data = null;
+            try {
+              data = await resp.json();
+            } catch (e) {
+              console.warn('[TOXI][MP] No se pudo parsear JSON', e);
+            }
+
             if (!resp.ok) {
-              console.error('[TOXI][MP] Respuesta no OK', resp.status, resp.statusText);
-              alert('No se pudo iniciar el pago.');
+              console.error('[TOXI][MP] Respuesta no OK', resp.status, resp.statusText, data);
+              alert(`No se pudo iniciar el pago. Detalle: ${data?.detail || data?.error || resp.statusText || 'sin detalle'}`);
               return;
             }
 
-            const data = await resp.json();
             console.info('[TOXI][MP] Preferencia creada', data);
             if (!data.preferenceId) {
               console.error('[TOXI][MP] preferenceId faltante', data);
