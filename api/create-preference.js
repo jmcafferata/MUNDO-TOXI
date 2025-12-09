@@ -20,6 +20,9 @@ export default async function handler(req, res) {
 
   mercadopago.configure({ access_token: accessToken });
 
+  const host = req.headers.host ? `https://${req.headers.host}` : undefined;
+  const notificationUrl = process.env.MP_WEBHOOK_URL || (host ? `${host}/api/mp-webhook` : undefined);
+
   const preference = {
     items: [
       {
@@ -34,7 +37,8 @@ export default async function handler(req, res) {
       failure: failUrl,
       pending: failUrl
     },
-    auto_return: 'approved'
+    auto_return: 'approved',
+    notification_url: notificationUrl
   };
 
   try {
