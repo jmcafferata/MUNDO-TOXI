@@ -139,6 +139,7 @@
               price: 100
             };
 
+            console.info('[TOXI][MP] Creando preferencia...', payload);
             const resp = await fetch('/api/create-preference', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -146,23 +147,27 @@
             });
 
             if (!resp.ok) {
+              console.error('[TOXI][MP] Respuesta no OK', resp.status, resp.statusText);
               alert('No se pudo iniciar el pago.');
               return;
             }
 
             const data = await resp.json();
+            console.info('[TOXI][MP] Preferencia creada', data);
             if (!data.preferenceId) {
+              console.error('[TOXI][MP] preferenceId faltante', data);
               alert('Respuesta inválida del servidor.');
               return;
             }
 
             const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'es-AR' });
+            console.info('[TOXI][MP] Abriendo checkout con', data.preferenceId);
             mp.checkout({
               preference: { id: data.preferenceId },
               autoOpen: true
             });
           } catch (err) {
-            console.error(err);
+            console.error('[TOXI][MP] Error al iniciar pago', err);
             alert('Error al iniciar el pago.');
           }
         });

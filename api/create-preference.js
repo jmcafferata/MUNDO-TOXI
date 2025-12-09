@@ -38,10 +38,12 @@ export default async function handler(req, res) {
   };
 
   try {
+    console.log('[TOXI][MP] creando preferencia', preference);
     const response = await mercadopago.preferences.create(preference);
+    console.log('[TOXI][MP] preferencia creada', response.body.id);
     return res.status(200).json({ preferenceId: response.body.id, initPoint: response.body.init_point });
   } catch (error) {
-    console.error('MP preference error', error);
+    console.error('[TOXI][MP] error creando preferencia', error);
     return res.status(500).json({ error: 'Failed to create preference' });
   }
 }
