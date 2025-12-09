@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'successUrl and failUrl are required' });
   }
 
-  mercadopago.configure({ access_token: accessToken });
+  mercadopago.configurations.setAccessToken(accessToken);
 
   const host = req.headers.host ? `https://${req.headers.host}` : undefined;
   const notificationUrl = process.env.MP_WEBHOOK_URL || (host ? `${host}/api/mp-webhook` : undefined);
