@@ -66,7 +66,6 @@
     <script>
       // Paywall con Mercado Pago: entrada de $100 ARS válida por 24 horas.
       (function() {
-        const MP_PUBLIC_KEY = window.ENV_MP_PUBLIC_KEY || 'pk_test_replace_me';
         const ENTRY_STORAGE_KEY = 'toxi_entry_pass';
         const ENTRY_DURATION_MS = 24 * 60 * 60 * 1000; // 24 horas
         const paywall = document.getElementById('paywall');
@@ -121,6 +120,7 @@
         }
 
         cta?.addEventListener('click', async () => {
+          const MP_PUBLIC_KEY = window.ENV_MP_PUBLIC_KEY || 'pk_test_replace_me';
           if (!window.MercadoPago) {
             alert('Mercado Pago no está disponible. Intenta de nuevo.');
             return;
