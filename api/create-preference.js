@@ -1,4 +1,4 @@
-import mercadopago from 'mercadopago';
+import { MercadoPagoConfig, Preference } from 'mercadopago';
 
 // Serverless function for Vercel to create a Mercado Pago preference.
 // Requires env var MP_ACCESS_TOKEN (never expose to client).
@@ -18,7 +18,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'successUrl and failUrl are required' });
   }
 
-  mercadopago.configurations.setAccessToken(accessToken);
+  const client = new MercadoPagoConfig({ accessToken });
+  const preferenceClient = new Preference(client);
 
   const host = req.headers.host ? `https://${req.headers.host}` : undefined;
   const notificationUrl = process.env.MP_WEBHOOK_URL || (host ? `${host}/api/mp-webhook` : undefined);
@@ -43,9 +44,11 @@ export default async function handler(req, res) {
 
   try {
     console.log('[TOXI][MP] creando preferencia', preference);
-    const response = await mercadopago.preferences.create(preference);
-    console.log('[TOXI][MP] preferencia creada', response.body.id);
-    return res.status(200).json({ preferenceId: response.body.id, initPoint: response.body.init_point });
+    const response = await preferenceClient.create({ body: preference });
+    const preferenceId = response?.id || response?.body?.id;
+    const initPoint = response?.init_point || response?.body?.init_point;
+    console.log('[TOXI][MP] preferencia creada', preferenceId);
+    return res.status(200).json({ preferenceId, initPoint });
   } catch (error) {
     const mpMessage = error?.response?.body?.message || error?.message || 'Unknown error';
     const mpStatus = error?.status || error?.response?.status || 500;

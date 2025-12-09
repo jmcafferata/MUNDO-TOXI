@@ -1,4 +1,4 @@
-import mercadopago from 'mercadopago';
+import { MercadoPagoConfig, Payment } from 'mercadopago';
 
 // Webhook receiver for Mercado Pago notifications.
 // Configure the webhook URL in your Mercado Pago app or via preference.notification_url.
@@ -21,12 +21,13 @@ export default async function handler(req, res) {
   try {
     const accessToken = process.env.MP_ACCESS_TOKEN;
     if (accessToken) {
-      mercadopago.configurations.setAccessToken(accessToken);
+      const client = new MercadoPagoConfig({ accessToken });
+      const paymentClient = new Payment(client);
       const topic = req.query.topic || req.query.type;
       const dataId = req.query['data.id'] || req.body?.data?.id;
       if (topic === 'payment' && dataId) {
-        const payment = await mercadopago.payment.findById(dataId);
-        console.log('[TOXI][MP][WH] payment detail', payment.body?.id, payment.body?.status);
+        const payment = await paymentClient.get({ id: dataId });
+        console.log('[TOXI][MP][WH] payment detail', payment?.id || payment?.body?.id, payment?.status || payment?.body?.status);
       }
     } else {
       console.warn('[TOXI][MP][WH] MP_ACCESS_TOKEN missing; cannot fetch payment detail');
