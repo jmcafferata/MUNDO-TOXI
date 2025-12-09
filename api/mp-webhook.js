@@ -21,7 +21,7 @@ export default async function handler(req, res) {
   try {
     const accessToken = process.env.MP_ACCESS_TOKEN;
     if (accessToken) {
-      mercadopago.configure({ access_token: accessToken });
+      mercadopago.configurations.setAccessToken(accessToken);
       const topic = req.query.topic || req.query.type;
       const dataId = req.query['data.id'] || req.body?.data?.id;
       if (topic === 'payment' && dataId) {
