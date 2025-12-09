@@ -9,6 +9,7 @@
     />
     <meta name="theme-color" content="#000000" />
     <title>TOXI Media</title>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <script>
       // Only redirect /project/* paths to Webflow; keep toxi.media root on this page.
       (function() {
@@ -21,6 +22,18 @@
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
+    <div id="paywall" class="paywall-overlay" role="dialog" aria-modal="true">
+      <div class="paywall-card">
+        <h1>Pase diario</h1>
+        <div class="paywall-price">$100 ARS · 24h</div>
+        <p>Accedé a la experiencia completa de TOXI por un día.</p>
+        <div class="paywall-actions">
+          <button id="paywall-cta" class="paywall-button">Entrar con Mercado Pago</button>
+          <div class="paywall-note">Pagos procesados de forma segura por Mercado Pago.</div>
+        </div>
+      </div>
+    </div>
+
     <div id="app"></div>
 
     <!-- Video Modal -->
@@ -48,6 +61,116 @@
         </div>
       </div>
     </div>
+
+    <script>
+      // Paywall con Mercado Pago: entrada de $100 ARS válida por 24 horas.
+      (function() {
+        const MP_PUBLIC_KEY = window.ENV_MP_PUBLIC_KEY || 'pk_test_replace_me';
+        const ENTRY_STORAGE_KEY = 'toxi_entry_pass';
+        const ENTRY_DURATION_MS = 24 * 60 * 60 * 1000; // 24 horas
+        const paywall = document.getElementById('paywall');
+        const cta = document.getElementById('paywall-cta');
+
+        function hidePaywall() {
+          paywall.classList.remove('visible');
+          paywall.style.display = 'none';
+        }
+
+        function showPaywall() {
+          paywall.classList.add('visible');
+          paywall.style.display = 'flex';
+        }
+
+        function persistEntry() {
+          const now = Date.now();
+          const payload = { paidAt: now, expiresAt: now + ENTRY_DURATION_MS };
+          localStorage.setItem(ENTRY_STORAGE_KEY, JSON.stringify(payload));
+        }
+
+        function hasValidEntry() {
+          try {
+            const raw = localStorage.getItem(ENTRY_STORAGE_KEY);
+            if (!raw) return false;
+            const data = JSON.parse(raw);
+            if (!data || typeof data.expiresAt !== 'number') return false;
+            if (Date.now() > data.expiresAt) {
+              localStorage.removeItem(ENTRY_STORAGE_KEY);
+              return false;
+            }
+            return true;
+          } catch (err) {
+            localStorage.removeItem(ENTRY_STORAGE_KEY);
+            return false;
+          }
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const status = (params.get('collection_status') || params.get('status') || '').toLowerCase();
+        const paymentApproved = status === 'approved' || status === 'success';
+
+        if (paymentApproved) {
+          persistEntry();
+          const cleanUrl = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        }
+
+        const paid = hasValidEntry();
+        if (!paid) {
+          showPaywall();
+        }
+
+        cta?.addEventListener('click', async () => {
+          if (!window.MercadoPago) {
+            alert('Mercado Pago no está disponible. Intenta de nuevo.');
+            return;
+          }
+
+          if (!MP_PUBLIC_KEY || MP_PUBLIC_KEY.includes('replace_me')) {
+            alert('Configura la clave pública de Mercado Pago.');
+            return;
+          }
+
+          try {
+            const payload = {
+              successUrl: `${window.location.origin}${window.location.pathname}`,
+              failUrl: `${window.location.origin}${window.location.pathname}`,
+              title: 'Pase diario TOXI',
+              price: 100
+            };
+
+            const resp = await fetch('/api/create-preference', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            if (!resp.ok) {
+              alert('No se pudo iniciar el pago.');
+              return;
+            }
+
+            const data = await resp.json();
+            if (!data.preferenceId) {
+              alert('Respuesta inválida del servidor.');
+              return;
+            }
+
+            const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'es-AR' });
+            mp.checkout({
+              preference: { id: data.preferenceId },
+              autoOpen: true
+            });
+          } catch (err) {
+            console.error(err);
+            alert('Error al iniciar el pago.');
+          }
+        });
+
+        if (paid) {
+          hidePaywall();
+        }
+      })();
+    </script>
 
     <script type="module" src="./src/main.js"></script>
   </body>
