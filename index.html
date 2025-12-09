@@ -156,7 +156,7 @@
             console.info('[TOXI][MP] Preferencia creada', data);
             if (!data.preferenceId) {
               console.error('[TOXI][MP] preferenceId faltante', data);
-              alert('Respuesta inválida del servidor.');
+              alert(`Respuesta inválida del servidor: ${data.error || 'sin preferenceId'}`);
               return;
             }
 
@@ -168,7 +168,7 @@
             });
           } catch (err) {
             console.error('[TOXI][MP] Error al iniciar pago', err);
-            alert('Error al iniciar el pago.');
+            alert(`Error al iniciar el pago: ${err?.message || err}`);
           }
         });
 
