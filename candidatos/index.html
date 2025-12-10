@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Conversaciones de candidatos</title>
+	<style>
+		:root {
+			--bg: #0b0c10;
+			--panel: #11131a;
+			--accent: #7cf3c5;
+			--muted: #9aa0b5;
+			--text: #e8ecf5;
+			--danger: #ff9c9c;
+			--shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+		}
+
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			background: radial-gradient(circle at 20% 20%, rgba(124, 243, 197, 0.1), transparent 35%),
+									radial-gradient(circle at 80% 0%, rgba(124, 243, 197, 0.08), transparent 30%),
+									var(--bg);
+			font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+			color: var(--text);
+			min-height: 100vh;
+			padding: 32px 18px 48px;
+		}
+
+		.layout {
+			max-width: 1100px;
+			margin: 0 auto;
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+		}
+
+		header {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 12px;
+			justify-content: space-between;
+		}
+
+		h1 {
+			margin: 0;
+			font-size: 28px;
+			letter-spacing: -0.02em;
+		}
+
+		.pill {
+			padding: 8px 14px;
+			background: rgba(124, 243, 197, 0.12);
+			color: var(--accent);
+			border: 1px solid rgba(124, 243, 197, 0.35);
+			border-radius: 999px;
+			font-weight: 600;
+			font-size: 13px;
+		}
+
+		.status {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			color: var(--muted);
+			font-size: 14px;
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+			gap: 16px;
+		}
+
+		.card {
+			background: linear-gradient(145deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+			border: 1px solid rgba(255, 255, 255, 0.06);
+			border-radius: 16px;
+			padding: 16px;
+			box-shadow: var(--shadow);
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+			min-height: 220px;
+		}
+
+		.card header {
+			display: flex;
+			justify-content: space-between;
+			align-items: baseline;
+			gap: 8px;
+		}
+
+		.phone {
+			font-weight: 700;
+			font-size: 16px;
+			color: var(--accent);
+		}
+
+		.meta {
+			display: flex;
+			gap: 12px;
+			color: var(--muted);
+			font-size: 13px;
+			flex-wrap: wrap;
+		}
+
+		.messages {
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			padding: 12px;
+			border-radius: 12px;
+			background: rgba(255, 255, 255, 0.02);
+			border: 1px solid rgba(255, 255, 255, 0.04);
+			max-height: 280px;
+			overflow: auto;
+		}
+
+		.msg {
+			display: grid;
+			grid-template-columns: auto 1fr;
+			gap: 8px 10px;
+			align-items: start;
+			font-size: 14px;
+		}
+
+		.msg .role {
+			padding: 3px 8px;
+			border-radius: 999px;
+			font-weight: 700;
+			font-size: 12px;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			background: rgba(124, 243, 197, 0.14);
+			color: var(--accent);
+			border: 1px solid rgba(124, 243, 197, 0.35);
+			white-space: nowrap;
+		}
+
+		.msg.assistant .role {
+			background: rgba(255, 255, 255, 0.08);
+			color: #ffd166;
+			border-color: rgba(255, 209, 102, 0.4);
+		}
+
+		.msg .body {
+			color: var(--text);
+			line-height: 1.5;
+			white-space: pre-wrap;
+		}
+
+		.timestamp {
+			color: var(--muted);
+			font-size: 12px;
+			margin-top: 4px;
+		}
+
+		.error {
+			padding: 12px 14px;
+			border-radius: 12px;
+			border: 1px solid rgba(255, 156, 156, 0.4);
+			background: rgba(255, 156, 156, 0.1);
+			color: var(--danger);
+			font-weight: 600;
+		}
+
+		.spinner {
+			width: 16px;
+			height: 16px;
+			border: 3px solid rgba(255,255,255,0.08);
+			border-top-color: var(--accent);
+			border-radius: 50%;
+			animation: spin 1s linear infinite;
+		}
+
+		@keyframes spin {
+			to { transform: rotate(360deg); }
+		}
+
+		@media (max-width: 640px) {
+			header { gap: 8px; }
+			h1 { font-size: 22px; }
+			.card { min-height: 0; }
+		}
+	</style>
+</head>
+<body>
+	<div class="layout">
+		<header>
+			<div>
+				<div class="pill">Landing estática · candidatos</div>
+				<h1>Conversaciones de WhatsApp</h1>
+			</div>
+			<div class="status" id="status">
+				<span class="spinner" aria-hidden="true"></span>
+				<span>Cargando conversaciones…</span>
+			</div>
+		</header>
+
+		<div id="error" class="error" style="display:none"></div>
+		<div id="grid" class="grid"></div>
+	</div>
+
+	<script>
+		const statusEl = document.getElementById('status');
+		const errorEl = document.getElementById('error');
+		const gridEl = document.getElementById('grid');
+
+		const formatTime = (iso) => {
+			const d = new Date(iso);
+			return d.toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
+		};
+
+		const render = (conversations) => {
+			gridEl.innerHTML = '';
+			if (!conversations.length) {
+				gridEl.innerHTML = '<p style="color: var(--muted);">No hay conversaciones para mostrar.</p>';
+				return;
+			}
+
+			for (const conv of conversations) {
+				const card = document.createElement('article');
+				card.className = 'card';
+
+				const header = document.createElement('header');
+				const phone = document.createElement('div');
+				phone.className = 'phone';
+				phone.textContent = '+' + conv.phoneNumber;
+				const meta = document.createElement('div');
+				meta.className = 'meta';
+				meta.innerHTML = `
+					<span>${conv.messageCount} mensajes</span>
+					<span>Inicio: ${formatTime(conv.firstMessageTime)}</span>
+					<span>Último: ${formatTime(conv.lastMessageTime)}</span>
+				`;
+				header.append(phone, meta);
+
+				const list = document.createElement('div');
+				list.className = 'messages';
+				for (const msg of conv.messages) {
+					const row = document.createElement('div');
+					row.className = `msg ${msg.role}`;
+
+					const role = document.createElement('div');
+					role.className = 'role';
+					role.textContent = msg.role === 'assistant' ? 'Bot' : 'Candidato';
+
+					const body = document.createElement('div');
+					body.className = 'body';
+					body.textContent = msg.content;
+
+					const ts = document.createElement('div');
+					ts.className = 'timestamp';
+					ts.textContent = formatTime(msg.timestamp);
+
+					row.append(role, body, document.createElement('div'), ts);
+					list.appendChild(row);
+				}
+
+				card.append(header, list);
+				gridEl.appendChild(card);
+			}
+		};
+
+		// Fallback: parse chats.txt directamente en el browser cuando no existe /api/conversations (p.ej. Live Server/5500).
+		const parseLocalChats = (text) => {
+			const lines = text.split(/\r?\n/);
+			const conversationsMap = new Map();
+
+			const parseLine = (line) => {
+				const sanitized = line.trim().replace(/[\u202f\u00a0]/g, ' ');
+				if (!sanitized) return null;
+				const match = sanitized.match(/^(\d{1,2}\/\d{1,2}\/\d{2}),\s*([0-9:]+\s*[APMapm]{2})\s+-\s+([^:]+):\s+(\d+)(?:\s*\((Assistant)\))?:\s*(.+)$/);
+				if (!match) return null;
+				const [_, datePart, timePartRaw, senderName, phoneNumber, assistantMarker, content] = match;
+				const toIso = (d, t) => {
+					const [month, day, yearShort] = d.split('/').map(Number);
+					const [timeString, meridiemRaw = ''] = t.split(/\s+/);
+					const [hourRaw, minuteRaw = '0'] = timeString.split(':');
+					let hour = Number(hourRaw);
+					const minute = Number(minuteRaw);
+					const meridiem = meridiemRaw.toUpperCase();
+					if (meridiem === 'PM' && hour < 12) hour += 12;
+					if (meridiem === 'AM' && hour === 12) hour = 0;
+					const year = 2000 + yearShort;
+					return new Date(Date.UTC(year, month - 1, day, hour, minute)).toISOString();
+				};
+				const timePart = timePartRaw.replace(/\s+/, ' ').trim();
+				const timestamp = toIso(datePart, timePart);
+				const role = assistantMarker ? 'assistant' : 'user';
+				return { phoneNumber, role, content: content.trim(), timestamp, senderName: senderName.trim() };
+			};
+
+			for (const line of lines) {
+				const parsed = parseLine(line);
+				if (!parsed) continue;
+				const { phoneNumber, role, content, timestamp, senderName } = parsed;
+				if (!conversationsMap.has(phoneNumber)) {
+					conversationsMap.set(phoneNumber, {
+						phoneNumber,
+						phoneNumberId: 'whatsapp-txt',
+						messages: [],
+						messageCount: 0,
+						firstMessageTime: timestamp,
+						lastMessageTime: timestamp
+					});
+				}
+				const conv = conversationsMap.get(phoneNumber);
+				conv.messages.push({ role, content, timestamp, senderName });
+				conv.messageCount += 1;
+				conv.lastMessageTime = timestamp;
+			}
+
+			const conversations = Array.from(conversationsMap.values());
+			conversations.sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+			return conversations;
+		};
+
+		const load = async () => {
+			try {
+				// 1) Intentar API (Vercel / entorno con funciones)
+				const res = await fetch('/api/conversations');
+				if (!res.ok) throw new Error('API no disponible');
+				const data = await res.json();
+				statusEl.innerHTML = '<span style="color: var(--muted);">Actualizado (API)</span>';
+				render(data);
+			} catch (apiErr) {
+				console.warn('Fallo la API, probando chats.txt local:', apiErr);
+				try {
+					// 2) Fallback local: leer chats.txt servido como archivo estático
+					const resTxt = await fetch('./chats.txt');
+					if (!resTxt.ok) throw new Error('chats.txt no accesible');
+					const txt = await resTxt.text();
+					const parsed = parseLocalChats(txt);
+					statusEl.innerHTML = '<span style="color: var(--muted);">Actualizado (chats.txt)</span>';
+					render(parsed);
+				} catch (txtErr) {
+					console.error(txtErr);
+					statusEl.style.display = 'none';
+					errorEl.style.display = 'block';
+					errorEl.textContent = 'No se pudieron cargar las conversaciones (API ni chats.txt). Ver consola para más detalle.';
+				}
+			}
+		};
+
+		load();
+	</script>
+</body>
+</html>
