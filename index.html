@@ -245,17 +245,27 @@
         const keypadModal = document.getElementById('keypad-modal');
         const keypadClose = document.getElementById('keypad-close');
         const keypadDots = document.getElementById('keypad-dots');
+        const keypadCard = document.querySelector('.keypad-card');
         const keypadBtns = document.querySelectorAll('.keypad-btn');
         const SECRET_CODE = '2058';
         let currentCode = '';
+        let successUnlocked = false;
 
         function openKeypad() {
+          successUnlocked = false;
+          keypadCard?.classList.remove('success');
+          keypadDots.classList.remove('success');
+          keypadBtns.forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('success');
+          });
           keypadModal.classList.remove('hidden');
           currentCode = '';
           updateDots();
         }
 
-        function closeKeypad() {
+        function closeKeypad(force = false) {
+          if (successUnlocked && !force) return;
           keypadModal.classList.add('hidden');
           currentCode = '';
           updateDots();
@@ -273,15 +283,24 @@
           }
         }
 
+        function markSuccess() {
+          successUnlocked = true;
+          keypadCard?.classList.add('success');
+          keypadDots.classList.add('success');
+          keypadBtns.forEach(btn => {
+            btn.disabled = true;
+            btn.classList.add('success');
+          });
+        }
+
         function checkCode() {
           if (currentCode === SECRET_CODE) {
             persistEntry();
-            closeKeypad();
-            hidePaywall();
-            // Recargar la página para ver la animación inicial
+            markSuccess();
+            // Espera breve con el keypad en verde y luego refresca
             setTimeout(() => {
               window.location.reload();
-            }, 300);
+            }, 1200);
           } else {
             // Shake animation on error
             keypadDots.style.animation = 'shake 0.5s';

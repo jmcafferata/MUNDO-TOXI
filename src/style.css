@@ -528,6 +528,33 @@ canvas {
   border-color: rgba(154, 230, 255, 0.4);
 }
 
+.keypad-card.success {
+  background: linear-gradient(135deg, rgba(0, 120, 60, 0.85), rgba(0, 180, 120, 0.9));
+  border-color: rgba(0, 255, 153, 0.5);
+  box-shadow: 0 30px 120px rgba(0, 255, 153, 0.35);
+}
+
+.keypad-card.success .keypad-dot {
+  border-color: rgba(0, 255, 153, 0.6);
+}
+
+.keypad-card.success .keypad-dot.filled {
+  background: linear-gradient(135deg, #00ff88 0%, #8cffd9 100%);
+  border-color: transparent;
+  box-shadow: 0 2px 14px rgba(0, 255, 153, 0.4);
+}
+
+.keypad-card.success .keypad-btn {
+  background: rgba(0, 255, 153, 0.12);
+  border-color: rgba(0, 255, 153, 0.35);
+  color: #eafff4;
+}
+
+.keypad-card.success .keypad-btn.keypad-enter {
+  background: linear-gradient(135deg, rgba(0, 255, 153, 0.35), rgba(140, 255, 217, 0.3));
+  border-color: rgba(0, 255, 153, 0.5);
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
