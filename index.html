@@ -9,6 +9,7 @@
     />
     <meta name="theme-color" content="#000000" />
     <title>TOXI Media</title>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <script>
       // Only redirect /project/* paths to Webflow; keep toxi.media root on this page.
       (function() {
@@ -19,8 +20,45 @@
       })();
     </script>
     <link rel="stylesheet" href="./src/style.css" />
+    <script type="module" src="./src/env.js"></script>
   </head>
   <body>
+    <div id="paywall" class="paywall-overlay" role="dialog" aria-modal="true">
+      <div class="paywall-card">
+        <h1>Pase diario</h1>
+        <div class="paywall-price">$100 ARS · 24h</div>
+        <p>Accedé a la experiencia completa de TOXI por un día.</p>
+        <div class="paywall-actions">
+          <button id="paywall-cta" class="paywall-button">Entrar con Mercado Pago</button>
+          <div class="paywall-note">Pagos procesados de forma segura por Mercado Pago.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Keypad Modal -->
+    <div id="keypad-modal" class="keypad-overlay hidden">
+      <div class="keypad-card">
+        <button id="keypad-close" class="keypad-close">&times;</button>
+        <div class="keypad-display">
+          <div id="keypad-dots"></div>
+        </div>
+        <div class="keypad-grid">
+          <button class="keypad-btn" data-key="1">1</button>
+          <button class="keypad-btn" data-key="2">2</button>
+          <button class="keypad-btn" data-key="3">3</button>
+          <button class="keypad-btn" data-key="4">4</button>
+          <button class="keypad-btn" data-key="5">5</button>
+          <button class="keypad-btn" data-key="6">6</button>
+          <button class="keypad-btn" data-key="7">7</button>
+          <button class="keypad-btn" data-key="8">8</button>
+          <button class="keypad-btn" data-key="9">9</button>
+          <button class="keypad-btn keypad-clear" data-key="clear">←</button>
+          <button class="keypad-btn" data-key="0">0</button>
+          <button class="keypad-btn keypad-enter" data-key="enter">✓</button>
+        </div>
+      </div>
+    </div>
+
     <div id="app"></div>
 
     <!-- Video Modal -->
@@ -48,6 +86,288 @@
         </div>
       </div>
     </div>
+
+    <script>
+      // Paywall con Mercado Pago: entrada de $100 ARS válida por 24 horas.
+      (function() {
+        const ENTRY_STORAGE_KEY = 'toxi_entry_pass';
+        const ENTRY_DURATION_MS = 24 * 60 * 60 * 1000; // 24 horas
+        const paywall = document.getElementById('paywall');
+        const cta = document.getElementById('paywall-cta');
+
+        function hidePaywall() {
+          paywall.classList.remove('visible');
+          paywall.style.display = 'none';
+        }
+
+        function showPaywall() {
+          paywall.classList.add('visible');
+          paywall.style.display = 'flex';
+        }
+
+        function persistEntry() {
+          const now = Date.now();
+          const payload = { paidAt: now, expiresAt: now + ENTRY_DURATION_MS };
+          localStorage.setItem(ENTRY_STORAGE_KEY, JSON.stringify(payload));
+        }
+
+        function hasValidEntry() {
+          try {
+            const raw = localStorage.getItem(ENTRY_STORAGE_KEY);
+            if (!raw) return false;
+            const data = JSON.parse(raw);
+            if (!data || typeof data.expiresAt !== 'number') return false;
+            if (Date.now() > data.expiresAt) {
+              localStorage.removeItem(ENTRY_STORAGE_KEY);
+              return false;
+            }
+            return true;
+          } catch (err) {
+            localStorage.removeItem(ENTRY_STORAGE_KEY);
+            return false;
+          }
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const status = (params.get('collection_status') || params.get('status') || '').toLowerCase();
+        const paymentApproved = status === 'approved' || status === 'success';
+
+        if (paymentApproved) {
+          persistEntry();
+          const cleanUrl = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        }
+
+        const paid = hasValidEntry();
+        if (!paid) {
+          showPaywall();
+        }
+
+        // Long press para abrir keypad
+        let pressTimer = null;
+        let touchHandled = false;
+
+        cta?.addEventListener('mousedown', () => {
+          pressTimer = setTimeout(() => {
+            openKeypad();
+          }, 3000);
+        });
+
+        cta?.addEventListener('mouseup', () => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+        });
+
+        cta?.addEventListener('mouseleave', () => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+        });
+
+        cta?.addEventListener('touchstart', (e) => {
+          touchHandled = false;
+          pressTimer = setTimeout(() => {
+            touchHandled = true;
+            openKeypad();
+            e.preventDefault();
+          }, 3000);
+        }, { passive: false });
+
+        cta?.addEventListener('touchend', (e) => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+          if (touchHandled) {
+            e.preventDefault();
+            touchHandled = false;
+          }
+        }, { passive: false });
+
+        cta?.addEventListener('touchcancel', () => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+          touchHandled = false;
+        });
+
+        cta?.addEventListener('touchmove', () => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+          touchHandled = false;
+        });
+
+        cta?.addEventListener('click', async () => {
+          const MP_PUBLIC_KEY = window.ENV_MP_PUBLIC_KEY || 'pk_test_replace_me';
+          if (!window.MercadoPago) {
+            alert('Mercado Pago no está disponible. Intenta de nuevo.');
+            return;
+          }
+
+          if (!MP_PUBLIC_KEY || MP_PUBLIC_KEY.includes('replace_me')) {
+            alert('Configura la clave pública de Mercado Pago.');
+            return;
+          }
+
+          try {
+            const payload = {
+              successUrl: `${window.location.origin}${window.location.pathname}`,
+              failUrl: `${window.location.origin}${window.location.pathname}`,
+              title: 'Pase diario TOXI',
+              price: 100
+            };
+
+            console.info('[TOXI][MP] Creando preferencia...', payload);
+            const resp = await fetch('/api/create-preference', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            let data = null;
+            try {
+              data = await resp.json();
+            } catch (e) {
+              console.warn('[TOXI][MP] No se pudo parsear JSON', e);
+            }
+
+            if (!resp.ok) {
+              console.error('[TOXI][MP] Respuesta no OK', resp.status, resp.statusText, data);
+              alert(`No se pudo iniciar el pago. Detalle: ${data?.detail || data?.error || resp.statusText || 'sin detalle'}`);
+              return;
+            }
+
+            console.info('[TOXI][MP] Preferencia creada', data);
+            if (!data.preferenceId) {
+              console.error('[TOXI][MP] preferenceId faltante', data);
+              alert(`Respuesta inválida del servidor: ${data.error || 'sin preferenceId'}`);
+              return;
+            }
+
+            const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'es-AR' });
+            console.info('[TOXI][MP] Abriendo checkout con', data.preferenceId);
+            mp.checkout({
+              preference: { id: data.preferenceId },
+              autoOpen: true
+            });
+          } catch (err) {
+            console.error('[TOXI][MP] Error al iniciar pago', err);
+            alert(`Error al iniciar el pago: ${err?.message || err}`);
+          }
+        });
+
+        if (paid) {
+          hidePaywall();
+        }
+
+        // Keypad functionality
+        const keypadModal = document.getElementById('keypad-modal');
+        const keypadClose = document.getElementById('keypad-close');
+        const keypadDots = document.getElementById('keypad-dots');
+        const keypadCard = document.querySelector('.keypad-card');
+        const keypadBtns = document.querySelectorAll('.keypad-btn');
+        const SECRET_CODE = '2058';
+        let currentCode = '';
+        let successUnlocked = false;
+
+        function openKeypad() {
+          successUnlocked = false;
+          keypadCard?.classList.remove('success');
+          keypadDots.classList.remove('success');
+          keypadBtns.forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('success');
+          });
+          keypadModal.classList.remove('hidden');
+          currentCode = '';
+          updateDots();
+        }
+
+        function closeKeypad(force = false) {
+          if (successUnlocked && !force) return;
+          keypadModal.classList.add('hidden');
+          currentCode = '';
+          updateDots();
+        }
+
+        function updateDots() {
+          keypadDots.innerHTML = '';
+          for (let i = 0; i < 4; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'keypad-dot';
+            if (i < currentCode.length) {
+              dot.classList.add('filled');
+            }
+            keypadDots.appendChild(dot);
+          }
+        }
+
+        function markSuccess() {
+          successUnlocked = true;
+          keypadCard?.classList.add('success');
+          keypadDots.classList.add('success');
+          keypadBtns.forEach(btn => {
+            btn.disabled = true;
+            btn.classList.add('success');
+          });
+        }
+
+        function checkCode() {
+          if (currentCode === SECRET_CODE) {
+            persistEntry();
+            markSuccess();
+            // Espera breve con el keypad en verde y luego refresca
+            setTimeout(() => {
+              window.location.reload();
+            }, 1200);
+          } else {
+            // Shake animation on error
+            keypadDots.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+              keypadDots.style.animation = '';
+              currentCode = '';
+              updateDots();
+            }, 500);
+          }
+        }
+
+        keypadClose?.addEventListener('click', closeKeypad);
+
+        keypadBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const key = btn.dataset.key;
+            
+            if (key === 'clear') {
+              currentCode = currentCode.slice(0, -1);
+              updateDots();
+            } else if (key === 'enter') {
+              if (currentCode.length === 4) {
+                checkCode();
+              }
+            } else if (currentCode.length < 4) {
+              currentCode += key;
+              updateDots();
+              if (currentCode.length === 4) {
+                setTimeout(() => checkCode(), 300);
+              }
+            }
+          });
+        });
+
+        // Close keypad on outside click
+        keypadModal?.addEventListener('click', (e) => {
+          if (e.target === keypadModal) {
+            closeKeypad();
+          }
+        });
+      })();
+    </script>
 
     <script type="module" src="./src/main.js"></script>
   </body>

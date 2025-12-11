@@ -296,6 +296,97 @@ canvas {
   transform: translateY(-50%);
 }
 
+/* Paywall overlay */
+.paywall-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.94);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: #fff;
+  font-family: 'Helvetica Now', sans-serif;
+  text-align: center;
+  backdrop-filter: blur(4px);
+}
+
+.paywall-overlay.visible {
+  display: flex;
+}
+
+.paywall-card {
+  background: rgba(15, 15, 15, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 32px 28px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.55);
+}
+
+.paywall-card h1 {
+  margin: 0 0 12px;
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+.paywall-card p {
+  margin: 0 0 20px;
+  color: #cfcfcf;
+  line-height: 1.5;
+}
+
+.paywall-price {
+  display: inline-block;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  font-size: 16px;
+  letter-spacing: 1px;
+  margin-bottom: 18px;
+}
+
+.paywall-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.paywall-button {
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: linear-gradient(135deg, #ffffff 0%, #9ae6ff 100%);
+  color: #000;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
+}
+
+.paywall-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.18);
+}
+
+.paywall-button:active {
+  transform: translateY(0);
+}
+
+.paywall-secondary {
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+}
+
+.paywall-note {
+  font-size: 12px;
+  color: #a0a0a0;
+  margin-top: 10px;
+}
+
 /* Slightly smaller on very narrow screens */
 @media (max-width: 480px) {
   .edge-hint { width: 48px; height: 48px; }
@@ -303,3 +394,200 @@ canvas {
 
 /* Utility: visually-hidden for accessibility */
 .visually-hidden { position: absolute !important; height: 1px; width: 1px; overflow: hidden; clip: rect(1px, 1px, 1px, 1px); white-space: nowrap; }
+
+/* Keypad Modal Styles */
+.keypad-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  backdrop-filter: blur(8px);
+}
+
+.keypad-overlay.hidden {
+  display: none;
+}
+
+.keypad-card {
+  background: rgba(20, 20, 20, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 32px;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.7);
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.keypad-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 32px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.keypad-close:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.keypad-display {
+  margin: 20px 0 40px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#keypad-dots {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.keypad-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  transition: all 0.2s ease;
+}
+
+.keypad-dot.filled {
+  background: linear-gradient(135deg, #ffffff 0%, #9ae6ff 100%);
+  border-color: transparent;
+  box-shadow: 0 2px 12px rgba(154, 230, 255, 0.4);
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.keypad-btn {
+  aspect-ratio: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: #fff;
+  font-family: 'Helvetica Now', sans-serif;
+  font-size: 24px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+.keypad-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.keypad-btn:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.keypad-btn.keypad-clear {
+  background: rgba(255, 100, 100, 0.1);
+  border-color: rgba(255, 100, 100, 0.2);
+}
+
+.keypad-btn.keypad-clear:hover {
+  background: rgba(255, 100, 100, 0.2);
+  border-color: rgba(255, 100, 100, 0.3);
+}
+
+.keypad-btn.keypad-enter {
+  background: linear-gradient(135deg, rgba(154, 230, 255, 0.2), rgba(255, 255, 255, 0.15));
+  border-color: rgba(154, 230, 255, 0.3);
+}
+
+.keypad-btn.keypad-enter:hover {
+  background: linear-gradient(135deg, rgba(154, 230, 255, 0.3), rgba(255, 255, 255, 0.2));
+  border-color: rgba(154, 230, 255, 0.4);
+}
+
+.keypad-card.success {
+  background: linear-gradient(135deg, rgba(0, 120, 60, 0.85), rgba(0, 180, 120, 0.9));
+  border-color: rgba(0, 255, 153, 0.5);
+  box-shadow: 0 30px 120px rgba(0, 255, 153, 0.35);
+}
+
+.keypad-card.success .keypad-dot {
+  border-color: rgba(0, 255, 153, 0.6);
+}
+
+.keypad-card.success .keypad-dot.filled {
+  background: linear-gradient(135deg, #00ff88 0%, #8cffd9 100%);
+  border-color: transparent;
+  box-shadow: 0 2px 14px rgba(0, 255, 153, 0.4);
+}
+
+.keypad-card.success .keypad-btn {
+  background: rgba(0, 255, 153, 0.12);
+  border-color: rgba(0, 255, 153, 0.35);
+  color: #eafff4;
+}
+
+.keypad-card.success .keypad-btn.keypad-enter {
+  background: linear-gradient(135deg, rgba(0, 255, 153, 0.35), rgba(140, 255, 217, 0.3));
+  border-color: rgba(0, 255, 153, 0.5);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+  20%, 40%, 60%, 80% { transform: translateX(8px); }
+}
+
+/* Responsive keypad */
+@media (max-width: 480px) {
+  .keypad-card {
+    padding: 24px;
+    max-width: 320px;
+  }
+  
+  .keypad-btn {
+    font-size: 20px;
+  }
+  
+  #keypad-dots {
+    gap: 12px;
+  }
+  
+  .keypad-dot {
+    width: 14px;
+    height: 14px;
+  }
+}
