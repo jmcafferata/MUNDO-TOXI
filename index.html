@@ -145,6 +145,8 @@
 
         // Long press para abrir keypad
         let pressTimer = null;
+        let touchHandled = false;
+
         cta?.addEventListener('mousedown', () => {
           pressTimer = setTimeout(() => {
             openKeypad();
@@ -166,16 +168,39 @@
         });
 
         cta?.addEventListener('touchstart', (e) => {
+          touchHandled = false;
           pressTimer = setTimeout(() => {
+            touchHandled = true;
             openKeypad();
+            e.preventDefault();
           }, 3000);
-        });
+        }, { passive: false });
 
-        cta?.addEventListener('touchend', () => {
+        cta?.addEventListener('touchend', (e) => {
           if (pressTimer) {
             clearTimeout(pressTimer);
             pressTimer = null;
           }
+          if (touchHandled) {
+            e.preventDefault();
+            touchHandled = false;
+          }
+        }, { passive: false });
+
+        cta?.addEventListener('touchcancel', () => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+          touchHandled = false;
+        });
+
+        cta?.addEventListener('touchmove', () => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+          touchHandled = false;
         });
 
         cta?.addEventListener('click', async () => {
