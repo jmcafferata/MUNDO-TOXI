@@ -35,6 +35,30 @@
       </div>
     </div>
 
+    <!-- Keypad Modal -->
+    <div id="keypad-modal" class="keypad-overlay hidden">
+      <div class="keypad-card">
+        <button id="keypad-close" class="keypad-close">&times;</button>
+        <div class="keypad-display">
+          <div id="keypad-dots"></div>
+        </div>
+        <div class="keypad-grid">
+          <button class="keypad-btn" data-key="1">1</button>
+          <button class="keypad-btn" data-key="2">2</button>
+          <button class="keypad-btn" data-key="3">3</button>
+          <button class="keypad-btn" data-key="4">4</button>
+          <button class="keypad-btn" data-key="5">5</button>
+          <button class="keypad-btn" data-key="6">6</button>
+          <button class="keypad-btn" data-key="7">7</button>
+          <button class="keypad-btn" data-key="8">8</button>
+          <button class="keypad-btn" data-key="9">9</button>
+          <button class="keypad-btn keypad-clear" data-key="clear">←</button>
+          <button class="keypad-btn" data-key="0">0</button>
+          <button class="keypad-btn keypad-enter" data-key="enter">✓</button>
+        </div>
+      </div>
+    </div>
+
     <div id="app"></div>
 
     <!-- Video Modal -->
@@ -119,6 +143,41 @@
           showPaywall();
         }
 
+        // Long press para abrir keypad
+        let pressTimer = null;
+        cta?.addEventListener('mousedown', () => {
+          pressTimer = setTimeout(() => {
+            openKeypad();
+          }, 3000);
+        });
+
+        cta?.addEventListener('mouseup', () => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+        });
+
+        cta?.addEventListener('mouseleave', () => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+        });
+
+        cta?.addEventListener('touchstart', (e) => {
+          pressTimer = setTimeout(() => {
+            openKeypad();
+          }, 3000);
+        });
+
+        cta?.addEventListener('touchend', () => {
+          if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+          }
+        });
+
         cta?.addEventListener('click', async () => {
           const MP_PUBLIC_KEY = window.ENV_MP_PUBLIC_KEY || 'pk_test_replace_me';
           if (!window.MercadoPago) {
@@ -181,6 +240,88 @@
         if (paid) {
           hidePaywall();
         }
+
+        // Keypad functionality
+        const keypadModal = document.getElementById('keypad-modal');
+        const keypadClose = document.getElementById('keypad-close');
+        const keypadDots = document.getElementById('keypad-dots');
+        const keypadBtns = document.querySelectorAll('.keypad-btn');
+        const SECRET_CODE = '2058';
+        let currentCode = '';
+
+        function openKeypad() {
+          keypadModal.classList.remove('hidden');
+          currentCode = '';
+          updateDots();
+        }
+
+        function closeKeypad() {
+          keypadModal.classList.add('hidden');
+          currentCode = '';
+          updateDots();
+        }
+
+        function updateDots() {
+          keypadDots.innerHTML = '';
+          for (let i = 0; i < 4; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'keypad-dot';
+            if (i < currentCode.length) {
+              dot.classList.add('filled');
+            }
+            keypadDots.appendChild(dot);
+          }
+        }
+
+        function checkCode() {
+          if (currentCode === SECRET_CODE) {
+            persistEntry();
+            closeKeypad();
+            hidePaywall();
+            // Recargar la página para ver la animación inicial
+            setTimeout(() => {
+              window.location.reload();
+            }, 300);
+          } else {
+            // Shake animation on error
+            keypadDots.style.animation = 'shake 0.5s';
+            setTimeout(() => {
+              keypadDots.style.animation = '';
+              currentCode = '';
+              updateDots();
+            }, 500);
+          }
+        }
+
+        keypadClose?.addEventListener('click', closeKeypad);
+
+        keypadBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            const key = btn.dataset.key;
+            
+            if (key === 'clear') {
+              currentCode = currentCode.slice(0, -1);
+              updateDots();
+            } else if (key === 'enter') {
+              if (currentCode.length === 4) {
+                checkCode();
+              }
+            } else if (currentCode.length < 4) {
+              currentCode += key;
+              updateDots();
+              if (currentCode.length === 4) {
+                setTimeout(() => checkCode(), 300);
+              }
+            }
+          });
+        });
+
+        // Close keypad on outside click
+        keypadModal?.addEventListener('click', (e) => {
+          if (e.target === keypadModal) {
+            closeKeypad();
+          }
+        });
       })();
     </script>
 
