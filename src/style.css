@@ -23,6 +23,8 @@ body {
   overflow: hidden;
   overscroll-behavior: contain;
   background-color: #000;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Page fade-in from black */
