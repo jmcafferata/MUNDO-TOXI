@@ -9,25 +9,15 @@
     />
     <title>TOXI Media - Earth</title>
     <link rel="stylesheet" href="./src/style.css" />
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const audio = new Audio('music/Island%20Jubilee%20(1).mp3');
-        audio.loop = true;
-        audio.volume = 0.5;
-        window.currentAudio = audio;
-        
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-          playPromise.catch(e => {
-            console.log("Autoplay blocked", e);
-            const resume = () => {
-              audio.play();
-              document.removeEventListener('click', resume);
-              document.removeEventListener('touchstart', resume);
-            };
-            document.addEventListener('click', resume);
-            document.addEventListener('touchstart', resume);
-          });
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script type="module" src="./src/env.js"></script>
+    <script type="module">
+      import { initPaywall } from './src/paywall.js';
+      
+      initPaywall({
+        musicFile: 'music/Island%20Jubilee%20(1).mp3',
+        onEnter: () => {
+          if (window.resetEarthAnimation) window.resetEarthAnimation();
         }
       });
     </script>
