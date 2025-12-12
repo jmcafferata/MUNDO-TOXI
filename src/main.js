@@ -170,6 +170,22 @@ function navigateWithFade(url, { force = false, duration = 3000 } = {}) {
         fadeDiv.style.opacity = '1';
     });
 
+    // Fade out music
+    if (window.currentAudio) {
+        const audio = window.currentAudio;
+        const startVolume = audio.volume;
+        const fadeStep = startVolume / (duration / 50); // 50ms steps
+        
+        const fadeInterval = setInterval(() => {
+            if (audio.volume > fadeStep) {
+                audio.volume -= fadeStep;
+            } else {
+                audio.volume = 0;
+                clearInterval(fadeInterval);
+            }
+        }, 50);
+    }
+
     setTimeout(() => {
         window.location.href = url;
     }, duration);

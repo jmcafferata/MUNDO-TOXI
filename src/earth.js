@@ -89,6 +89,24 @@ function navigateToMainFromEarth(url = 'index.html') {
     window._navigating = true;
     fadeDiv.style.pointerEvents = 'auto';
     fadeDiv.style.opacity = '1';
+
+    // Fade out music
+    if (window.currentAudio) {
+        const audio = window.currentAudio;
+        const startVolume = audio.volume;
+        const duration = 1000; // matches timeout below
+        const fadeStep = startVolume / (duration / 50); 
+        
+        const fadeInterval = setInterval(() => {
+            if (audio.volume > fadeStep) {
+                audio.volume -= fadeStep;
+            } else {
+                audio.volume = 0;
+                clearInterval(fadeInterval);
+            }
+        }, 50);
+    }
+
     setTimeout(() => {
         window.location.href = url;
     }, 1000);

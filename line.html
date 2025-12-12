@@ -9,6 +9,28 @@
   />
   <title>Línea de Tiempo</title>
   <link rel="stylesheet" href="./src/style.css" />
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const audio = new Audio('music/Shadows%20in%20the%20Fog%20(1).mp3');
+      audio.loop = true;
+      audio.volume = 0.5;
+      window.currentAudio = audio;
+      
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(e => {
+          console.log("Autoplay blocked", e);
+          const resume = () => {
+            audio.play();
+            document.removeEventListener('click', resume);
+            document.removeEventListener('touchstart', resume);
+          };
+          document.addEventListener('click', resume);
+          document.addEventListener('touchstart', resume);
+        });
+      }
+    });
+  </script>
 </head>
 <body>
   <script type="module" src="./src/line.js"></script>

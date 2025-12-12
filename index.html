@@ -98,6 +98,28 @@
         function hidePaywall() {
           paywall.classList.remove('visible');
           paywall.style.display = 'none';
+          
+          // Play specific track for main page
+          const audio = new Audio('music/Echoes%20in%20the%20Deep%20(1).mp3');
+          audio.loop = true;
+          audio.volume = 0.5;
+          
+          const playPromise = audio.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(e => {
+              console.log("Autoplay blocked", e);
+              const resume = () => {
+                audio.play();
+                document.removeEventListener('click', resume);
+                document.removeEventListener('touchstart', resume);
+              };
+              document.addEventListener('click', resume);
+              document.addEventListener('touchstart', resume);
+            });
+          }
+          
+          // Store audio instance to stop it if needed later (optional)
+          window.currentAudio = audio;
         }
 
         function showPaywall() {
@@ -141,6 +163,9 @@
         const paid = hasValidEntry();
         if (!paid) {
           showPaywall();
+        } else {
+          // If already paid (e.g. returning from another page), play music immediately
+          hidePaywall();
         }
 
         // Long press para abrir keypad
