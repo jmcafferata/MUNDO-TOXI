@@ -770,6 +770,17 @@ let introMainDone = false;
 // Expose intro state to other modules so UI (labels) can wait until intro finishes
 window._introMainDone = false;
 
+window.resetCameraAnimation = function() {
+    introMainDone = false;
+    window._introMainDone = false;
+    // Reset clock to restart the intro animation timer
+    clock.start(); 
+    // Reset camera to start position
+    camera.position.copy(cameraStartPos);
+    camera.lookAt(scene.position);
+    controls.enabled = false;
+};
+
 function animate() {
     animationId = requestAnimationFrame(animate);
     TWEEN.update(); // Update tweens

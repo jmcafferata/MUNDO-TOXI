@@ -129,6 +129,10 @@ function onPointerDown(event) {
 function onPointerUp(event) {
     if (window._navigating) return;
     
+    // Only trigger if the event target is the canvas (renderer)
+    // This prevents clicks on overlays (like keypad) from triggering navigation
+    if (event.target !== renderer.domElement) return;
+    
     const mouseUpPos = new THREE.Vector2(event.clientX, event.clientY);
     const distance = mouseDownPos.distanceTo(mouseUpPos);
     
@@ -688,6 +692,14 @@ const startCameraPos = new THREE.Vector3(60, 0, 0);
 const introDuration = 10.0; // seconds
 const cameraInitialPos = new THREE.Vector3(200, 0, 0); // must match initial camera set above
 let introDone = false;
+
+window.resetEarthAnimation = function() {
+    introDone = false;
+    clock.start();
+    camera.position.copy(cameraInitialPos);
+    camera.lookAt(0, 0, 0);
+    controls.reset();
+};
 
 // (inner occluder removed; no fade variables needed)
 
