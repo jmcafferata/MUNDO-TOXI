@@ -19,7 +19,7 @@
     { "name": "Villa Llanquín", "lat": -40.8955, "lon": -71.0366 },
     { "name": "Villa Traful", "lat": -40.6542, "lon": -71.4000 },
     { "name": "San Martín de los Andes", "lat": -40.1537, "lon": -71.3550 },
-    { "name": "Pucará (Parque Nacional Lanín)", "lat": -40.1900, "lon": -71.6325 },
+    { "name": "Pucará", "lat": -40.1900, "lon": -71.6325 },
     { "name": "Villa La Angostura", "lat": -40.7630, "lon": -71.6428 },
     { "name": "Las Grutas", "lat": -40.8083, "lon": -65.0867 }
   ],
@@ -84,11 +84,11 @@
     { "from": "Villa Traful", "to": "San Martín de los Andes" },
     { "from": "San Martín de los Andes", "to": "Villa Traful" },
 
-    { "from": "San Martín de los Andes", "to": "Pucará (Parque Nacional Lanín)" },
-    { "from": "Pucará (Parque Nacional Lanín)", "to": "San Martín de los Andes" },
+    { "from": "San Martín de los Andes", "to": "Pucará" },
+    { "from": "Pucará", "to": "San Martín de los Andes" },
 
-    { "from": "Pucará (Parque Nacional Lanín)", "to": "Villa La Angostura" },
-    { "from": "Villa La Angostura", "to": "Pucará (Parque Nacional Lanín)" },
+    { "from": "Pucará", "to": "Villa La Angostura" },
+    { "from": "Villa La Angostura", "to": "Pucará" },
 
     { "from": "Villa La Angostura", "to": "Las Grutas" },
     { "from": "Las Grutas", "to": "Villa La Angostura" },
