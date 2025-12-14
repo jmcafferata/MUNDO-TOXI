@@ -430,13 +430,13 @@ function loadCityLevel(url = './cities.json') {
                 cityGroup.add(cityLine);
 
                 // Traveling dot
-                const cityDotGeometry = new THREE.SphereGeometry(0.06, 8, 8);
+                const cityDotGeometry = new THREE.SphereGeometry(0.025, 8, 8);
                 const cityDotMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
                 const cityDot = new THREE.Mesh(cityDotGeometry, cityDotMaterial);
                 cityGroup.add(cityDot);
 
                 const curveLengthCity = cityCurve.getLength();
-                const speedCity = 0.03;
+                const speedCity = 0.005;
                 animatedDots.push({
                     curve: cityCurve,
                     mesh: cityDot,
@@ -489,11 +489,11 @@ function loadCityLevel(url = './cities.json') {
                     cityGroup.add(line);
 
                     const dirCount = pairCounts[key];
-                    const dotSpeed = 0.03;
+                    const dotSpeed = 0.005;
                     // Create one dot for a single-direction link, two dots for bidirectional
                     const dotsToCreate = dirCount >= 2 ? 2 : 1;
                     for (let i = 0; i < dotsToCreate; i++) {
-                        const dGeom = new THREE.SphereGeometry(0.06, 8, 8);
+                        const dGeom = new THREE.SphereGeometry(0.025, 8, 8);
                         const dMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1 });
                         const dot = new THREE.Mesh(dGeom, dMat);
                         cityGroup.add(dot);
