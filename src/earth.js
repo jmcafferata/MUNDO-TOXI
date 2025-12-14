@@ -235,7 +235,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.enablePan = false;
-controls.minDistance = 30;
+controls.minDistance = 16;
 controls.maxDistance = 100;
 
 // Lights
@@ -745,6 +745,12 @@ function animate() {
 
     // Fade out countries and connections based on distance
     const distToCenter = camera.position.length();
+
+    // Adjust rotation sensitivity based on distance
+    // Min distance ~16, Max ~100. Speed 0.1 at 16, 1.0 at 100
+    const speedT = THREE.MathUtils.clamp((distToCenter - 16) / (100 - 16), 0, 1);
+    controls.rotateSpeed = 0.1 + speedT * 0.9;
+
     // Fade out between 55 and 45 (starts fading at 55, gone at 45)
     let elementsOpacity = THREE.MathUtils.clamp((distToCenter - 45) / 10, 0, 1);
     
