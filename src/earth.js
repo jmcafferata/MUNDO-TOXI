@@ -380,7 +380,7 @@ function loadCityLevel(url = './cities.json') {
             const cities = data.cities || data;
             if (!Array.isArray(cities) || cities.length === 0) return;
 
-            const cityMarkerGeometry = new THREE.SphereGeometry(0.14, 8, 8);
+            const cityMarkerGeometry = new THREE.SphereGeometry(0.05, 8, 8);
             const cityMaterialBase = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
 
             // Create markers
