@@ -235,7 +235,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.enablePan = false;
-controls.minDistance = 16;
+controls.minDistance = 24;
 controls.maxDistance = 100;
 
 // Lights
@@ -380,7 +380,7 @@ function loadCityLevel(url = './cities.json') {
             const cities = data.cities || data;
             if (!Array.isArray(cities) || cities.length === 0) return;
 
-            const cityMarkerGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+            const cityMarkerGeometry = new THREE.SphereGeometry(0.01, 8, 8);
             const cityMaterialBase = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
 
             // Create markers
@@ -409,7 +409,7 @@ function loadCityLevel(url = './cities.json') {
                 // div.style.transition = 'opacity 1s ease-in-out';
 
                 const label = new CSS2DObject(div);
-                label.position.set(0, 0.45, 0);
+                label.position.set(0, 0.02, 0);
                 mesh.add(label);
                 cityLabels.push(div);
 
@@ -430,7 +430,7 @@ function loadCityLevel(url = './cities.json') {
                 cityGroup.add(cityLine);
 
                 // Traveling dot
-                const cityDotGeometry = new THREE.SphereGeometry(0.025, 8, 8);
+                const cityDotGeometry = new THREE.SphereGeometry(0.005, 8, 8);
                 const cityDotMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
                 const cityDot = new THREE.Mesh(cityDotGeometry, cityDotMaterial);
                 cityGroup.add(cityDot);
@@ -493,7 +493,7 @@ function loadCityLevel(url = './cities.json') {
                     // Create one dot for a single-direction link, two dots for bidirectional
                     const dotsToCreate = dirCount >= 2 ? 2 : 1;
                     for (let i = 0; i < dotsToCreate; i++) {
-                        const dGeom = new THREE.SphereGeometry(0.025, 8, 8);
+                        const dGeom = new THREE.SphereGeometry(0.005, 8, 8);
                         const dMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1 });
                         const dot = new THREE.Mesh(dGeom, dMat);
                         cityGroup.add(dot);
@@ -747,8 +747,8 @@ function animate() {
     const distToCenter = camera.position.length();
 
     // Adjust rotation sensitivity based on distance
-    // Min distance ~16, Max ~100. Speed 0.1 at 16, 1.0 at 100
-    const speedT = THREE.MathUtils.clamp((distToCenter - 16) / (100 - 16), 0, 1);
+    // Min distance ~24, Max ~100. Speed 0.1 at 24, 1.0 at 100
+    const speedT = THREE.MathUtils.clamp((distToCenter - 24) / (100 - 24), 0, 1);
     controls.rotateSpeed = 0.1 + speedT * 0.9;
 
     // Fade out between 55 and 45 (starts fading at 55, gone at 45)
