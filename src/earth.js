@@ -571,7 +571,7 @@ connections.forEach(pair => {
         earthPoints.add(dot);
         
         const curveLength = curve.getLength();
-        const speed = 0.03; // Constant speed in world units per frame
+        const speed = 0.12; // Constant speed in world units per frame
 
         animatedDots.push({
             curve: curve,
