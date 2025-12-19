@@ -21,7 +21,7 @@ export default defineConfig({
         type: 'module'
       },
       injectManifest: {
-        globPatterns: ['**/*.{js,css,html,png,svg,ico,glb,mp3,json,otf}'],
+        globPatterns: ['**/*.{js,css,html,png,svg,ico,glb,mp3,otf}'],
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
       },
       includeAssets: ['world.svg', 'logo.glb'],
