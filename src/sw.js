@@ -1,6 +1,11 @@
-import { precacheAndRoute } from 'workbox-precaching';
+import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
 
 precacheAndRoute(self.__WB_MANIFEST);
+cleanupOutdatedCaches();
+
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
 
 const NOTIFICATIONS_URL = '/notifications.json';
 const SHOWN_NOTIFICATIONS_KEY = 'toxi_shown_notifications';
@@ -81,7 +86,17 @@ self.addEventListener('notificationclick', (event) => {
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (!cacheName.includes('workbox-precache')) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
 });
 
 setInterval(checkScheduledNotifications, CHECK_INTERVAL);
