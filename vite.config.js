@@ -45,6 +45,7 @@ export default defineConfig({
         earth: resolve(__dirname, 'earth.html'),
         line: resolve(__dirname, 'line.html'),
         point: resolve(__dirname, 'point.html'),
+        app: resolve(__dirname, 'app.html'),
       },
     },
   },

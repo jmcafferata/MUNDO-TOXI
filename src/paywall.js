@@ -4,13 +4,24 @@ export function initPaywall({ musicFile, onEnter }) {
   if (!document.getElementById('paywall')) {
     const html = `
     <div id="paywall" class="paywall-overlay" role="dialog" aria-modal="true">
-      <div class="paywall-card">
-        <h1>Pase diario</h1>
-        <div class="paywall-price">$100 ARS · 24h</div>
-        <p>Accedé a la experiencia completa de TOXI por un día.</p>
-        <div class="paywall-actions">
-          <button id="paywall-cta" class="paywall-button">Entrar con Mercado Pago</button>
-          <div class="paywall-note">Pagos procesados de forma segura por Mercado Pago.</div>
+      <div class="paywall-cards-container">
+        <div class="paywall-card">
+          <h1>Pase diario</h1>
+          <div class="paywall-price">$100 ARS · 24h</div>
+          <p>Accedé a la experiencia completa de TOXI por un día.</p>
+          <div class="paywall-actions">
+            <button id="paywall-cta" class="paywall-button">Entrar con Mercado Pago</button>
+            <div class="paywall-note">Pagos procesados de forma segura por Mercado Pago.</div>
+          </div>
+        </div>
+        <div class="paywall-card">
+          <h1>Instalar la App</h1>
+          <div class="paywall-price">$1000 ARS</div>
+          <p>Descargá la aplicación de TOXI para tenerla siempre disponible.</p>
+          <div class="paywall-actions">
+            <button id="paywall-app-cta" class="paywall-button paywall-button-app">Comprar con Mercado Pago</button>
+            <div class="paywall-note">Acceso permanente a la app.</div>
+          </div>
         </div>
       </div>
     </div>
@@ -261,6 +272,67 @@ export function initPaywall({ musicFile, onEnter }) {
       };
 
       console.info('[TOXI][MP] Creando preferencia...', payload);
+      const resp = await fetch('/api/create-preference', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      let data = null;
+      try {
+        data = await resp.json();
+      } catch (e) {
+        console.warn('[TOXI][MP] No se pudo parsear JSON', e);
+      }
+
+      if (!resp.ok) {
+        console.error('[TOXI][MP] Respuesta no OK', resp.status, resp.statusText, data);
+        alert(`No se pudo iniciar el pago. Detalle: ${data?.detail || data?.error || resp.statusText || 'sin detalle'}`);
+        return;
+      }
+
+      console.info('[TOXI][MP] Preferencia creada', data);
+      if (!data.preferenceId) {
+        console.error('[TOXI][MP] preferenceId faltante', data);
+        alert(`Respuesta inválida del servidor: ${data.error || 'sin preferenceId'}`);
+        return;
+      }
+
+      const mp = new MercadoPago(MP_PUBLIC_KEY, { locale: 'es-AR' });
+      console.info('[TOXI][MP] Abriendo checkout con', data.preferenceId);
+      mp.checkout({
+        preference: { id: data.preferenceId },
+        autoOpen: true
+      });
+    } catch (err) {
+      console.error('[TOXI][MP] Error al iniciar pago', err);
+      alert(`Error al iniciar el pago: ${err?.message || err}`);
+    }
+  });
+
+  // App purchase button handler
+  const appCta = document.getElementById('paywall-app-cta');
+  appCta?.addEventListener('click', async () => {
+    const MP_PUBLIC_KEY = window.ENV_MP_PUBLIC_KEY || 'pk_test_replace_me';
+    if (!window.MercadoPago) {
+      alert('Mercado Pago no está disponible. Intenta de nuevo.');
+      return;
+    }
+
+    if (!MP_PUBLIC_KEY || MP_PUBLIC_KEY.includes('replace_me')) {
+      alert('Configura la clave pública de Mercado Pago.');
+      return;
+    }
+
+    try {
+      const payload = {
+        successUrl: `${window.location.origin}/app.html`,
+        failUrl: `${window.location.origin}${window.location.pathname}`,
+        title: 'Instalar App TOXI',
+        price: 1000
+      };
+
+      console.info('[TOXI][MP] Creando preferencia para App...', payload);
       const resp = await fetch('/api/create-preference', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
