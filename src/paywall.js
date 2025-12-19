@@ -50,10 +50,6 @@ export function initPaywall({ musicFile, onEnter }) {
           <button class="keypad-btn" data-key="0">0</button>
           <button class="keypad-btn keypad-enter" data-key="enter">✓</button>
         </div>
-        <div class="keypad-choice hidden" id="keypad-choice">
-          <button class="keypad-choice-btn" id="keypad-choice-enter">Entrar a TOXI</button>
-          <button class="keypad-choice-btn" id="keypad-choice-app">Descargar App</button>
-        </div>
       </div>
     </div>
     `;
@@ -195,65 +191,74 @@ export function initPaywall({ musicFile, onEnter }) {
     showEnterButton();
   }
 
+  // App purchase button reference (needed for long press setup)
+  const appCta = document.getElementById('paywall-app-cta');
+
   // Long press para abrir keypad
   let pressTimer = null;
   let touchHandled = false;
+  let keypadMode = 'daily'; // 'daily' or 'app'
 
-  cta?.addEventListener('mousedown', () => {
-    pressTimer = setTimeout(() => {
-      openKeypad();
-    }, 3000);
-  });
+  function setupLongPress(button, mode) {
+    button?.addEventListener('mousedown', () => {
+      pressTimer = setTimeout(() => {
+        openKeypad(mode);
+      }, 3000);
+    });
 
-  cta?.addEventListener('mouseup', () => {
-    if (pressTimer) {
-      clearTimeout(pressTimer);
-      pressTimer = null;
-    }
-  });
+    button?.addEventListener('mouseup', () => {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+    });
 
-  cta?.addEventListener('mouseleave', () => {
-    if (pressTimer) {
-      clearTimeout(pressTimer);
-      pressTimer = null;
-    }
-  });
+    button?.addEventListener('mouseleave', () => {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+    });
 
-  cta?.addEventListener('touchstart', (e) => {
-    touchHandled = false;
-    pressTimer = setTimeout(() => {
-      touchHandled = true;
-      openKeypad();
-      e.preventDefault();
-    }, 3000);
-  }, { passive: false });
-
-  cta?.addEventListener('touchend', (e) => {
-    if (pressTimer) {
-      clearTimeout(pressTimer);
-      pressTimer = null;
-    }
-    if (touchHandled) {
-      e.preventDefault();
+    button?.addEventListener('touchstart', (e) => {
       touchHandled = false;
-    }
-  }, { passive: false });
+      pressTimer = setTimeout(() => {
+        touchHandled = true;
+        openKeypad(mode);
+        e.preventDefault();
+      }, 3000);
+    }, { passive: false });
 
-  cta?.addEventListener('touchcancel', () => {
-    if (pressTimer) {
-      clearTimeout(pressTimer);
-      pressTimer = null;
-    }
-    touchHandled = false;
-  });
+    button?.addEventListener('touchend', (e) => {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+      if (touchHandled) {
+        e.preventDefault();
+        touchHandled = false;
+      }
+    }, { passive: false });
 
-  cta?.addEventListener('touchmove', () => {
-    if (pressTimer) {
-      clearTimeout(pressTimer);
-      pressTimer = null;
-    }
-    touchHandled = false;
-  });
+    button?.addEventListener('touchcancel', () => {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+      touchHandled = false;
+    });
+
+    button?.addEventListener('touchmove', () => {
+      if (pressTimer) {
+        clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+      touchHandled = false;
+    });
+  }
+
+  setupLongPress(cta, 'daily');
+  setupLongPress(appCta, 'app');
 
   cta?.addEventListener('click', async () => {
     const MP_PUBLIC_KEY = window.ENV_MP_PUBLIC_KEY || 'pk_test_replace_me';
@@ -315,7 +320,6 @@ export function initPaywall({ musicFile, onEnter }) {
   });
 
   // App purchase button handler
-  const appCta = document.getElementById('paywall-app-cta');
   appCta?.addEventListener('click', async () => {
     const MP_PUBLIC_KEY = window.ENV_MP_PUBLIC_KEY || 'pk_test_replace_me';
     if (!window.MercadoPago) {
@@ -385,7 +389,8 @@ export function initPaywall({ musicFile, onEnter }) {
   let currentCode = '';
   let successUnlocked = false;
 
-  function openKeypad() {
+  function openKeypad(mode = 'daily') {
+    keypadMode = mode;
     soundPopup.currentTime = 0;
     soundPopup.volume = 0.5;
     soundPopup.play().catch(() => {});
@@ -437,12 +442,14 @@ export function initPaywall({ musicFile, onEnter }) {
 
   function checkCode() {
     if (currentCode === SECRET_CODE) {
-      // No persistimos en localStorage para el código, solo para pagos.
       markSuccess();
-      // Espera breve con el keypad en verde y luego muestra el botón de entrar
       setTimeout(() => {
         closeKeypad(true);
-        showEnterButton();
+        if (keypadMode === 'app') {
+          window.location.href = '/app.html';
+        } else {
+          showEnterButton();
+        }
       }, 1200);
     } else {
       soundWrong.currentTime = 0;
