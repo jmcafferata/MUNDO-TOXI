@@ -36,7 +36,7 @@ export function initPaywall({ musicFile, onEnter }) {
         <div class="keypad-display">
           <div id="keypad-dots"></div>
         </div>
-        <div class="keypad-grid">
+        <div class="keypad-grid" id="keypad-grid">
           <button class="keypad-btn" data-key="1">1</button>
           <button class="keypad-btn" data-key="2">2</button>
           <button class="keypad-btn" data-key="3">3</button>
@@ -49,6 +49,10 @@ export function initPaywall({ musicFile, onEnter }) {
           <button class="keypad-btn keypad-clear" data-key="clear">←</button>
           <button class="keypad-btn" data-key="0">0</button>
           <button class="keypad-btn keypad-enter" data-key="enter">✓</button>
+        </div>
+        <div class="keypad-choice hidden" id="keypad-choice">
+          <button class="keypad-choice-btn" id="keypad-choice-enter">Entrar a TOXI</button>
+          <button class="keypad-choice-btn" id="keypad-choice-app">Descargar App</button>
         </div>
       </div>
     </div>
