@@ -117,9 +117,30 @@
     </div>
 
     <script>
-      document.getElementById('download-btn').addEventListener('click', function(e) {
+      let deferredPrompt;
+      const downloadBtn = document.getElementById('download-btn');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
-        alert('La descarga comenzará en breve...');
+        deferredPrompt = e;
+      });
+
+      downloadBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          console.log(`Usuario eligió: ${outcome}`);
+          deferredPrompt = null;
+        } else {
+          alert('Para instalar la app:\n\n• En iOS: Tocá el botón "Compartir" y luego "Agregar a pantalla de inicio"\n\n• En Android: Buscá el ícono de instalación en la barra de direcciones o en el menú del navegador');
+        }
+      });
+
+      window.addEventListener('appinstalled', () => {
+        console.log('PWA instalada correctamente');
+        deferredPrompt = null;
       });
     </script>
   </body>
