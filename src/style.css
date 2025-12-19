@@ -316,6 +316,14 @@ canvas {
   display: flex;
 }
 
+.paywall-cards-container {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+}
+
 .paywall-card {
   background: rgba(15, 15, 15, 0.92);
   border: 1px solid rgba(255, 255, 255, 0.12);
