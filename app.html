@@ -119,6 +119,19 @@
     <script>
       let deferredPrompt;
       const downloadBtn = document.getElementById('download-btn');
+      const noteEl = document.querySelector('.app-note');
+
+      function isRunningAsPWA() {
+        return window.matchMedia('(display-mode: standalone)').matches || 
+               window.navigator.standalone === true;
+      }
+
+      if (isRunningAsPWA()) {
+        downloadBtn.textContent = 'APP INSTALADA';
+        downloadBtn.style.background = 'linear-gradient(135deg, #00ff88 0%, #8cffd9 100%)';
+        downloadBtn.style.pointerEvents = 'none';
+        if (noteEl) noteEl.textContent = 'Ya tenés la app instalada';
+      }
 
       window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -127,6 +140,8 @@
 
       downloadBtn.addEventListener('click', async function(e) {
         e.preventDefault();
+        
+        if (isRunningAsPWA()) return;
         
         if (deferredPrompt) {
           deferredPrompt.prompt();
@@ -141,6 +156,10 @@
       window.addEventListener('appinstalled', () => {
         console.log('PWA instalada correctamente');
         deferredPrompt = null;
+        downloadBtn.textContent = 'APP INSTALADA';
+        downloadBtn.style.background = 'linear-gradient(135deg, #00ff88 0%, #8cffd9 100%)';
+        downloadBtn.style.pointerEvents = 'none';
+        if (noteEl) noteEl.textContent = 'Ya tenés la app instalada';
       });
     </script>
   </body>

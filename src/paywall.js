@@ -1,5 +1,52 @@
 
+function isRunningAsPWA() {
+  return window.matchMedia('(display-mode: standalone)').matches || 
+         window.navigator.standalone === true;
+}
+
 export function initPaywall({ musicFile, onEnter }) {
+  // If running as installed PWA, skip paywall entirely
+  if (isRunningAsPWA()) {
+    console.log('[TOXI] PWA detectada - saltando paywall');
+    // Show enter button directly without paywall
+    setTimeout(() => {
+      const enterHtml = `
+        <div id="enter-overlay" class="enter-overlay">
+          <button id="enter-button" class="enter-button">ENTRAR</button>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('afterbegin', enterHtml);
+      
+      const enterOverlay = document.getElementById('enter-overlay');
+      const enterBtn = document.getElementById('enter-button');
+      
+      enterOverlay.style.cssText = 'opacity: 1; visibility: visible; background-color: #000; display: flex;';
+      
+      enterBtn.addEventListener('click', () => {
+        enterOverlay.style.transition = 'opacity 3s ease, visibility 3s ease';
+        enterBtn.style.transition = 'opacity 1s ease';
+        enterBtn.style.opacity = '0';
+        enterBtn.style.pointerEvents = 'none';
+        
+        setTimeout(() => {
+          if (onEnter) onEnter();
+          if (musicFile) {
+            const audio = new Audio(musicFile);
+            audio.loop = true;
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log("Play error", e));
+            window.currentAudio = audio;
+          }
+          enterOverlay.style.opacity = '0';
+          setTimeout(() => {
+            enterOverlay.style.visibility = 'hidden';
+          }, 3000);
+        }, 1100);
+      });
+    }, 0);
+    return;
+  }
+
   // Inject HTML if not present
   if (!document.getElementById('paywall')) {
     const html = `
