@@ -13,8 +13,9 @@
   },
   "dependencies": {
     "@tweenjs/tween.js": "^25.0.0",
-    "mercadopago": "^2.2.9",
     "lil-gui": "^0.21.0",
-    "three": "^0.160.0"
+    "mercadopago": "^2.2.9",
+    "three": "^0.160.0",
+    "workbox-precaching": "^7.4.0"
   }
 }
