@@ -11,9 +11,17 @@ export default defineConfig({
   },
   plugins: [
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.js',
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       devOptions: {
-        enabled: true
+        enabled: true,
+        type: 'module'
+      },
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,png,svg,ico,glb,mp3,json,otf}']
       },
       includeAssets: ['world.svg', 'logo.glb'],
       manifest: {

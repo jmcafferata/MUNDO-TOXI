@@ -53,7 +53,9 @@
 
     <script type="module">
       import { initPaywall } from './src/paywall.js';
+      import { initNotifications } from './src/notifications.js';
       
+      initNotifications();
       initPaywall({
         musicFile: 'music/Echoes%20in%20the%20Deep%20(1).mp3',
         onEnter: () => {
