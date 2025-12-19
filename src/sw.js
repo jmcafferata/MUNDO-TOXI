@@ -1,7 +1,14 @@
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import { NetworkFirst } from 'workbox-strategies';
 
 precacheAndRoute(self.__WB_MANIFEST);
 cleanupOutdatedCaches();
+
+registerRoute(
+  ({ request }) => request.url.endsWith('.json'),
+  new NetworkFirst({ cacheName: 'json-cache', networkTimeoutSeconds: 3 })
+);
 
 self.addEventListener('install', () => {
   self.skipWaiting();
