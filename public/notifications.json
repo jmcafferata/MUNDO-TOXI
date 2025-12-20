@@ -5,5 +5,12 @@
     "body": "Nueva experiencia disponible",
     "datetime": "2025-12-19T19:10:00-03:00",
     "url": "/"
+  },
+  {
+    "id": "notif-002",
+    "title": "TOXI Media",
+    "body": "Bugonia",
+    "datetime": "2025-12-19T22:00:00-03:00",
+    "url": "/"
   }
 ]
