@@ -9,6 +9,21 @@
   />
   <title>Línea de Tiempo</title>
   <link rel="stylesheet" href="./src/style.css" />
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <script type="module" src="./src/env.js"></script>
+  <script type="module">
+    import { initPaywall } from './src/paywall.js';
+    import { initNotifications } from './src/notifications.js';
+    
+    initNotifications();
+    initPaywall({
+      musicFile: 'music/Shadows%20in%20the%20Fog%20(1).mp3',
+      onEnter: () => {
+        // line.js might not have a reset function, but we can add one if needed later.
+        // For now, just playing music and showing content is enough.
+      }
+    });
+  </script>
 </head>
 <body>
   <script type="module" src="./src/line.js"></script>

@@ -89,6 +89,24 @@ function navigateToMainFromEarth(url = 'index.html') {
     window._navigating = true;
     fadeDiv.style.pointerEvents = 'auto';
     fadeDiv.style.opacity = '1';
+
+    // Fade out music
+    if (window.currentAudio) {
+        const audio = window.currentAudio;
+        const startVolume = audio.volume;
+        const duration = 1000; // matches timeout below
+        const fadeStep = startVolume / (duration / 50); 
+        
+        const fadeInterval = setInterval(() => {
+            if (audio.volume > fadeStep) {
+                audio.volume -= fadeStep;
+            } else {
+                audio.volume = 0;
+                clearInterval(fadeInterval);
+            }
+        }, 50);
+    }
+
     setTimeout(() => {
         window.location.href = url;
     }, 1000);
@@ -110,6 +128,10 @@ function onPointerDown(event) {
 
 function onPointerUp(event) {
     if (window._navigating) return;
+    
+    // Only trigger if the event target is the canvas (renderer)
+    // This prevents clicks on overlays (like keypad) from triggering navigation
+    if (event.target !== renderer.domElement) return;
     
     const mouseUpPos = new THREE.Vector2(event.clientX, event.clientY);
     const distance = mouseDownPos.distanceTo(mouseUpPos);
@@ -213,7 +235,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
 controls.enablePan = false;
-controls.minDistance = 30;
+controls.minDistance = 24;
 controls.maxDistance = 100;
 
 // Lights
@@ -358,7 +380,7 @@ function loadCityLevel(url = './cities.json') {
             const cities = data.cities || data;
             if (!Array.isArray(cities) || cities.length === 0) return;
 
-            const cityMarkerGeometry = new THREE.SphereGeometry(0.14, 8, 8);
+            const cityMarkerGeometry = new THREE.SphereGeometry(0.01, 8, 8);
             const cityMaterialBase = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
 
             // Create markers
@@ -387,7 +409,7 @@ function loadCityLevel(url = './cities.json') {
                 // div.style.transition = 'opacity 1s ease-in-out';
 
                 const label = new CSS2DObject(div);
-                label.position.set(0, 0.45, 0);
+                label.position.set(0, 0.02, 0);
                 mesh.add(label);
                 cityLabels.push(div);
 
@@ -408,13 +430,13 @@ function loadCityLevel(url = './cities.json') {
                 cityGroup.add(cityLine);
 
                 // Traveling dot
-                const cityDotGeometry = new THREE.SphereGeometry(0.06, 8, 8);
+                const cityDotGeometry = new THREE.SphereGeometry(0.005, 8, 8);
                 const cityDotMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0 });
                 const cityDot = new THREE.Mesh(cityDotGeometry, cityDotMaterial);
                 cityGroup.add(cityDot);
 
                 const curveLengthCity = cityCurve.getLength();
-                const speedCity = 0.03;
+                const speedCity = 0.005;
                 animatedDots.push({
                     curve: cityCurve,
                     mesh: cityDot,
@@ -467,11 +489,11 @@ function loadCityLevel(url = './cities.json') {
                     cityGroup.add(line);
 
                     const dirCount = pairCounts[key];
-                    const dotSpeed = 0.03;
+                    const dotSpeed = 0.005;
                     // Create one dot for a single-direction link, two dots for bidirectional
                     const dotsToCreate = dirCount >= 2 ? 2 : 1;
                     for (let i = 0; i < dotsToCreate; i++) {
-                        const dGeom = new THREE.SphereGeometry(0.06, 8, 8);
+                        const dGeom = new THREE.SphereGeometry(0.005, 8, 8);
                         const dMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1 });
                         const dot = new THREE.Mesh(dGeom, dMat);
                         cityGroup.add(dot);
@@ -549,7 +571,7 @@ connections.forEach(pair => {
         earthPoints.add(dot);
         
         const curveLength = curve.getLength();
-        const speed = 0.03; // Constant speed in world units per frame
+        const speed = 0.12; // Constant speed in world units per frame
 
         animatedDots.push({
             curve: curve,
@@ -671,6 +693,14 @@ const introDuration = 10.0; // seconds
 const cameraInitialPos = new THREE.Vector3(200, 0, 0); // must match initial camera set above
 let introDone = false;
 
+window.resetEarthAnimation = function() {
+    introDone = false;
+    clock.start();
+    camera.position.copy(cameraInitialPos);
+    camera.lookAt(0, 0, 0);
+    controls.reset();
+};
+
 // (inner occluder removed; no fade variables needed)
 
 let earthRotationY = 0;
@@ -715,6 +745,12 @@ function animate() {
 
     // Fade out countries and connections based on distance
     const distToCenter = camera.position.length();
+
+    // Adjust rotation sensitivity based on distance
+    // Min distance ~24, Max ~100. Speed 0.1 at 24, 1.0 at 100
+    const speedT = THREE.MathUtils.clamp((distToCenter - 24) / (100 - 24), 0, 1);
+    controls.rotateSpeed = 0.1 + speedT * 0.9;
+
     // Fade out between 55 and 45 (starts fading at 55, gone at 45)
     let elementsOpacity = THREE.MathUtils.clamp((distToCenter - 45) / 10, 0, 1);
     
