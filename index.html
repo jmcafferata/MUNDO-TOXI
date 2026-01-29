@@ -8,54 +8,95 @@
       content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     />
     <meta name="theme-color" content="#000000" />
-    <title>TOXI Media</title>
+    <title>TOXI Media - ENTRADA</title>
     <script src="https://sdk.mercadopago.com/js/v2"></script>
-    <script>
-      // Only redirect /project/* paths to Webflow; keep toxi.media root on this page.
-      (function() {
-        const { pathname, search, hash } = window.location;
-        if (pathname.startsWith('/project/')) {
-          window.location.replace(`https://toxii.webflow.io${pathname}${search}${hash}`);
-        }
-      })();
-    </script>
     <link rel="stylesheet" href="./src/style.css" />
     <script type="module" src="./src/env.js"></script>
   </head>
   <body>
-    <div id="paywall" class="paywall-overlay" role="dialog" aria-modal="true">
-      <div class="paywall-card">
-        <h1>Pase diario</h1>
-        <div class="paywall-price">$100 ARS · 24h</div>
-        <p>Accedé a la experiencia completa de TOXI por un día.</p>
-        <div class="paywall-actions">
-          <button id="paywall-cta" class="paywall-button">Entrar con Mercado Pago</button>
-          <div class="paywall-note">Pagos procesados de forma segura por Mercado Pago.</div>
+    <style>
+        .modal-content, .paywall-card, .keypad-card, .keypad-btn, button, input {
+            font-family: 'Helvetica Now', 'Helvetica', 'Arial', sans-serif !important;
+        }
+    </style>
+    
+    <!-- Main scrollable container -->
+    <div id="main-container" class="entry-container">
+      <!-- Top: Logo and Keypad -->
+      <div class="entry-hero">
+        <img src="/toxi-logo-white.png" alt="TOXI Media" class="entry-logo">
+        
+        <!-- Keypad Modal (now visible by default) -->
+        <div id="keypad-modal-main" class="keypad-card entry-keypad">
+          <button id="keypad-close" class="keypad-close" style="display: none;">&times;</button>
+          
+          <!-- Exam Extra UI (Inside Keypad) -->
+          <div id="keypad-exam-ui" class="hidden" style="text-align: center; margin-bottom: 20px;">
+             <div id="keypad-instruction-text" style="color: #fff; font-size: 1.8rem; font-weight: bold; margin-bottom: 10px; line-height: 1.2;"></div>
+             <div id="keypad-countdown" style="color: #ff0000; font-size: 3rem; font-weight: bold; font-family: 'Helvetica Now', sans-serif;"></div>
+          </div>
+
+          <div class="keypad-display">
+            <div id="keypad-dots"></div>
+          </div>
+          <div class="keypad-grid">
+            <button class="keypad-btn" data-key="1">1</button>
+            <button class="keypad-btn" data-key="2">2</button>
+            <button class="keypad-btn" data-key="3">3</button>
+            <button class="keypad-btn" data-key="4">4</button>
+            <button class="keypad-btn" data-key="5">5</button>
+            <button class="keypad-btn" data-key="6">6</button>
+            <button class="keypad-btn" data-key="7">7</button>
+            <button class="keypad-btn" data-key="8">8</button>
+            <button class="keypad-btn" data-key="9">9</button>
+            <button class="keypad-btn keypad-clear" data-key="clear">←</button>
+            <button class="keypad-btn" data-key="0">0</button>
+            <button class="keypad-btn keypad-enter" data-key="enter">✓</button>
+          </div>
         </div>
       </div>
+      
+      <!-- removed entry-info wrapper to allow grid layout -->
+        <!-- Bottom: Paywall with purchase options (scrollable) -->
+        <div id="paywall" class="entry-paywall">
+          
+          <!-- Daily Pass Card -->
+          <div style="margin-bottom: 25px; width: 100%; display: flex; justify-content: center;">
+            <div class="ticket-wrapper">
+              <img id="paywall-cta" src="/web-ticket.png" class="ticket-3d" alt="Pase Diario Ticket" title="Entrar con Mercado Pago" />
+            </div>
+          </div>
+
+          <!-- Install App Card -->
+          <div style="width: 100%; display: flex; justify-content: center;">
+            <div class="ticket-wrapper">
+              <div class="ticket-shine-box">
+                <img id="install-cta" src="/app-ticket.png" class="ticket-3d no-rotate" alt="Instalar App Ticket" title="Comprar e Instalar" />
+              </div>
+            </div>
+          </div>
+
+          <div class="paywall-note" style="text-align: center; margin-top: 20px;">Pagos procesados de forma segura por Mercado Pago.</div>
+        </div>
+
+        <!-- About Section -->
+        <div class="entry-about">
+          <h3 style="display: none;">TOXI Media</h3>
+          <p>TOXI Media es una organización dedicada a la producción, gestión y distribución de entretenimiento multimedia y experiencias inmersivas.</p>
+          <p>Con una infraestructura operativa de alcance global, la compañía desarrolla proyectos simultáneos a través de una red internacional que incluye sedes y operaciones en Argentina, Chile, Uruguay, Estados Unidos, Reino Unido y Tanzania.</p>
+          <p>La actividad de la empresa integra la narrativa audiovisual tradicional con tecnologías interactivas, abarcando la producción de documentales, desarrollo de videojuegos, realidad virtual y la realización de eventos culturales. </p>
+          <p>A través de su plataforma digital propietaria, TOXI Media centraliza la exhibición de sus obras y administra un sistema de transmisión en vivo destinado a la difusión de estrenos, proyecciones, conferencias y contenidos en tiempo real.</p>
+        </div>
+      <!-- removed closing entry-info wrapper -->
     </div>
 
-    <!-- Keypad Modal -->
-    <div id="keypad-modal" class="keypad-overlay hidden">
-      <div class="keypad-card">
-        <button id="keypad-close" class="keypad-close">&times;</button>
-        <div class="keypad-display">
-          <div id="keypad-dots"></div>
-        </div>
-        <div class="keypad-grid">
-          <button class="keypad-btn" data-key="1">1</button>
-          <button class="keypad-btn" data-key="2">2</button>
-          <button class="keypad-btn" data-key="3">3</button>
-          <button class="keypad-btn" data-key="4">4</button>
-          <button class="keypad-btn" data-key="5">5</button>
-          <button class="keypad-btn" data-key="6">6</button>
-          <button class="keypad-btn" data-key="7">7</button>
-          <button class="keypad-btn" data-key="8">8</button>
-          <button class="keypad-btn" data-key="9">9</button>
-          <button class="keypad-btn keypad-clear" data-key="clear">←</button>
-          <button class="keypad-btn" data-key="0">0</button>
-          <button class="keypad-btn keypad-enter" data-key="enter">✓</button>
-        </div>
+    <!-- Exam Overlay -->
+    <div id="exam-overlay" class="paywall-overlay hidden" style="display: none; z-index: 2000; flex-direction: column; text-align: center; justify-content: center; align-items: center;">
+      <div id="exam-card" class="paywall-card" style="max-width: 400px; padding: 40px; border: 2px solid #fff;">
+        <h1 id="exam-title" style="color: #ff0000; font-family: 'Helvetica Now', sans-serif;">EXAMEN DE EDAD</h1>
+        <div id="exam-timer" style="font-size: 4rem; font-weight: bold; color: yellow; margin: 20px 0; font-family: 'Helvetica Now', sans-serif;"></div>
+        <p id="exam-instruction" style="font-size: 1.2rem; font-family: 'Helvetica Now', sans-serif;"></p>
+        <div id="exam-status" style="margin-top:20px; color: #aaa; font-size: 0.9rem;"></div>
       </div>
     </div>
 
@@ -96,13 +137,11 @@
         const cta = document.getElementById('paywall-cta');
 
         function hidePaywall() {
-          paywall.classList.remove('visible');
           paywall.style.display = 'none';
         }
 
         function showPaywall() {
-          paywall.classList.add('visible');
-          paywall.style.display = 'flex';
+          paywall.style.display = 'block';
         }
 
         function persistEntry() {
@@ -139,9 +178,9 @@
         }
 
         const paid = hasValidEntry();
-        if (!paid) {
-          showPaywall();
-        }
+        
+        // Always show paywall on index.html (entry page)
+        showPaywall();
 
         // Long press para abrir keypad
         let pressTimer = null;
@@ -203,7 +242,7 @@
           touchHandled = false;
         });
 
-        cta?.addEventListener('click', async () => {
+        async function startPayment(title, price, successUrl) {
           const MP_PUBLIC_KEY = window.ENV_MP_PUBLIC_KEY || 'pk_test_replace_me';
           if (!window.MercadoPago) {
             alert('Mercado Pago no está disponible. Intenta de nuevo.');
@@ -217,10 +256,10 @@
 
           try {
             const payload = {
-              successUrl: `${window.location.origin}${window.location.pathname}`,
+              successUrl: successUrl,
               failUrl: `${window.location.origin}${window.location.pathname}`,
-              title: 'Pase diario TOXI',
-              price: 100
+              title: title,
+              price: price
             };
 
             console.info('[TOXI][MP] Creando preferencia...', payload);
@@ -260,45 +299,303 @@
             console.error('[TOXI][MP] Error al iniciar pago', err);
             alert(`Error al iniciar el pago: ${err?.message || err}`);
           }
+        }
+
+        cta?.addEventListener('click', () => {
+          startPayment('Pase diario TOXI', 100, `${window.location.origin}/main.html`);
         });
+
+        // Install App button
+        const installCta = document.getElementById('install-cta');
+        installCta?.addEventListener('click', () => {
+          startPayment('TOXI Media App - Acceso permanente', 1000, `${window.location.origin}/main.html`);
+        });
+
+        // Event Listeners for Manuals
+        const ctaManualMenores = document.getElementById('cta-manual-menores');
+        ctaManualMenores?.addEventListener('click', () => startAgeTest('minors'));
+
+        const ctaManualMayores = document.getElementById('cta-manual-mayores');
+        ctaManualMayores?.addEventListener('click', () => startAgeTest('adults'));
 
         if (paid) {
           hidePaywall();
         }
 
-        // Keypad functionality
-        const keypadModal = document.getElementById('keypad-modal');
+        // --- EXAM LOGIC ---
+        const examOverlay = document.getElementById('exam-overlay');
+        const examCard = document.getElementById('exam-card');
+        const examTitle = document.getElementById('exam-title');
+        const examTimer = document.getElementById('exam-timer');
+        const examInstruction = document.getElementById('exam-instruction');
+        const examStatus = document.getElementById('exam-status');
+        let examTarget = null;
+        let examStep = 0;
+        let examData = { age: null, year: null };
+        let examInterval = null;
+
+        function checkBlock() {
+          const blockedUntil = localStorage.getItem('toxi_blocked_until');
+          if (blockedUntil && Date.now() < parseInt(blockedUntil)) {
+            document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;color:red;background:black;font-family:\'Helvetica Now\', sans-serif;flex-direction:column;"><h1 style="font-size:3rem;">BLOQUEADO</h1><p>Intenta mañana.</p></div>';
+            throw new Error("Blocked");
+          }
+        }
+        checkBlock();
+
+        function failExam(reason) {
+            clearInterval(examInterval);
+            if (keypadTimer) clearInterval(keypadTimer);
+            closeKeypad(true);
+            
+            examOverlay.classList.remove('hidden');
+            examCard.innerHTML = `<h1 style="color:red; font-size: 2rem;">ACCESO DENEGADO</h1><p style="color:white; margin: 20px 0;">${reason || "No pasaste la verificación."}</p>`;
+            
+            // Block for 24 hours
+            const blockUntil = Date.now() + (24 * 60 * 60 * 1000);
+            localStorage.setItem('toxi_blocked_until', blockUntil);
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
+        }
+
+        // --- NEW EXAM FLOW FUNCTIONALITY ---
+        // 1. Initial Start
+        function startAgeTest(target) {
+            console.log('Starting age test for:', target);
+            examTarget = target;
+            examStep = 0;
+            examData = {};
+            
+            examOverlay.classList.remove('hidden');
+            examOverlay.style.display = 'flex'; // Explicitly show
+            
+            // Render Step 1: Warning
+            const requiredText = target === 'minors' ? "MENOR DE 18 AÑOS" : "MAYOR DE 18 AÑOS";
+            const btnText = target === 'minors' ? "Soy MENOR" : "Soy MAYOR";
+            
+            examCard.innerHTML = `
+                <h1 style="color: #ff0000; font-family: 'Helvetica Now', sans-serif; font-size: 2rem; margin-bottom: 20px;">ATENCIÓN</h1>
+                <p style="font-size: 1.2rem; margin-bottom: 20px;">Necesitas ser ${requiredText} para acceder a este contenido.</p>
+                <button id="exam-confirm-btn" class="paywall-button" style="background: white; color: black; font-weight: bold; width: 100%; cursor: pointer;">${btnText}</button>
+            `;
+            
+            setTimeout(() => {
+                const btn = document.getElementById('exam-confirm-btn');
+                if (btn) btn.onclick = showExamRules;
+            }, 50);
+        }
+
+        // 2. Rules Screen
+        function showExamRules() {
+             examCard.innerHTML = `
+                <h1 style="color: #ffff00; font-family: 'Helvetica Now', sans-serif; font-size: 2rem; margin-bottom: 20px;">VERIFICACIÓN</h1>
+                <p style="font-size: 1.1rem; margin-bottom: 20px;">Vamos a hacer una prueba. Prestá atención.</p>
+                <div style="font-size: 1.4rem; font-weight: bold; color: #ff0000; margin-bottom: 20px;">VAS A TENER 8 SEGUNDOS PARA RESPONDER.</div>
+                <button id="exam-start-btn" class="paywall-button" style="background: white; color: black; font-weight: bold; width: 100%; cursor: pointer;">Entendido, empecemos</button>
+            `;
+            setTimeout(() => {
+                const btn = document.getElementById('exam-start-btn');
+                if (btn) btn.onclick = startExamCountdown;
+            }, 50);
+        }
+
+        // 3. Countdown
+        function startExamCountdown() {
+             examCard.innerHTML = `
+                <h1 style="color: #ffff00; font-family: 'Helvetica Now', sans-serif; font-size: 3rem; margin-bottom: 20px;">¿LISTO?</h1>
+                <div id="big-timer" style="font-size: 6rem; font-weight: bold; color: white;">3</div>
+            `;
+            
+            let count = 3;
+            const timerEl = document.getElementById('big-timer');
+            
+            const intv = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    timerEl.innerText = count;
+                } else if (count === 0) {
+                    timerEl.innerText = "1";
+                } else {
+                    clearInterval(intv);
+                    timerEl.innerText = "YA!";
+                    setTimeout(nextExamStep, 500);
+                }
+            }, 1000);
+        }
+
+        function nextExamStep() {
+            examStep++;
+            if (examStep === 1) {
+                // Ensure exam overlay is hidden before showing keypad to avoid overlay stacking
+                examOverlay.classList.add('hidden');
+                examOverlay.style.display = 'none'; // Hide explicitly
+                
+                askQuestion("PASO 1: TU EDAD", 2, (val) => {
+                    examData.age = parseInt(val);
+                    // Pause between questions? User said "5 seg despues --> pregunta 2"
+                    // But 5s is long. Let's do a intermediate screen or just wait.
+                    // Doing a "Check" screen.
+                    closeKeypad(true); // Close keypad first
+                    examOverlay.classList.remove('hidden');
+                    examOverlay.style.display = 'flex'; // Show explicitly
+                    examCard.innerHTML = '<h1 style="color:white; font-size: 3rem;">...</h1>';
+                    
+                    // Wait 2 secs then next question
+                    setTimeout(() => {
+                        examOverlay.classList.add('hidden');
+                        examOverlay.style.display = 'none';
+                        nextExamStep();
+                    }, 2000); 
+                });
+            } else if (examStep === 2) {
+                // examOverlay is already hidden by Step 1 timeout logic
+                askQuestion("PASO 2: AÑO NACIMIENTO", 4, (val) => {
+                    examData.year = parseInt(val);
+                    closeKeypad(true); 
+                    analyzeExam();
+                });
+            }
+        }
+
+        function askQuestion(text, digits, callback) {
+            // New UI requirement: "Pregunta GRANDE"
+            // We pass text. In openKeypadWithCallback we render it.
+            // We can style it there.
+            openKeypadWithCallback(digits, 8000, callback, text); 
+        }
+
+        function analyzeExam() {
+            examOverlay.classList.remove('hidden');
+            examOverlay.style.display = 'flex'; // Explicit show
+            // Reconstruct exam card for results
+            examCard.innerHTML = `
+                <h1 style="font-family: 'Helvetica Now', sans-serif; color: white;">ANALIZANDO...</h1>
+                <div style="margin-top:20px; font-size: 2rem;">⏳</div>
+            `;
+            
+            setTimeout(() => {
+                const currentYear = new Date().getFullYear();
+                const calcAge = currentYear - examData.year;
+                const ageDiff = Math.abs(calcAge - examData.age);
+                
+                let passed = false;
+                let failReason = "Datos incorrectos";
+                
+                if (ageDiff > 1) {
+                   failReason = `Edad (${examData.age}) y año (${examData.year}) no coinciden.`;
+                } else if (examTarget === 'minors') {
+                    if (examData.age < 18) passed = true;
+                    else failReason = "Eres MAYOR de edad. Prohibido.";
+                } else {
+                    if (examData.age >= 18) passed = true;
+                    else failReason = "Eres MENOR de edad. Prohibido.";
+                }
+                
+                if (!passed) {
+                    failExam(failReason);
+                } else {
+                    // Success
+                    examCard.innerHTML = `
+                        <h1 style="color: #00ff00; font-family: 'Helvetica Now', sans-serif; font-size: 3rem;">APROBADO</h1>
+                        <p style="font-size: 1.2rem; margin-top: 20px;">Acceso concedido por 24 horas.</p>
+                    `;
+                    
+                    // Store access
+                    const accessKey = examTarget === 'minors' ? 'toxi_access_minors' : 'toxi_access_adults';
+                    localStorage.setItem(accessKey, Date.now() + (24 * 60 * 60 * 1000));
+                    
+                    setTimeout(() => {
+                        if (examTarget === 'minors') {
+                             window.location.href = 'manual-menores.html';
+                        } else {
+                             examOverlay.classList.add('hidden');
+                             startPayment('Manual TOXI (Mayores)', 18, `${window.location.origin}/manual-mayores.html`);
+                        }
+                    }, 2000);
+                }
+            }, 2000);
+        }
+
+        // --- KEYPAD FUNCTIONALITY ---
+        const keypadModal = document.getElementById('keypad-modal-main');
         const keypadClose = document.getElementById('keypad-close');
         const keypadDots = document.getElementById('keypad-dots');
         const keypadCard = document.querySelector('.keypad-card');
         const keypadBtns = document.querySelectorAll('.keypad-btn');
+        const keypadExamUI = document.getElementById('keypad-exam-ui');
+        const keypadInstructionText = document.getElementById('keypad-instruction-text');
+        const keypadCountdown = document.getElementById('keypad-countdown');
+        
         const SECRET_CODE = '2058';
         let currentCode = '';
         let successUnlocked = false;
+        
+        let customKeypadCallback = null;
+        let customKeypadLimit = 4;
+        let keypadTimer = null;
 
         function openKeypad() {
+          // Default behavior for creating daily pass
+          openKeypadWithCallback(4, 0, null, null);
+        }
+        
+        function openKeypadWithCallback(limit, timeoutMs, callback, instructionText) {
           successUnlocked = false;
+          customKeypadCallback = callback;
+          customKeypadLimit = limit;
+          
           keypadCard?.classList.remove('success');
           keypadDots.classList.remove('success');
           keypadBtns.forEach(btn => {
             btn.disabled = false;
             btn.classList.remove('success');
           });
-          keypadModal.classList.remove('hidden');
+          
+          if (instructionText) {
+             keypadExamUI.classList.remove('hidden');
+             keypadInstructionText.innerText = instructionText;
+             // Ensure exam overlay is hidden so we don't have double dark background
+             examOverlay.classList.add('hidden');
+          } else {
+             keypadExamUI.classList.add('hidden');
+          }
+          
+          // Keypad is always visible, so no need to show it
           currentCode = '';
           updateDots();
+          
+          if (keypadTimer) clearInterval(keypadTimer);
+          
+          if (timeoutMs > 0) {
+              let timeLeft = timeoutMs / 1000;
+              keypadCountdown.innerText = timeLeft;
+              
+              keypadTimer = setInterval(() => {
+                  timeLeft--;
+                  keypadCountdown.innerText = timeLeft;
+                  if (timeLeft <= 0) {
+                      clearInterval(keypadTimer);
+                      failExam("¡Tiempo agotado!");
+                  }
+              }, 1000);
+          } else {
+             keypadCountdown.innerText = "";
+          }
         }
 
         function closeKeypad(force = false) {
           if (successUnlocked && !force) return;
-          keypadModal.classList.add('hidden');
+          // Don't hide the keypad since it's now always visible on the page
           currentCode = '';
           updateDots();
+          if (keypadTimer) clearInterval(keypadTimer);
         }
 
         function updateDots() {
           keypadDots.innerHTML = '';
-          for (let i = 0; i < 4; i++) {
+          for (let i = 0; i < customKeypadLimit; i++) {
             const dot = document.createElement('div');
             dot.className = 'keypad-dot';
             if (i < currentCode.length) {
@@ -318,16 +615,33 @@
           });
         }
 
+        function executeCheck() {
+            if (customKeypadCallback) {
+                // Return result to exam flow
+                const code = currentCode;
+                // Don't close immediately, let callback handle flow or next step
+                // But we should stop timer
+                if (keypadTimer) clearInterval(keypadTimer);
+                
+                // Clear for visual feedback?
+                currentCode = '';
+                updateDots();
+                
+                customKeypadCallback(code);
+            } else {
+                // Standard Daily Pass Check
+                checkCode();
+            }
+        }
+
         function checkCode() {
           if (currentCode === SECRET_CODE) {
             persistEntry();
             markSuccess();
-            // Espera breve con el keypad en verde y luego refresca
             setTimeout(() => {
-              window.location.reload();
+              window.location.href = 'main.html';
             }, 1200);
           } else {
-            // Shake animation on error
             keypadDots.style.animation = 'shake 0.5s';
             setTimeout(() => {
               keypadDots.style.animation = '';
@@ -337,7 +651,7 @@
           }
         }
 
-        keypadClose?.addEventListener('click', closeKeypad);
+        keypadClose?.addEventListener('click', () => closeKeypad(false));
 
         keypadBtns.forEach(btn => {
           btn.addEventListener('click', () => {
@@ -347,28 +661,22 @@
               currentCode = currentCode.slice(0, -1);
               updateDots();
             } else if (key === 'enter') {
-              if (currentCode.length === 4) {
-                checkCode();
+              if (currentCode.length === customKeypadLimit) {
+                executeCheck();
               }
-            } else if (currentCode.length < 4) {
+            } else if (currentCode.length < customKeypadLimit) {
               currentCode += key;
               updateDots();
-              if (currentCode.length === 4) {
-                setTimeout(() => checkCode(), 300);
+              if (currentCode.length === customKeypadLimit) {
+                 setTimeout(() => executeCheck(), 300);
               }
             }
           });
         });
 
-        // Close keypad on outside click
-        keypadModal?.addEventListener('click', (e) => {
-          if (e.target === keypadModal) {
-            closeKeypad();
-          }
-        });
+        // No need to close keypad on outside click since it's integrated into the page
+        // Remove the click-outside listener for the modal
       })();
     </script>
-
-    <script type="module" src="./src/main.js"></script>
   </body>
 </html>

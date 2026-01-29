@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#000000" />
+    <title>TOXI Media</title>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script>
+      // Only redirect /project/* paths to Webflow; keep toxi.media root on this page.
+      (function() {
+        const { pathname, search, hash } = window.location;
+        if (pathname.startsWith('/project/')) {
+          window.location.replace(`https://toxii.webflow.io${pathname}${search}${hash}`);
+        }
+      })();
+    </script>
+    <link rel="stylesheet" href="./src/style.css" />
+    <script type="module" src="./src/env.js"></script>
+  </head>
+  <body>
+    <style>
+        .modal-content, .paywall-card, .keypad-card, .keypad-btn, button, input {
+            font-family: 'Helvetica Now', 'Helvetica', 'Arial', sans-serif !important;
+        }
+    </style>
+
+    <div id="app"></div>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2 id="video-title"></h2>
+        <div class="video-container">
+          <iframe
+            id="video-frame"
+            width="560"
+            height="315"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div id="video-credits" class="credits"></div>
+        <div class="modal-footer">
+          <p id="release-date"></p>
+          <div class="qr-container">
+            <img id="qr-code" alt="QR Code" />
+            <span>Compartir</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Paywall con Mercado Pago: entrada de $100 ARS válida por 24 horas.
+      (function() {
+        const ENTRY_STORAGE_KEY = 'toxi_entry_pass';
+        const ENTRY_DURATION_MS = 24 * 60 * 60 * 1000; // 24 horas
+
+        function persistEntry() {
+          const now = Date.now();
+          const payload = { paidAt: now, expiresAt: now + ENTRY_DURATION_MS };
+          localStorage.setItem(ENTRY_STORAGE_KEY, JSON.stringify(payload));
+        }
+
+        function hasValidEntry() {
+          try {
+            const raw = localStorage.getItem(ENTRY_STORAGE_KEY);
+            if (!raw) return false;
+            const data = JSON.parse(raw);
+            if (!data || typeof data.expiresAt !== 'number') return false;
+            if (Date.now() > data.expiresAt) {
+              localStorage.removeItem(ENTRY_STORAGE_KEY);
+              return false;
+            }
+            return true;
+          } catch (err) {
+            localStorage.removeItem(ENTRY_STORAGE_KEY);
+            return false;
+          }
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const status = (params.get('collection_status') || params.get('status') || '').toLowerCase();
+        const paymentApproved = status === 'approved' || status === 'success';
+
+        if (paymentApproved) {
+          persistEntry();
+          const cleanUrl = window.location.origin + window.location.pathname;
+          window.history.replaceState({}, document.title, cleanUrl);
+        }
+
+        const paid = hasValidEntry();
+        if (!paid) {
+          // Redirect to index for payment
+          window.location.href = '/';
+          return;
+        }
+
+        // User is paid/authorized, show the app
+      })();
+    </script>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
