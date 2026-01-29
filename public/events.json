@@ -108,6 +108,34 @@
     "end": "2025-12-23T01:00:00",
     "color": "#00ff00",
     "description": "Anuncio de ganadores del Meta Horizon Competition 2025."
+  },
+  {
+    "title": "Pizza y Pagni Season Finale",
+    "location": "",
+    "start": "2025-12-15T20:00:00",
+    "end": "2025-12-16T00:00:00",
+    "color": "#ff0000"
+  },
+  {
+    "title": "Avatar: Frontiers of Pandora",
+    "location": "",
+    "start": "2025-12-17T12:00:00",
+    "end": "2025-12-17T18:00:00",
+    "color": "#ff0000",
+    "link": "https://www.youtube.com/watch?v=6rLfm-Z_Sk4"
+  },
+  {
+    "title": "TOXI INTERNSHIP DAY",
+    "location": "",
+    "start": "2025-12-18T10:00:00",
+    "end": "2025-12-18T13:00:00",
+    "color": "#00ff00"
+  },
+  {
+    "title": "DDT TOXI VR",
+    "location": "TOXI HQ",
+    "start": "2025-12-20T10:00:00",
+    "end": "2025-12-20T22:00:00",
+    "color": "#ff0000"
   }
-  
 ]

@@ -4,11 +4,25 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   base: './',
+  server: {
+    host: '0.0.0.0',
+    port: 5000,
+    allowedHosts: true
+  },
   plugins: [
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.js',
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       devOptions: {
-        enabled: true
+        enabled: true,
+        type: 'module'
+      },
+      injectManifest: {
+        globPatterns: ['**/*.{js,css,html,png,svg,ico,glb,mp3,otf}'],
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
       },
       includeAssets: ['world.svg', 'logo.glb'],
       manifest: {
@@ -18,6 +32,9 @@ export default defineConfig({
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',
+        start_url: '/',
+        scope: '/',
+        orientation: 'portrait',
         icons: [
           {
             src: 'pwa-192x192.png',
@@ -40,6 +57,7 @@ export default defineConfig({
         earth: resolve(__dirname, 'earth.html'),
         line: resolve(__dirname, 'line.html'),
         point: resolve(__dirname, 'point.html'),
+        app: resolve(__dirname, 'app.html'),
       },
     },
   },

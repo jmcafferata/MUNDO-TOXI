@@ -16,7 +16,13 @@
     { "name": "Quequén", "lat": -38.5667, "lon": -58.7000 },
     { "name": "Montevideo", "lat": -34.9011, "lon": -56.1645 },
     { "name": "Cabo Polonio", "lat": -34.3970, "lon": -53.7820 },
-    { "name": "J.B. Molina", "lat": -33.4936, "lon": -60.5092 }
+    { "name": "J.B. Molina", "lat": -33.4936, "lon": -60.5092 },
+    { "name": "Villa Llanquín", "lat": -40.8955, "lon": -71.0366 },
+    { "name": "Villa Traful", "lat": -40.6542, "lon": -71.4000 },
+    { "name": "San Martín de los Andes", "lat": -40.1537, "lon": -71.3550 },
+    { "name": "Pucará", "lat": -40.1900, "lon": -71.6325 },
+    { "name": "Villa La Angostura", "lat": -40.7630, "lon": -71.6428 },
+    { "name": "Las Grutas", "lat": -40.8083, "lon": -65.0867 }
   ],
   "links": [
     { "from": "Santiago de Chile", "to": "Venado Tuerto" },
@@ -69,6 +75,27 @@
 
     { "from": "Montevideo", "to": "Cabo Polonio" },
     { "from": "Cabo Polonio", "to": "Montevideo" },
+
+    { "from": "San Carlos de Bariloche", "to": "Villa Llanquín" },
+    { "from": "Villa Llanquín", "to": "San Carlos de Bariloche" },
+
+    { "from": "Villa Llanquín", "to": "Villa Traful" },
+    { "from": "Villa Traful", "to": "Villa Llanquín" },
+
+    { "from": "Villa Traful", "to": "San Martín de los Andes" },
+    { "from": "San Martín de los Andes", "to": "Villa Traful" },
+
+    { "from": "San Martín de los Andes", "to": "Pucará" },
+    { "from": "Pucará", "to": "San Martín de los Andes" },
+
+    { "from": "Pucará", "to": "Villa La Angostura" },
+    { "from": "Villa La Angostura", "to": "Pucará" },
+
+    { "from": "Villa La Angostura", "to": "Las Grutas" },
+    { "from": "Las Grutas", "to": "Villa La Angostura" },
+
+    { "from": "Las Grutas", "to": "Buenos Aires" },
+    { "from": "Buenos Aires", "to": "Las Grutas" },
 
     { "from": "Buenos Aires", "to": "J.B. Molina" },
     { "from": "J.B. Molina", "to": "Buenos Aires" },
