@@ -15,7 +15,8 @@
     { "name": "Kent, UK", "lat": 51.2788, "lon": 0.5218 },
     { "name": "Quequén", "lat": -38.5667, "lon": -58.7000 },
     { "name": "Montevideo", "lat": -34.9011, "lon": -56.1645 },
-    { "name": "Cabo Polonio", "lat": -34.3970, "lon": -53.7820 }
+    { "name": "Cabo Polonio", "lat": -34.3970, "lon": -53.7820 },
+    { "name": "J.B. Molina", "lat": -33.4936, "lon": -60.5092 }
   ],
   "links": [
     { "from": "Santiago de Chile", "to": "Venado Tuerto" },
@@ -67,6 +68,15 @@
     { "from": "Montevideo", "to": "Buenos Aires" },
 
     { "from": "Montevideo", "to": "Cabo Polonio" },
-    { "from": "Cabo Polonio", "to": "Montevideo" }
+    { "from": "Cabo Polonio", "to": "Montevideo" },
+
+    { "from": "Buenos Aires", "to": "J.B. Molina" },
+    { "from": "J.B. Molina", "to": "Buenos Aires" },
+
+    { "from": "Venado Tuerto", "to": "J.B. Molina" },
+    { "from": "J.B. Molina", "to": "Venado Tuerto" },
+
+    { "from": "Rosario", "to": "J.B. Molina" },
+    { "from": "J.B. Molina", "to": "Rosario" }
   ]
 }
