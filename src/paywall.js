@@ -109,24 +109,83 @@ export function initPaywall({ musicFile, onEnter }) {
   const cta = document.getElementById('paywall-cta');
 
   // Sounds
-  const soundPopup = new Audio('public/sounds/popup.mp3');
-  const soundKey = new Audio('public/sounds/key.mp3');
-  const soundWrong = new Audio('public/sounds/wrong.mp3');
-  const soundCorrect = new Audio('public/sounds/correct.mp3');
+  // Determine correct base path for sounds
+  // Strategy: Try to resolve relative to module first (works for file://), 
+  // then fallback to root-relative 'sounds/' (works for Vite serve)
+  let soundBase = '../public/sounds/'; 
+  
+  // If we are likely in a server environment (http/https), Vite serves public at root
+  if (window.location.protocol.startsWith('http')) {
+    // In Vite dev or preview, 'sounds/' is at root. 
+    // But if we are in a subfolder deployment, it might vary.
+    // Let's test the root Sound path first as it's the standard for Vite.
+    soundBase = 'sounds/';
+  }
+
+  function createSound(filename) {
+    const s = new Audio(soundBase + filename);
+    s.onerror = (e) => {
+      // If the first attempt fails, try the alternative
+      console.warn(`Sound ${filename} failed at ${soundBase}, trying alternative.`);
+      if (soundBase === 'sounds/') {
+        soundBase = '../public/sounds/'; // Switch to relative-to-src structure
+      } else {
+        soundBase = 'sounds/'; // Switch to root-relative structure
+      }
+      s.src = soundBase + filename;
+    };
+    return s;
+  }
+
+  const soundBass = createSound('bass_key.mp3');
+  const soundCello = createSound('cello_key.mp3');
+  const soundViola = createSound('viola_key.mp3');
+  const soundViolin = createSound('violin_key.mp3');
+  const soundWrong = createSound('wrong.mp3');
+  const soundCorrect = createSound('correct.mp3');
 
   // Preload sounds
-  [soundPopup, soundKey, soundWrong, soundCorrect].forEach(s => s.load());
+  [soundBass, soundCello, soundViola, soundViolin, soundWrong, soundCorrect].forEach(s => s.load());
 
   function playKeySound(key) {
-      const s = soundKey.cloneNode();
-      if (key >= '0' && key <= '9') {
-          const n = parseInt(key);
-          s.playbackRate = 0.8 + (n * 0.1); 
+      let baseSound;
+      let rate = 1.0;
+      const n = parseInt(key);
+
+      if (key === 'clear' || key === 'enter') {
+        // Use a generic click (e.g. high pitch bass) to feedback action
+        baseSound = soundBass;
+        rate = 1.5;
+      } else if (key === '0') {
+        baseSound = soundViolin;
+        rate = 1.0;
+      } else if (n >= 1 && n <= 3) {
+        baseSound = soundBass;
+        // 1->0.8, 2->1.0, 3->1.2
+        rate = 0.8 + ((n - 1) * 0.2);
+      } else if (n >= 4 && n <= 6) {
+        baseSound = soundCello;
+        // 4->0.8, 5->1.0, 6->1.2
+        rate = 0.8 + ((n - 4) * 0.2);
+      } else if (n >= 7 && n <= 9) {
+        baseSound = soundViola;
+        // 7->0.8, 8->1.0, 9->1.2
+        rate = 0.8 + ((n - 7) * 0.2);
       } else {
-          s.playbackRate = 1.0;
+        // Fallback
+        baseSound = soundBass;
       }
-      s.volume = 0.4;
-      s.play().catch(() => {});
+
+      console.log('Playing key:', key, 'Rate:', rate);
+      
+      const s = baseSound.cloneNode(); 
+      s.volume = 0.5;
+      s.playbackRate = rate;
+      // Force preserve pitch = false if we want chipmunk effect? 
+      // Usually playbackRate changes pitch by default on Audio elements unless preservesPitch is set (which is true by default usually).
+      s.preservesPitch = false; 
+      
+      s.play().catch(err => console.warn('Audio play failed:', err));
   }
 
   function playMusic() {
@@ -139,58 +198,9 @@ export function initPaywall({ musicFile, onEnter }) {
   }
 
   function showEnterButton() {
-    const enterOverlay = document.getElementById('enter-overlay');
-    const enterBtn = document.getElementById('enter-button');
-    
-    // 1. Kill any existing transition immediately
-    enterOverlay.style.cssText = 'transition: none !important; opacity: 1 !important; visibility: visible !important; background-color: #000 !important; display: flex !important;';
-    enterOverlay.classList.remove('hidden');
-    
-    // 2. Force reflow to apply the "no transition" state
-    void enterOverlay.offsetWidth;
-
-    // 3. Hide paywall only after we are sure the overlay is opaque
-    // We use a double rAF to ensure the browser has painted the black overlay
-    requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-            paywall.classList.remove('visible');
-            paywall.style.display = 'none';
-        });
-    });
-    
-    // Remove any existing listeners to avoid duplicates
-    const newBtn = enterBtn.cloneNode(true);
-    enterBtn.parentNode.replaceChild(newBtn, enterBtn);
-    
-    newBtn.addEventListener('click', () => {
-      // 4. Restore transition for the fade-out effect
-      // We need to remove the inline cssText that was forcing !important
-      enterOverlay.style.cssText = ''; 
-      enterOverlay.style.backgroundColor = '#000'; // Keep background black
-      // Re-apply the transition explicitly (or let CSS handle it, but inline ensures it overrides any residual state)
-      enterOverlay.style.transition = 'opacity 3s ease, visibility 3s ease';
-      enterOverlay.style.opacity = '1';
-      enterOverlay.style.visibility = 'visible';
-      
-      // Force reflow again before starting the fade out sequence
-      void enterOverlay.offsetWidth;
-
-      // 1. Fade out button
-      newBtn.style.transition = 'opacity 1s ease';
-      newBtn.style.opacity = '0';
-      newBtn.style.pointerEvents = 'none';
-      
-      // 2. Wait for button fade (1000ms) + 100ms pause, then fade out overlay
-      setTimeout(() => {
-          if (onEnter) onEnter();
-          playMusic();
-          enterOverlay.classList.add('hidden');
-          enterOverlay.style.opacity = '0';
-          setTimeout(() => {
-              enterOverlay.style.visibility = 'hidden';
-          }, 3000);
-      }, 1100);
-    });
+    // Skip create enter button and directly enter
+    if (onEnter) onEnter();
+    playMusic();
   }
 
   function showPaywall() {
@@ -427,7 +437,7 @@ export function initPaywall({ musicFile, onEnter }) {
   });
 
   // Keypad functionality
-  const keypadModal = document.getElementById('keypad-modal');
+  const keypadModal = document.getElementById('keypad-modal') || document.getElementById('keypad-modal-main');
   const keypadClose = document.getElementById('keypad-close');
   const keypadDots = document.getElementById('keypad-dots');
   const keypadCard = document.querySelector('.keypad-card');
@@ -438,9 +448,10 @@ export function initPaywall({ musicFile, onEnter }) {
 
   function openKeypad(mode = 'daily') {
     keypadMode = mode;
-    soundPopup.currentTime = 0;
-    soundPopup.volume = 0.5;
-    soundPopup.play().catch(() => {});
+    console.log('Opening keypad, playing popup sound');
+    const s = soundPopup.cloneNode();
+    s.volume = 0.5;
+    s.play().catch(e => console.warn('Popup sound failed', e));
     
     successUnlocked = false;
     keypadCard?.classList.remove('success');
@@ -449,19 +460,20 @@ export function initPaywall({ musicFile, onEnter }) {
       btn.disabled = false;
       btn.classList.remove('success');
     });
-    keypadModal.classList.remove('hidden');
+    keypadModal?.classList.remove('hidden');
     currentCode = '';
     updateDots();
   }
 
   function closeKeypad(force = false) {
     if (successUnlocked && !force) return;
-    keypadModal.classList.add('hidden');
+    keypadModal?.classList.add('hidden');
     currentCode = '';
     updateDots();
   }
 
   function updateDots() {
+    if (!keypadDots) return;
     keypadDots.innerHTML = '';
     for (let i = 0; i < 4; i++) {
       const dot = document.createElement('div');
@@ -474,13 +486,15 @@ export function initPaywall({ musicFile, onEnter }) {
   }
 
   function markSuccess() {
-    soundCorrect.currentTime = 0;
-    soundCorrect.volume = 0.6;
-    soundCorrect.play().catch(() => {});
+    console.log('Code correct! Playing success sound');
+    const s = soundCorrect.cloneNode();
+    s.volume = 0.6;
+    s.play().catch(e => console.warn('Success sound failed', e));
     
+    persistEntry(); // Save the entry so main.html doesn't redirect back to index
     successUnlocked = true;
     keypadCard?.classList.add('success');
-    keypadDots.classList.add('success');
+    keypadDots?.classList.add('success');
     keypadBtns.forEach(btn => {
       btn.disabled = true;
       btn.classList.add('success');
@@ -495,18 +509,20 @@ export function initPaywall({ musicFile, onEnter }) {
         if (keypadMode === 'app') {
           window.location.href = '/app.html';
         } else {
-          showEnterButton();
+          // Take to main as requested
+          window.location.href = '/main.html';
         }
       }, 1200);
     } else {
-      soundWrong.currentTime = 0;
-      soundWrong.volume = 0.5;
-      soundWrong.play().catch(() => {});
+      console.log('Code wrong! Playing error sound');
+      const s = soundWrong.cloneNode();
+      s.volume = 0.5;
+      s.play().catch(e => console.warn('Wrong sound failed', e));
       
       // Shake animation on error
-      keypadDots.style.animation = 'shake 0.5s';
+      if (keypadDots) keypadDots.style.animation = 'shake 0.5s';
       setTimeout(() => {
-        keypadDots.style.animation = '';
+        if (keypadDots) keypadDots.style.animation = '';
         currentCode = '';
         updateDots();
       }, 500);
