@@ -96,6 +96,13 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
+  box-sizing: border-box;
+  gap: 40px;
+  margin-top: 15vh;
+}
+
+.ticket-item-container + .ticket-item-container {
+  margin-top: 40px;
 }
 
 .entry-paywall .paywall-card {
@@ -120,6 +127,55 @@ body {
 }
 
 /* 3D Ticket Styles */
+
+.ticket-item-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ticket-info {
+  width: 90%;
+  max-width: 320px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  color: #fff;
+  font-family: 'Helvetica Now', sans-serif;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+.ticket-name {
+  font-weight: 300;
+  white-space: nowrap;
+}
+
+.ticket-price {
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.ticket-dots {
+  flex-grow: 1;
+  border-bottom: 2px dotted rgba(255, 255, 255, 0.3);
+  margin: 0 8px 4px 8px; /* 4px bottom margin to align with text baseline roughly */
+}
+
+/* Paywall Title */
+.paywall-title {
+  font-family: 'Helvetica Now', sans-serif;
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+}
+
 .ticket-wrapper {
   perspective: 1000px;
   width: 100%;
@@ -129,7 +185,7 @@ body {
 }
 
 .ticket-3d {
-  width: 100%;
+  width: 90%;
   max-width: 320px;
   height: auto;
   transition: transform 0.4s ease-out;
@@ -286,6 +342,7 @@ body {
 
   .entry-paywall {
     order: 1; /* Tickets Left */
+    margin-top: 0;
   }
 
   .entry-hero {
