@@ -60,23 +60,35 @@
         <!-- Bottom: Paywall with purchase options (scrollable) -->
         <div id="paywall" class="entry-paywall">
           
+          <h2 class="paywall-title">Comprar entradas</h2>
+
           <!-- Daily Pass Card -->
-          <div style="margin-bottom: 25px; width: 100%; display: flex; justify-content: center;">
+          <div class="ticket-item-container">
             <div class="ticket-wrapper">
               <img id="paywall-cta" src="/web-ticket.png" class="ticket-3d" alt="Pase Diario Ticket" title="Entrar con Mercado Pago" />
+            </div>
+            <div class="ticket-info">
+              <span class="ticket-name">Pase diario</span>
+              <span class="ticket-dots"></span>
+              <span class="ticket-price">$100 ARS</span>
             </div>
           </div>
 
           <!-- Install App Card -->
-          <div style="width: 100%; display: flex; justify-content: center;">
+          <div class="ticket-item-container">
             <div class="ticket-wrapper">
               <div class="ticket-shine-box">
                 <img id="install-cta" src="/app-ticket.png" class="ticket-3d no-rotate" alt="Instalar App Ticket" title="Comprar e Instalar" />
               </div>
             </div>
+            <div class="ticket-info" style="max-width: 240px;"> <!-- Match app ticket smaller max-width -->
+              <span class="ticket-name">Instalar app</span>
+              <span class="ticket-dots"></span>
+              <span class="ticket-price">$1000 ARS</span>
+            </div>
           </div>
 
-          <div class="paywall-note" style="text-align: center; margin-top: 20px;">Pagos procesados de forma segura por Mercado Pago.</div>
+          <div class="paywall-note" style="text-align: center;">Pagos procesados de forma segura por Mercado Pago.</div>
         </div>
 
         <!-- About Section -->
@@ -86,7 +98,10 @@
           <p>Con una infraestructura operativa de alcance global, la compañía desarrolla proyectos simultáneos a través de una red internacional que incluye sedes y operaciones en Argentina, Chile, Uruguay, Estados Unidos, Reino Unido y Tanzania.</p>
           <p>La actividad de la empresa integra la narrativa audiovisual tradicional con tecnologías interactivas, abarcando la producción de documentales, desarrollo de videojuegos, realidad virtual y la realización de eventos culturales. </p>
           <p>A través de su plataforma digital propietaria, TOXI Media centraliza la exhibición de sus obras y administra un sistema de transmisión en vivo destinado a la difusión de estrenos, proyecciones, conferencias y contenidos en tiempo real.</p>
+          <p style="font-size: 1.2rem; margin-top: 20px;">Para más información, contactate con <a href="https://wa.me/5491132576432" target="_blank" style="color: inherit; text-decoration: underline;">Audion't</a> por WhatsApp.</p>
         </div>
+
+      
       <!-- removed closing entry-info wrapper -->
     </div>
 
