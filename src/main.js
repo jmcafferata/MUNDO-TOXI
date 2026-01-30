@@ -8,6 +8,13 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import TWEEN from '@tweenjs/tween.js';
 
+// --- Background Music ---
+const audio = new Audio('music/Echoes%20in%20the%20Deep%20(1).mp3');
+audio.loop = true;
+audio.volume = 0.5;
+audio.play().catch(e => console.log('Autoplay blocked. User interaction needed.', e));
+window.currentAudio = audio; // Expose for fade out logic
+
 // Simple Noise implementation if package not available, or use a library.
 // Since I cannot easily install new packages without user input, I will include a small noise utility here.
 

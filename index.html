@@ -137,6 +137,8 @@
         musicFile: 'music/Echoes%20in%20the%20Deep%20(1).mp3',
         onEnter: () => {
           if (window.resetCameraAnimation) window.resetCameraAnimation();
+          // Redirect to main app if entering from index
+          window.location.href = '/main.html';
         }
       });
     </script>
