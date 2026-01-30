@@ -53,7 +53,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'index.html'),
+        index: resolve(__dirname, 'index.html'),
+        main: resolve(__dirname, 'main.html'),
         earth: resolve(__dirname, 'earth.html'),
         line: resolve(__dirname, 'line.html'),
         point: resolve(__dirname, 'point.html'),
