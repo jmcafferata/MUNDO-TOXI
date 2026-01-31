@@ -108,8 +108,9 @@ body {
   margin-top: 15vh;
 }
 
+/* Removed margin-top to rely on grid gap */
 .ticket-item-container + .ticket-item-container {
-  margin-top: 40px;
+  margin-top: 0;
 }
 
 .entry-paywall .paywall-card {
@@ -339,28 +340,22 @@ body {
   width: 100%;
 }
 
-/* Tablet Layout: 2 Columns */
+/* Tablet Layout: 1 Column */
 @media (min-width: 768px) {
   .entry-container {
-    grid-template-columns: 1fr 1fr;
-    /* Flow: 
-       Row 1: Paywall (Tickets) | Hero (Keypad) 
-       Row 2: About (Text)
-    */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .entry-paywall {
-    order: 1; /* Tickets Left */
     margin-top: 0;
   }
 
   .entry-hero {
-    order: 2; /* Keypad Right */
   }
 
   .entry-about {
-    order: 3; /* Text Below */
-    grid-column: 1 / -1; /* Span all columns */
     max-width: 700px;
     margin: 0 auto;
     text-align: center;
@@ -368,21 +363,20 @@ body {
   }
 }
 
-/* Tablet Specific Sizing (768px - 1199px) - Fixes "Too Big" components */
+/* Tablet Specific Sizing (768px - 1199px) */
 @media (min-width: 768px) and (max-width: 1199px) {
   .entry-container {
-    display: flex;      /* Override Grid to handle landscape better if needed, or keep grid but tunable */
-    flex-wrap: wrap;
+    display: flex;
+    flex-direction: column;
     align-content: center;
     justify-content: center;
   }
   
-  /* Force side-by-side in landscape tablet */
   .entry-paywall, .entry-hero {
-    width: 45%; 
+    width: 100%; 
     height: auto;
-    min-height: auto; 
-    padding: 10px;
+    min-height: 100vh; 
+    padding: 20px;
     margin: 0;
     gap: 10px;
     justify-content: center;
@@ -392,7 +386,6 @@ body {
 
   .entry-about {
     width: 100%;
-    order: 3;
     padding: 20px;
   }
   
@@ -440,16 +433,17 @@ body {
   }
 }
 
-/* Desktop Layout: 3 Columns */
+/* Desktop Layout: 1 Column */
 @media (min-width: 1200px) {
   .entry-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    align-items: flex-start; /* Tallest column defines height */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .entry-hero, 
   .entry-paywall {
+    width: 100%;
     height: auto;
     min-height: 100vh;
     padding: 40px;
@@ -459,14 +453,13 @@ body {
   }
 
   .entry-about {
+    width: 100%;
     height: auto;
     min-height: auto;
     padding: 40px;
     justify-content: center;
     display: flex; /* Ensure flex behavior */
     flex-direction: column;
-    order: 1; /* Text Left */
-    grid-column: auto; /* Reset span */
     text-align: left; /* Align text to left */
     align-items: center; /* Center the text block horizontally */
     margin: 0;
@@ -474,11 +467,11 @@ body {
   }
   
   .entry-hero {
-    order: 2; /* Keypad Middle */
+    /* No order needed, follows HTML order: Hero -> Paywall -> About */
   }
 
   .entry-paywall {
-    order: 3; /* Tickets Right */
+    /* No order needed */
   }
   
   .entry-logo {
@@ -1107,7 +1100,7 @@ canvas {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 60px;
 }
 
 
@@ -1120,7 +1113,7 @@ canvas {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 80px;
+  gap: 120px;
   place-items: center;
 }
 
@@ -1141,7 +1134,7 @@ canvas {
 
 .entry-container .entry-paywall .ticket-info {
   font-size: 1.1rem;
-  margin-top: 15px;
+  margin-top: 30px;
   letter-spacing: 0.03em;
 }
 
