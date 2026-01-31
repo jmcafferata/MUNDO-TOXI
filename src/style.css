@@ -74,7 +74,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 90vh;
+  min-height: 100vh;
   padding: 40px 24px;
   gap: 28px;
 }
@@ -371,7 +371,6 @@ body {
 /* Tablet Specific Sizing (768px - 1199px) - Fixes "Too Big" components */
 @media (min-width: 768px) and (max-width: 1199px) {
   .entry-container {
-    overflow-y: scroll; /* Ensure scrolling is possible if content is too tall */
     display: flex;      /* Override Grid to handle landscape better if needed, or keep grid but tunable */
     flex-wrap: wrap;
     align-content: center;
@@ -444,18 +443,15 @@ body {
 /* Desktop Layout: 3 Columns */
 @media (min-width: 1200px) {
   .entry-container {
+    display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    overflow: hidden; /* Main scroll hidden, columns scroll if needed */
-    align-items: center; /* Vertically center the columns */
+    align-items: flex-start; /* Tallest column defines height */
   }
 
   .entry-hero, 
-  .entry-paywall, 
-  .entry-about {
+  .entry-paywall {
     height: auto;
-    min-height: 0;
-    max-height: 100vh;
-    overflow-y: auto;
+    min-height: 100vh;
     padding: 40px;
     justify-content: center;
     display: flex; /* Ensure flex behavior */
@@ -463,6 +459,12 @@ body {
   }
 
   .entry-about {
+    height: auto;
+    min-height: auto;
+    padding: 40px;
+    justify-content: center;
+    display: flex; /* Ensure flex behavior */
+    flex-direction: column;
     order: 1; /* Text Left */
     grid-column: auto; /* Reset span */
     text-align: left; /* Align text to left */
@@ -497,12 +499,10 @@ body {
   }
 
   .entry-about p:first-of-type {
-    font-size: 1.5rem;
-    line-height: 1.8;
-    margin-bottom: 32px;
-  }
   font-size: 1.25rem;
   line-height: 1.4;
+    margin-bottom: 32px;
+  }
 }
 
 canvas {
@@ -903,9 +903,11 @@ canvas {
 .keypad-card {
   background: rgba(20, 20, 20, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: 32px;
-  width: 360px; /* Fixed absolute width */
+  border-radius: 20px;
+  padding: 20px;
+  width: min(300px, 85vw);
+  max-height: 90vh;
+  overflow: hidden;
   box-sizing: border-box;
   box-shadow: 0 30px 100px rgba(0, 0, 0, 0.7);
   position: relative;
@@ -919,15 +921,15 @@ canvas {
 
 .keypad-close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 12px;
+  right: 12px;
   background: transparent;
   border: none;
   color: rgba(255, 255, 255, 0.5);
-  font-size: 32px;
+  font-size: 28px;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -941,8 +943,8 @@ canvas {
 }
 
 .keypad-display {
-  margin: 20px 0 40px;
-  min-height: 60px;
+  margin: 10px 0 24px;
+  min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -950,13 +952,13 @@ canvas {
 
 #keypad-dots {
   display: flex;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
 }
 
 .keypad-dot {
-  width: 16px;
-  height: 16px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.3);
   background: transparent;
@@ -972,17 +974,17 @@ canvas {
 .keypad-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 8px;
 }
 
 .keypad-btn {
   aspect-ratio: 1;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  border-radius: 12px;
   color: #fff;
   font-family: 'Helvetica Now', sans-serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 300;
   cursor: pointer;
   transition: all 0.15s ease;
@@ -1062,17 +1064,30 @@ canvas {
 
 
 
-/* Single-column layout: each section is 100vh */
-.entry-container {
-  display: block;
-  grid-template-columns: none;
+/* Mobile/Tablet layout: stacked sections */
+@media (max-width: 1199px) {
+  .entry-container {
+    display: block;
+  }
+
+  .entry-container .entry-hero,
+  .entry-container .entry-paywall {
+    width: 100%;
+    min-height: 100vh;
+    height: auto;
+    margin: 0;
+    padding: 40px 24px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
-.entry-container .entry-hero,
-.entry-container .entry-paywall,
 .entry-container .entry-about {
   width: 100%;
-  min-height: 100vh;
+  min-height: auto;
   height: auto;
   margin: 0;
   padding: 40px 24px;
@@ -1105,14 +1120,14 @@ canvas {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 22px;
+  gap: 80px;
   place-items: center;
 }
 
 @media (min-width: 768px) {
   .entry-container .entry-paywall .tickets-grid {
     grid-template-columns: repeat(2, minmax(200px, 1fr));
-    column-gap: 16px;
+    column-gap: 80px;
   }
 
   .entry-container .entry-paywall .tickets-grid > .ticket-item-container:nth-child(1) {
@@ -1124,25 +1139,36 @@ canvas {
   }
 }
 
-.entry-container .entry-paywall .ticket-item-container {
-  width: 100%;
-  max-width: 360px;
+.entry-container .entry-paywall .ticket-info {
+  font-size: 1.1rem;
+  margin-top: 15px;
+  letter-spacing: 0.03em;
+}
+
+.entry-container .entry-paywall .paywall-title {
+  margin-bottom: 40px;
+  font-size: 2.8rem;
 }
 
 .entry-container .entry-about {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-}
-
-.entry-container .entry-paywall {
-  margin-top: 0;
-}
-
-.entry-container .entry-about {
-  max-width: none;
-  text-align: left;
+  justify-content: flex-start;
   align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+  padding: 80px 24px 120px;
+  height: auto;
+  min-height: auto;
+}
+
+.entry-about p {
+  line-height: 1.8;
+  margin-bottom: 24px;
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
+  width: 100%;
 }
 
 /* Enter Overlay Styles */

@@ -18,6 +18,7 @@ export function initKeypadScaling() {
     keypads.forEach(keypad => {
         keypad.style.transformOrigin = 'center center'; 
         keypad.style.transform = `scale(${scale})`;
+        keypad.style.marginBottom = '0px';
     });
   }
 
