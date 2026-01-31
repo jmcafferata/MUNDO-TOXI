@@ -12,6 +12,7 @@
     <script src="https://sdk.mercadopago.com/js/v2"></script>
     <link rel="stylesheet" href="./src/style.css" />
     <script type="module" src="./src/env.js"></script>
+    <script type="module" src="./src/ui-scaling.js"></script>
   </head>
   <body>
     <style>
@@ -62,29 +63,31 @@
           
           <h2 class="paywall-title">Comprar entradas</h2>
 
-          <!-- Daily Pass Card -->
-          <div class="ticket-item-container">
-            <div class="ticket-wrapper">
-              <img id="paywall-cta" src="/web-ticket.png" class="ticket-3d" alt="Pase Diario Ticket" title="Entrar con Mercado Pago" />
-            </div>
-            <div class="ticket-info">
-              <span class="ticket-name">Pase diario</span>
-              <span class="ticket-dots"></span>
-              <span class="ticket-price">$100 ARS</span>
-            </div>
-          </div>
-
-          <!-- Install App Card -->
-          <div class="ticket-item-container">
-            <div class="ticket-wrapper">
-              <div class="ticket-shine-box">
-                <img id="install-cta" src="/app-ticket.png" class="ticket-3d no-rotate" alt="Instalar App Ticket" title="Comprar e Instalar" />
+          <div class="tickets-grid">
+            <!-- Daily Pass Card -->
+            <div class="ticket-item-container">
+              <div class="ticket-wrapper">
+                <img id="paywall-cta" src="/web-ticket.png" class="ticket-3d" alt="Pase Diario Ticket" title="Entrar con Mercado Pago" />
+              </div>
+              <div class="ticket-info">
+                <span class="ticket-name">Pase diario</span>
+                <span class="ticket-dots"></span>
+                <span class="ticket-price">$100 ARS</span>
               </div>
             </div>
-            <div class="ticket-info" style="max-width: 240px;"> <!-- Match app ticket smaller max-width -->
-              <span class="ticket-name">Instalar app</span>
-              <span class="ticket-dots"></span>
-              <span class="ticket-price">$1000 ARS</span>
+
+            <!-- Install App Card -->
+            <div class="ticket-item-container">
+              <div class="ticket-wrapper">
+                <div class="ticket-shine-box">
+                  <img id="install-cta" src="/app-ticket.png" class="ticket-3d no-rotate" alt="Instalar App Ticket" title="Comprar e Instalar" />
+                </div>
+              </div>
+              <div class="ticket-info" style="max-width: 240px;"> <!-- Match app ticket smaller max-width -->
+                <span class="ticket-name">Instalar app</span>
+                <span class="ticket-dots"></span>
+                <span class="ticket-price">$1000 ARS</span>
+              </div>
             </div>
           </div>
 
