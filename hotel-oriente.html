@@ -190,9 +190,52 @@
                 top: 10%;
             }
         }
+        
+        #countdown-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            z-index: 50;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+
+        #countdown-overlay.visible {
+            display: flex;
+        }
+
+        #countdown-text {
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+        }
+
+        #countdown-number {
+            font-size: 8rem;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
+    <div id="countdown-overlay">
+        <div id="countdown-text">El detrás de escena comienza en</div>
+        <div id="countdown-number">10</div>
+    </div>
     <a href="/" class="back-button ui-btn ui-fade">&larr; Volver</a>
     <h1 id="floating-title" class="ui-fade">Hotel Oriente</h1>
     <button id="info-toggle" class="info-button ui-btn ui-fade">Ficha Técnica</button>
@@ -239,6 +282,56 @@
 
     <script type="module">
         const player = document.getElementById('mux-player');
+        const MAIN_VIDEO_ID = "iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU";
+        const BTS_VIDEO_ID = "iVB2ZU00L1WZDQJpqXrIAMg02Cmq4l6C2kKnP02sNP01CQM";
+        
+        const countdownOverlay = document.getElementById('countdown-overlay');
+        const countdownNumber = document.getElementById('countdown-number');
+
+        player.addEventListener('ended', () => {
+            const currentId = player.getAttribute('playback-id');
+
+            if (currentId === MAIN_VIDEO_ID) {
+                startCountdown();
+            } else if (currentId === BTS_VIDEO_ID) {
+                window.location.href = 'main.html';
+            }
+        });
+
+        function startCountdown() {
+            countdownOverlay.classList.add('visible');
+            let count = 10;
+            countdownNumber.textContent = count;
+            
+            const timer = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownNumber.textContent = count;
+                } else {
+                    clearInterval(timer);
+                    countdownOverlay.classList.remove('visible');
+                    // Switch to BTS
+                    switchToVideo(BTS_VIDEO_ID);
+                }
+            }, 1000);
+        }
+
+        function switchToVideo(id) {
+            buttons.forEach(b => {
+                if (b.dataset.id === id) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+            player.setAttribute('playback-id', id);
+            // Ensure playback starts
+            // Mux player usually autoplays when attribute changes if autoplay is on, 
+            // but explicit play() is safer after user interaction chain
+            setTimeout(() => {
+                player.play().catch(console.error);
+            }, 500); 
+        }
 
         // Menu Logic
         const buttons = document.querySelectorAll('#features-menu .ui-btn');
