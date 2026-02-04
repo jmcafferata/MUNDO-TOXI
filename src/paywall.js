@@ -453,6 +453,71 @@ export function initPaywall({ musicFile, onEnter }) {
   let currentCode = '';
   let successUnlocked = false;
 
+  // Virtual Input for TV Remotes / Screen Readers
+  const virtualInput = document.createElement('input');
+  virtualInput.type = 'text'; // 'number' sometimes has issues with selection
+  virtualInput.inputMode = 'numeric';
+  virtualInput.pattern = '[0-9]*';
+  virtualInput.setAttribute('autocomplete', 'off');
+  // Styling to hide but keep functional
+  virtualInput.style.position = 'fixed';
+  virtualInput.style.opacity = '0.01'; // Not 0 to ensure some browsers render it
+  virtualInput.style.top = '50%';
+  virtualInput.style.left = '50%';
+  virtualInput.style.width = '1px';
+  virtualInput.style.height = '1px';
+  virtualInput.style.pointerEvents = 'none'; // Click through
+  virtualInput.style.zIndex = '-1';
+  document.body.appendChild(virtualInput);
+
+  function focusVirtualInput() {
+    if (!successUnlocked) {
+        virtualInput.focus({ preventScroll: true });
+    }
+  }
+
+  // Handle input from the virtual text field
+  virtualInput.addEventListener('input', (e) => {
+    e.preventDefault();
+    if (e.data) {
+       // Handle appended text
+       const char = e.data.slice(-1);
+       if (char >= '0' && char <= '9') {
+         handleInput(char);
+       }
+    } else if (e.inputType === 'deleteContentBackward' || e.inputType === 'deleteContent') {
+       handleInput('clear');
+    }
+    virtualInput.value = '';
+  });
+
+  virtualInput.addEventListener('keydown', (e) => {
+      // Capture enter and backspace if they reach here directly
+      if (e.key === 'Enter') {
+          handleInput('enter');
+          e.preventDefault();
+      } else if (e.key === 'Backspace') {
+          // Handled by input event usually, but just in case
+          // handleInput('clear'); 
+      }
+  });
+
+  // Ensure focus stays on input when interacting with keypad
+  keypadCard?.addEventListener('click', () => {
+    focusVirtualInput();
+  });
+  
+  // Also on document click if keypad is "active" (visible)
+  document.addEventListener('click', (e) => {
+      // If clicking outside interactive elements, refocus
+      if (['BUTTON', 'A', 'INPUT'].includes(e.target.tagName)) return;
+      
+      const isKeypadVisible = keypadModal && !keypadModal.classList.contains('hidden') && keypadModal.offsetParent !== null;
+      if (isKeypadVisible) {
+          focusVirtualInput();
+      }
+  });
+
   function openKeypad(mode = 'daily') {
     keypadMode = mode;
     console.log('Opening keypad, playing popup sound');
@@ -470,7 +535,16 @@ export function initPaywall({ musicFile, onEnter }) {
     keypadModal?.classList.remove('hidden');
     currentCode = '';
     updateDots();
+    setTimeout(focusVirtualInput, 100);
   }
+
+  // Initial focus check
+  setTimeout(() => {
+    const isKeypadVisible = keypadModal && !keypadModal.classList.contains('hidden') && keypadModal.offsetParent !== null;
+    if (isKeypadVisible) {
+        focusVirtualInput();
+    }
+  }, 500);
 
   function closeKeypad(force = false) {
     if (successUnlocked && !force) return;
