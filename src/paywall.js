@@ -208,9 +208,9 @@ export function initPaywall({ musicFile, onEnter }) {
     paywall.style.display = 'flex';
   }
 
-  function persistEntry() {
+  function persistEntry(code) {
     const now = Date.now();
-    const payload = { paidAt: now, expiresAt: now + ENTRY_DURATION_MS };
+    const payload = { paidAt: now, expiresAt: now + ENTRY_DURATION_MS, entryCode: code };
     localStorage.setItem(ENTRY_STORAGE_KEY, JSON.stringify(payload));
   }
 
@@ -449,7 +449,7 @@ export function initPaywall({ musicFile, onEnter }) {
   const keypadDots = document.getElementById('keypad-dots');
   const keypadCard = document.querySelector('.keypad-card');
   const keypadBtns = document.querySelectorAll('.keypad-btn');
-  const SECRET_CODE = '2058';
+  const SECRET_CODES = ['2058', '1985'];
   let currentCode = '';
   let successUnlocked = false;
 
@@ -566,13 +566,13 @@ export function initPaywall({ musicFile, onEnter }) {
     }
   }
 
-  function markSuccess() {
+  function markSuccess(code) {
     console.log('Code correct! Playing success sound');
     const s = soundCorrect.cloneNode();
     s.volume = 0.6;
     s.play().catch(e => console.warn('Success sound failed', e));
     
-    persistEntry(); // Save the entry so main.html doesn't redirect back to index
+    persistEntry(code); // Save the entry so main.html doesn't redirect back to index
     successUnlocked = true;
     keypadCard?.classList.add('success');
     keypadDots?.classList.add('success');
@@ -583,8 +583,8 @@ export function initPaywall({ musicFile, onEnter }) {
   }
 
   function checkCode() {
-    if (currentCode === SECRET_CODE) {
-      markSuccess();
+    if (SECRET_CODES.includes(currentCode)) {
+      markSuccess(currentCode);
       setTimeout(() => {
         closeKeypad(true);
         if (keypadMode === 'app') {

@@ -51,10 +51,28 @@
             const wrapper = document.getElementById('poster-wrapper');
             const img = document.getElementById('looping-poster-img');
             
-            const posters = [
-                { src: 'hotel%20oriente%20poster.jpg', link: 'hotel-oriente.html' },
-                { src: 'detective%20no%20ir%20poster.jpg', link: 'detective-noir.html' }
+            let posters = [
+                { src: 'hotel%20oriente%20poster.jpg', link: 'hotel-oriente.html', id: 'hotel' },
+                { src: 'detective%20no%20ir%20poster.jpg', link: 'detective-noir.html', id: 'detective' }
             ];
+
+            // Reorder based on entry code
+            try {
+                const rawEntry = localStorage.getItem('toxi_entry_pass');
+                if (rawEntry) {
+                    const entry = JSON.parse(rawEntry);
+                    if (entry && entry.entryCode === '1985') {
+                        // Swap so Detective Noir is first
+                        posters = [posters[1], posters[0]];
+                        console.log('Order: Detective First (1985)');
+                    } else {
+                         // Default 2058 or other -> Hotel Oriente First
+                         console.log('Order: Hotel First');
+                    }
+                }
+            } catch (e) {
+                console.warn('Error reading entry code', e);
+            }
             
             let currentIndex = 0;
 
