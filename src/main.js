@@ -642,10 +642,47 @@ function createVideoThumbnail(title, videoId, credits, thumbUrl, x, y, z) {
 //     );
 // });
 
-// Position pillars side by side
-// createPillar('TOXI GAMING', -12, 12, 0xff0000); // Red
-// createPillar('TOXI ACADEMY', 0, 12, 0x00ff00); // Green
-// createPillar('TOXI KIDS', 12, 12, 0x0000ff); // Blue
+// --- Floating Links & Posters for Videos ---
+function createFloatingLink(text, x, y, z, onClick) {
+    const div = document.createElement('div');
+    div.className = 'floating-link';
+    div.textContent = text;
+    div.style.cursor = 'pointer';
+    div.style.padding = '10px 15px';
+    div.style.color = '#ffffff';
+    div.style.fontFamily = "'Helvetica Now', 'Helvetica', 'Arial', sans-serif";
+    div.style.fontWeight = 'bold';
+    div.style.fontSize = '12px';
+    div.style.letterSpacing = '2px';
+    div.style.textTransform = 'uppercase';
+    div.style.pointerEvents = 'auto'; // Essential for clicking
+    div.style.textShadow = '0 0 10px rgba(0,0,0,0.8)';
+    div.style.opacity = '0.7';
+    div.style.transition = 'opacity 0.3s, transform 0.3s';
+    
+    div.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent controls/renderer click
+        onClick();
+    });
+    
+    div.addEventListener('mouseenter', () => {
+        div.style.opacity = '1';
+        div.style.transform = 'scale(1.1)';
+    });
+    div.addEventListener('mouseleave', () => {
+        div.style.opacity = '0.7';
+        div.style.transform = 'scale(1)';
+    });
+
+    const label = new CSS2DObject(div);
+    label.position.set(x, y, z);
+    scene.add(label);
+    return label;
+}
+
+
+
+
 
 // Modal Logic
 const modal = document.getElementById('video-modal');
@@ -655,6 +692,57 @@ const videoTitle = document.getElementById('video-title');
 const videoCredits = document.getElementById('video-credits');
 const releaseDate = document.getElementById('release-date');
 const qrCode = document.getElementById('qr-code');
+
+// Mux Overlay Logic
+const muxOverlay = document.getElementById('mux-overlay');
+const muxPlayer = document.getElementById('mux-player');
+const muxClose = document.getElementById('mux-close');
+let hls;
+
+function openMuxOverlay(videoUrl) {
+    if (!muxOverlay || !muxPlayer) return;
+    
+    muxPlayer.style.display = 'block';
+    muxOverlay.style.display = 'flex';
+
+    if (Hls.isSupported()) {
+        if (hls) {
+            hls.destroy();
+        }
+        hls = new Hls();
+        hls.loadSource(videoUrl);
+        hls.attachMedia(muxPlayer);
+        hls.on(Hls.Events.MANIFEST_PARSED, function() {
+            console.log('HLS manifest parsed, playing...');
+            muxPlayer.play().catch(e => console.error('Play failed:', e));
+        });
+    } else if (muxPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+        muxPlayer.src = videoUrl;
+        muxPlayer.addEventListener('loadedmetadata', function() {
+            muxPlayer.play().catch(e => console.error('Play failed:', e));
+        });
+    }
+
+    if (animationId) cancelAnimationFrame(animationId);
+}
+
+function closeMuxOverlay() {
+    if (!muxOverlay) return;
+    muxOverlay.style.display = 'none';
+    if (muxPlayer) {
+        muxPlayer.pause();
+        muxPlayer.src = '';
+    }
+    if (hls) {
+        hls.destroy();
+        hls = null;
+    }
+    animate();
+}
+
+if (muxClose) {
+    muxClose.addEventListener('click', closeMuxOverlay);
+}
 
 function openModal(title, videoId, creditsHtml) {
     console.log('Opening modal for:', title);
@@ -1142,3 +1230,4 @@ animate();
     setTimeout(hideHints, HIDE_DELAY + 5000);
 
 })();
+
