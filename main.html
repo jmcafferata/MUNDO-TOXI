@@ -31,13 +31,13 @@
 
     <div id="app"></div>
 
-    <!-- Hotel Oriente Poster Overlay -->
-    <div id="hotel-poster-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; opacity: 0; align-items: center; justify-content: center; z-index: 90; pointer-events: none; padding: 40px; box-sizing: border-box; transition: opacity 1s ease-in-out;">
+    <!-- Poster Loop Overlay -->
+    <div id="poster-overlay-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; opacity: 0; align-items: center; justify-content: center; z-index: 90; pointer-events: none; padding: 40px; box-sizing: border-box; transition: opacity 1s ease-in-out;">
         <div id="poster-wrapper" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; transform: scale(0.95); pointer-events: none;">
             <img 
-                src="hotel%20oriente%20poster.jpg" 
-                alt="Hotel Oriente" 
-                onclick="window.location.href='hotel-oriente.html'"
+                id="looping-poster-img"
+                src="" 
+                alt="Poster" 
                 style="max-width: 1280px; width: 100%; height: auto; max-height: 100vh; object-fit: scale-down; cursor: pointer; pointer-events: auto; box-shadow: 0 0 20px rgba(0,0,0,0.5); transition: transform 0.3s ease;"
                 onmouseover="this.style.transform='scale(1.02)'"
                 onmouseout="this.style.transform='scale(1)'"
@@ -47,11 +47,29 @@
 
     <script>
         (function() {
-            const container = document.getElementById('hotel-poster-container');
+            const container = document.getElementById('poster-overlay-container');
             const wrapper = document.getElementById('poster-wrapper');
+            const img = document.getElementById('looping-poster-img');
+            
+            const posters = [
+                { src: 'hotel%20oriente%20poster.jpg', link: 'hotel-oriente.html' },
+                { src: 'detective%20no%20ir%20poster.jpg', link: 'detective-noir.html' }
+            ];
+            
+            let currentIndex = 0;
+
             const INITIAL_DELAY = 10000;
             const DISPLAY_DURATION = 10000;
             const HIDDEN_DURATION = 10000;
+
+            function updateContent() {
+                const p = posters[currentIndex];
+                img.src = p.src;
+                img.onclick = () => window.location.href = p.link;
+            }
+
+            // Set initial content
+            updateContent();
 
             function show() {
                 container.style.display = 'flex';
@@ -76,6 +94,10 @@
                     // Reset scale without animation
                     wrapper.style.transition = 'none';
                     wrapper.style.transform = 'scale(0.95)';
+
+                    // Prepare next poster
+                    currentIndex = (currentIndex + 1) % posters.length;
+                    updateContent();
 
                     setTimeout(show, HIDDEN_DURATION);
                 }, 1000); // Matches transition duration
