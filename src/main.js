@@ -413,7 +413,7 @@ scene.add(shadowPlane);
 
 // Digital Ocean - Sea of Nodes
 const gridSize = isLowPerformance ? 40 : 100; // Drastically reduce points for low performance devices
-const spacing = 1.0;
+const spacing = isLowPerformance ? 3.0 : 1.0; // Increase spacing in LQ to cover the same area with fewer points
 const particleCount = (gridSize * 2 + 1) ** 2;
 
 const geometry = new THREE.BufferGeometry();
