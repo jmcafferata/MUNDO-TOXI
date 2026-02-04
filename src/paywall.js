@@ -531,6 +531,35 @@ export function initPaywall({ musicFile, onEnter }) {
 
   keypadClose?.addEventListener('click', closeKeypad);
 
+  function handleInput(key) {
+    if (successUnlocked) return;
+    
+    // Validate key is valid or return early for invalid input if called directly
+    if (key !== 'clear' && key !== 'enter' && !(key.length === 1 && key >= '0' && key <= '9')) {
+      return; 
+    }
+
+    playKeySound(key);
+    
+    if (key === 'clear') {
+      currentCode = currentCode.slice(0, -1);
+      updateDots();
+    } else if (key === 'enter') {
+      if (currentCode.length === 4) {
+        checkCode();
+      }
+    } else {
+      // Digit handling
+      if (currentCode.length < 4) {
+        currentCode += key;
+        updateDots();
+        if (currentCode.length === 4) {
+          setTimeout(() => checkCode(), 300);
+        }
+      }
+    }
+  }
+
   keypadBtns.forEach(btn => {
     // Stop propagation of pointer events to prevent clicks from reaching the canvas behind
     btn.addEventListener('pointerdown', (e) => e.stopPropagation());
@@ -541,23 +570,41 @@ export function initPaywall({ musicFile, onEnter }) {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const key = btn.dataset.key;
-      playKeySound(key);
-      
-      if (key === 'clear') {
-        currentCode = currentCode.slice(0, -1);
-        updateDots();
-      } else if (key === 'enter') {
-        if (currentCode.length === 4) {
-          checkCode();
-        }
-      } else if (currentCode.length < 4) {
-        currentCode += key;
-        updateDots();
-        if (currentCode.length === 4) {
-          setTimeout(() => checkCode(), 300);
-        }
-      }
+      handleInput(key);
     });
+  });
+
+  // Support for keyboard/remote control
+  document.addEventListener('keydown', (e) => {
+    if (successUnlocked) return;
+    // Don't interfere with inputs if any exist
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+
+    // Check if keypad represents the main interaction or if it is currently visible
+    // In index.html keypad-modal-main is usually visible. 
+    // If it's the popup version (keypad-modal), we check if it has 'hidden' class removed?
+    // The variable keeping track of open/close is implied by CSS classes.
+    // However, since handleInput checks successUnlocked, and we can check visibility if needed.
+    // Let's check visibility of the active modal.
+    const activeModal = document.querySelector('.keypad-card:not(.hidden)');
+    // If keypad is hidden (e.g. by css display none, or parent hidden), we might want to skip.
+    // But currently logical visibility is primarily controlled via class 'hidden' on parent wrapper OR handled by layout in index.html.
+    // index.html keypad doesn't use 'hidden' class on container by default.
+    // So we assume it's always ready to accept input unless the paywall is gone?
+    // But paywall goes away when `paid` is true. `initPaywall` logic inside `paid` check -> `showEnterButton`.
+    // If user has paid, keypad might still be in DOM but maybe obscured?
+    // In index.html: <div id="main-container" class="entry-container"> ... <div class="entry-hero"> ... keypad ...
+    // If paid, `showEnterButton` is called. `paywall` element (with price cards) is part of `entry-paywall` div which is separate from `entry-hero`.
+    // The keypad is always on screen in index.html.
+    
+    const key = e.key;
+    if (key >= '0' && key <= '9') {
+        handleInput(key);
+    } else if (key === 'Backspace' || key === 'Delete') {
+        handleInput('clear');
+    } else if (key === 'Enter') {
+        handleInput('enter');
+    }
   });
 
   // Close keypad on outside click
