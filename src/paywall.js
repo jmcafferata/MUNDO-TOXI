@@ -232,6 +232,13 @@ export function initPaywall({ musicFile, onEnter }) {
   }
 
   const params = new URLSearchParams(window.location.search);
+  
+  // Allow resetting via URL parameter for testing
+  if (params.get('reset')) {
+    localStorage.removeItem(ENTRY_STORAGE_KEY);
+    console.log('[TOXI] Session reset via URL parameter');
+  }
+
   const status = (params.get('collection_status') || params.get('status') || '').toLowerCase();
   const paymentApproved = status === 'approved' || status === 'success';
 
