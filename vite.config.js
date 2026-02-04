@@ -59,6 +59,7 @@ export default defineConfig({
         line: resolve(__dirname, 'line.html'),
         point: resolve(__dirname, 'point.html'),
         app: resolve(__dirname, 'app.html'),
+        hotelOriente: resolve(__dirname, 'hotel-oriente.html'),
       },
     },
   },
