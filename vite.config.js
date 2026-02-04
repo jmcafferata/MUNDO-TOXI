@@ -60,6 +60,7 @@ export default defineConfig({
         point: resolve(__dirname, 'point.html'),
         app: resolve(__dirname, 'app.html'),
         hotelOriente: resolve(__dirname, 'hotel-oriente.html'),
+        detectiveNoir: resolve(__dirname, 'detective-noir.html'),
       },
     },
   },
