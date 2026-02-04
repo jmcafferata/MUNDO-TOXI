@@ -102,6 +102,9 @@ scene.fog = new THREE.Fog(0x000000, 20, 60); // Black fog
 
 // Camera setup for Perspective view
 const isMobile = window.innerWidth < 768;
+const isTV = /Smart|Web0S|Tizen|TV|BrowseHere/i.test(navigator.userAgent);
+const isLowPerformance = isMobile || isTV;
+
 const startFov = isMobile ? 120 : 90;
 const camera = new THREE.PerspectiveCamera(startFov, window.innerWidth / window.innerHeight, 1, 1000);
 scene.add(camera); // Add camera to scene so children are rendered
@@ -134,7 +137,10 @@ function getClampedDimensions() {
         cw = ch * aspect;
     }
     
-    return { cw: Math.floor(cw), ch: Math.floor(ch), finalPR: 1 };
+    const dpr = window.devicePixelRatio || 1;
+    const finalPR = Math.min(dpr, 2);
+
+    return { cw: Math.floor(cw), ch: Math.floor(ch), finalPR };
 }
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -199,28 +205,33 @@ function navigateWithFade(url, { force = false, duration = 3000 } = {}) {
 }
 
 // Post-processing (Bloom)
-const renderScene = new RenderPass(scene, camera);
+let composer = null;
+let bloomPass = null;
 
-const { cw: _bw, ch: _bh, finalPR: _bpr } = getClampedDimensions();
-const bloomPass = new UnrealBloomPass(new THREE.Vector2(Math.floor(_bw * _bpr), Math.floor(_bh * _bpr)), 1.5, 0.4, 0.85);
-bloomPass.threshold = 0.7;
-bloomPass.strength = 1.0;
-bloomPass.radius = 0.2;
+if (!isLowPerformance) {
+    const renderScene = new RenderPass(scene, camera);
 
-const renderTarget = new THREE.WebGLRenderTarget(
-    Math.floor(_bw * _bpr),
-    Math.floor(_bh * _bpr),
-    {
-        type: THREE.HalfFloatType,
-        format: THREE.RGBAFormat,
-        samples: 8
-    }
-);
+    const { cw: _bw, ch: _bh, finalPR: _bpr } = getClampedDimensions();
+    bloomPass = new UnrealBloomPass(new THREE.Vector2(Math.floor(_bw * _bpr), Math.floor(_bh * _bpr)), 1.5, 0.4, 0.85);
+    bloomPass.threshold = 0.7;
+    bloomPass.strength = 1.0;
+    bloomPass.radius = 0.2;
 
-const composer = new EffectComposer(renderer, renderTarget);
-composer.setPixelRatio(_bpr);
-composer.addPass(renderScene);
-composer.addPass(bloomPass);
+    const renderTarget = new THREE.WebGLRenderTarget(
+        Math.floor(_bw * _bpr),
+        Math.floor(_bh * _bpr),
+        {
+            type: THREE.HalfFloatType,
+            format: THREE.RGBAFormat,
+            samples: 8
+        }
+    );
+
+    composer = new EffectComposer(renderer, renderTarget);
+    composer.setPixelRatio(_bpr);
+    composer.addPass(renderScene);
+    composer.addPass(bloomPass);
+}
 
 // Label Renderer
 const labelRenderer = new CSS2DRenderer();
@@ -1071,7 +1082,11 @@ function animate() {
         }
     }
 
-    composer.render();
+    if (composer) {
+        composer.render();
+    } else {
+        renderer.render(scene, camera);
+    }
     labelRenderer.render(scene, camera);
     css3dRenderer.render(scene, camera);
 }
@@ -1087,14 +1102,16 @@ window.addEventListener('resize', () => {
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
 
-    composer.setPixelRatio(finalPR);
-    composer.setSize(cw, ch);
+    if (composer) {
+        composer.setPixelRatio(finalPR);
+        composer.setSize(cw, ch);
 
-    // Update bloom pass resolution if supported
-    if (bloomPass && typeof bloomPass.setSize === 'function') {
-        bloomPass.setSize(Math.floor(cw * finalPR), Math.floor(ch * finalPR));
-    } else if (bloomPass && bloomPass.resolution && typeof bloomPass.resolution.set === 'function') {
-        bloomPass.resolution.set(Math.floor(cw * finalPR), Math.floor(ch * finalPR));
+        // Update bloom pass resolution if supported
+        if (bloomPass && typeof bloomPass.setSize === 'function') {
+            bloomPass.setSize(Math.floor(cw * finalPR), Math.floor(ch * finalPR));
+        } else if (bloomPass && bloomPass.resolution && typeof bloomPass.resolution.set === 'function') {
+            bloomPass.resolution.set(Math.floor(cw * finalPR), Math.floor(ch * finalPR));
+        }
     }
 
     labelRenderer.setSize(window.innerWidth, window.innerHeight);
