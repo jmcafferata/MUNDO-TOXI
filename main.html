@@ -149,6 +149,28 @@
         }
 
         const params = new URLSearchParams(window.location.search);
+
+        // Reset Cache Logic
+        if (params.get('reset') === 'true') {
+            localStorage.clear();
+            sessionStorage.clear();
+            if ('caches' in window) {
+                caches.keys().then((names) => {
+                    names.forEach((name) => {
+                        caches.delete(name);
+                    });
+                });
+            }
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then((registrations) => {
+                    registrations.forEach((registration) => {
+                        registration.unregister();
+                    });
+                });
+            }
+            console.log('Cache, Storage, and Service Workers reset.');
+        }
+
         const status = (params.get('collection_status') || params.get('status') || '').toLowerCase();
         const paymentApproved = status === 'approved' || status === 'success';
 
