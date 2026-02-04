@@ -95,6 +95,22 @@ class SimplexNoise {
 
 const simplex = new SimplexNoise();
 
+// Helper for soft particle texture
+function getSoftParticleTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+    const context = canvas.getContext('2d');
+    const gradient = context.createRadialGradient(16, 16, 0, 16, 16, 16);
+    gradient.addColorStop(0, 'rgba(255,255,255,1)');
+    gradient.addColorStop(0.4, 'rgba(255,255,255,0.5)');
+    gradient.addColorStop(1, 'rgba(0,0,0,0)');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 32, 32);
+    const texture = new THREE.CanvasTexture(canvas);
+    return texture;
+}
+
 // Scene setup
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000); // Black background
@@ -446,9 +462,13 @@ geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
 geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
 const material = new THREE.PointsMaterial({ 
-    size: 0.1, 
+    size: 0.8, // Larger size because of texture
     vertexColors: true,
-    sizeAttenuation: true
+    sizeAttenuation: true,
+    map: getSoftParticleTexture(),
+    alphaTest: 0.1, // Better for performance than transparent: true with sorting
+    transparent: true,
+    opacity: 0.8
 });
 
 const points = new THREE.Points(geometry, material);
@@ -476,9 +496,9 @@ loader.load('./logo.glb', (gltf) => {
                 color: oldMat.color,
                 map: oldMat.map, // Keep texture if any
                 metalness: 0,
-                roughness: 0.5,
+                roughness: isLowPerformance ? 0.8 : 0.4, // Softer reflection, especially on TV
                 clearcoat: 1.0,
-                clearcoatRoughness: 0.1,
+                clearcoatRoughness: 0.3, // Softer clearcoat reflection
                 emissive: oldMat.color,
                 emissiveIntensity: 0.2
             });
