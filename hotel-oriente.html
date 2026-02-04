@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hotel Oriente - TOXI Media</title>
     <link rel="stylesheet" href="./src/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
     <style>
         body {
             margin: 0;
@@ -221,39 +222,23 @@
     </div>
     
     <div id="video-container">
-        <video id="mux-player" controls autoplay playsinline></video>
+        <mux-player
+            id="mux-player"
+            playback-id="iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU"
+            stream-type="on-demand"
+            autoplay
+            style="width: 100%; height: 100%; max-height: 100vh; --media-object-fit: contain; --media-background-color: transparent;"
+            class="ui-fade"
+        ></mux-player>
     </div>
 
     <div id="features-menu" class="ui-fade">
-        <button class="ui-btn active" data-src="https://stream.mux.com/iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU.m3u8">Película</button>
-        <button class="ui-btn" data-src="https://stream.mux.com/iVB2ZU00L1WZDQJpqXrIAMg02Cmq4l6C2kKnP02sNP01CQM.m3u8">Detrás de Cámara</button>
+        <button class="ui-btn active" data-id="iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU">Película</button>
+        <button class="ui-btn" data-id="iVB2ZU00L1WZDQJpqXrIAMg02Cmq4l6C2kKnP02sNP01CQM">Detrás de Cámara</button>
     </div>
 
     <script type="module">
-        import Hls from 'hls.js';
-
-        const video = document.getElementById('mux-player');
-        let hls;
-
-        function loadVideo(src) {
-            if (Hls.isSupported()) {
-                if(hls) hls.destroy();
-                hls = new Hls();
-                hls.loadSource(src);
-                hls.attachMedia(video);
-                hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                    video.play().catch(e => console.log('Autoplay prevented:', e));
-                });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = src;
-                video.addEventListener('loadedmetadata', function() {
-                    video.play().catch(e => console.log('Autoplay prevented:', e));
-                });
-            }
-        }
-
-        // Initial load
-        loadVideo('https://stream.mux.com/iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU.m3u8');
+        const player = document.getElementById('mux-player');
 
         // Menu Logic
         const buttons = document.querySelectorAll('#features-menu .ui-btn');
@@ -263,9 +248,11 @@
                 buttons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 
-                // Load new source
-                const src = btn.dataset.src;
-                loadVideo(src);
+                // Load new source via playback-id
+                const newId = btn.dataset.id;
+                if (player.getAttribute('playback-id') !== newId) {
+                    player.setAttribute('playback-id', newId);
+                }
             });
         });
 
@@ -274,13 +261,25 @@
         const uiElements = document.querySelectorAll('.ui-fade');
 
         function showUI() {
-            uiElements.forEach(el => el.classList.remove('hidden'));
+            uiElements.forEach(el => {
+                el.classList.remove('hidden');
+                el.style.opacity = '1';
+                el.style.pointerEvents = 'auto';
+            });
             clearTimeout(uiTimer);
             uiTimer = setTimeout(hideUI, 3000);
         }
 
         function hideUI() {
-            uiElements.forEach(el => el.classList.add('hidden'));
+            uiElements.forEach(el => {
+                // Don't fade out the player itself, only UI controls if we were managing custom ones
+                // But specifically for the title and buttons:
+                if (el.tagName !== 'MUX-PLAYER') {
+                    el.classList.add('hidden');
+                    el.style.opacity = '0';
+                    el.style.pointerEvents = 'none';
+                }
+            });
         }
 
         // Initialize UI timer on load
