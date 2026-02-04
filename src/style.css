@@ -76,6 +76,7 @@ body {
   justify-content: center;
   min-height: 100vh;
   padding: 40px 24px;
+  padding-bottom: 20vh; /* Visual optical center adjustment */
   gap: 28px;
 }
 

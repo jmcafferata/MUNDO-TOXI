@@ -402,6 +402,35 @@ directionalLight.shadow.camera.top = 100;
 directionalLight.shadow.camera.bottom = -100;
 scene.add(directionalLight);
 
+// Fake Glow for Light (Only for LQ/Mobile to compensate missing bloom)
+let lightGlowSprite = null;
+if (isLowPerformance) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64;
+    canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+    gradient.addColorStop(0.2, 'rgba(255, 255, 255, 0.4)');
+    gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.1)');
+    gradient.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 64, 64);
+    
+    const glowTexture = new THREE.CanvasTexture(canvas);
+    const glowMaterial = new THREE.SpriteMaterial({ 
+        map: glowTexture, 
+        color: 0xffffff, 
+        transparent: true, 
+        opacity: 0.9,
+        blending: THREE.AdditiveBlending
+    });
+    
+    lightGlowSprite = new THREE.Sprite(glowMaterial);
+    lightGlowSprite.scale.set(40, 40, 1); // Big glow
+    scene.add(lightGlowSprite);
+}
+
 // Shadow Plane (invisible but receives shadows)
 const planeGeometry = new THREE.PlaneGeometry(200, 200);
 const planeMaterial = new THREE.ShadowMaterial({ opacity: 0.5 });
@@ -979,6 +1008,11 @@ function animate() {
 
     // Animate Light
     directionalLight.position.x = Math.sin(time * 0.5) * 40;
+    
+    // Sync glow sprite with light
+    if (lightGlowSprite) {
+        lightGlowSprite.position.copy(directionalLight.position);
+    }
     
     const lx = directionalLight.position.x;
     const ly = directionalLight.position.y;
