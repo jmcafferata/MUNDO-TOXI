@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hotel Oriente - TOXI Media</title>
+    <link rel="stylesheet" href="./src/style.css" />
+    <style>
+        body {
+            margin: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: white;
+            font-family: 'Helvetica Now', 'Helvetica', 'Arial', sans-serif;
+        }
+        #video-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            max-height: 100vh;
+            object-fit: contain;
+        }
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+        }
+        
+        #features-menu {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 20;
+        }
+        
+        /* Unified UI Button Style */
+        .ui-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.6);
+            padding: 10px 20px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease, opacity 0.5s ease;
+            backdrop-filter: blur(5px);
+            text-decoration: none;
+            border-radius: 0; /* Removing default border radius if strictly matching feature-btn */
+        }
+
+        .ui-btn:hover {
+            border-color: rgba(255,255,255,0.8);
+            color: white;
+            background: rgba(255,255,255,0.1);
+            opacity: 1 !important;
+        }
+        
+        .ui-btn.active {
+            border-color: white;
+            color: black;
+            background: white;
+            box-shadow: 0 0 15px rgba(255,255,255,0.3);
+        }
+
+        .ui-fade {
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+        
+        .ui-fade.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .info-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .info-overlay.visible {
+            display: flex;
+            opacity: 1;
+        }
+        .info-content {
+            max-width: 400px;
+            line-height: 1.6;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .info-content h2 {
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        .info-content p {
+            margin-bottom: 15px;
+            color: #ccc;
+            font-size: 1rem;
+        }
+        .info-content strong {
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .close-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 10px;
+            line-height: 1;
+            transition: transform 0.3s ease;
+        }
+        .close-info:hover {
+            transform: rotate(90deg);
+        }
+
+        #floating-title {
+            position: absolute;
+            top: 2%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            z-index: 15;
+            pointer-events: none;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+            font-weight: 300;
+            margin: 0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            #floating-title {
+                font-size: 1.2rem;
+                letter-spacing: 4px;
+                top: 10%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-button ui-btn ui-fade">&larr; Volver</a>
+    <h1 id="floating-title" class="ui-fade">Hotel Oriente</h1>
+    <button id="info-toggle" class="info-button ui-btn ui-fade">Ficha Técnica</button>
+
+    <div id="info-overlay" class="info-overlay">
+        <button id="close-info" class="close-info">&times;</button>
+        <div class="info-content">
+            <h1 style="text-transform: uppercase; letter-spacing: 5px; margin-bottom: 10px; font-weight: 300;">Hotel Oriente</h1>
+            <h2>Ficha Técnica</h2>
+            <p>
+                <strong>Elenco</strong>
+                Rose Cafferata, Carmin Cafferata, Azulina Cafferata, Azul Macfarlane, Petu Anzorreguy, Ximena Colombres, Pedro Gattas
+            </p>
+            <p>
+                <strong>Dirección, Filmación y Edición</strong>
+                Juan Manuel Cafferata
+            </p>
+            <p>
+                <strong>Copyright</strong>
+                Las Nenas Producciones, 2026
+            </p>
+            <p>
+                <strong>Duración</strong>
+                05:39
+            </p>
+        </div>
+    </div>
+    
+    <div id="video-container">
+        <video id="mux-player" controls autoplay playsinline></video>
+    </div>
+
+    <div id="features-menu" class="ui-fade">
+        <button class="ui-btn active" data-src="https://stream.mux.com/rR8P8mSaKDzz02TsftugTUdI00cQPJX00oy.m3u8">Película</button>
+        <button class="ui-btn" data-src="https://stream.mux.com/rR8P8mSaKDzz02TsftugTUdI00cQPJX00oy.m3u8">Detrás de Cámara</button>
+    </div>
+
+    <script type="module">
+        import Hls from 'hls.js';
+
+        const video = document.getElementById('mux-player');
+        let hls;
+
+        function loadVideo(src) {
+            if (Hls.isSupported()) {
+                if(hls) hls.destroy();
+                hls = new Hls();
+                hls.loadSource(src);
+                hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                    video.play().catch(e => console.log('Autoplay prevented:', e));
+                });
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = src;
+                video.addEventListener('loadedmetadata', function() {
+                    video.play().catch(e => console.log('Autoplay prevented:', e));
+                });
+            }
+        }
+
+        // Initial load
+        loadVideo('https://stream.mux.com/rR8P8mSaKDzz02TsftugTUdI00cQPJX00oy.m3u8');
+
+        // Menu Logic
+        const buttons = document.querySelectorAll('#features-menu .ui-btn');
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update active state
+                buttons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Load new source
+                const src = btn.dataset.src;
+                loadVideo(src);
+            });
+        });
+
+        // UI Fade Logic
+        let uiTimer;
+        const uiElements = document.querySelectorAll('.ui-fade');
+
+        function showUI() {
+            uiElements.forEach(el => el.classList.remove('hidden'));
+            clearTimeout(uiTimer);
+            uiTimer = setTimeout(hideUI, 3000);
+        }
+
+        function hideUI() {
+            uiElements.forEach(el => el.classList.add('hidden'));
+        }
+
+        // Initialize UI timer on load
+        showUI();
+
+        // Listen for mouse movement and touches
+        document.addEventListener('mousemove', showUI);
+        document.addEventListener('touchstart', showUI);
+        document.addEventListener('click', showUI);
+
+
+        // Info Overlay Logic
+
+        // Info Overlay Logic
+        const infoToggle = document.getElementById('info-toggle');
+        const infoOverlay = document.getElementById('info-overlay');
+        const closeInfo = document.getElementById('close-info');
+
+        function toggleInfo(e) {
+            e.stopPropagation(); // Prevent this click from immediately fading out or anything weird
+            infoOverlay.classList.toggle('visible');
+            
+            // If overlay is open, maybe we want to keep UI visible?
+            // For now, let the global interaction listener keep it visible.
+        }
+
+        infoToggle.addEventListener('click', toggleInfo);
+        
+        closeInfo.addEventListener('click', (e) => {
+             e.stopPropagation();
+             toggleInfo(e);
+        });
+        
+        infoOverlay.addEventListener('click', (e) => {
+            if (e.target === infoOverlay) toggleInfo(e);
+        });
+    </script>
+</body>
+</html>

@@ -16,6 +16,7 @@
     "@capacitor/cli": "^8.0.2",
     "@capacitor/core": "^8.0.2",
     "@tweenjs/tween.js": "^25.0.0",
+    "hls.js": "^1.6.15",
     "lil-gui": "^0.21.0",
     "mercadopago": "^2.2.9",
     "three": "^0.160.0",
