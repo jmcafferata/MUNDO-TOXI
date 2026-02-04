@@ -391,7 +391,7 @@ scene.add(ambientLight);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(-20, 40, -12);
-directionalLight.castShadow = true;
+directionalLight.castShadow = !isLowPerformance;
 directionalLight.shadow.mapSize.width = 2048;
 directionalLight.shadow.mapSize.height = 2048;
 directionalLight.shadow.camera.near = 0.5;
@@ -412,7 +412,7 @@ shadowPlane.receiveShadow = true;
 scene.add(shadowPlane);
 
 // Digital Ocean - Sea of Nodes
-const gridSize = 100; // Increased grid size for points
+const gridSize = isLowPerformance ? 40 : 100; // Drastically reduce points for low performance devices
 const spacing = 1.0;
 const particleCount = (gridSize * 2 + 1) ** 2;
 
@@ -476,16 +476,16 @@ loader.load('./logo.glb', (gltf) => {
                 color: oldMat.color,
                 map: oldMat.map, // Keep texture if any
                 metalness: 0,
-                roughness: isLowPerformance ? 0.8 : 0.4, // Softer reflection, especially on TV
+                roughness: isLowPerformance ? 0.7 : 0.2, // HQ: Sharp reflection. LQ: Soft/Big reflection
                 clearcoat: 1.0,
-                clearcoatRoughness: 0.3, // Softer clearcoat reflection
+                clearcoatRoughness: isLowPerformance ? 0.5 : 0.1, // HQ: Sharp coat. LQ: Soft coat
                 emissive: oldMat.color,
-                emissiveIntensity: 0.2
+                emissiveIntensity: isLowPerformance ? 0.8 : 0.2 // LQ: Higher intensity to compensate lack of Bloom
             });
             
             child.material = newMat;
-            child.castShadow = true;
-            child.receiveShadow = true;
+            child.castShadow = !isLowPerformance;
+            child.receiveShadow = !isLowPerformance;
         }
     });
 
