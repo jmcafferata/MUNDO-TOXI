@@ -326,7 +326,20 @@
                     b.classList.remove('active');
                 }
             });
+
+            // Update Metadata BEFORE playback-id for automatic switch
+            if (id === MAIN_VIDEO_ID) {
+                player.setAttribute('metadata-video-title', 'Hotel Oriente');
+                player.setAttribute('poster', `https://image.mux.com/${id}/thumbnail.png`);
+            } else if (id === BTS_VIDEO_ID) {
+                player.setAttribute('metadata-video-title', 'Hotel Oriente - Detrás de Cámara');
+                player.setAttribute('poster', `https://image.mux.com/${id}/thumbnail.png`);
+            }
+
             player.setAttribute('playback-id', id);
+            
+            showUI(); // Ensure UI comes back after transition
+
             // Ensure playback starts
             // Mux player usually autoplays when attribute changes if autoplay is on, 
             // but explicit play() is safer after user interaction chain
@@ -346,9 +359,7 @@
                 // Load new source via playback-id
                 const newId = btn.dataset.id;
                 if (player.getAttribute('playback-id') !== newId) {
-                    player.setAttribute('playback-id', newId);
-                    
-                    // Update Title and Poster for Casting
+                    // Update Title and Poster BEFORE changing playback-id to ensure Cast gets correct metadata
                     if (newId === MAIN_VIDEO_ID) {
                         player.setAttribute('metadata-video-title', 'Hotel Oriente');
                         player.setAttribute('poster', `https://image.mux.com/${newId}/thumbnail.png`);
@@ -356,6 +367,9 @@
                         player.setAttribute('metadata-video-title', 'Hotel Oriente - Detrás de Cámara');
                         player.setAttribute('poster', `https://image.mux.com/${newId}/thumbnail.png`);
                     }
+
+                    player.setAttribute('playback-id', newId);
+                    showUI(); // Ensure UI is visible after manual switch
                 }
             });
         });
