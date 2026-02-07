@@ -217,6 +217,9 @@
         const player = document.getElementById('mux-player');
         
         player.addEventListener('ended', () => {
+             // If casting, don't redirect (disconnects TV). Just let it end.
+             if (player.isCasting) return;
+             
              window.location.href = 'main.html';
         });
 

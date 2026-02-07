@@ -14,6 +14,10 @@ self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});
+
 const NOTIFICATIONS_URL = '/notifications.json';
 const SHOWN_NOTIFICATIONS_KEY = 'toxi_shown_notifications';
 const CHECK_INTERVAL = 60000;
