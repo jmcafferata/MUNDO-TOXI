@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detective Noir - TOXI Media</title>
+    <title>We Will Rock You - TOXI Media</title>
     <link rel="stylesheet" href="./src/style.css" />
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
     <style>
@@ -52,7 +52,7 @@
             transition: all 0.3s ease, opacity 0.5s ease;
             backdrop-filter: blur(5px);
             text-decoration: none;
-            border-radius: 0; 
+            border-radius: 0;
         }
 
         .ui-btn:hover {
@@ -62,6 +62,13 @@
             opacity: 1 !important;
         }
         
+        .ui-btn.active {
+            border-color: white;
+            color: black;
+            background: white;
+            box-shadow: 0 0 15px rgba(255,255,255,0.3);
+        }
+
         .ui-fade {
             opacity: 1;
             transition: opacity 0.5s ease;
@@ -105,7 +112,22 @@
             max-width: 400px;
             line-height: 1.6;
             animation: fadeIn 0.5s ease-out;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding-right: 10px; /* Space for scrollbar */
         }
+        /* Custom Scrollbar for info content */
+        .info-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .info-content::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+        .info-content::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -176,51 +198,63 @@
     </style>
 </head>
 <body>
-    <a href="/" class="back-button ui-btn ui-fade">&larr; Volver</a>
-    <h1 id="floating-title" class="ui-fade">Detective Noir</h1>
+    <div id="video-container">
+        <mux-player
+            id="mux-player"
+            playback-id="Mqf9GhKKFmd01IH28ITZ00KT4oGLxmr6gvqbNQjGIv301Y"
+            metadata-video-title="We Will Rock You"
+            stream-type="on-demand"
+            style="width: 100%; height: 100%;"
+            autoPlay="true"
+        ></mux-player>
+    </div>
+
+    <a href="main.html" class="back-button ui-btn ui-fade">&larr; Volver</a>
+    <h1 id="floating-title" class="ui-fade">We Will Rock You</h1>
     <button id="info-toggle" class="info-button ui-btn ui-fade">Ficha Técnica</button>
 
     <div id="info-overlay" class="info-overlay">
         <button id="close-info" class="close-info">&times;</button>
         <div class="info-content">
-            <h1 style="text-transform: uppercase; letter-spacing: 5px; margin-bottom: 10px; font-weight: 300;">Detective Noir</h1>
+            <h1 style="text-transform: uppercase; letter-spacing: 5px; margin-bottom: 10px; font-weight: 300;">We Will Rock You</h1>
             <h2>Ficha Técnica</h2>
             <p>
-                <strong>Elenco y Guion</strong>
-                Chavo Escrotito
+                <strong>Elenco</strong>
+                Agustín Martínez Pico Bulla, Agustina Libera, Agustina Sagripanti, Amparo Tejeiro, Andrés Herrmann, Clara Guiroy, Clara Pizzi, Elena Gómez Freiwald, Elisa Firpo, Facundo Gallo, Felicitas Ledesma, Francisca Lucero Schmidt, Francisco Martin, Guadalupe Trabattoni, Ian Guiroy, Josefina Treu, Juan Cruz Gómez Savino, Juan Martín Libera, Juan Patricio Moore, Juana Pizzi, Lara Falquet, Magdalena Pandrich, Manuel Salas, Margarita Capozucca, Margarita Galarce, Margarita Guiroy, Martina Arias Pizzi, Máximo Ribay Arleo, Renata Aldasoro, Rose Cafferata, Sara Ruzinec, Tomás Gómez Freiwald
             </p>
             <p>
-                <strong>Dirección, Filmación y Edición</strong>
+                <strong>Dirección</strong>
+                Ivana Strenitz
+            </p>
+            <p>
+                <strong>Vocal Coach</strong>
+                Rafael Todarello
+            </p>
+            <p>
+                <strong>Set</strong>
+                Carolina Alvado
+            </p>
+            <p>
+                <strong>Crew</strong>
+                Alexia Cayol, Angeles Achard, Felicitas Lagomarsino, Marcos Achard, Sofia Quevedo, Isabel Giampetruzzi, Isabel Carman, Lucia Abadia, Belen Nobile, Juana Bracho, Justina Capozucca, Catalina Magneres, Matilde Firpo, Josefina Zaffaroni, Emilia Bide, Justina Aldasoro, Agustina Fernandez, Valentina Zucchino, Milagros Borello, Elena Pearson
+            </p>
+            <p>
+                <strong>Tech</strong>
+                Paz Benavídez, Francesca Monti
+            </p>
+            <p>
+                <strong>Cámara y Edición</strong>
                 Juan Manuel Cafferata
             </p>
-            <p>
-                <strong>Copyright</strong>
-                TOXI Media, 2026
-            </p>
         </div>
-    </div>
-    
-    <div id="video-container">
-        <mux-player
-            id="mux-player"
-            playback-id="IHikcrMnpK00Dxsyb7xKpi1qpju01I00JmCpNXXrhg1WZg"
-            metadata-video-title="Detective Noir"
-            poster="https://image.mux.com/IHikcrMnpK00Dxsyb7xKpi1qpju01I00JmCpNXXrhg1WZg/thumbnail.png"
-            stream-type="on-demand"
-            autoplay
-            style="width: 100%; height: 100%; max-height: 100vh; --media-object-fit: contain; --media-background-color: #000; --media-icon-color: #fff; --media-accent-color: #fff;"
-            class="ui-fade"
-        ></mux-player>
     </div>
 
     <script type="module">
         const player = document.getElementById('mux-player');
         
         player.addEventListener('ended', () => {
-             // If casting, don't redirect (disconnects TV). Just let it end.
-             if (player.isCasting) return;
-             
-             window.location.href = 'main.html';
+            if (player.isCasting) return;
+            window.location.href = 'main.html';
         });
 
         // UI Fade Logic
@@ -247,14 +281,11 @@
             });
         }
 
-        // Initialize UI timer on load
         showUI();
 
-        // Listen for mouse movement and touches
         document.addEventListener('mousemove', showUI);
         document.addEventListener('touchstart', showUI);
         document.addEventListener('click', showUI);
-
 
         // Info Overlay Logic
         const infoToggle = document.getElementById('info-toggle');
@@ -262,7 +293,7 @@
         const closeInfo = document.getElementById('close-info');
 
         function toggleInfo(e) {
-            e.stopPropagation(); 
+            e.stopPropagation();
             infoOverlay.classList.toggle('visible');
         }
 

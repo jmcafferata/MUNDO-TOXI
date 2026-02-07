@@ -293,6 +293,23 @@
         player.addEventListener('ended', () => {
             const currentId = player.getAttribute('playback-id');
 
+            if (player.isCasting) {
+                // Casting Limitation Fix:
+                // HTML Overlays (Countdown) do not appear on TV.
+                // Navigation (window.location) disconnects the Cast session.
+                // Staying on 'ended' video can sometimes cause a loading spinner loop on some receivers.
+                
+                // Graceful behavior: 
+                // 1. If Main Movie ends -> Immediately play BTS (Skip countdown)
+                // 2. If BTS ends -> Stop and stay on poster (Don't redirect)
+                
+                if (currentId === MAIN_VIDEO_ID) {
+                    switchToVideo(BTS_VIDEO_ID);
+                }
+                // If BTS ends, we do nothing, letting the player show the replay/poster state naturally.
+                return;
+            }
+
             if (currentId === MAIN_VIDEO_ID) {
                 startCountdown();
             } else if (currentId === BTS_VIDEO_ID) {
@@ -311,9 +328,14 @@
                     countdownNumber.textContent = count;
                 } else {
                     clearInterval(timer);
-                    countdownOverlay.classList.remove('visible');
-                    // Switch to BTS
+                    // Switch to BTS behind the scenes
                     switchToVideo(BTS_VIDEO_ID);
+                    
+                    // Allow a brief moment for the player to initialize the new stream (and potentially show poster/black)
+                    // before revealing it, to avoid seeing the previous video's last frame frozen.
+                    setTimeout(() => {
+                        countdownOverlay.classList.remove('visible');
+                    }, 1000);
                 }
             }, 1000);
         }
@@ -339,13 +361,6 @@
             player.setAttribute('playback-id', id);
             
             showUI(); // Ensure UI comes back after transition
-
-            // Ensure playback starts
-            // Mux player usually autoplays when attribute changes if autoplay is on, 
-            // but explicit play() is safer after user interaction chain
-            setTimeout(() => {
-                player.play().catch(console.error);
-            }, 500); 
         }
 
         // Menu Logic
