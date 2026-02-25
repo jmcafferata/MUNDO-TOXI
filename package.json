@@ -19,6 +19,7 @@
     "hls.js": "^1.6.15",
     "lil-gui": "^0.21.0",
     "mercadopago": "^2.2.9",
+    "nodemailer": "^8.0.1",
     "three": "^0.160.0",
     "workbox-precaching": "^7.4.0",
     "workbox-routing": "^7.4.0",
