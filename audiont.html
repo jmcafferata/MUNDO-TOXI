@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Audion't — Transcriptor de audios de WhatsApp</title>
+  <meta name="description" content="Audion't transcribe tus audios de WhatsApp automáticamente. Transcripción completa, resumen en 3 puntos y mensaje motivacional. Mejor que el transcriptor nativo." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://toxi.media/audiont" />
+  <meta property="og:title" content="Audion't — Transcriptor de audios de WhatsApp" />
+  <meta property="og:description" content="Reenviá un audio, recibí la transcripción en segundos. Mejor que el transcriptor nativo de WhatsApp." />
+  <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="./src/style.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Helvetica Now', 'Helvetica', 'Arial', sans-serif;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      opacity: 0;
+      animation: pageFade 1.2s ease-out forwards;
+    }
+
+    @keyframes pageFade {
+      to { opacity: 1; }
+    }
+
+    @keyframes robotFloat {
+      0%, 100% { transform: translateY(0px) rotate(-1deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 32px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+      backdrop-filter: blur(0px);
+    }
+
+    .nav-logo {
+      height: 26px;
+      opacity: 0.8;
+      transition: opacity 0.3s;
+    }
+    .nav-logo:hover { opacity: 1; }
+
+    .nav-back {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.55);
+      padding: 8px 18px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .nav-back:hover {
+      border-color: rgba(255,255,255,0.7);
+      color: #fff;
+      background: rgba(255,255,255,0.07);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(800px 600px at 50% 20%, rgba(37,211,102,0.06), transparent 70%),
+        radial-gradient(600px 400px at 80% 60%, rgba(255,255,255,0.03), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: rgba(37,211,102,0.8);
+      margin-bottom: 28px;
+      border: 1px solid rgba(37,211,102,0.25);
+      padding: 6px 18px;
+      display: inline-block;
+    }
+
+    .hero-title {
+      font-size: clamp(3.5rem, 12vw, 9rem);
+      font-weight: bold;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+      margin: 0 0 24px;
+    }
+
+    .hero-title span {
+      opacity: 0.3;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      max-width: 520px;
+      line-height: 1.6;
+      margin: 0 0 48px;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: #25d366;
+      color: #000;
+      border: none;
+      padding: 16px 36px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+    .btn-primary:hover {
+      background: #1fba57;
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.6);
+      padding: 16px 36px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.6);
+      color: #fff;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.25);
+      animation: bob 2.5s ease-in-out infinite;
+    }
+    @keyframes bob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ── SECTION COMMON ── */
+    .section {
+      padding: 100px 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 48px;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2px;
+    }
+
+    .step {
+      padding: 40px 32px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.02);
+      position: relative;
+      transition: background 0.3s;
+    }
+    .step:hover { background: rgba(255,255,255,0.04); }
+
+    .step-num {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: rgba(37,211,102,0.5);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .step-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+
+    .step-desc {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .feature {
+      padding: 32px;
+      border-left: 2px solid rgba(37,211,102,0.25);
+    }
+
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-title {
+      font-size: 1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0 0 10px;
+    }
+
+    .feature-desc {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2px;
+    }
+
+    .pricing-card {
+      padding: 40px 28px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.02);
+      position: relative;
+      transition: all 0.3s;
+    }
+    .pricing-card:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .pricing-card.featured {
+      border-color: rgba(37,211,102,0.3);
+      background: rgba(37,211,102,0.04);
+    }
+
+    .pricing-badge {
+      position: absolute;
+      top: 16px; right: 16px;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #25d366;
+      border: 1px solid rgba(37,211,102,0.4);
+      padding: 3px 8px;
+    }
+
+    .pricing-name {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.4);
+      margin: 0 0 20px;
+    }
+
+    .pricing-price {
+      font-size: 2.6rem;
+      font-weight: bold;
+      margin: 0 0 4px;
+      line-height: 1;
+    }
+
+    .pricing-currency {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 28px;
+    }
+
+    .pricing-tokens {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin: 0 0 8px;
+    }
+
+    .pricing-unit {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.4);
+      margin: 0 0 32px;
+    }
+
+    .pricing-cta {
+      display: block;
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.6);
+      padding: 12px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    .pricing-cta:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.5);
+      color: #fff;
+    }
+    .pricing-card.featured .pricing-cta {
+      background: #25d366;
+      border-color: #25d366;
+      color: #000;
+      font-weight: bold;
+    }
+    .pricing-card.featured .pricing-cta:hover {
+      background: #1fba57;
+      border-color: #1fba57;
+    }
+
+    /* ── PAYWALL NOTE ── */
+    .paywall-section {
+      padding: 80px 24px;
+      max-width: 900px;
+      margin: 0 auto;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .paywall-highlight {
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.02);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .paywall-highlight h3 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.3);
+      margin: 0 0 8px;
+      font-weight: normal;
+    }
+
+    .paywall-highlight p {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .paywall-highlight .paywall-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .paywall-pill {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.35);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 6px 14px;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      margin: 0;
+    }
+
+    /* ── LEGAL ── */
+    .legal-section {
+      padding: 80px 24px 60px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .legal-section h2 {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.25);
+      font-weight: normal;
+      margin: 0 0 48px;
+    }
+
+    .legal-accordion summary {
+      cursor: pointer;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: rgba(255,255,255,0.4);
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: color 0.3s;
+    }
+    .legal-accordion summary:hover { color: rgba(255,255,255,0.7); }
+    .legal-accordion summary::after {
+      content: '+';
+      font-size: 1.2rem;
+      color: rgba(255,255,255,0.2);
+    }
+    .legal-accordion[open] summary::after { content: '−'; }
+
+    .legal-accordion .legal-body {
+      padding: 24px 0 32px;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.38);
+      line-height: 1.75;
+    }
+
+    .legal-body ul {
+      padding-left: 20px;
+      margin: 12px 0;
+    }
+    .legal-body li { margin-bottom: 8px; }
+    .legal-body strong { color: rgba(255,255,255,0.6); }
+
+    /* ── FOOTER ── */
+    .footer {
+      padding: 40px 32px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-copy {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 1px;
+    }
+
+    .footer a {
+      color: rgba(255,255,255,0.3);
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      transition: color 0.3s;
+    }
+    .footer a:hover { color: rgba(255,255,255,0.7); }
+
+    @media (max-width: 600px) {
+      .nav { padding: 16px 20px; }
+      .hero { padding: 100px 20px 70px; }
+      .section { padding: 70px 20px; }
+      .paywall-highlight { padding: 28px 20px; }
+      .legal-section { padding: 60px 20px 40px; }
+      .footer { padding: 32px 20px; flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/">
+      <img src="/toxi-logo-white.png" alt="TOXI Media" class="nav-logo" />
+    </a>
+    <a href="https://wa.me/5491132576432" target="_blank" rel="noopener" class="nav-back">
+      Empezar →
+    </a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-tag">WhatsApp · IA · Transcripción</div>
+    <img src="/audiont.png" alt="Audion't robot" style="width:100px; height:auto; margin-bottom:8px; image-rendering:pixelated; animation: robotFloat 3s ease-in-out infinite;" />
+    <h1 class="hero-title">Audion<span>'</span>t</h1>
+    <p class="hero-sub">
+      Reenviá cualquier audio y en segundos recibís la transcripción completa,
+      un resumen en 3 puntos y un mensaje motivacional.
+    </p>
+    <div class="cta-group">
+      <a href="https://wa.me/5491132576432" target="_blank" rel="noopener" class="btn-primary">
+        Abrir en WhatsApp
+      </a>
+      <a href="#precios" class="btn-ghost">Ver precios</a>
+    </div>
+    <div class="scroll-hint">↓ scroll</div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- HOW IT WORKS -->
+  <section class="section">
+    <p class="section-label">Cómo funciona</p>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">01</span>
+        <h3 class="step-title">Reenviás el audio</h3>
+        <p class="step-desc">Mandás cualquier audio al número del bot. Puede ser un mensaje propio o uno que te reenviaron.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <h3 class="step-title">La IA transcribe</h3>
+        <p class="step-desc">Google Gemini procesa el audio y genera la transcripción completa con precisión notoriamente mejor que la función nativa de WhatsApp.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <h3 class="step-title">Recibís el resultado</h3>
+        <p class="step-desc">El bot te responde con la transcripción, un resumen de 3 puntos clave y un mensaje motivacional.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- FEATURES -->
+  <section class="section">
+    <p class="section-label">Características</p>
+    <div class="features-grid">
+      <div class="feature">
+        <span class="feature-icon">📝</span>
+        <h4 class="feature-title">Transcripción precisa</h4>
+        <p class="feature-desc">Powered by Google Gemini. Entiende acentos, jerga y audio de baja calidad mejor que cualquier alternativa nativa.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">📌</span>
+        <h4 class="feature-title">Resumen en 3 puntos</h4>
+        <p class="feature-desc">Extrae automáticamente los 3 puntos más importantes del audio para que no tengas que leer todo si no querés.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">✨</span>
+        <h4 class="feature-title">Mensaje motivacional</h4>
+        <p class="feature-desc">Porque siempre viene bien un empujón. El bot cierra cada transcripción con una frase personalizada al contenido del audio.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">📲</span>
+        <h4 class="feature-title">100% en WhatsApp</h4>
+        <p class="feature-desc">Sin apps, sin registros, sin contraseñas. Solo mandás el audio y listo. Funciona desde cualquier celular.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- PRICING -->
+  <section class="section" id="precios">
+    <p class="section-label">Precios — 1 token = 1 audio</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <p class="pricing-name">Básico</p>
+        <p class="pricing-price">$990</p>
+        <p class="pricing-currency">pesos argentinos</p>
+        <p class="pricing-tokens">50 tokens</p>
+        <p class="pricing-unit">50 audios transcriptos</p>
+        <a href="https://wa.me/5491132576432?text=comprar" target="_blank" rel="noopener" class="pricing-cta">Comprar</a>
+      </div>
+      <div class="pricing-card featured">
+        <span class="pricing-badge">Popular</span>
+        <p class="pricing-name">Medio</p>
+        <p class="pricing-price">$2.490</p>
+        <p class="pricing-currency">pesos argentinos</p>
+        <p class="pricing-tokens">150 tokens</p>
+        <p class="pricing-unit">150 audios transcriptos</p>
+        <a href="https://wa.me/5491132576432?text=comprar" target="_blank" rel="noopener" class="pricing-cta">Comprar</a>
+      </div>
+      <div class="pricing-card">
+        <p class="pricing-name">Grande</p>
+        <p class="pricing-price">$5.490</p>
+        <p class="pricing-currency">pesos argentinos</p>
+        <p class="pricing-tokens">400 tokens</p>
+        <p class="pricing-unit">400 audios transcriptos</p>
+        <a href="https://wa.me/5491132576432?text=comprar" target="_blank" rel="noopener" class="pricing-cta">Comprar</a>
+      </div>
+    </div>
+    <p style="font-size:0.75rem; color:rgba(255,255,255,0.2); margin-top:24px; letter-spacing:1px;">
+      Escribí <strong style="color:rgba(255,255,255,0.35);">comprar</strong> en el chat para ver las instrucciones de pago.
+      Precios en ARS, pueden modificarse sin previo aviso.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- PAYWALL CREATIVE -->
+  <section class="paywall-section">
+    <div class="paywall-highlight">
+      <h3>Cuando te quedás sin créditos</h3>
+      <p>
+        El bot no simplemente te bloquea — hace algo más interesante.
+        Cuando tu saldo llega a cero, Gemini elige una respuesta creativa en lugar del resumen real.
+      </p>
+      <div class="paywall-options">
+        <span class="paywall-pill">Resumen con letras al revés</span>
+        <span class="paywall-pill">Publicidad ficticia del audio</span>
+        <span class="paywall-pill">Comentario sarcástico</span>
+        <span class="paywall-pill">Canción generada por IA</span>
+      </div>
+      <p style="margin-top:8px; font-size:0.82rem; font-style:italic; color:rgba(255,255,255,0.28);">
+        Siempre termina con: "🔒 El resumen real está bloqueado. Recargá créditos..."
+      </p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- LEGAL -->
+  <section class="legal-section">
+    <h2>Avisos Legales</h2>
+
+    <details class="legal-accordion">
+      <summary>Términos del Servicio</summary>
+      <div class="legal-body">
+        <ul>
+          <li><strong>Servicio:</strong> Audion't es un servicio de transcripción automática de mensajes de voz enviados por WhatsApp, provisto por TOXI.Media.</li>
+          <li><strong>Uso permitido:</strong> Exclusivamente uso personal y no comercial. Queda prohibido transcribir contenido de terceros sin su consentimiento.</li>
+          <li><strong>Modificaciones:</strong> Nos reservamos el derecho de modificar, suspender o discontinuar el servicio en cualquier momento sin previo aviso.</li>
+          <li><strong>Disponibilidad:</strong> No garantizamos disponibilidad continua del servicio.</li>
+          <li><strong>Precisión:</strong> Las transcripciones son generadas por inteligencia artificial y pueden contener errores. No nos hacemos responsables por decisiones tomadas en base a transcripciones incorrectas.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="legal-accordion">
+      <summary>Política de Privacidad</summary>
+      <div class="legal-body">
+        <ul>
+          <li><strong>Datos recopilados:</strong> Almacenamos el número de teléfono del usuario y un registro de consumo de créditos. No almacenamos el contenido de los audios ni de las transcripciones de forma permanente.</li>
+          <li><strong>Uso de datos:</strong> Los datos recopilados se usan exclusivamente para el funcionamiento del servicio (control de créditos, historial de conversación temporal).</li>
+          <li><strong>Terceros:</strong> El servicio utiliza APIs de Google Gemini y Meta/WhatsApp. Los audios son enviados a dichos servicios para su procesamiento y están sujetos a sus respectivas políticas de privacidad.</li>
+          <li><strong>Menores:</strong> El servicio no está destinado a menores de 13 años.</li>
+          <li><strong>Contacto:</strong> Para solicitudes de eliminación de datos contactar al administrador del servicio.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="legal-accordion">
+      <summary>Limitación de Responsabilidad</summary>
+      <div class="legal-body">
+        <p>En la máxima medida permitida por la legislación aplicable, TOXI.Media no será responsable por daños directos, indirectos, incidentales o consecuentes derivados del uso o la imposibilidad de uso del servicio, incluyendo pero no limitado a pérdida de datos, interrupciones del negocio o daños económicos.</p>
+      </div>
+    </details>
+
+    <details class="legal-accordion">
+      <summary>Pagos y Reembolsos</summary>
+      <div class="legal-body">
+        <ul>
+          <li>Los créditos adquiridos no son reembolsables salvo falla comprobable del servicio imputable al proveedor.</li>
+          <li>Los precios están expresados en pesos argentinos (ARS) y pueden modificarse sin previo aviso.</li>
+          <li>El servicio no está afiliado ni es responsable de las plataformas de pago utilizadas para la adquisición de créditos.</li>
+        </ul>
+      </div>
+    </details>
+
+    <details class="legal-accordion">
+      <summary>Propiedad Intelectual & Ley Aplicable</summary>
+      <div class="legal-body">
+        <p>El nombre "Audion't", el código fuente, los prompts y el diseño del servicio son propiedad de TOXI.Media. Queda prohibida su reproducción o uso comercial sin autorización expresa.</p>
+        <p style="margin-top:12px;">Este servicio se rige por las leyes de la República Argentina. Cualquier controversia será sometida a la jurisdicción de los tribunales ordinarios de la Ciudad Autónoma de Buenos Aires.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <span class="footer-copy">© 2025 TOXI.Media — Audion't</span>
+    <div style="display:flex; gap:24px; flex-wrap:wrap;">
+      <a href="https://wa.me/5491132576432" target="_blank" rel="noopener">WhatsApp +54 9 11 3257-6432</a>
+      <a href="/">toxi.media</a>
+    </div>
+  </footer>
+
+</body>
+</html>
