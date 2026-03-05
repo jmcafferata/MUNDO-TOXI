@@ -575,5 +575,21 @@
     "credits": "<h4>Adaptación e interpretación</h4><p>Fabrizio Sanguinetti</p><h4>Música</h4><p>Fermín Delía</p><h4>Cámara, edición, sonido y dirección</h4><p>Juan Manuel Cafferata</p>",
     "web": "",
     "categoria": ""
+  },
+  {
+    "name": "Audion't",
+    "slug": "audiont",
+    "description": "Bot de WhatsApp que transcribe audios automáticamente con resumen y mensaje motivacional.",
+    "contenido": "<p><strong>Audion't</strong> es un bot de WhatsApp que transcribe audios automáticamente usando inteligencia artificial. El usuario reenvía un audio y recibe la transcripción completa, un resumen en 3 puntos y un mensaje motivacional.</p><p>Funciona notoriamente mejor que el transcriptor nativo de WhatsApp. Disponible en el <strong>+54 9 11 3257-6432</strong>.</p>",
+    "card": "/AUDIONT-thumb.jpg",
+    "banner": "/audiont banner.jpg",
+    "thumbnail": "/AUDIONT-thumb.jpg",
+    "talentos": [
+      "juan-manuel-cafferata"
+    ],
+    "formato": "7",
+    "credits": "<h4>Desarrollo</h4><p>Juan Manuel Cafferata</p>",
+    "web": "https://toxi.media/audiont",
+    "categoria": ""
   }
 ]
