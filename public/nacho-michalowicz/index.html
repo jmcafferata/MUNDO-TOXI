@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nacho Michalowicz — TOXI Media</title>
+  <meta name="description" content="Artista 4D" />
+  <meta property="og:title" content="Nacho Michalowicz — TOXI Media" />
+  <meta property="og:description" content="Artista 4D" />
+  <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/692273d8d05392e7c604046e_485176360_1831421054322401_4349979490355225998_n.jpg" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --muted: rgba(255,255,255,0.45);
+      --border: rgba(255,255,255,0.15);
+      --hover-border: rgba(255,255,255,0.7);
+      --accent: #fff;
+      --font: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --gap: 1.5rem;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      min-height: 100vh;
+      overscroll-behavior: none;
+    }
+
+    /* ─── HEADER ─── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--gap);
+      height: 56px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-link {
+      display: flex;
+      align-items: center;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+      text-decoration: none;
+    }
+    .logo-link:hover { opacity: 1; }
+    .logo-link img { height: 22px; }
+    .header-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+    }
+    .header-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+    }
+    #search-input {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      letter-spacing: 0.05em;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 200px;
+    }
+    #search-input:focus { border-color: var(--hover-border); }
+    #search-input::placeholder { color: var(--muted); }
+
+    /* ─── TABS ─── */
+    nav.tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 var(--gap);
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      padding: 14px 20px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--fg); }
+    .tab-btn.active {
+      color: var(--fg);
+      border-bottom-color: var(--fg);
+    }
+
+    /* ─── FILTER CHIPS ─── */
+    .filter-bar {
+      padding: 12px var(--gap);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .chip {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .chip:hover { border-color: var(--hover-border); color: var(--fg); }
+    .chip.active { border-color: var(--fg); color: var(--fg); background: rgba(255,255,255,0.08); }
+
+    /* ─── MAIN GRID ─── */
+    main {
+      padding: var(--gap);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: var(--gap);
+    }
+    .grid[data-tab="proyectos"] {
+      grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+    }
+    .count-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    /* ─── CARDS ─── */
+    .card {
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.25s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+      background: rgba(255,255,255,0.02);
+    }
+    .card:hover {
+      border-color: var(--hover-border);
+      transform: translateY(-2px);
+    }
+    .card-img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      background: #111;
+    }
+    .card-img-placeholder {
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #0a0a0a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      opacity: 0.3;
+    }
+    .card-body {
+      padding: 14px 16px;
+    }
+    .card-tag {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .card-name {
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .card-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Talent card portrait */
+    .card.talent .card-img {
+      height: auto;
+      object-fit: contain;
+    }
+    .card.talent .card-img-placeholder { aspect-ratio: 4/3; font-size: 3rem; }
+    .card-quote {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-style: italic;
+      margin-top: 4px;
+    }
+
+    /* Format card */
+    .card.formato .card-body {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 20px;
+    }
+    .format-icon {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      filter: invert(1);
+      opacity: 0.8;
+    }
+    .format-icon-placeholder {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      opacity: 0.5;
+    }
+    .card.formato .card-name { font-size: 1.1rem; margin-bottom: 2px; }
+    .card.formato .card-tag { margin-bottom: 0; }
+
+    /* ─── DETAIL OVERLAY ─── */
+    #detail-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(8px);
+      overflow-y: auto;
+      display: none;
+    }
+    #detail-overlay.open { display: block; }
+
+    .detail-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px var(--gap) 80px;
+    }
+    .detail-back {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 8px 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .detail-back:hover { border-color: var(--hover-border); color: var(--fg); }
+
+    .detail-banner {
+      width: 100%;
+      max-height: 420px;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 32px;
+      border: 1px solid var(--border);
+    }
+    .detail-tag {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .detail-title {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .detail-quote {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--muted);
+      border-left: 2px solid var(--border);
+      padding-left: 16px;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+    .detail-desc {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 28px;
+    }
+    /* Rich text body from Webflow */
+    .detail-richtext {
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 28px;
+    }
+    .detail-richtext h1, .detail-richtext h2, .detail-richtext h3, .detail-richtext h4 {
+      color: #fff;
+      font-weight: 500;
+      margin: 1.6em 0 0.5em;
+      line-height: 1.2;
+    }
+    .detail-richtext h3 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .detail-richtext h4 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+    .detail-richtext p { margin-bottom: 1em; color: rgba(255,255,255,0.8); }
+    .detail-richtext a { color: #fff; text-decoration: underline; text-underline-offset: 3px; }
+    .detail-richtext a:hover { opacity: 0.7; }
+    .detail-richtext figure { margin: 1.5em 0; }
+    .detail-richtext figure img { max-width: 100%; border: 1px solid var(--border); display: block; }
+    .detail-richtext iframe { max-width: 100%; border: none; }
+    /* YouTube / video embeds: full width, preserve aspect ratio */
+    .detail-richtext figure[data-rt-type="video"],
+    .detail-richtext .w-richtext-figure-type-video {
+      position: relative;
+      width: 100%;
+      margin: 0.5em 0;
+      padding-bottom: 0 !important;
+    }
+    .detail-richtext figure[data-rt-type="video"] > div,
+    .detail-richtext .w-richtext-figure-type-video > div {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 16:9 fallback */
+      height: 0;
+    }
+    .detail-richtext figure[data-rt-type="video"] iframe,
+    .detail-richtext .w-richtext-figure-type-video iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .detail-richtext strong { color: #fff; font-weight: 600; }
+    .detail-richtext em { font-style: italic; }
+    .detail-richtext ul, .detail-richtext ol { padding-left: 1.5em; margin-bottom: 1em; }
+    .detail-richtext li { margin-bottom: 0.4em; color: rgba(255,255,255,0.8); }
+    .detail-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      margin-bottom: 28px;
+    }
+    .meta-block { min-width: 120px; }
+    .meta-label {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .meta-value { font-size: 0.88rem; line-height: 1.5; }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag-pill {
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .tag-pill:hover { border-color: var(--hover-border); color: var(--fg); }
+
+    .detail-web {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 8px 18px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .detail-web:hover { border-color: var(--hover-border); color: var(--fg); }
+
+    /* Related items row */
+    .related-section {
+      margin-top: 40px;
+      border-top: 1px solid var(--border);
+      padding-top: 28px;
+    }
+    .related-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .related-card {
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.2s;
+      overflow: hidden;
+    }
+    .related-card:hover { border-color: var(--hover-border); }
+    .related-card img {
+      width: 100%;
+      aspect-ratio: 16/10;
+      object-fit: cover;
+      display: block;
+      background: #111;
+    }
+    .related-card .rc-name {
+      padding: 10px 12px;
+      font-size: 0.82rem;
+    }
+
+    /* ─── EMPTY STATE ─── */
+    .empty {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ─── LOADING ─── */
+    .loading {
+      text-align: center;
+      padding: 80px 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+    @media (max-width: 600px) {
+      header { padding: 0 12px; }
+      #search-input { width: 130px; }
+      .tab-btn { padding: 12px 12px; font-size: 0.65rem; }
+      main { padding: 12px; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+    }
+  </style>
+  <link rel="canonical" href="https://toxi.media/nacho-michalowicz" />
+  <meta property="og:url" content="https://toxi.media/nacho-michalowicz" />
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <a href="/" class="logo-link" title="TOXI Media">
+      <img src="/toxi-logo-white.png" alt="TOXI Media" />
+    </a>
+    <div class="header-divider"></div>
+    <span class="header-title">Plantform</span>
+  </div>
+  <input type="search" id="search-input" placeholder="Buscar…" autocomplete="off" />
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="proyectos">Proyectos</button>
+  <button class="tab-btn" data-tab="talentos">Talentos</button>
+  <button class="tab-btn" data-tab="formatos">Formatos</button>
+</nav>
+
+<div class="filter-bar" id="filter-bar">
+  <!-- chips injected by JS -->
+</div>
+
+<main>
+  <div class="count-label" id="count-label"></div>
+  <div class="loading" id="loading">Cargando…</div>
+  <div class="grid" id="grid" style="display:none"></div>
+  <div class="empty" id="empty" style="display:none">Sin resultados</div>
+</main>
+
+<!-- Detail overlay -->
+<div id="detail-overlay" role="dialog" aria-modal="true">
+  <div class="detail-inner" id="detail-content"></div>
+</div>
+
+<script>
+(function () {
+  // ── State ─────────────────────────────────────────────
+  let projects = [], talentos = [], formatos = [];
+  let state = {
+    tab: 'proyectos',
+    format: null,
+    search: '',
+    detail: null, // { type, slug }
+  };
+
+  // ── Data ──────────────────────────────────────────────
+  async function loadData() {
+    const [p, t, f] = await Promise.all([
+      fetch('/data/projects.json').then(r => r.json()),
+      fetch('/data/talentos.json').then(r => r.json()),
+      fetch('/data/formatos.json').then(r => r.json()),
+    ]);
+    projects = p;
+    talentos = t;
+    formatos = f;
+  }
+
+  function formatName(id) {
+    const f = formatos.find(x => x.id === String(id));
+    return f ? f.name : '';
+  }
+
+  // ── Routing ───────────────────────────────────────────
+  function readRoute() {
+    const path = window.location.pathname;
+    const hash = window.location.hash.slice(1);
+
+    // /plantform#slug or /plantform?type=slug
+    if (hash) return { type: 'lookup', slug: hash };
+
+    // If served at a non-/plantform path (Vercel rewrite or static file), treat path as slug
+    // Handles: /fabrizio-sanguinetti  /fabrizio-sanguinetti/index.html
+    if (path && path !== '/' && path !== '/plantform' && path !== '/plantform.html') {
+      const slug = path.replace(/^\//, '').replace(/\/index\.html$/, '').replace(/\.html$/, '').split('/')[0];
+      if (slug) return { type: 'lookup', slug };
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const project = params.get('project') || params.get('p');
+    const talent  = params.get('talent')  || params.get('t');
+    if (project) return { type: 'project', slug: project };
+    if (talent)  return { type: 'talent',  slug: talent };
+    return null;
+  }
+
+  function lookup(slug) {
+    const p = projects.find(x => x.slug === slug);
+    if (p) return { type: 'project', item: p };
+    const t = talentos.find(x => x.slug === slug);
+    if (t) return { type: 'talent', item: t };
+    return null;
+  }
+
+  // ── Render helpers ────────────────────────────────────
+  function img(src, alt, cls) {
+    if (!src) return `<div class="card-img-placeholder ${cls || ''}">&#9632;</div>`;
+    return `<img class="card-img ${cls || ''}" src="${esc(src)}" alt="${esc(alt)}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'card-img-placeholder\\'></div>'" />`;
+  }
+
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderProjects(list) {
+    if (!list.length) return '';
+    return list.map(p => `
+      <div class="card project" data-slug="${esc(p.slug)}" data-type="project" tabindex="0">
+        ${img(p.card || p.thumbnail, p.name)}
+        <div class="card-body">
+          <div class="card-tag">${esc(formatName(p.formato))}</div>
+          <div class="card-name">${esc(p.name)}</div>
+          ${p.description ? `<div class="card-desc">${esc(p.description)}</div>` : ''}
+        </div>
+      </div>`).join('');
+  }
+
+  function renderTalentos(list) {
+    if (!list.length) return '';
+    return list.map(t => `
+      <div class="card talent" data-slug="${esc(t.slug)}" data-type="talent" tabindex="0">
+        ${img(t.photo, t.name, 'talent-img')}
+        <div class="card-body">
+          <div class="card-name">${esc(t.name)}</div>
+          ${t.quote ? `<div class="card-quote">${esc(t.quote)}</div>` : ''}
+        </div>
+      </div>`).join('');
+  }
+
+  function renderFormatos(list) {
+    const icons = {'cine':'🎬','podcast':'🎙','foto':'📷','texto':'📝','vr':'🥽','eventos':'🎪','software':'💻','musica':'🎵'};
+    const localIcons = {'cine':'/icono-cine.svg','eventos':'/icono-eventos.svg','musica':'/icono-musica.png','podcast':'/icono-podcast.svg','software':'/icono-software.png','vr':'/icono-vr.svg','foto':'/icono-foto.svg','texto':'/icono-texto.png'};
+    return list.map(f => `
+      <div class="card formato" data-slug="${esc(f.slug)}" data-type="formato" tabindex="0">
+        <div class="card-body">
+          ${localIcons[f.slug]
+            ? `<img class="format-icon" src="${localIcons[f.slug]}" alt="${esc(f.name)}" onerror="this.outerHTML='<div class=\\'format-icon-placeholder\\'>${icons[f.slug] || '📁'}</div>'" />`
+            : `<div class="format-icon-placeholder">${icons[f.slug] || '📁'}</div>`}
+          <div>
+            <div class="card-name">${esc(f.name)}</div>
+            <div class="card-tag">${projects.filter(p => p.formato === f.id).length} proyectos</div>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── Filter chips ──────────────────────────────────────
+  function renderChips() {
+    const bar = document.getElementById('filter-bar');
+    if (state.tab !== 'proyectos') { bar.style.display = 'none'; return; }
+    bar.style.display = '';
+    const chips = [`<button class="chip${!state.format ? ' active' : ''}" data-fmt="">Todos</button>`,
+      ...formatos.map(f => `<button class="chip${state.format === f.id ? ' active' : ''}" data-fmt="${esc(f.id)}">${esc(f.name)}</button>`)
+    ];
+    bar.innerHTML = chips.join('');
+    bar.querySelectorAll('.chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        state.format = btn.dataset.fmt || null;
+        renderView();
+      });
+    });
+  }
+
+  // ── Main render ───────────────────────────────────────
+  function renderView() {
+    const grid  = document.getElementById('grid');
+    const empty = document.getElementById('empty');
+    const count = document.getElementById('count-label');
+    document.getElementById('loading').style.display = 'none';
+
+    renderChips();
+
+    const q = state.search.toLowerCase().trim();
+
+    let html = '';
+    let num  = 0;
+
+    if (state.tab === 'proyectos') {
+      let list = projects;
+      if (state.format) list = list.filter(p => p.formato === state.format);
+      if (q) list = list.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        (p.description || '').toLowerCase().includes(q) ||
+        (p.talentos || []).join(' ').toLowerCase().includes(q)
+      );
+      num = list.length;
+      html = renderProjects(list);
+    } else if (state.tab === 'talentos') {
+      let list = talentos;
+      if (q) list = list.filter(t =>
+        t.name.toLowerCase().includes(q) ||
+        (t.quote || '').toLowerCase().includes(q)
+      );
+      num = list.length;
+      html = renderTalentos(list);
+    } else {
+      let list = formatos;
+      if (q) list = list.filter(f => f.name.toLowerCase().includes(q));
+      num = list.length;
+      html = renderFormatos(list);
+    }
+
+    count.textContent = `${num} ${state.tab === 'proyectos' ? 'proyectos' : state.tab === 'talentos' ? 'talentos' : 'formatos'}`;
+
+    if (!html) {
+      grid.style.display = 'none';
+      empty.style.display = '';
+    } else {
+      grid.innerHTML = html;
+      grid.dataset.tab = state.tab;
+      grid.style.display = '';
+      empty.style.display = 'none';
+    }
+
+    // Attach click handlers to cards
+    grid.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => openDetail(card.dataset.type, card.dataset.slug));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter') openDetail(card.dataset.type, card.dataset.slug); });
+    });
+  }
+
+  // ── Detail view ───────────────────────────────────────
+  function openDetail(type, slug) {
+    const overlay  = document.getElementById('detail-overlay');
+    const content  = document.getElementById('detail-content');
+
+    if (type === 'formato') {
+      const fmt = formatos.find(f => f.slug === slug);
+      if (!fmt) return;
+      const fmtProjects = projects.filter(p => p.formato === fmt.id);
+      content.innerHTML = `
+        <button class="detail-back" id="back-btn">← Volver</button>
+        <div class="detail-tag">Formato</div>
+        <h1 class="detail-title">${esc(fmt.name)}</h1>
+        ${fmtProjects.length ? `
+          <div class="related-section">
+            <div class="related-title">${fmtProjects.length} Proyectos</div>
+            <div class="related-grid">
+              ${fmtProjects.map(p => `
+                <div class="related-card" data-slug="${esc(p.slug)}" data-type="project">
+                  ${p.card ? `<img src="${esc(p.card)}" alt="${esc(p.name)}" loading="lazy" />` : ''}
+                  <div class="rc-name">${esc(p.name)}</div>
+                </div>`).join('')}
+            </div>
+          </div>` : ''}`;
+
+    } else if (type === 'project') {
+      const p = projects.find(x => x.slug === slug);
+      if (!p) return;
+      const relatedTalentos = talentos.filter(t => p.talentos.includes(t.slug));
+      content.innerHTML = `
+        <button class="detail-back" id="back-btn">← Volver</button>
+        ${p.banner ? `<img class="detail-banner" src="${esc(p.banner)}" alt="${esc(p.name)}" loading="lazy" />` : ''}
+        <div class="detail-tag">${esc(formatName(p.formato))}</div>
+        <h1 class="detail-title">${esc(p.name)}</h1>
+        ${p.description ? `<p class="detail-desc">${esc(p.description)}</p>` : ''}
+        ${p.contenido ? `<div class="detail-richtext">${p.contenido}</div>` : ''}
+        <div class="detail-meta">
+          ${p.formato ? `<div class="meta-block"><div class="meta-label">Formato</div><div class="meta-value">${esc(formatName(p.formato))}</div></div>` : ''}
+          ${relatedTalentos.length ? `
+            <div class="meta-block">
+              <div class="meta-label">Talentos</div>
+              <div class="tag-list">
+                ${relatedTalentos.map(t => `<span class="tag-pill" data-slug="${esc(t.slug)}" data-type="talent">${esc(t.name)}</span>`).join('')}
+              </div>
+            </div>` : ''}
+          ${p.web ? `<div class="meta-block"><div class="meta-label">Web</div><div class="meta-value"><a class="detail-web" href="${esc(p.web)}" target="_blank" rel="noopener">Visitar →</a></div></div>` : ''}
+        </div>`;
+
+    } else if (type === 'talent') {
+      const t = talentos.find(x => x.slug === slug);
+      if (!t) return;
+      const relProjects = projects.filter(p => t.proyectos.includes(p.slug));
+      content.innerHTML = `
+        <button class="detail-back" id="back-btn">← Volver</button>
+        ${t.banner ? `<img class="detail-banner" src="${esc(t.banner)}" alt="${esc(t.name)}" loading="lazy" />` : ''}
+        <div class="detail-tag">Talento</div>
+        <h1 class="detail-title">${esc(t.name)}</h1>
+        ${t.quote ? `<blockquote class="detail-quote">${esc(t.quote)}</blockquote>` : ''}
+        ${t.contenido ? `<div class="detail-richtext">${t.contenido}</div>` : ''}
+        ${!t.contenido && t.description ? `<p class="detail-desc">${esc(t.description)}</p>` : ''}
+        <div class="detail-meta">
+          ${relProjects.length ? `
+            <div class="meta-block">
+              <div class="meta-label">Proyectos</div>
+              <div class="tag-list">
+                ${relProjects.map(p => `<span class="tag-pill" data-slug="${esc(p.slug)}" data-type="project">${esc(p.name)}</span>`).join('')}
+              </div>
+            </div>` : ''}
+          ${t.formatos && t.formatos.length ? `
+            <div class="meta-block">
+              <div class="meta-label">Formatos</div>
+              <div class="tag-list">
+                ${t.formatos.map(fSlug => {
+                  const f = formatos.find(x => x.slug === fSlug);
+                  return f ? `<span class="tag-pill">${esc(f.name)}</span>` : '';
+                }).join('')}
+              </div>
+            </div>` : ''}
+          ${t.web ? `<div class="meta-block"><div class="meta-label">Web</div><div class="meta-value"><a class="detail-web" href="${esc(t.web)}" target="_blank" rel="noopener">Visitar →</a></div></div>` : ''}
+        </div>`;
+    }
+
+    // Attach back button and tag-pill clicks
+    const backBtn = document.getElementById('back-btn');
+    if (backBtn) backBtn.addEventListener('click', closeDetail);
+
+    content.querySelectorAll('.tag-pill[data-slug], .related-card[data-slug]').forEach(el => {
+      el.addEventListener('click', () => openDetail(el.dataset.type, el.dataset.slug));
+    });
+
+    overlay.classList.add('open');
+    overlay.scrollTop = 0;
+
+    // Update URL hash for shareability
+    history.replaceState(null, '', '/plantform#' + slug);
+  }
+
+  function closeDetail() {
+    document.getElementById('detail-overlay').classList.remove('open');
+    history.replaceState(null, '', '/plantform');
+  }
+
+  // Close on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeDetail();
+  });
+
+  // Click outside (on overlay bg)
+  document.getElementById('detail-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeDetail();
+  });
+
+  // ── Tab buttons ───────────────────────────────────────
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.tab = btn.dataset.tab;
+      state.format = null;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+      renderView();
+    });
+  });
+
+  // ── Search ────────────────────────────────────────────
+  const searchInput = document.getElementById('search-input');
+  let searchTimer;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      state.search = searchInput.value;
+      renderView();
+    }, 200);
+  });
+
+  // ── Boot ──────────────────────────────────────────────
+  async function boot() {
+    await loadData();
+    renderView();
+
+    // Check if URL points to a specific item
+    const route = readRoute();
+    if (route) {
+      if (route.type === 'lookup') {
+        const found = lookup(route.slug);
+        if (found) {
+          // Set tab accordingly
+          if (found.type === 'talent') {
+            state.tab = 'talentos';
+            document.querySelectorAll('.tab-btn').forEach(b =>
+              b.classList.toggle('active', b.dataset.tab === 'talentos'));
+            renderView();
+          }
+          openDetail(found.type, route.slug);
+        }
+      } else {
+        openDetail(route.type, route.slug);
+      }
+    }
+  }
+
+  boot().catch(err => {
+    document.getElementById('loading').textContent = 'Error de carga: ' + err.message;
+  });
+})();
+</script>
+</body>
+</html>
