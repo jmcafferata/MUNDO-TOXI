@@ -4,3 +4,10 @@ dist
 *.local
 dev-dist
 utils
+.vercel
+.env*.local
+
+# Internal tools (not for deployment)
+dashboard.html
+dashboard-server.js
+api/drive-projects.js
