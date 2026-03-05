@@ -2,8 +2,19 @@
   "redirects": [
     {
       "source": "/project/:slug*",
-      "destination": "https://toxii.webflow.io/project/:slug*",
+      "destination": "/:slug*",
       "permanent": true
+    },
+    {
+      "source": "/talent/:slug*",
+      "destination": "/:slug*",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/:slug([a-z0-9][a-z0-9-]*)",
+      "destination": "/plantform.html"
     }
   ]
 }
