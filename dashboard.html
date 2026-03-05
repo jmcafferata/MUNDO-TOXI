@@ -699,6 +699,18 @@ function setStatus(type, msg) {
   }
 }
 
+// ── Auth gate ─────────────────────────────────────────────────────────────────
+(function checkAccess() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('clave') !== '1997') {
+    document.body.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;flex-direction:column;gap:16px;">
+        <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#555">Acceso denegado</div>
+      </div>`;
+    throw new Error('acceso denegado');
+  }
+})();
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 document.getElementById('btn-load').addEventListener('click', loadAll);
 document.getElementById('folder-id').addEventListener('keydown', e => {
