@@ -159,7 +159,7 @@
     "slug": "fabrizio-sanguinetti",
     "description": "",
     "contenido": "<p><strong id=\"\">Fabrizio Sanguinetti</strong> es un creativo multidisciplinario con una sólida formación en análisis de datos y gestión de proyectos. Como fundador y director creativo en TOXI.media, ha liderado la producción de cortometrajes, mediometrajes, y eventos innovadores, fusionando su pasión por la narrativa visual con un enfoque estratégico y colaborativo. Su experiencia abarca desde la escritura de guiones hasta la dirección de actores, siempre buscando transformar ideas complejas en experiencias memorables. Fabrizio también ha sido investigador y profesor asistente, lo que refleja su amor por el conocimiento y su capacidad para conectar el análisis riguroso con la creatividad artística.</p>",
-    "photo": "https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/66c4c80283ef37d7a0b2a54d_1664818025377.jpeg",
+    "photo": "/photos/fabrizio-sanguinetti.jpg",
     "banner": "https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/66c7dfa8605537d8ecfe656f_fabri%20banner.jpg",
     "quote": "Analista de datos",
     "proyectos": [
@@ -522,7 +522,7 @@
     "slug": "nacho-michalowicz",
     "description": "",
     "contenido": "",
-    "photo": "https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/692273d8d05392e7c604046e_485176360_1831421054322401_4349979490355225998_n.jpg",
+    "photo": "/photos/nacho-michalowicz.jpg",
     "banner": "",
     "quote": "Artista 4D",
     "proyectos": [
@@ -666,3 +666,4 @@
     "web": "http://niunpocosofia.webflow.io"
   }
 ]
+
