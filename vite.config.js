@@ -63,6 +63,7 @@ export default defineConfig({
         detectiveNoir: resolve(__dirname, 'detective-noir.html'),
         university: resolve(__dirname, 'university.html'),
         plantform: resolve(__dirname, 'plantform.html'),
+        tv: resolve(__dirname, 'tv.html'),
       },
     },
   },
