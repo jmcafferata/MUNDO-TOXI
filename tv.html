@@ -65,10 +65,13 @@
             position: absolute; inset: 0;
             --media-object-fit: contain;
             --media-background-color: #000;
-            --media-control-bar-display: none;
-            --media-icon-color: transparent;
-            --media-accent-color: transparent;
+            --controls: none;
         }
+        mux-player::part(gesture-layer),
+        mux-player::part(center-controls),
+        mux-player::part(control-bar),
+        mux-player::part(seek-bar),
+        mux-player::part(bottom-controls) { display: none !important; }
 
         #now-playing {
             position: absolute;
@@ -111,7 +114,7 @@
     </header>
 
     <div id="player-wrap">
-        <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto"></mux-player>
+        <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols></mux-player>
         <div id="offline-screen"><div class="offline-title">Sin señal</div></div>
         <div id="now-playing">
             <div class="np-label">Ahora</div>
