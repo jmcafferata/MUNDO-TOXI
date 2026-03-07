@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TOXI TV</title>
+    <meta property="og:title" content="TOXI TV — En vivo" />
+    <meta property="og:description" content="Transmisión en vivo de TOXI Media." />
+    <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+    <link rel="icon" href="/favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, transparent 100%);
+        }
+
+        .logo-link {
+            opacity: 0.85;
+            transition: opacity 0.2s;
+            text-decoration: none;
+        }
+        .logo-link:hover { opacity: 1; }
+        .logo-link img { height: 22px; }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.75);
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff3b3b;
+            animation: pulse 1.4s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        /* ── PLAYER ── */
+        #player-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+        }
+
+        mux-player {
+            width: 100%;
+            height: 100%;
+            --media-object-fit: contain;
+            --media-background-color: #000;
+            --media-icon-color: #fff;
+            --media-accent-color: #fff;
+        }
+
+        /* ── OFFLINE ── */
+        #offline-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+        #offline-screen.visible { display: flex; }
+
+        .offline-title {
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            opacity: 0.5;
+        }
+        .offline-sub {
+            font-size: 0.75rem;
+            opacity: 0.3;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="logo-link" href="/">
+            <img src="/toxi-logo-white.png" alt="TOXI Media" />
+        </a>
+        <div class="live-badge" id="live-badge" style="display:none;">
+            <span class="live-dot"></span>
+            <span>En vivo</span>
+        </div>
+    </header>
+
+    <div id="player-wrap">
+
+        <mux-player
+            id="mux-player"
+            stream-type="live"
+            autoplay
+            muted
+            style="display:none;"
+        ></mux-player>
+
+        <div id="offline-screen" class="visible">
+            <div class="offline-title">Sin señal</div>
+            <div class="offline-sub">La transmisión comenzará en breve.</div>
+        </div>
+
+    </div>
+
+    <script>
+        // ─────────────────────────────────────────────
+        //  CONFIGURACIÓN — reemplazá este valor con el
+        //  Playback ID de tu Mux Live Stream
+        //  (Dashboard → Live Streams → tu stream → Playback IDs)
+        // ─────────────────────────────────────────────
+        const MUX_PLAYBACK_ID = 'K9M5jCVNPWi5SdIkjo02IX1B4rj01Uq02NxEKQV6nIWx6I';
+
+        const player = document.getElementById('mux-player');
+        const offlineScreen = document.getElementById('offline-screen');
+        const liveBadge = document.getElementById('live-badge');
+
+        function goLive() {
+            player.style.display = '';
+            offlineScreen.classList.remove('visible');
+            liveBadge.style.display = 'flex';
+        }
+
+        function goOffline() {
+            player.style.display = 'none';
+            offlineScreen.classList.add('visible');
+            liveBadge.style.display = 'none';
+        }
+
+        if (MUX_PLAYBACK_ID) {
+            player.setAttribute('playback-id', MUX_PLAYBACK_ID);
+
+            player.addEventListener('playing', goLive);
+
+            player.addEventListener('error', (e) => {
+                console.warn('Stream error, retrying in 10s…', e);
+                goOffline();
+                setTimeout(() => {
+                    player.setAttribute('playback-id', MUX_PLAYBACK_ID);
+                }, 10000);
+            });
+
+            player.addEventListener('waiting', () => {
+                // buffering — keep live badge visible
+            });
+        }
+        // If no playback ID set, offline screen stays shown.
+    </script>
+
+</body>
+</html>
