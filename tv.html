@@ -65,13 +65,7 @@
             position: absolute; inset: 0;
             --media-object-fit: contain;
             --media-background-color: #000;
-            --controls: none;
         }
-        mux-player::part(gesture-layer),
-        mux-player::part(center-controls),
-        mux-player::part(control-bar),
-        mux-player::part(seek-bar),
-        mux-player::part(bottom-controls) { display: none !important; }
 
         #now-playing {
             position: absolute;
@@ -97,19 +91,6 @@
         .np-progress-fill { height: 100%; background: rgba(255,255,255,0.55); border-radius: 2px; transition: width 1s linear; width: 0%; }
 
         #clock { font-size: 0.65rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.38); font-variant-numeric: tabular-nums; }
-
-        #cast-btn-wrap {
-            position: absolute;
-            bottom: 16px; right: 16px;
-            z-index: 15;
-        }
-        #cast-btn {
-            background: none; border: none; cursor: pointer; padding: 6px;
-            color: rgba(255,255,255,0.5); transition: color 0.2s;
-            line-height: 0;
-        }
-        #cast-btn:hover { color: #fff; }
-        #cast-btn.casting { color: #fff; }
         #offline-screen.visible { display: flex; }
         .offline-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.3; }
 
@@ -151,15 +132,7 @@
     </header>
 
     <div id="player-wrap">
-        <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols></mux-player>
-        <div id="cast-btn-wrap">
-            <button id="cast-btn" title="Castear">
-                <!-- cast icon -->
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm18-7H5c-1.1 0-2 .9-2 2v3h2v-3h14v10h-5v2h5c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-18 3v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11z"/>
-                </svg>
-            </button>
-        </div>
+        <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip></mux-player>
         <div id="age-gate">
             <img class="age-gate-logo" src="/toxi-logo-white.png" alt="TOXI Media" />
             <div class="age-gate-title">¿Cuántos años tenés?</div>
@@ -281,32 +254,6 @@
 
         // Mostrar overlay al hacer click
         document.getElementById('player-wrap').addEventListener('click', () => showOverlay(getCurrentSlot()));
-
-        // Cast via RemotePlayback API (Android Chrome / Chromecast)
-        const castWrap = document.getElementById('cast-btn-wrap');
-        const castBtn  = document.getElementById('cast-btn');
-        // Busca el <video> dentro del shadow DOM de mux-player
-        function getCastTarget() {
-            if (player.media) return player.media;
-            // Buscar en shadow DOM anidado
-            let el = player;
-            while (el.shadowRoot) {
-                const v = el.shadowRoot.querySelector('video');
-                if (v) return v;
-                el = el.shadowRoot.firstElementChild || el;
-                if (el === player) break;
-            }
-            return null;
-        }
-        castBtn.addEventListener('click', () => {
-            const vid = getCastTarget();
-            if (vid && vid.remote) {
-                vid.remote.prompt().catch(() => {});
-            } else {
-                // Fallback: usar la URL directa del video actual
-                alert('Cast no disponible en este browser');
-            }
-        });
 
         // Age gate: ambos botones descartan el overlay y activan el audio
         const ageGate = document.getElementById('age-gate');
