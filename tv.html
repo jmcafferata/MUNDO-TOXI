@@ -8,6 +8,7 @@
     <meta property="og:description" content="Canal de television de TOXI Media." />
     <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
     <link rel="icon" href="/favicon.ico" />
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -283,25 +284,43 @@
         document.getElementById('cast-btn').addEventListener('click', async (e) => {
             e.stopPropagation();
             try {
-                // Mux player tiene una API interna para el cast-button si está disponible
+                // 1. Google Cast SDK (PC y Android)
+                if (window.cast && window.cast.framework) {
+                    try {
+                        const context = window.cast.framework.CastContext.getInstance();
+                        await context.requestSession();
+                        return; // Exito
+                    } catch (err) {
+                        console.log("Cast SDK falló o el usuario canceló: ", err);
+                    }
+                }
+                
+                // 2. Mux player internal cast button
                 const internalBtn = player.shadowRoot?.querySelector('media-cast-button') || player.shadowRoot?.querySelector('svg[slot="cast"]')?.parentElement;
                 if (internalBtn && typeof internalBtn.click === 'function') {
                     internalBtn.click();
                     return;
                 }
                 
+                // 3. Fallback a HTML5 nativo (Remote Playback API / AirPlay)
                 const vid = player.shadowRoot ? player.shadowRoot.querySelector('video') : player.querySelector('video');
                 const videoElement = vid || player;
                 
-                if (videoElement.remote) {
+                if (videoElement.remote && videoElement.remote.prompt) {
                     await videoElement.remote.prompt();
                 } else if (videoElement.webkitShowPlaybackTargetPicker) {
                     videoElement.webkitShowPlaybackTargetPicker();
                 } else {
-                    console.log("Casting no soportado o disp. no encontrado.");
+                    alert("Casting no soportado o disp. no encontrado. Revise su conexión.");
                 }
             } catch (err) {
-                console.error("Error iniciando cast:", err);
+                if (err.name === 'NotFoundError') {
+                    alert("No se encontraron dispositivos Chromecast o AirPlay en la red WiFi actual.");
+                } else if (err.name === 'NotSupportedError') {
+                    alert("Tu navegador no permite la transmisión remota o no está activado.");
+                } else {
+                    console.error("Error iniciando cast:", err);
+                }
             }
         });
 
