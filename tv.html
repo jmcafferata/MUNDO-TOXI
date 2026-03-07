@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TOXI TV</title>
-    <meta property="og:title" content="TOXI TV — En vivo" />
-    <meta property="og:description" content="Transmisión en vivo de TOXI Media." />
+    <meta property="og:title" content="TOXI TV" />
+    <meta property="og:description" content="Canal de television de TOXI Media." />
     <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
     <link rel="icon" href="/favicon.ico" />
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
@@ -20,9 +20,9 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            user-select: none;
         }
 
-        /* ── HEADER ── */
         header {
             position: absolute;
             top: 0; left: 0; right: 0;
@@ -31,10 +31,11 @@
             align-items: center;
             justify-content: space-between;
             padding: 20px 28px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, transparent 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+            pointer-events: none;
         }
-
         .logo-link {
+            pointer-events: all;
             opacity: 0.85;
             transition: opacity 0.2s;
             text-decoration: none;
@@ -42,143 +43,184 @@
         .logo-link:hover { opacity: 1; }
         .logo-link img { height: 22px; }
 
-        .live-badge {
+        .tv-badge {
             display: flex;
             align-items: center;
             gap: 7px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 0.15em;
-            color: rgba(255,255,255,0.75);
+            color: rgba(255,255,255,0.5);
         }
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #ff3b3b;
-            animation: pulse 1.4s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
-        }
+        .tv-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; opacity: 0.7; }
 
-        /* ── PLAYER ── */
         #player-wrap {
             flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: relative;
             background: #000;
         }
 
         mux-player {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
+            position: absolute; inset: 0;
             --media-object-fit: contain;
             --media-background-color: #000;
-            --media-icon-color: #fff;
-            --media-accent-color: #fff;
+            --media-control-bar-display: none;
+            --media-icon-color: transparent;
+            --media-accent-color: transparent;
         }
 
-        /* ── OFFLINE ── */
-        #offline-screen {
-            display: none;
+        #now-playing {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            z-index: 10;
+            padding: 36px 28px 28px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+            display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            padding: 40px;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+        #now-playing.visible { opacity: 1; }
+
+        .np-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255,255,255,0.4); }
+        .np-title { font-size: 1.05rem; font-weight: 500; }
+        .np-next  { font-size: 0.7rem; color: rgba(255,255,255,0.38); margin-top: 2px; }
+        .np-next span { color: rgba(255,255,255,0.6); }
+
+        .np-progress { margin-top: 10px; height: 2px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden; }
+        .np-progress-fill { height: 100%; background: rgba(255,255,255,0.55); border-radius: 2px; transition: width 1s linear; width: 0%; }
+
+        #clock { font-size: 0.65rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.38); font-variant-numeric: tabular-nums; }
+
+        #offline-screen {
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            gap: 14px; position: absolute; inset: 0;
         }
         #offline-screen.visible { display: flex; }
-
-        .offline-title {
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            opacity: 0.5;
-        }
-        .offline-sub {
-            font-size: 0.75rem;
-            opacity: 0.3;
-            letter-spacing: 0.05em;
-        }
+        .offline-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.3; }
     </style>
 </head>
 <body>
 
     <header>
-        <a class="logo-link" href="/">
-            <img src="/toxi-logo-white.png" alt="TOXI Media" />
-        </a>
-        <div class="live-badge" id="live-badge" style="display:none;">
-            <span class="live-dot"></span>
-            <span>En vivo</span>
-        </div>
+        <a class="logo-link" href="/"><img src="/toxi-logo-white.png" alt="TOXI Media" /></a>
+        <div class="tv-badge"><span class="tv-dot"></span><span id="clock">--:--</span></div>
     </header>
 
     <div id="player-wrap">
-
-        <mux-player
-            id="mux-player"
-            stream-type="live"
-            autoplay
-            muted
-            style="display:none;"
-        ></mux-player>
-
-        <div id="offline-screen" class="visible">
-            <div class="offline-title">Sin señal</div>
-            <div class="offline-sub">La transmisión comenzará en breve.</div>
+        <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto"></mux-player>
+        <div id="offline-screen"><div class="offline-title">Sin señal</div></div>
+        <div id="now-playing">
+            <div class="np-label">Ahora</div>
+            <div class="np-title" id="np-title">—</div>
+            <div class="np-next">A continuacion: <span id="np-next-title">—</span></div>
+            <div class="np-progress"><div class="np-progress-fill" id="np-fill"></div></div>
         </div>
-
     </div>
 
-    <script>
-        // ─────────────────────────────────────────────
-        //  CONFIGURACIÓN — reemplazá este valor con el
-        //  Playback ID de tu Mux Live Stream
-        //  (Dashboard → Live Streams → tu stream → Playback IDs)
-        // ─────────────────────────────────────────────
-        const MUX_PLAYBACK_ID = 'K9M5jCVNPWi5SdIkjo02IX1B4rj01Uq02NxEKQV6nIWx6I';
+    <script type="module">
+        import { TV_PLAYLIST as PLAYLIST } from './src/content.js';
 
-        const player = document.getElementById('mux-player');
-        const offlineScreen = document.getElementById('offline-screen');
-        const liveBadge = document.getElementById('live-badge');
+        // Epoca fija: cambiala para "reiniciar" el canal desde cero
+        const EPOCH_SEC = new Date('2026-01-01T00:00:00Z').getTime() / 1000;
 
-        function goLive() {
-            player.style.display = '';
-            offlineScreen.classList.remove('visible');
-            liveBadge.style.display = 'flex';
+        // ── Calcula que video y en que segundo estamos ──────
+        const TOTAL = PLAYLIST.reduce((s, v) => s + v.duration, 0);
+
+        function getCurrentSlot() {
+            const elapsed = (Date.now() / 1000 - EPOCH_SEC) % TOTAL;
+            let acc = 0;
+            for (let i = 0; i < PLAYLIST.length; i++) {
+                acc += PLAYLIST[i].duration;
+                if (elapsed < acc) {
+                    const offset = elapsed - (acc - PLAYLIST[i].duration);
+                    return {
+                        video:  PLAYLIST[i],
+                        offset: offset,
+                        index:  i,
+                        next:   PLAYLIST[(i + 1) % PLAYLIST.length]
+                    };
+                }
+            }
         }
 
-        function goOffline() {
-            player.style.display = 'none';
-            offlineScreen.classList.add('visible');
-            liveBadge.style.display = 'none';
+        const player      = document.getElementById('mux-player');
+        const npTitle     = document.getElementById('np-title');
+        const npNextTitle = document.getElementById('np-next-title');
+        const npFill      = document.getElementById('np-fill');
+        const nowPlaying  = document.getElementById('now-playing');
+        const clockEl     = document.getElementById('clock');
+        let currentIndex  = -1;
+        let overlayTimer  = null;
+
+        function loadSlot(slot) {
+            currentIndex = slot.index;
+            player.setAttribute('playback-id', slot.video.id);
+            const seek = () => {
+                player.currentTime = slot.offset;
+                player.play().catch(() => {});
+                player.removeEventListener('loadedmetadata', seek);
+            };
+            player.addEventListener('loadedmetadata', seek);
+            showOverlay(slot);
         }
 
-        if (MUX_PLAYBACK_ID) {
-            player.setAttribute('playback-id', MUX_PLAYBACK_ID);
+        // Cuando termina un video, carga el siguiente segun el reloj
+        player.addEventListener('ended', () => loadSlot(getCurrentSlot()));
 
-            player.addEventListener('playing', goLive);
+        // Correccion de drift cada 30 segundos
+        setInterval(() => {
+            const slot = getCurrentSlot();
+            if (slot.index !== currentIndex) { loadSlot(slot); return; }
+            if (Math.abs(player.currentTime - slot.offset) > 5) {
+                player.currentTime = slot.offset;
+            }
+        }, 30000);
 
-            player.addEventListener('error', (e) => {
-                console.warn('Stream error, retrying in 10s…', e);
-                goOffline();
-                setTimeout(() => {
-                    player.setAttribute('playback-id', MUX_PLAYBACK_ID);
-                }, 10000);
-            });
+        // Bloquear pausa
+        player.addEventListener('pause', () => {
+            if (!document.hidden) player.play().catch(() => {});
+        });
 
-            player.addEventListener('waiting', () => {
-                // buffering — keep live badge visible
-            });
+        // Bloquear seek manual: corrige al offset real
+        player.addEventListener('seeking', () => {
+            player.currentTime = getCurrentSlot().offset;
+        });
+
+        // Overlay de "ahora / a continuacion"
+        function showOverlay(slot) {
+            npTitle.textContent     = slot.video.title;
+            npNextTitle.textContent = slot.next.title;
+            nowPlaying.classList.add('visible');
+            clearTimeout(overlayTimer);
+            overlayTimer = setTimeout(() => nowPlaying.classList.remove('visible'), 5000);
         }
-        // If no playback ID set, offline screen stays shown.
+
+        // Barra de progreso decorativa
+        setInterval(() => {
+            const slot = getCurrentSlot();
+            npFill.style.width = ((slot.offset / slot.video.duration) * 100) + '%';
+        }, 1000);
+
+        // Reloj
+        function updateClock() {
+            clockEl.textContent = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+        }
+        updateClock();
+        setInterval(updateClock, 10000);
+
+        // Mostrar overlay al hacer click
+        document.getElementById('player-wrap').addEventListener('click', () => showOverlay(getCurrentSlot()));
+
+        // Arrancar
+        if (!PLAYLIST.length) {
+            document.getElementById('offline-screen').classList.add('visible');
+        } else {
+            loadSlot(getCurrentSlot());
+        }
     </script>
 
 </body>
