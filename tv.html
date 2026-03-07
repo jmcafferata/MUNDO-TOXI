@@ -100,15 +100,18 @@
 
         #cast-btn-wrap {
             position: absolute;
-            bottom: 18px; right: 18px;
+            bottom: 16px; right: 16px;
             z-index: 15;
+            display: none;
         }
-        #cast-btn-wrap media-cast-button {
-            color: rgba(255,255,255,0.5);
-            width: 32px; height: 32px;
-            transition: color 0.2s;
+        #cast-btn-wrap.visible { display: block; }
+        #cast-btn {
+            background: none; border: none; cursor: pointer; padding: 6px;
+            color: rgba(255,255,255,0.5); transition: color 0.2s;
+            line-height: 0;
         }
-        #cast-btn-wrap media-cast-button:hover { color: #fff; }
+        #cast-btn:hover { color: #fff; }
+        #cast-btn.casting { color: #fff; }
         #offline-screen.visible { display: flex; }
         .offline-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.3; }
 
@@ -150,9 +153,15 @@
     </header>
 
     <div id="player-wrap">
-        <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols>
-            <div slot="bottom-chrome" id="cast-btn-wrap"><media-cast-button></media-cast-button></div>
-        </mux-player>
+        <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols></mux-player>
+        <div id="cast-btn-wrap">
+            <button id="cast-btn" title="Castear">
+                <!-- cast icon -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm18-7H5c-1.1 0-2 .9-2 2v3h2v-3h14v10h-5v2h5c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2zm-18 3v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11z"/>
+                </svg>
+            </button>
+        </div>
         <div id="age-gate">
             <img class="age-gate-logo" src="/toxi-logo-white.png" alt="TOXI Media" />
             <div class="age-gate-title">¿Cuántos años tenés?</div>
@@ -274,6 +283,30 @@
 
         // Mostrar overlay al hacer click
         document.getElementById('player-wrap').addEventListener('click', () => showOverlay(getCurrentSlot()));
+
+        // Cast via RemotePlayback API (Android Chrome / Chromecast)
+        const castWrap = document.getElementById('cast-btn-wrap');
+        const castBtn  = document.getElementById('cast-btn');
+        function getCastTarget() {
+            // mux-player expone .media como el <video> interno
+            return player.media || player.querySelector('video');
+        }
+        function initCast() {
+            const vid = getCastTarget();
+            if (!vid || !vid.remote) return;
+            vid.remote.watchAvailability(available => {
+                castWrap.classList.toggle('visible', available);
+            }).catch(() => {
+                // watchAvailability no soportado → mostrar igualmente
+                castWrap.classList.add('visible');
+            });
+            castBtn.addEventListener('click', () => {
+                const v = getCastTarget();
+                if (v && v.remote) v.remote.prompt().catch(() => {});
+            });
+        }
+        // Esperar a que mux-player esté listo
+        player.addEventListener('loadedmetadata', initCast, { once: true });
 
         // Age gate: ambos botones descartan el overlay y activan el audio
         const ageGate = document.getElementById('age-gate');
