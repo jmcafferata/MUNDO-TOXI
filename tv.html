@@ -102,9 +102,7 @@
             position: absolute;
             bottom: 16px; right: 16px;
             z-index: 15;
-            display: none;
         }
-        #cast-btn-wrap.visible { display: block; }
         #cast-btn {
             background: none; border: none; cursor: pointer; padding: 6px;
             color: rgba(255,255,255,0.5); transition: color 0.2s;
@@ -287,26 +285,28 @@
         // Cast via RemotePlayback API (Android Chrome / Chromecast)
         const castWrap = document.getElementById('cast-btn-wrap');
         const castBtn  = document.getElementById('cast-btn');
+        // Busca el <video> dentro del shadow DOM de mux-player
         function getCastTarget() {
-            // mux-player expone .media como el <video> interno
-            return player.media || player.querySelector('video');
+            if (player.media) return player.media;
+            // Buscar en shadow DOM anidado
+            let el = player;
+            while (el.shadowRoot) {
+                const v = el.shadowRoot.querySelector('video');
+                if (v) return v;
+                el = el.shadowRoot.firstElementChild || el;
+                if (el === player) break;
+            }
+            return null;
         }
-        function initCast() {
+        castBtn.addEventListener('click', () => {
             const vid = getCastTarget();
-            if (!vid || !vid.remote) return;
-            vid.remote.watchAvailability(available => {
-                castWrap.classList.toggle('visible', available);
-            }).catch(() => {
-                // watchAvailability no soportado → mostrar igualmente
-                castWrap.classList.add('visible');
-            });
-            castBtn.addEventListener('click', () => {
-                const v = getCastTarget();
-                if (v && v.remote) v.remote.prompt().catch(() => {});
-            });
-        }
-        // Esperar a que mux-player esté listo
-        player.addEventListener('loadedmetadata', initCast, { once: true });
+            if (vid && vid.remote) {
+                vid.remote.prompt().catch(() => {});
+            } else {
+                // Fallback: usar la URL directa del video actual
+                alert('Cast no disponible en este browser');
+            }
+        });
 
         // Age gate: ambos botones descartan el overlay y activan el audio
         const ageGate = document.getElementById('age-gate');
