@@ -104,6 +104,35 @@
         }
         #offline-screen.visible { display: flex; }
         .offline-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.3; }
+
+        #age-gate {
+            position: absolute; inset: 0; z-index: 30;
+            background: #000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 32px;
+        }
+        #age-gate.hidden { display: none; }
+        .age-gate-logo { height: 28px; opacity: 0.9; margin-bottom: 8px; }
+        .age-gate-title {
+            font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.25em;
+            color: rgba(255,255,255,0.35);
+        }
+        .age-gate-buttons { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+        .age-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            padding: 14px 28px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .age-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
     </style>
 </head>
 <body>
@@ -115,8 +144,13 @@
 
     <div id="player-wrap">
         <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols></mux-player>
-        <div id="unmute-btn" style="display:none; position:absolute; inset:0; z-index:20; align-items:center; justify-content:center; cursor:pointer;">
-            <div style="background:rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.3); color:#fff; padding:16px 28px; border-radius:4px; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase;">▶ Activar audio</div>
+        <div id="age-gate">
+            <img class="age-gate-logo" src="/toxi-logo-white.png" alt="TOXI Media" />
+            <div class="age-gate-title">¿Cuántos años tenés?</div>
+            <div class="age-gate-buttons">
+                <button class="age-btn" id="age-over">Soy mayor de 16 años</button>
+                <button class="age-btn" id="age-under">Soy menor de 16 años</button>
+            </div>
         </div>
         <div id="offline-screen"><div class="offline-title">Sin señal</div></div>
         <div id="now-playing">
@@ -232,23 +266,15 @@
         // Mostrar overlay al hacer click
         document.getElementById('player-wrap').addEventListener('click', () => showOverlay(getCurrentSlot()));
 
-        // Unmute: intentar inmediatamente, si falla mostrar boton
-        const unmuteBtn = document.getElementById('unmute-btn');
-        function tryUnmute() {
+        // Age gate: ambos botones descartan el overlay y activan el audio
+        const ageGate = document.getElementById('age-gate');
+        function dismissAgeGate() {
             player.muted = false;
             player.volume = 1;
-            if (player.muted) {
-                unmuteBtn.style.display = 'flex';
-            } else {
-                unmuteBtn.style.display = 'none';
-            }
+            ageGate.classList.add('hidden');
         }
-        unmuteBtn.addEventListener('click', () => {
-            player.muted = false;
-            player.volume = 1;
-            unmuteBtn.style.display = 'none';
-        });
-        player.addEventListener('canplay', tryUnmute, { once: true });
+        document.getElementById('age-over').addEventListener('click', dismissAgeGate);
+        document.getElementById('age-under').addEventListener('click', dismissAgeGate);
 
         // Arrancar
         if (!PLAYLIST.length) {
