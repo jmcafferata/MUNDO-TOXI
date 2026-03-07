@@ -153,14 +153,17 @@
         const npFill      = document.getElementById('np-fill');
         const nowPlaying  = document.getElementById('now-playing');
         const clockEl     = document.getElementById('clock');
-        let currentIndex  = -1;
-        let overlayTimer  = null;
+        let currentIndex       = -1;
+        let overlayTimer       = null;
+        let programmaticSeek   = false;
 
         function loadSlot(slot) {
             currentIndex = slot.index;
             player.setAttribute('playback-id', slot.video.id);
             const seek = () => {
+                programmaticSeek = true;
                 player.currentTime = slot.offset;
+                programmaticSeek = false;
                 player.play().catch(() => {});
                 player.removeEventListener('loadedmetadata', seek);
             };
@@ -176,7 +179,9 @@
             const slot = getCurrentSlot();
             if (slot.index !== currentIndex) { loadSlot(slot); return; }
             if (Math.abs(player.currentTime - slot.offset) > 5) {
+                programmaticSeek = true;
                 player.currentTime = slot.offset;
+                programmaticSeek = false;
             }
         }, 30000);
 
@@ -185,9 +190,15 @@
             if (!document.hidden) player.play().catch(() => {});
         });
 
-        // Bloquear seek manual: corrige al offset real
+        // Bloquear seek manual: corrige al offset real (ignora seeks programaticos)
         player.addEventListener('seeking', () => {
-            player.currentTime = getCurrentSlot().offset;
+            if (programmaticSeek) return;
+            const expected = getCurrentSlot().offset;
+            if (Math.abs(player.currentTime - expected) > 2) {
+                programmaticSeek = true;
+                player.currentTime = expected;
+                programmaticSeek = false;
+            }
         });
 
         // Overlay de "ahora / a continuacion"
