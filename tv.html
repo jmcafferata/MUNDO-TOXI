@@ -284,20 +284,10 @@
         document.getElementById('cast-btn').addEventListener('click', async (e) => {
             e.stopPropagation();
             try {
-                // 1. Google Cast SDK (PC y Android)
-                if (window.cast && window.cast.framework) {
-                    try {
-                        const context = window.cast.framework.CastContext.getInstance();
-                        await context.requestSession();
-                        return; // Exito
-                    } catch (err) {
-                        console.log("Cast SDK falló o el usuario canceló: ", err);
-                    }
-                }
-                
-                // 2. Mux player internal cast button
+                // 1. Mux player internal cast API
                 const internalBtn = player.shadowRoot?.querySelector('media-cast-button') || player.shadowRoot?.querySelector('svg[slot="cast"]')?.parentElement;
                 if (internalBtn && typeof internalBtn.click === 'function') {
+                    // Let Mux handle the logic to feed the ID to the receiver
                     internalBtn.click();
                     return;
                 }
