@@ -115,6 +115,9 @@
 
     <div id="player-wrap">
         <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols></mux-player>
+        <div id="unmute-btn" style="display:none; position:absolute; inset:0; z-index:20; align-items:center; justify-content:center; cursor:pointer;">
+            <div style="background:rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.3); color:#fff; padding:16px 28px; border-radius:4px; font-size:0.85rem; letter-spacing:0.1em; text-transform:uppercase;">▶ Activar audio</div>
+        </div>
         <div id="offline-screen"><div class="offline-title">Sin señal</div></div>
         <div id="now-playing">
             <div class="np-label">Ahora</div>
@@ -228,6 +231,24 @@
 
         // Mostrar overlay al hacer click
         document.getElementById('player-wrap').addEventListener('click', () => showOverlay(getCurrentSlot()));
+
+        // Unmute: intentar inmediatamente, si falla mostrar boton
+        const unmuteBtn = document.getElementById('unmute-btn');
+        function tryUnmute() {
+            player.muted = false;
+            player.volume = 1;
+            if (player.muted) {
+                unmuteBtn.style.display = 'flex';
+            } else {
+                unmuteBtn.style.display = 'none';
+            }
+        }
+        unmuteBtn.addEventListener('click', () => {
+            player.muted = false;
+            player.volume = 1;
+            unmuteBtn.style.display = 'none';
+        });
+        player.addEventListener('canplay', tryUnmute, { once: true });
 
         // Arrancar
         if (!PLAYLIST.length) {
