@@ -16,7 +16,7 @@
             background: #000;
             color: #fff;
             font-family: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            height: 100vh;
+            height: 100dvh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -66,12 +66,17 @@
             z-index: 5;
             --media-object-fit: contain;
             --media-background-color: #000;
+            pointer-events: none;
+        }
+        
+        mux-player::part(center-play-button) {
+            display: none !important;
         }
 
         #cast-btn {
             position: absolute;
-            bottom: 14px; right: 14px;
-            z-index: 20;
+            bottom: 24px; right: 24px;
+            z-index: 50;
             background: rgba(0,0,0,0.55);
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 50%;
@@ -275,10 +280,14 @@
         document.getElementById('player-wrap').addEventListener('click', () => showOverlay(getCurrentSlot()));
 
         // Cast via RemotePlayback API
-        document.getElementById('cast-btn').addEventListener('click', () => {
-            const vid = player.media;
-            if (vid && vid.remote) {
-                vid.remote.prompt().catch(() => {});
+        document.getElementById('cast-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const vid = player.shadowRoot ? player.shadowRoot.querySelector('video') : player.querySelector('video');
+            const videoElement = vid || player;
+            if (videoElement.remote) {
+                videoElement.remote.prompt().catch(() => {});
+            } else if (videoElement.webkitShowPlaybackTargetPicker) {
+                videoElement.webkitShowPlaybackTargetPicker();
             }
         });
 
