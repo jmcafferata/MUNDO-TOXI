@@ -11,3 +11,7 @@ utils
 dashboard.html
 dashboard-server.js
 api/drive-projects.js
+notes/
+
+toxitv-credentials.json
+
