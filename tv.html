@@ -71,18 +71,18 @@
         
         #now-playing {
             position: absolute;
-            bottom: 0; left: 0; right: 0;
+            top: 0; left: 0; right: 0;
             z-index: 10;
-            padding: 36px 28px calc(28px + env(safe-area-inset-bottom, 0px));
-            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+            padding: calc(72px + env(safe-area-inset-top, 0px)) 28px 32px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.88) 0%, transparent 100%);
             display: flex;
             flex-direction: column;
             gap: 5px;
-            opacity: 0;
-            transition: opacity 0.5s;
+            transform: translateY(-100%);
+            transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
         }
-        #now-playing.visible { opacity: 1; }
+        #now-playing.visible { transform: translateY(0); }
 
         .np-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255,255,255,0.4); }
         .np-title { font-size: 1.05rem; font-weight: 500; }
@@ -124,6 +124,45 @@
             transition: background 0.2s, border-color 0.2s;
         }
         .age-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+
+        /* ── Grid integrado en el párpado ─────────────────────── */
+        .np-grid {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            margin-top: 18px;
+            pointer-events: all;
+        }
+
+        .np-arrow {
+            flex: 0 0 32px;
+            display: flex; align-items: center; justify-content: center;
+            background: none; border: none; cursor: pointer;
+            color: rgba(255,255,255,0.35);
+            transition: color 0.2s;
+            padding: 0;
+        }
+        .np-arrow:hover { color: rgba(255,255,255,0.9); }
+        .np-arrow svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        .np-cards { flex: 1; display: flex; gap: 10px; overflow: hidden; min-width: 0; }
+
+        .grid-card {
+            flex: 0 0 calc(33.333% - 7px);
+            min-width: 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 4px;
+            padding: 10px 12px 9px;
+            opacity: 0.45;
+            transition: opacity 0.3s, background 0.3s, border-color 0.3s;
+        }
+        .grid-card.is-now { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); opacity: 1; }
+        .grid-card.is-adj { opacity: 0.68; }
+        .grid-card-label { font-size: 0.48rem; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(255,255,255,0.32); margin-bottom: 4px; }
+        .grid-card-title { font-size: 0.72rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .grid-card-bar { margin-top: 7px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+        .grid-card-bar-fill { height: 100%; background: rgba(255,255,255,0.5); border-radius: 2px; transition: width 1s linear; width: 0%; }
     </style>
 </head>
 <body>
@@ -144,11 +183,20 @@
             </div>
         </div>
         <div id="offline-screen"><div class="offline-title">Sin señal</div></div>
+
         <div id="now-playing">
             <div class="np-label">Ahora</div>
             <div class="np-title" id="np-title">—</div>
-            <div class="np-next">A continuación: <span id="np-next-title">—</span></div>
             <div class="np-progress"><div class="np-progress-fill" id="np-fill"></div></div>
+            <div class="np-grid">
+                <button class="np-arrow" id="grid-prev" aria-label="Anterior">
+                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <div class="np-cards" id="grid-track"></div>
+                <button class="np-arrow" id="grid-next" aria-label="Siguiente">
+                    <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+                </button>
+            </div>
         </div>
     </div>
 
@@ -180,13 +228,17 @@
 
         const player      = document.getElementById('mux-player');
         const npTitle     = document.getElementById('np-title');
-        const npNextTitle = document.getElementById('np-next-title');
         const npFill      = document.getElementById('np-fill');
         const nowPlaying  = document.getElementById('now-playing');
         const clockEl     = document.getElementById('clock');
-        let currentIndex       = -1;
-        let overlayTimer       = null;
-        let programmaticSeek   = false;
+        const gridTrack   = document.getElementById('grid-track');
+        const gridPrev    = document.getElementById('grid-prev');
+        const gridNext    = document.getElementById('grid-next');
+        let currentIndex     = -1;
+        let overlayTimer     = null;
+        let programmaticSeek = false;
+        let gridStart        = 0;
+        const CARDS_VIEW     = 3;
 
         function loadSlot(slot) {
             currentIndex = slot.index;
@@ -232,13 +284,14 @@
             }
         });
 
-        // Overlay de "ahora / a continuacion"
+        // Overlay de "ahora + grilla"
         function showOverlay(slot) {
-            npTitle.textContent     = slot.video.title;
-            npNextTitle.textContent = slot.next.title;
+            npTitle.textContent = slot.video.title;
+            gridStart = (slot.index - 1 + PLAYLIST.length) % PLAYLIST.length;
+            buildGrid();
             nowPlaying.classList.add('visible');
             clearTimeout(overlayTimer);
-            overlayTimer = setTimeout(() => nowPlaying.classList.remove('visible'), 5000);
+            overlayTimer = setTimeout(() => nowPlaying.classList.remove('visible'), 6000);
         }
 
         // Barra de progreso decorativa
@@ -247,15 +300,90 @@
             npFill.style.width = ((slot.offset / slot.video.duration) * 100) + '%';
         }, 1000);
 
-        // Reloj
+        // Reloj — UTC-3 fijo (Argentina)
+        function formatAR(date) {
+            const d = new Date(date.getTime() - 3 * 60 * 60 * 1000);
+            return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+        }
+
         function updateClock() {
-            clockEl.textContent = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+            clockEl.textContent = formatAR(new Date());
         }
         updateClock();
         setInterval(updateClock, 10000);
 
-        // Mostrar overlay al hacer click
-        document.getElementById('player-wrap').addEventListener('click', () => showOverlay(getCurrentSlot()));
+        // ── Grid integrado en el párpado ──────────────────────
+
+        // Pre-computa el inicio acumulado (en segundos desde inicio del loop) de cada video
+        const CUM_START = (() => {
+            const a = []; let acc = 0;
+            for (const v of PLAYLIST) { a.push(acc); acc += v.duration; }
+            return a;
+        })();
+
+        function getStartTime(idx) {
+            const elapsed    = (Date.now() / 1000 - EPOCH_SEC) % TOTAL;
+            const cycleStart = Date.now() / 1000 - elapsed;
+            return formatAR(new Date((cycleStart + CUM_START[idx]) * 1000));
+        }
+
+        function buildGrid() {
+            gridTrack.innerHTML = '';
+            const slot = getCurrentSlot();
+            for (let i = 0; i < CARDS_VIEW; i++) {
+                const idx    = (gridStart + i) % PLAYLIST.length;
+                const item   = PLAYLIST[idx];
+                const isNow  = idx === slot.index;
+                const isNext = idx === (slot.index + 1) % PLAYLIST.length;
+                const card   = document.createElement('div');
+                card.className = 'grid-card' + (isNow ? ' is-now' : (i === 1 ? ' is-adj' : ''));
+                const tag  = isNow ? 'Ahora' : (isNext ? 'A continuación' : '');
+                const time = getStartTime(idx);
+                const lbl  = tag ? tag + ' · ' + time : time;
+                const pct  = isNow ? ((slot.offset / slot.video.duration) * 100).toFixed(1) : '0';
+                card.innerHTML =
+                    '<div class="grid-card-label">' + lbl + '</div>' +
+                    '<div class="grid-card-title">' + item.title + '</div>' +
+                    '<div class="grid-card-bar"><div class="grid-card-bar-fill" style="width:' + pct + '%"></div></div>';
+                gridTrack.appendChild(card);
+            }
+        }
+
+        function resetOverlayTimer() {
+            clearTimeout(overlayTimer);
+            overlayTimer = setTimeout(() => nowPlaying.classList.remove('visible'), 6000);
+        }
+
+        gridPrev.addEventListener('click', e => {
+            e.stopPropagation();
+            gridStart = (gridStart - 1 + PLAYLIST.length) % PLAYLIST.length;
+            buildGrid(); resetOverlayTimer();
+        });
+        gridNext.addEventListener('click', e => {
+            e.stopPropagation();
+            gridStart = (gridStart + 1) % PLAYLIST.length;
+            buildGrid(); resetOverlayTimer();
+        });
+
+        // Sync barra de progreso de la tarjeta "ahora" cada segundo
+        setInterval(() => {
+            if (!nowPlaying.classList.contains('visible')) return;
+            const slot = getCurrentSlot();
+            const fill = gridTrack.querySelector('.grid-card.is-now .grid-card-bar-fill');
+            if (fill) fill.style.width = ((slot.offset / slot.video.duration) * 100).toFixed(1) + '%';
+        }, 1000);
+
+        // Click en el player → mostrar/ocultar párpado
+        document.getElementById('player-wrap').addEventListener('click', e => {
+            if (e.target === gridPrev || gridPrev.contains(e.target)) return;
+            if (e.target === gridNext || gridNext.contains(e.target)) return;
+            if (nowPlaying.classList.contains('visible')) {
+                nowPlaying.classList.remove('visible');
+                clearTimeout(overlayTimer);
+            } else {
+                showOverlay(getCurrentSlot());
+            }
+        });
 
         // Age gate: ambos botones descartan el overlay y activan el audio
         const ageGate = document.getElementById('age-gate');
