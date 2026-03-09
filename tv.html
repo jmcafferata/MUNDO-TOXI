@@ -9,6 +9,18 @@
     <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
     <link rel="icon" href="/favicon.ico" />
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <script>
+        // Inicializar Cast SDK con receiver personalizado antes de que mux-player lo use
+        window['__onGCastApiAvailable'] = function(isAvailable) {
+            if (isAvailable) {
+                cast.framework.CastContext.getInstance().setOptions({
+                    receiverApplicationId: 'B668F863',
+                    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                });
+            }
+        };
+    </script>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -173,7 +185,7 @@
     </header>
 
     <div id="player-wrap">
-        <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions cast-receiver="B668F863"></mux-player>
+        <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
         <div id="age-gate">
             <img class="age-gate-logo" src="/toxi-logo-white.png" alt="TOXI Media" />
             <div class="age-gate-title">¿Cuántos años tenés?</div>
