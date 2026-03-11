@@ -324,7 +324,7 @@ window.addEventListener('keydown', (event) => {
             return;
         case 'ArrowUp':
             event.preventDefault();
-            navigateWithFade('https://toxii.webflow.io/plantform', { force: true, duration: 3000 });
+            navigateWithFade('/plantform', { force: true, duration: 3000 });
             return;
         case 'ArrowDown':
             event.preventDefault();
@@ -968,7 +968,7 @@ function animate() {
                     } else if (targetPosition && targetPosition.x === 50) {
                         url = 'earth.html';
                     } else if (targetPosition && targetPosition.z === -50) {
-                        url = 'https://toxi.media/plantform';
+                        url = '/plantform';
                     } else if (targetPosition && targetPosition.z === 50) {
                         url = 'https://www.instagram.com/toxi.media/';
                     }
