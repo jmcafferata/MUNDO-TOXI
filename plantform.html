@@ -569,7 +569,9 @@
       70%  { box-shadow: 0 0 0 14px rgba(255,255,255,0); }
       100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
     }
-    .ai-mic-btn svg { pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .ai-mic-btn { position: relative; }
+    .ai-mic-btn .ai-icon-wrap { pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .ai-status {
       font-size: 0.75rem;
       color: var(--muted);
@@ -603,18 +605,21 @@
     <p class="ai-response-text" id="ai-response-text"></p>
   </div>
   <button class="ai-mic-btn" id="ai-mic-btn" title="Hablar" aria-label="Hablar">
-    <svg id="ai-mic-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="9" y="2" width="6" height="11" rx="3"/>
-      <path d="M5 10a7 7 0 0 0 14 0"/>
-      <line x1="12" y1="17" x2="12" y2="22"/>
-      <line x1="9" y1="22" x2="15" y2="22"/>
-    </svg>
-    <svg id="ai-spin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="display:none;animation:spin 0.9s linear infinite;transform-origin:center">
-      <path d="M12 2a10 10 0 0 1 10 10"/>
-    </svg>
+    <span class="ai-icon-wrap" id="ai-mic-wrap">
+      <svg id="ai-mic-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="2" width="6" height="11" rx="3"/>
+        <path d="M5 10a7 7 0 0 0 14 0"/>
+        <line x1="12" y1="17" x2="12" y2="22"/>
+        <line x1="9" y1="22" x2="15" y2="22"/>
+      </svg>
+    </span>
+    <span class="ai-icon-wrap" id="ai-spin-wrap" style="display:none">
+      <svg id="ai-spin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="animation:spin 0.9s linear infinite">
+        <path d="M12 2a10 10 0 0 1 10 10"/>
+      </svg>
+    </span>
   </button>
 </div>
-<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
 <header>
   <div class="header-left">
@@ -1019,8 +1024,8 @@
   const panel = document.getElementById('ai-panel');
   const statusEl = document.getElementById('ai-status');
   const responseEl = document.getElementById('ai-response-text');
-  const micIcon = document.getElementById('ai-mic-icon');
-  const spinIcon = document.getElementById('ai-spin-icon');
+  const micIcon = document.getElementById('ai-mic-wrap');
+  const spinIcon = document.getElementById('ai-spin-wrap');
 
   function openPanel() { panel.classList.add('open'); }
   function closePanel() {
