@@ -1,5 +1,6 @@
 import path from 'path';
 import { promises as fs } from 'fs';
+import { GoogleGenAI } from '@google/genai';
 
 // Strip HTML tags for cleaner context
 function stripHtml(html) {
@@ -47,35 +48,24 @@ export default async function handler(req, res) {
   ]);
 
   const context = buildContext(projects, talentos, formatos);
+  const prompt = `Eres el asistente de TOXI Media. Tenés acceso a todo el contenido de la plataforma Plantform. Respondé en español, de forma conversacional, breve y entusiasta (máximo 3 oraciones). Solo hablá de lo que hay en la plataforma.\n\nCONTENIDO DE LA PLATAFORMA:\n${context}\n\nEl usuario dice: "${text.trim()}"`;
 
-  // Call Gemini
-  const geminiRes = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite-preview:generateContent?key=${geminiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: `Eres el asistente de TOXI Media. Tenés acceso a todo el contenido de la plataforma Plantform. Respondé en español, de forma conversacional, breve y entusiasta (máximo 3 oraciones). Solo hablá de lo que hay en la plataforma.\n\nCONTENIDO DE LA PLATAFORMA:\n${context}\n\nEl usuario dice: "${text.trim()}"`
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.8,
-          maxOutputTokens: 300,
-        }
-      }),
-    }
-  );
-
-  if (!geminiRes.ok) {
-    const err = await geminiRes.text();
-    console.error('Gemini error:', err);
-    return res.status(502).json({ error: 'Gemini API error', detail: err });
+  // Call Gemini via @google/genai SDK
+  const ai = new GoogleGenAI({ apiKey: geminiKey });
+  let responseText;
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.1-flash-lite-preview',
+      contents: prompt,
+      config: { temperature: 0.8, maxOutputTokens: 300 },
+    });
+    responseText = response.text;
+  } catch (err) {
+    console.error('Gemini error:', err.message);
+    return res.status(502).json({ error: 'Gemini API error', detail: err.message });
   }
 
-  const geminiData = await geminiRes.json();
-  const responseText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || 'No pude generar una respuesta.';
+  if (!responseText) responseText = 'No pude generar una respuesta.';
 
   // Call ElevenLabs
   const elRes = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
