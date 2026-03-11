@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Turing Admin — TOXI</title>
+  <style>
+    :root {
+      --bg:     #080808;
+      --bg2:    #111111;
+      --bg3:    #1a1a1a;
+      --border: #252525;
+      --text:   #d8d8d8;
+      --muted:  #555;
+      --accent: #ffffff;
+      --green:  #4ade80;
+      --red:    #f87171;
+      --yellow: #facc15;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+    }
+
+    /* ── AUTH ────────────────────────────────────────────────────────────── */
+    #auth {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      gap: 16px;
+      padding: 24px;
+    }
+
+    #auth h1 {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    #auth input {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 13px;
+      padding: 10px 14px;
+      width: 260px;
+      outline: none;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+
+    .btn:hover    { opacity: .85; }
+    .btn:disabled { opacity: .3; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { border-color: #555; }
+
+    /* ── MAIN ────────────────────────────────────────────────────────────── */
+    #main {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    #session-info {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    #status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--muted);
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* ── CONVERSATION ────────────────────────────────────────────────────── */
+    #conversation {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    #conversation::-webkit-scrollbar { width: 4px; }
+    #conversation::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .msg {
+      max-width: 80%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .msg-user {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      align-self: flex-start;
+    }
+
+    .msg-human {
+      background: #1a2e1a;
+      border: 1px solid #2a4a2a;
+      align-self: flex-end;
+    }
+
+    .msg-ai {
+      background: #1a1a2e;
+      border: 1px solid #2a2a4a;
+      align-self: flex-start;
+      opacity: .75;
+    }
+
+    .msg-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .msg-user   .msg-label { color: var(--muted); }
+    .msg-human  .msg-label { color: var(--green); }
+    .msg-ai     .msg-label { color: #818cf8; }
+
+    .msg-time {
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    #waiting-banner {
+      display: none;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+      flex-shrink: 0;
+      margin: 0 20px 8px;
+    }
+
+    /* ── REPLY AREA ──────────────────────────────────────────────────────── */
+    #reply-area {
+      border-top: 1px solid var(--border);
+      padding: 12px 20px;
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+      align-items: flex-end;
+    }
+
+    #reply-input {
+      flex: 1;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      resize: none;
+      min-height: 38px;
+      max-height: 120px;
+      font-family: inherit;
+      transition: border-color .15s;
+    }
+
+    #reply-input:focus      { border-color: #444; }
+    #reply-input:disabled   { opacity: .4; }
+
+    #concluded-banner {
+      display: none;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 16px 20px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    #concluded-banner .verdict {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    #concluded-banner .verdict strong {
+      color: var(--accent);
+    }
+
+    .empty { color: var(--muted); font-size: 12px; text-align: center; padding: 40px 0; }
+  </style>
+</head>
+<body>
+
+<!-- ── AUTH ───────────────────────────────────────────────────────────────── -->
+<div id="auth">
+  <h1>Turing Admin</h1>
+  <input type="password" id="key-input" placeholder="Admin key"
+         onkeydown="if(event.key==='Enter')authenticate()" />
+  <button class="btn" onclick="authenticate()">Entrar</button>
+  <div id="auth-error" style="color:var(--red);font-size:11px;display:none">Clave incorrecta</div>
+</div>
+
+<!-- ── MAIN PANEL ─────────────────────────────────────────────────────────── -->
+<div id="main">
+  <header>
+    <h1>
+      <span id="status-dot"></span>
+      Turing Admin
+    </h1>
+    <div id="session-info">Cargando sesión…</div>
+  </header>
+
+  <div id="conversation">
+    <div class="empty" id="empty-msg">Sin mensajes aún.</div>
+  </div>
+
+  <div id="waiting-banner">
+    Sesión concluida o esperando nuevo mensaje del usuario.
+  </div>
+
+  <div id="reply-area">
+    <textarea id="reply-input" placeholder="Tu respuesta (como humano)…" rows="1"
+              oninput="autoResize(this)"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendReply()}"></textarea>
+    <button class="btn" id="reply-btn" onclick="sendReply()">Enviar</button>
+  </div>
+
+  <div id="concluded-banner"></div>
+</div>
+
+<script>
+  let adminKey    = '';
+  let sessionId   = null;
+  let pollTimer   = null;
+  let knownMsgIds = new Set();
+  let canReply    = false;   // only true while status === 'waiting'
+
+  // ── auth ────────────────────────────────────────────────────────────────────
+  function authenticate() {
+    const key = document.getElementById('key-input').value.trim();
+    if (!key) return;
+    adminKey = key;
+
+    // Try to load session from hash; key will be validated on first API call
+    sessionId = window.location.hash.slice(1) || null;
+    if (!sessionId) {
+      document.getElementById('auth-error').textContent = 'No hay sesión en la URL.';
+      document.getElementById('auth-error').style.display = 'block';
+      return;
+    }
+
+    document.getElementById('auth').style.display  = 'none';
+    document.getElementById('main').style.display  = 'flex';
+    startPolling();
+  }
+
+  // ── auto-resize textarea ────────────────────────────────────────────────────
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  }
+
+  // ── polling ─────────────────────────────────────────────────────────────────
+  function startPolling() {
+    poll();
+    pollTimer = setInterval(poll, 2500);
+  }
+
+  async function poll() {
+    try {
+      const res  = await fetch(`/api/turing-session?id=${encodeURIComponent(sessionId)}`);
+      const data = await res.json();
+      if (!res.ok) return;
+
+      const { session, messages } = data;
+      updateHeader(session);
+      renderMessages(messages);
+      updateReplyState(session);
+    } catch (e) {
+      // silent
+    }
+  }
+
+  function updateHeader(session) {
+    const dot  = document.getElementById('status-dot');
+    const info = document.getElementById('session-info');
+    const colors = { waiting: '#facc15', active: '#4ade80', concluded: '#818cf8' };
+    dot.style.background = colors[session.status] || 'var(--muted)';
+    info.textContent     = `${session.id.slice(0, 8)} · ${session.message_count}/5 mensajes · ${session.status}`;
+  }
+
+  function renderMessages(messages) {
+    const conv  = document.getElementById('conversation');
+    const empty = document.getElementById('empty-msg');
+
+    messages.forEach(msg => {
+      if (knownMsgIds.has(msg.id)) return;
+      knownMsgIds.add(msg.id);
+      if (empty) empty.remove();
+
+      const div   = document.createElement('div');
+      const time  = new Date(msg.created_at).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+      const labels = { user: 'Usuario', human: 'Vos (humano)', ai: 'IA (Gemini)' };
+      const cls    = { user: 'msg-user', human: 'msg-human', ai: 'msg-ai' };
+
+      div.className = `msg ${cls[msg.role] || 'msg-user'}`;
+      div.innerHTML = `
+        <div class="msg-label">${labels[msg.role] || msg.role}${msg.column_side ? ` · Lado ${msg.column_side}` : ''}</div>
+        <div>${escHtml(msg.content)}</div>
+        <div class="msg-time">${time}</div>
+      `;
+      conv.appendChild(div);
+    });
+
+    conv.scrollTop = conv.scrollHeight;
+  }
+
+  function updateReplyState(session) {
+    const replyArea         = document.getElementById('reply-area');
+    const waitingBanner     = document.getElementById('waiting-banner');
+    const concludedBanner   = document.getElementById('concluded-banner');
+    const replyInput        = document.getElementById('reply-input');
+    const replyBtn          = document.getElementById('reply-btn');
+
+    if (session.status === 'concluded') {
+      clearInterval(pollTimer);
+      replyArea.style.display       = 'none';
+      waitingBanner.style.display   = 'none';
+      concludedBanner.style.display = 'block';
+      const correct = session.correct_guess;
+      concludedBanner.innerHTML = `
+        <div class="verdict">
+          Sesión concluida · El humano era el lado <strong>${session.human_side || '?'}</strong>
+          ${correct !== undefined ? `· El usuario <strong>${correct ? 'acertó ✓' : 'falló ✗'}</strong>` : ''}
+        </div>`;
+      return;
+    }
+
+    if (session.status === 'waiting') {
+      // User just sent a message — admin can reply
+      canReply = true;
+      replyArea.style.display     = 'flex';
+      waitingBanner.style.display = 'none';
+      replyInput.disabled         = false;
+      replyBtn.disabled           = false;
+    } else {
+      // 'active' — waiting for user to reply
+      canReply = false;
+      replyInput.disabled = true;
+      replyBtn.disabled   = true;
+      waitingBanner.style.display = 'block';
+      waitingBanner.textContent   = 'Esperando que el usuario responda…';
+    }
+  }
+
+  // ── send reply ──────────────────────────────────────────────────────────────
+  async function sendReply() {
+    if (!canReply) return;
+    const input   = document.getElementById('reply-input');
+    const content = input.value.trim();
+    if (!content) return;
+
+    const btn = document.getElementById('reply-btn');
+    btn.disabled           = true;
+    input.disabled         = true;
+    btn.textContent        = '…';
+
+    try {
+      const res  = await fetch('/api/turing-reply', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': adminKey },
+        body:    JSON.stringify({ sessionId, content, adminKey }),
+      });
+      const data = await res.json();
+
+      if (res.status === 401) {
+        alert('Clave incorrecta.');
+        btn.disabled = false;
+        input.disabled = false;
+        btn.textContent = 'Enviar';
+        return;
+      }
+
+      if (!res.ok) throw new Error(data.error);
+
+      input.value      = '';
+      input.style.height = 'auto';
+      btn.textContent  = 'Enviar';
+      canReply = false;
+
+      // Next poll will update state
+    } catch (e) {
+      btn.disabled   = false;
+      input.disabled = false;
+      btn.textContent = 'Enviar';
+      alert('Error al enviar: ' + e.message);
+    }
+  }
+
+  function escHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+</script>
+</body>
+</html>
