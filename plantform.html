@@ -1088,17 +1088,31 @@
         throw new Error(err.error || `Error ${res.status}`);
       }
 
-      const responseText = decodeURIComponent(res.headers.get('X-Response-Text') || '');
-      if (responseText) {
-        responseEl.textContent = responseText;
-        responseEl.classList.add('visible');
-      }
+      const contentType = res.headers.get('Content-Type') || '';
 
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      currentAudio = new Audio(url);
-      currentAudio.play();
-      currentAudio.addEventListener('ended', () => URL.revokeObjectURL(url));
+      if (contentType.includes('application/json')) {
+        // ElevenLabs unavailable — use browser speech synthesis as fallback
+        const data = await res.json();
+        const spokenText = data.text || '';
+        if (spokenText) {
+          responseEl.textContent = spokenText;
+          responseEl.classList.add('visible');
+          const utter = new SpeechSynthesisUtterance(spokenText);
+          utter.lang = 'es-AR';
+          speechSynthesis.speak(utter);
+        }
+      } else {
+        const responseText = decodeURIComponent(res.headers.get('X-Response-Text') || '');
+        if (responseText) {
+          responseEl.textContent = responseText;
+          responseEl.classList.add('visible');
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        currentAudio = new Audio(url);
+        currentAudio.play();
+        currentAudio.addEventListener('ended', () => URL.revokeObjectURL(url));
+      }
     } catch (err) {
       responseEl.textContent = '';
       responseEl.classList.remove('visible');

@@ -81,6 +81,42 @@ Editar `public/data/projects.json` con el siguiente esquema:
 |---|---|
 | Audion't | https://toxi.media/audiont |
 
+## Variables de entorno en Vercel
+
+Las variables se gestionan con la CLI de Vercel. **Importante:** nunca usar `echo` ni `Write-Output` para pasar el valor, ya que agregan un salto de línea que corrompe la clave. Usar siempre `node -e "process.stdout.write(...)"`:
+
+```bash
+# Agregar una variable (sin newline)
+node -e "process.stdout.write('EL_VALOR_AQUI')" | npx vercel env add NOMBRE_VAR production
+
+# Eliminar una variable
+node -e "process.stdout.write('y')" | npx vercel env rm NOMBRE_VAR production
+
+# Listar variables actuales
+npx vercel env ls
+```
+
+Variables actuales del proyecto:
+
+| Variable | Descripción |
+|---|---|
+| `GEMINI_API_KEY` | API key de Google Gemini (IA de voz en plantform) |
+| `ELEVENLABS_API_KEY` | API key de ElevenLabs (TTS de voz en plantform) |
+| `ELEVENLABS_VOICE_ID` | ID de voz ElevenLabs usada en plantform |
+| `MP_ACCESS_TOKEN` | Token de MercadoPago (producción) |
+| `VITE_MP_PUBLIC_KEY` | Public key de MercadoPago (frontend) |
+| `ENV_MP_PUBLIC_KEY` | Public key de MercadoPago (serverless) |
+| `ZOHO_EMAIL` | Email de Zoho para notificaciones |
+| `ZOHO_PASSWORD` | Contraseña de Zoho |
+| `MUX_TOKEN_ID` | Token ID de Mux (video) |
+| `MUX_TOKEN_SECRET` | Token Secret de Mux (video) |
+
+Después de agregar o modificar variables, hacer un redeploy:
+
+```bash
+npx vercel --prod
+```
+
 ## Links útiles
 
 - Repo: https://github.com/jmcafferata/mundo-toxi *(privado)*
