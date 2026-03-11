@@ -21,6 +21,14 @@
       "destination": "/tv.html"
     },
     {
+      "source": "/turing",
+      "destination": "/turing.html"
+    },
+    {
+      "source": "/turing-admin",
+      "destination": "/turing-admin.html"
+    },
+    {
       "source": "/:slug([a-z0-9][a-z0-9-]*)",
       "destination": "/plantform.html"
     }

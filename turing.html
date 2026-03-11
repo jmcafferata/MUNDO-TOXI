@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prueba de Turing — TOXI</title>
+  <style>
+    :root {
+      --bg:      #080808;
+      --bg2:     #111111;
+      --bg3:     #1a1a1a;
+      --border:  #252525;
+      --text:    #d8d8d8;
+      --muted:   #555;
+      --accent:  #ffffff;
+      --green:   #4ade80;
+      --red:     #f87171;
+      --blue:    #60a5fa;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ── INTRO ──────────────────────────────────────────────────────────── */
+    #intro {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 32px 20px;
+      text-align: center;
+      gap: 24px;
+    }
+
+    #intro h1 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    #intro p {
+      max-width: 480px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    #intro em {
+      color: var(--text);
+      font-style: normal;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .input-row input {
+      flex: 1;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 13px;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .input-row input:focus { border-color: #444; }
+
+    .btn {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 18px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity .15s;
+    }
+
+    .btn:hover { opacity: .85; }
+    .btn:disabled { opacity: .3; cursor: not-allowed; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { border-color: #555; }
+
+    /* ── CHAT LAYOUT ────────────────────────────────────────────────────── */
+    #chat {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    #round-badge {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    /* Two columns */
+    #columns {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .col {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid var(--border);
+      min-height: 0;
+    }
+
+    .col:last-child { border-right: none; }
+
+    .col-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 14px 6px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .col-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 14px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .col-messages::-webkit-scrollbar { width: 4px; }
+    .col-messages::-webkit-scrollbar-track { background: transparent; }
+    .col-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .bubble {
+      max-width: 100%;
+      padding: 8px 11px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .bubble-user {
+      background: var(--bg3);
+      color: var(--muted);
+      border-radius: 10px 10px 10px 2px;
+      font-size: 11px;
+    }
+
+    .bubble-user strong {
+      display: block;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #3a3a3a;
+      margin-bottom: 3px;
+    }
+
+    .bubble-reply {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 2px 10px 10px 10px;
+      align-self: flex-start;
+    }
+
+    .typing {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding: 10px 14px;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: blink 1.2s infinite;
+    }
+
+    .dot:nth-child(2) { animation-delay: .2s; }
+    .dot:nth-child(3) { animation-delay: .4s; }
+
+    @keyframes blink {
+      0%, 60%, 100% { opacity: .3; }
+      30%            { opacity: 1; }
+    }
+
+    /* ── Bottom input ───────────────────────────────────────────────────── */
+    #bottom {
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    #input-area {
+      display: flex;
+      gap: 8px;
+      padding: 12px 16px;
+      align-items: flex-end;
+    }
+
+    #msg-input {
+      flex: 1;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      resize: none;
+      max-height: 80px;
+      min-height: 38px;
+      transition: border-color .15s;
+      font-family: inherit;
+    }
+
+    #msg-input:focus { border-color: #444; }
+
+    /* ── Guess UI ───────────────────────────────────────────────────────── */
+    #guess-ui {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 20px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+      text-align: center;
+    }
+
+    #guess-ui p {
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    #guess-ui strong {
+      display: block;
+      font-size: 14px;
+      color: var(--accent);
+      letter-spacing: 0;
+      text-transform: none;
+    }
+
+    .guess-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* ── Result ─────────────────────────────────────────────────────────── */
+    #result {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 16px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    #result .result-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    #result .result-verdict {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    #result .result-detail { color: var(--muted); font-size: 12px; }
+
+    #status-bar {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      padding: 6px 16px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── INTRO SCREEN ───────────────────────────────────────────────────────── -->
+<div id="intro">
+  <h1>Prueba de Turing</h1>
+  <p>
+    Vas a chatear con <em>dos entidades al mismo tiempo</em>: una es un humano real, la otra es una IA.<br><br>
+    Después de <em>5 mensajes</em>, tenés que adivinar cuál es cuál.
+  </p>
+  <div class="input-row">
+    <input type="text" id="first-msg" placeholder="Escribí tu primer mensaje para arrancar..." maxlength="500"
+           onkeydown="if(event.key==='Enter')startSession()" />
+    <button class="btn" id="start-btn" onclick="startSession()">Empezar</button>
+  </div>
+</div>
+
+<!-- ── CHAT SCREEN ────────────────────────────────────────────────────────── -->
+<div id="chat">
+  <header>
+    <h1>Prueba de Turing</h1>
+    <span id="round-badge">0 / 5</span>
+  </header>
+
+  <div id="columns">
+    <div class="col">
+      <div class="col-label">Respondente A</div>
+      <div class="col-messages" id="msgs-A"></div>
+    </div>
+    <div class="col">
+      <div class="col-label">Respondente B</div>
+      <div class="col-messages" id="msgs-B"></div>
+    </div>
+  </div>
+
+  <div id="bottom">
+    <div id="status-bar" style="display:none"></div>
+
+    <div id="input-area">
+      <textarea id="msg-input" placeholder="Tu mensaje..." rows="1" maxlength="500"
+                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
+                oninput="autoResize(this)"></textarea>
+      <button class="btn" id="send-btn" onclick="sendMessage()">Enviar</button>
+    </div>
+
+    <!-- Guess UI (appears after 5 full exchanges) -->
+    <div id="guess-ui">
+      <p><strong>¿Cuál es el humano?</strong></p>
+      <div class="guess-btns">
+        <button class="btn btn-ghost" onclick="makeGuess('A')">Respondente A</button>
+        <button class="btn btn-ghost" onclick="makeGuess('B')">Respondente B</button>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div id="result"></div>
+  </div>
+</div>
+
+<script>
+  let sessionId   = null;
+  let pollTimer   = null;
+  let knownMsgIds = new Set();
+  let roundsDone  = 0;       // number of complete exchanges (user msg → both replies)
+  let waiting     = false;   // true while waiting for admin + AI to respond
+  let concluded   = false;
+
+  // ── helpers ────────────────────────────────────────────────────────────────
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 80) + 'px';
+  }
+
+  function setStatus(msg) {
+    const bar = document.getElementById('status-bar');
+    if (msg) { bar.textContent = msg; bar.style.display = 'block'; }
+    else      { bar.style.display = 'none'; }
+  }
+
+  function setInputEnabled(enabled) {
+    document.getElementById('msg-input').disabled  = !enabled;
+    document.getElementById('send-btn').disabled   = !enabled;
+  }
+
+  function scrollCols() {
+    document.querySelectorAll('.col-messages').forEach(el => {
+      el.scrollTop = el.scrollHeight;
+    });
+  }
+
+  function showTyping() {
+    ['A', 'B'].forEach(col => {
+      let td = document.getElementById(`typing-${col}`);
+      if (!td) {
+        td = document.createElement('div');
+        td.id = `typing-${col}`;
+        td.className = 'typing';
+        td.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+        document.getElementById(`msgs-${col}`).appendChild(td);
+      }
+    });
+    scrollCols();
+  }
+
+  function hideTyping() {
+    ['A', 'B'].forEach(col => {
+      const td = document.getElementById(`typing-${col}`);
+      if (td) td.remove();
+    });
+  }
+
+  function appendBubble(col, html, cls) {
+    const div = document.createElement('div');
+    div.className = `bubble ${cls}`;
+    div.innerHTML = html;
+    document.getElementById(`msgs-${col}`).appendChild(div);
+  }
+
+  function renderMessages(messages) {
+    messages.forEach(msg => {
+      if (knownMsgIds.has(msg.id)) return;
+      knownMsgIds.add(msg.id);
+
+      if (msg.role === 'user') {
+        // Show user message on both sides
+        const html = `<strong>Vos</strong>${escHtml(msg.content)}`;
+        appendBubble('A', html, 'bubble-user');
+        appendBubble('B', html, 'bubble-user');
+      } else if (msg.role === 'human' || msg.role === 'ai') {
+        appendBubble(msg.column_side, escHtml(msg.content), 'bubble-reply');
+      }
+    });
+    scrollCols();
+  }
+
+  function escHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ── start session ──────────────────────────────────────────────────────────
+  async function startSession() {
+    const input = document.getElementById('first-msg');
+    const msg   = input.value.trim();
+    if (!msg) return;
+
+    const btn = document.getElementById('start-btn');
+    btn.disabled = true;
+    btn.textContent = '...';
+
+    try {
+      const res  = await fetch('/api/turing-session', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ message: msg }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      sessionId = data.sessionId;
+
+      // Switch to chat UI
+      document.getElementById('intro').style.display = 'none';
+      const chat = document.getElementById('chat');
+      chat.style.display = 'flex';
+
+      setInputEnabled(false);
+      setStatus('Esperando respuestas…');
+      showTyping();
+      waiting = true;
+
+      startPolling();
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = 'Empezar';
+      alert('Error al iniciar: ' + e.message);
+    }
+  }
+
+  // ── send follow-up message ─────────────────────────────────────────────────
+  async function sendMessage() {
+    if (waiting || concluded) return;
+    const input = document.getElementById('msg-input');
+    const msg   = input.value.trim();
+    if (!msg) return;
+
+    setInputEnabled(false);
+    input.value = '';
+    input.style.height = 'auto';
+
+    try {
+      const res  = await fetch('/api/turing-message', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ sessionId, message: msg }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      setStatus('Esperando respuestas…');
+      showTyping();
+      waiting = true;
+    } catch (e) {
+      setInputEnabled(true);
+      alert('Error: ' + e.message);
+    }
+  }
+
+  // ── polling ────────────────────────────────────────────────────────────────
+  function startPolling() {
+    poll();
+    pollTimer = setInterval(poll, 2500);
+  }
+
+  function stopPolling() {
+    clearInterval(pollTimer);
+  }
+
+  async function poll() {
+    try {
+      const res  = await fetch(`/api/turing-session?id=${sessionId}`);
+      const data = await res.json();
+      if (!res.ok) return;
+
+      const { session, messages } = data;
+
+      renderMessages(messages);
+
+      // Count complete exchanges (pairs of human+ai responses)
+      const humanCount = messages.filter(m => m.role === 'human').length;
+      const aiCount    = messages.filter(m => m.role === 'ai').length;
+      roundsDone = Math.min(humanCount, aiCount); // complete pairs
+
+      document.getElementById('round-badge').textContent = `${roundsDone} / 5`;
+
+      if (session.status === 'waiting') {
+        if (!waiting) {
+          showTyping();
+          setInputEnabled(false);
+          setStatus('Esperando respuestas…');
+          waiting = true;
+        }
+      } else if (session.status === 'active') {
+        if (waiting) {
+          hideTyping();
+          waiting = false;
+          setStatus(null);
+
+          if (roundsDone >= 5) {
+            // Show guess UI, disable further input
+            document.getElementById('input-area').style.display = 'none';
+            document.getElementById('guess-ui').style.display   = 'flex';
+          } else {
+            setInputEnabled(true);
+          }
+        }
+      } else if (session.status === 'concluded') {
+        hideTyping();
+        stopPolling();
+        concluded = true;
+        showResult(session);
+      }
+    } catch (e) {
+      // silent — will retry on next tick
+    }
+  }
+
+  // ── make guess ─────────────────────────────────────────────────────────────
+  async function makeGuess(guess) {
+    document.querySelectorAll('#guess-ui button').forEach(b => b.disabled = true);
+
+    try {
+      const res  = await fetch('/api/turing-guess', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ sessionId, guess }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      showResult({ correct_guess: data.correct, human_side: data.humanSide, status: 'concluded' });
+    } catch (e) {
+      document.querySelectorAll('#guess-ui button').forEach(b => b.disabled = false);
+      alert('Error: ' + e.message);
+    }
+  }
+
+  // ── show result ────────────────────────────────────────────────────────────
+  function showResult(session) {
+    document.getElementById('guess-ui').style.display  = 'none';
+    document.getElementById('input-area').style.display = 'none';
+    stopPolling();
+    concluded = true;
+
+    const correct = session.correct_guess;
+    const human   = session.human_side;
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.style.display = 'flex';
+    resultDiv.innerHTML = `
+      <div class="result-label">Resultado</div>
+      <div class="result-verdict" style="color:${correct ? 'var(--green)' : 'var(--red)'}">
+        ${correct ? '✓ Correcto' : '✗ Incorrecto'}
+      </div>
+      <div class="result-detail">
+        El humano era el <strong>Respondente ${human}</strong>.
+        ${correct ? 'Superaste la prueba.' : 'La IA te engañó.'}
+      </div>
+    `;
+
+    // Reveal which column was which in the labels
+    if (human) {
+      const other = human === 'A' ? 'B' : 'A';
+      document.querySelector('#col-A .col-label').textContent =
+        `Respondente A — ${human === 'A' ? 'HUMANO' : 'IA'}`;
+      document.querySelector('#col-B .col-label').textContent =
+        `Respondente B — ${human === 'B' ? 'HUMANO' : 'IA'}`;
+    }
+  }
+</script>
+</body>
+</html>
