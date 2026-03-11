@@ -569,7 +569,7 @@
       70%  { box-shadow: 0 0 0 14px rgba(255,255,255,0); }
       100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
     }
-    .ai-mic-btn svg { pointer-events: none; }
+    .ai-mic-btn svg { pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
     .ai-status {
       font-size: 0.75rem;
       color: var(--muted);
@@ -609,7 +609,7 @@
       <line x1="12" y1="17" x2="12" y2="22"/>
       <line x1="9" y1="22" x2="15" y2="22"/>
     </svg>
-    <svg id="ai-spin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="display:none;animation:spin 0.9s linear infinite">
+    <svg id="ai-spin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="display:none;animation:spin 0.9s linear infinite;transform-origin:center">
       <path d="M12 2a10 10 0 0 1 10 10"/>
     </svg>
   </button>
