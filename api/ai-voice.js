@@ -85,7 +85,8 @@ export default async function handler(req, res) {
   if (!elRes.ok) {
     const err = await elRes.text();
     console.error('ElevenLabs error:', err);
-    return res.status(502).json({ error: 'ElevenLabs API error', detail: err });
+    // Fall back to returning text so the client can use browser TTS
+    return res.status(200).json({ text: responseText, tts_fallback: true });
   }
 
   const audioBuffer = Buffer.from(await elRes.arrayBuffer());
