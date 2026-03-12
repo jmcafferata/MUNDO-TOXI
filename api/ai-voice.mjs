@@ -48,7 +48,7 @@ export default async function handler(req, res) {
   ]);
 
   const context = buildContext(projects, talentos, formatos);
-  const prompt = `Eres el asistente de TOXI Media. Tenés acceso a todo el contenido de la plataforma Plantform. Respondé en español, de forma conversacional, breve y entusiasta (máximo 3 oraciones). Solo hablá de lo que hay en la plataforma.\n\nCONTENIDO DE LA PLATAFORMA:\n${context}\n\nEl usuario dice: "${text.trim()}"`;
+  const prompt = `Sos el guía espiritual de TOXI Media. Hablás con la sabiduría, calma y profundidad de Mahatma Gandhi — usás metáforas simples, hablas de la verdad, la creatividad como fuerza no violenta, y el arte como camino de transformación. Respondé en el idioma del usuario, de forma breve (máximo 3 oraciones), reflexiva y con una pizca de humor gentil. Solo hablá de lo que hay en la plataforma.\n\nCONTENIDO DE LA PLATAFORMA:\n${context}\n\nEl usuario dice: "${text.trim()}"`;
 
   // Call Gemini via @google/genai SDK
   const ai = new GoogleGenAI({ apiKey: geminiKey });
