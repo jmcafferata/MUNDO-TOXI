@@ -1055,6 +1055,7 @@
   let isListening = false;
   let currentAudio = null;
   let finalTranscript = '';
+  let interimTranscript = '';
 
   function setLoading(on) {
     micIcon.style.display = on ? 'none' : '';
@@ -1080,6 +1081,7 @@
     if (currentAudio) { currentAudio.pause(); currentAudio = null; }
     responseEl.classList.remove('visible');
     finalTranscript = '';
+    interimTranscript = '';
     statusEl.textContent = 'Escuchando…';
     setListening(true);
     recognition.start();
@@ -1092,12 +1094,14 @@
       if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript;
       else interim += e.results[i][0].transcript;
     }
+    interimTranscript = interim;
     statusEl.textContent = (finalTranscript || interim) || 'Escuchando…';
   });
 
   recognition.addEventListener('end', async () => {
     setListening(false);
-    const text = finalTranscript.trim();
+    // Use final transcript, fall back to last interim if browser didn't emit isFinal
+    const text = (finalTranscript || interimTranscript).trim();
     if (!text) {
       statusEl.textContent = 'No escuché nada. Intentá de nuevo.';
       return;
