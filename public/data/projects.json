@@ -591,5 +591,22 @@
     "credits": "<h4>Desarrollo</h4><p>Juan Manuel Cafferata</p>",
     "web": "https://toxi.media/audiont",
     "categoria": ""
+  },
+  {
+    "name": "Las Catadoras del Führer",
+    "slug": "las-catadoras-del-fuhrer",
+    "description": "Basada en hechos reales. Siete mujeres probaban cada plato antes de que llegara a la mesa de Hitler.",
+    "contenido": "<p><strong>Las Catadoras del Führer</strong> (<em>Le Assaggiatrici</em>) es una película italiana de 2024 dirigida por <strong>Silvio Soldini</strong>. Basada en hechos reales: durante la Segunda Guerra Mundial, Rosa, una mujer joven de los Sudetes, es obligada a convertirse en catadora de comida de Hitler junto a otras seis mujeres. Cada día se sientan a la mesa y comen bajo amenaza de muerte, probando si los platos han sido envenenados.</p><p>Distribuida en Argentina por <strong>CDI</strong>. TOXI Media realizó los videos promocionales, flyers y el sitio web oficial del estreno.</p><video controls style=\"width:100%;border-radius:8px;margin-top:16px\"><source src=\"https://lascatadoras.com/material/trailer-es.mp4\" type=\"video/mp4\">Tu navegador no soporta video HTML5.</video>",
+    "card": "https://lascatadoras.com/material/thumb%2016%209.jpg",
+    "banner": "https://lascatadoras.com/material/LAS%20CATADORAS-DEL-FUHRER-BANNER.jpg",
+    "thumbnail": "https://lascatadoras.com/material/thumb%2016%209.jpg",
+    "talentos": [
+      "juan-manuel-cafferata",
+      "fabrizio-sanguinetti"
+    ],
+    "formato": "1",
+    "credits": "<h4>Dirección</h4><p>Silvio Soldini</p><h4>Distribución Argentina</h4><p>CDI</p><h4>Web, videos y flyers (Argentina)</h4><p>TOXI Media</p>",
+    "web": "https://lascatadoras.com",
+    "categoria": ""
   }
 ]
