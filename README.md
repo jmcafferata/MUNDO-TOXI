@@ -54,26 +54,80 @@ public/
 
 ## Agregar un proyecto
 
-Editar `public/data/projects.json` con el siguiente esquema:
+### Paso 1 — Imágenes
+
+**Opción A: imágenes locales** (archivos en el repo)
+1. Crear la carpeta `public/[slug-del-proyecto]/`
+2. Copiar ahí el thumbnail (1280×720) y el poster/banner (1920×1080)
+3. Referenciarlas en el JSON como `/[slug-del-proyecto]/thumb.jpg`
+
+**Opción B: imágenes externas** (CDN, Webflow, etc.)
+- Usar la URL completa: `https://cdn.ejemplo.com/imagen.jpg`
+
+> Las imágenes locales se sirven directo desde `public/` tanto en dev como en producción.
+
+### Paso 2 — Agregar entrada al JSON
+
+Abrir `public/data/projects.json` y agregar un objeto **antes del cierre `]`**:
 
 ```json
 {
   "name": "Nombre del proyecto",
   "slug": "nombre-del-proyecto",
-  "description": "Descripción corta.",
-  "contenido": "<p>HTML del cuerpo.</p>",
-  "card": "/imagen-card.jpg",
-  "banner": "/imagen-banner.jpg",
-  "thumbnail": "/imagen-thumb.jpg",
-  "talentos": ["slug-talento"],
-  "formato": "7",
-  "credits": "<h4>Rol</h4><p>Nombre</p>",
+  "description": "Descripción corta (se usa en cards y SEO).",
+  "contenido": "<p>Cuerpo en HTML. Puede incluir iframes, videos, imágenes.</p>",
+  "card": "/nombre-del-proyecto/thumb.jpg",
+  "banner": "/nombre-del-proyecto/poster.jpg",
+  "thumbnail": "/nombre-del-proyecto/thumb.jpg",
+  "talentos": ["slug-talento-1", "slug-talento-2"],
+  "formato": "1",
+  "credits": "<h4>Dirección</h4><p>Nombre Apellido</p>",
   "web": "https://url-externa.com",
   "categoria": ""
 }
 ```
 
 **IDs de formato:** 1 Cine · 2 Podcast · 3 Foto · 4 Texto · 5 VR · 6 Eventos · 7 Software · 8 Música
+
+Los slugs de `talentos` deben existir en `public/data/talentos.json`. Si no existe, crearlo primero ahí.
+
+### Paso 3 — Regenerar páginas estáticas
+
+```bash
+npm run gen
+# equivale a: node generate-static.js
+# genera public/[slug]/index.html con los meta tags correctos (SEO, OG)
+```
+
+### Paso 4 — Commit y push
+
+```bash
+git add public/data/projects.json public/[slug]/
+git commit -m "feat: agregar [Nombre del proyecto]"
+git push
+# Vercel hace el deploy automático
+```
+
+### Ejemplo real — Hedonismo y Seducción
+
+```
+public/hedonismo-y-seduccion/
+  thumb.jpg    ← copiado de "material grafico/thumb 1280x720.jpg"
+  poster.jpg   ← copiado de "material grafico/poster 1920x1080.jpg"
+  index.html   ← generado automáticamente por generate-static.js
+```
+
+Entry en `projects.json`:
+```json
+{
+  "name": "Hedonismo y Seducción",
+  "slug": "hedonismo-y-seduccion",
+  "card": "/hedonismo-y-seduccion/thumb.jpg",
+  "banner": "/hedonismo-y-seduccion/poster.jpg",
+  "thumbnail": "/hedonismo-y-seduccion/thumb.jpg",
+  ...
+}
+```
 
 ## Proyectos con web propia
 
