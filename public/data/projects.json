@@ -608,5 +608,21 @@
     "credits": "<h4>Dirección</h4><p>Silvio Soldini</p><h4>Distribución Argentina</h4><p>CDI</p><h4>Web, videos y flyers (Argentina)</h4><p>TOXI Media</p>",
     "web": "https://lascatadoras.com",
     "categoria": ""
+  },
+  {
+    "name": "Hedonismo y Seducción",
+    "slug": "hedonismo-y-seduccion",
+    "description": "Una experiencia teatral de seducción, deseo y poder. Viernes 13 y sábado 14 de marzo.",
+    "contenido": "<p><strong>Hedonismo y Seducción</strong> es una obra teatral de <strong>0nírica</strong> y <strong>1927</strong>, inspirada en <em>Nido Vacío I: Laura</em> de Diego J. Cicerchia.</p><p>Elenco: Alma de Camaleón · Clara Linares · Dalila Escorihuela · David Pagnoni · Elisabet Street · Malú Biava · Milagros Frasca · Valeria Perugini</p><p>Dirección general: <strong>Diego Ravetti</strong> y <strong>Micaela Ledesma</strong></p><p>Viernes 13 y sábado 14 de marzo.</p><p><a href=\"https://alpogo.com/evento/hedonismo-y-seduccion-25019\" target=\"_blank\">Adquirí tus entradas en AlPoGo</a></p>",
+    "card": "/hedonismo-y-seduccion/thumb.jpg",
+    "banner": "/hedonismo-y-seduccion/poster.jpg",
+    "thumbnail": "/hedonismo-y-seduccion/thumb.jpg",
+    "talentos": [
+      "micaela-ledesma"
+    ],
+    "formato": "1",
+    "credits": "<h4>Elenco</h4><p>Alma de Camaleón, Clara Linares, Dalila Escorihuela, David Pagnoni, Elisabet Street, Malú Biava, Milagros Frasca, Valeria Perugini</p><h4>Dirección general</h4><p>Diego Ravetti y Micaela Ledesma</p><h4>Producción</h4><p>1927 y 0nírica</p><h4>Partners</h4><p>TOXI, Tecnoquim</p>",
+    "web": "https://hedonismo.vercel.app",
+    "categoria": ""
   }
 ]
