@@ -1274,7 +1274,7 @@ animate();
     // Optional: tap hints to trigger navigation (but do not change behavior if user doesn't want)
     leftHint.addEventListener('click', () => navigateWithFade('line.html', { force: true, duration: 800 }));
     rightHint.addEventListener('click', () => navigateWithFade('earth.html', { force: true, duration: 800 }));
-    topHint.addEventListener('click', () => navigateWithFade('https://toxii.webflow.io/plantform', { force: true, duration: 800 }));
+    topHint.addEventListener('click', () => navigateWithFade('/plantform', { force: true, duration: 800 }));
     bottomHint.addEventListener('click', () => navigateWithFade('https://www.instagram.com/toxi.media/', { force: true, duration: 800 }));
 
     // Hide on initial load after a short delay if they were shown
