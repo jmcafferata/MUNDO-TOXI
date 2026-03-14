@@ -235,7 +235,7 @@
       width: 36px;
       height: 36px;
       object-fit: contain;
-      filter: invert(1);
+      filter: brightness(0) invert(1);
       opacity: 0.8;
     }
     .format-icon-placeholder {
@@ -456,6 +456,21 @@
       padding: 10px 12px;
       font-size: 0.82rem;
     }
+    .talents-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+    .talents-grid .related-card img {
+      aspect-ratio: 3/4;
+      object-fit: cover;
+    }
+    .related-card-placeholder {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      opacity: 0.3;
+    }
 
     /* ─── EMPTY STATE ─── */
     .empty {
@@ -490,11 +505,123 @@
       main { padding: 12px; }
       .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
     }
+
+    /* ─── AI VOICE FLOAT ─── */
+    .ai-float {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .ai-panel {
+      background: rgba(10,10,10,0.92);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      border-radius: 12px;
+      padding: 14px 16px;
+      max-width: 280px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .ai-panel.open { display: flex; }
+    .ai-hero-label {
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+    }
+    .ai-mic-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: rgba(10,10,10,0.9);
+      backdrop-filter: blur(8px);
+      color: var(--fg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      flex-shrink: 0;
+      outline: none;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    .ai-mic-btn:hover { border-color: var(--hover-border); }
+    .ai-mic-btn.listening {
+      border-color: #fff;
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 0 0 6px rgba(255,255,255,0.06), 0 0 0 12px rgba(255,255,255,0.03);
+      animation: pulse-ring 1.2s ease-out infinite;
+    }
+    .ai-mic-btn.loading {
+      border-color: rgba(255,255,255,0.4);
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.15); }
+      70%  { box-shadow: 0 0 0 14px rgba(255,255,255,0); }
+      100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+    }
+    .ai-mic-btn { position: relative; }
+    .ai-mic-btn .ai-icon-wrap { pointer-events: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .ai-status {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+      line-height: 1.4;
+    }
+    .ai-status.active { color: var(--fg); }
+    .ai-response-text {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.55;
+      min-height: 0;
+      display: none;
+    }
+    .ai-response-text.visible { display: block; }
+    @media (max-width: 600px) {
+      .ai-float { bottom: 18px; right: 16px; }
+      .ai-panel { max-width: 240px; }
+      .ai-mic-btn { width: 48px; height: 48px; }
+    }
   </style>
   <link rel="canonical" href="https://toxi.media/mamarracho" />
   <meta property="og:url" content="https://toxi.media/mamarracho" />
 </head>
 <body>
+
+<!-- ─── AI VOICE FLOAT ─── -->
+<div class="ai-float" id="ai-float">
+  <div class="ai-panel" id="ai-panel">
+    <span class="ai-hero-label">Preguntale a TOXI</span>
+    <p class="ai-status" id="ai-status">Contame qué te interesa ver</p>
+    <p class="ai-response-text" id="ai-response-text"></p>
+  </div>
+  <button class="ai-mic-btn" id="ai-mic-btn" title="Hablar" aria-label="Hablar">
+    <span class="ai-icon-wrap" id="ai-mic-wrap">
+      <svg id="ai-mic-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="2" width="6" height="11" rx="3"/>
+        <path d="M5 10a7 7 0 0 0 14 0"/>
+        <line x1="12" y1="17" x2="12" y2="22"/>
+        <line x1="9" y1="22" x2="15" y2="22"/>
+      </svg>
+    </span>
+    <span class="ai-icon-wrap" id="ai-spin-wrap" style="display:none">
+      <svg id="ai-spin-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="animation:spin 0.9s linear infinite">
+        <path d="M12 2a10 10 0 0 1 10 10"/>
+      </svg>
+    </span>
+  </button>
+</div>
 
 <header>
   <div class="header-left">
@@ -753,15 +880,21 @@
         ${p.contenido ? `<div class="detail-richtext">${p.contenido}</div>` : ''}
         <div class="detail-meta">
           ${p.formato ? `<div class="meta-block"><div class="meta-label">Formato</div><div class="meta-value">${esc(formatName(p.formato))}</div></div>` : ''}
-          ${relatedTalentos.length ? `
-            <div class="meta-block">
-              <div class="meta-label">Talentos</div>
-              <div class="tag-list">
-                ${relatedTalentos.map(t => `<span class="tag-pill" data-slug="${esc(t.slug)}" data-type="talent">${esc(t.name)}</span>`).join('')}
-              </div>
-            </div>` : ''}
           ${p.web ? `<div class="meta-block"><div class="meta-label">Web</div><div class="meta-value"><a class="detail-web" href="${esc(p.web)}" target="_blank" rel="noopener">Visitar →</a></div></div>` : ''}
-        </div>`;
+        </div>
+        ${relatedTalentos.length ? `
+          <div class="related-section">
+            <div class="related-title">Talentos</div>
+            <div class="related-grid talents-grid">
+              ${relatedTalentos.map(t => `
+                <div class="related-card" data-slug="${esc(t.slug)}" data-type="talent">
+                  ${t.photo
+                    ? `<img src="${esc(t.photo)}" alt="${esc(t.name)}" loading="lazy" />`
+                    : `<div class="related-card-placeholder">👤</div>`}
+                  <div class="rc-name">${esc(t.name)}</div>
+                </div>`).join('')}
+            </div>
+          </div>` : ''}` ;
 
     } else if (type === 'talent') {
       const t = talentos.find(x => x.slug === slug);
@@ -776,13 +909,6 @@
         ${t.contenido ? `<div class="detail-richtext">${t.contenido}</div>` : ''}
         ${!t.contenido && t.description ? `<p class="detail-desc">${esc(t.description)}</p>` : ''}
         <div class="detail-meta">
-          ${relProjects.length ? `
-            <div class="meta-block">
-              <div class="meta-label">Proyectos</div>
-              <div class="tag-list">
-                ${relProjects.map(p => `<span class="tag-pill" data-slug="${esc(p.slug)}" data-type="project">${esc(p.name)}</span>`).join('')}
-              </div>
-            </div>` : ''}
           ${t.formatos && t.formatos.length ? `
             <div class="meta-block">
               <div class="meta-label">Formatos</div>
@@ -794,7 +920,20 @@
               </div>
             </div>` : ''}
           ${t.web ? `<div class="meta-block"><div class="meta-label">Web</div><div class="meta-value"><a class="detail-web" href="${esc(t.web)}" target="_blank" rel="noopener">Visitar →</a></div></div>` : ''}
-        </div>`;
+        </div>
+        ${relProjects.length ? `
+          <div class="related-section">
+            <div class="related-title">Proyectos</div>
+            <div class="related-grid">
+              ${relProjects.map(p => `
+                <div class="related-card" data-slug="${esc(p.slug)}" data-type="project">
+                  ${(p.card || p.thumbnail)
+                    ? `<img src="${esc(p.card || p.thumbnail)}" alt="${esc(p.name)}" loading="lazy" />`
+                    : `<div class="related-card-placeholder">🎬</div>`}
+                  <div class="rc-name">${esc(p.name)}</div>
+                </div>`).join('')}
+            </div>
+          </div>` : ''}` ;
     }
 
     // Attach back button and tag-pill clicks
@@ -876,6 +1015,161 @@
 
   boot().catch(err => {
     document.getElementById('loading').textContent = 'Error de carga: ' + err.message;
+  });
+})();
+</script>
+
+<script>
+// ─── AI VOICE FLOAT ────────────────────────────────────────
+(function () {
+  const btn = document.getElementById('ai-mic-btn');
+  const panel = document.getElementById('ai-panel');
+  const statusEl = document.getElementById('ai-status');
+  const responseEl = document.getElementById('ai-response-text');
+  const micIcon = document.getElementById('ai-mic-wrap');
+  const spinIcon = document.getElementById('ai-spin-wrap');
+
+  function openPanel() { panel.classList.add('open'); }
+  function closePanel() {
+    if (!isListening) panel.classList.remove('open');
+  }
+
+  // Close panel on click outside
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('ai-float').contains(e.target)) closePanel();
+  });
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    statusEl.textContent = 'Tu navegador no soporta reconocimiento de voz';
+    btn.disabled = true;
+    btn.style.opacity = '0.3';
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = navigator.language || 'es-AR';
+  recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
+  recognition.continuous = false;
+
+  let isListening = false;
+  let currentAudio = null;
+  let finalTranscript = '';
+  let interimTranscript = '';
+
+  function setLoading(on) {
+    micIcon.style.display = on ? 'none' : '';
+    spinIcon.style.display = on ? '' : 'none';
+    btn.classList.toggle('loading', on);
+  }
+
+  function setListening(on) {
+    isListening = on;
+    btn.classList.toggle('listening', on);
+    statusEl.classList.toggle('active', on);
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (btn.classList.contains('loading')) return;
+    if (isListening) {
+      recognition.stop();
+      return;
+    }
+    openPanel();
+    // Stop any playing audio
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    responseEl.classList.remove('visible');
+    finalTranscript = '';
+    interimTranscript = '';
+    statusEl.textContent = 'Escuchando…';
+    setListening(true);
+    recognition.start();
+  });
+
+  recognition.addEventListener('result', (e) => {
+    let interim = '';
+    finalTranscript = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    interimTranscript = interim;
+    statusEl.textContent = (finalTranscript || interim) || 'Escuchando…';
+  });
+
+  recognition.addEventListener('end', async () => {
+    setListening(false);
+    // Use final transcript, fall back to last interim if browser didn't emit isFinal
+    const text = (finalTranscript || interimTranscript).trim();
+    if (!text) {
+      statusEl.textContent = 'No escuché nada. Intentá de nuevo.';
+      return;
+    }
+    statusEl.textContent = text;
+    setLoading(true);
+    statusEl.classList.add('active');
+
+    try {
+      const res = await fetch('/api/ai-voice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Error ${res.status}`);
+      }
+
+      const contentType = res.headers.get('Content-Type') || '';
+
+      if (contentType.includes('application/json')) {
+        // ElevenLabs unavailable — use browser speech synthesis as fallback
+        const data = await res.json();
+        const spokenText = data.text || '';
+        if (spokenText) {
+          responseEl.textContent = spokenText;
+          responseEl.classList.add('visible');
+          const utter = new SpeechSynthesisUtterance(spokenText);
+          speechSynthesis.speak(utter);
+        }
+      } else {
+        const responseText = decodeURIComponent(res.headers.get('X-Response-Text') || '');
+        if (responseText) {
+          responseEl.textContent = responseText;
+          responseEl.classList.add('visible');
+        }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        currentAudio = new Audio(url);
+        currentAudio.play();
+        currentAudio.addEventListener('ended', () => URL.revokeObjectURL(url));
+      }
+    } catch (err) {
+      responseEl.textContent = '';
+      responseEl.classList.remove('visible');
+      statusEl.textContent = 'Algo salió mal: ' + err.message;
+    } finally {
+      setLoading(false);
+      statusEl.classList.remove('active');
+    }
+  });
+
+  recognition.addEventListener('error', (e) => {
+    setListening(false);
+    setLoading(false);
+    if (e.error === 'no-speech') {
+      statusEl.textContent = 'No escuché nada. Intentá de nuevo.';
+    } else if (e.error === 'not-allowed') {
+      statusEl.textContent = 'Permiso de micrófono denegado.';
+      btn.disabled = true;
+      btn.style.opacity = '0.3';
+    } else {
+      statusEl.textContent = 'Error: ' + e.error;
+    }
   });
 })();
 </script>
