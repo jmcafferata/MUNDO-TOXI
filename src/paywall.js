@@ -449,7 +449,7 @@ export function initPaywall({ musicFile, onEnter }) {
   const keypadDots = document.getElementById('keypad-dots');
   const keypadCard = document.querySelector('.keypad-card');
   const keypadBtns = document.querySelectorAll('.keypad-btn');
-  const SECRET_CODES = ['2058', '1985'];
+  const SECRET_CODES = ['2058', '1985', '1927'];
   let currentCode = '';
   let successUnlocked = false;
 
