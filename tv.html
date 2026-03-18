@@ -213,10 +213,18 @@
     </div>
 
     <script type="module">
-        import { TV_PLAYLIST as PLAYLIST } from './src/content.js';
+        import { TV_PLAYLIST as FALLBACK_PLAYLIST } from './src/content.js';
 
-        // Epoca fija: cambiala para "reiniciar" el canal desde cero
+        // Época fija: cambiala para "reiniciar" el canal desde cero
         const EPOCH_SEC = new Date('2026-01-01T00:00:00Z').getTime() / 1000;
+
+        // ── Cargar playlist desde API (con fallback a content.js) ──────────
+        let PLAYLIST = [];
+        try {
+            const res = await fetch('/api/playlist');
+            if (res.ok) PLAYLIST = await res.json();
+        } catch (_) {}
+        if (!PLAYLIST.length) PLAYLIST = FALLBACK_PLAYLIST.map(v => ({ id: v.id, duration: v.duration, title: v.title }));
 
         // ── Calcula que video y en que segundo estamos ──────
         const TOTAL = PLAYLIST.reduce((s, v) => s + v.duration, 0);
