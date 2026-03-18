@@ -1,104 +1,76 @@
-/**
- * GET /api/playlist
- *
- * Lee la playlist de un Google Sheet publicado como CSV y devuelve JSON.
- *
- * Configuración:
- *   PLAYLIST_SHEET_CSV_URL  → URL "Publicar en la web > CSV" del Sheet
- *   MUX_TOKEN_ID            → Token ID de Mux (ya existente)
- *   MUX_TOKEN_SECRET        → Token Secret de Mux (ya existente)
- *
- * Formato del Sheet (fila 1 = encabezados, se ignora):
- *   id | duration | title | onTV
- *
- *   - id       → Mux Playback ID  (obligatorio)
- *   - duration → duración en segundos  (opcional: si está vacío se busca en Mux)
- *   - title    → título del video  (obligatorio)
- *   - onTV     → "true" para incluir, cualquier otra cosa para excluir
- *
- * Cache de 60 segundos en CDN de Vercel (s-maxage).
- * Fallback automático a content.js si el Sheet no está configurado.
- */
+﻿// GET /api/playlist
+// Playlist hardcodeada — para actualizar editá este archivo y src/content.js, luego pusheá.
 
+const PLAYLIST = [
+  { id: 'iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU',       duration: 339.548,     title: 'Hotel Oriente' },
+  { id: 'iVB2ZU00L1WZDQJpqXrIAMg02Cmq4l6C2kKnP02sNP01CQM',    duration: 687.228,     title: 'Hotel Oriente — Detrás de Escena' },
+  { id: 'IHikcrMnpK00Dxsyb7xKpi1qpju01I00JmCpNXXrhg1WZg',      duration: 163.081,     title: 'Detective Noir' },
+  { id: 'RUULhR2QDMRZT01YDXggu7WPKI01nzGyzvK1RPwGY3GyQ',       duration: 498.499,     title: 'Ver para Coger' },
+  { id: 'Mqf9GhKKFmd01IH28ITZ00KT4oGLxmr6gvqbNQjGIv301Y',      duration: 5563.892,    title: 'We Will Rock You' },
+  { id: 'cUI9VC3LTXXxk62iQ902Gd84AJVhg3Gd8lhFczPBuqrI',        duration: 79.533333,   title: '(ICU) Think About' },
+  { id: 'B02Qs6Wm3TGMjxm5EZKRowHdNTUPb020048AMJa45YDXVM',      duration: 1060.893178, title: '17 Minutos con Cata' },
+  { id: 'IjUQQvDDhAOMHHS57ORIVl9f01vvb5425FmzPIdF5LRI',        duration: 73.633333,   title: 'A Game of Drones — Early Access Trailer' },
+  { id: 'A14ToM2G9Mmi101NejPlGtAjj8oNGWnyIt302xeWw3oHw',       duration: 605.146211,  title: "After You're Gone — Fancy Dogs™" },
+  { id: 'CbBSyr5FvC7I00PpxpKNJBW1ibyLuT6Lr52uyeZHHyBg',        duration: 2457.566667, title: 'Alfredo Cafferata en TOXI Media' },
+  { id: 'z02O01aMd02YkbeUb01syS400owVLRZ4oOJ6m463hcQ7FseQ',    duration: 956.08,      title: 'BAFICI Nights con Fabrizio Sanguinetti' },
+  { id: 'SKB56hnQQV6Tame5VKea02w8E01Ijm7iyHUY5dZXYHKmU',       duration: 1270.811211, title: 'Bebop Big Band — Bebop Club, 7 de Abril de 2025' },
+  { id: 'KrzHBlHcZCL71mIfCoPKiCMs2iBQMAq8vbhXr701OtQg',        duration: 17.966667,   title: 'Carola Gil le informa a Carlos Pagni la existencia de Pizza & Pagni' },
+  { id: 'm8ehCQajSn5f8LVTIdGUNlAePZ7iARoXJHCFjOCmkxE',         duration: 30.196844,   title: 'Charlas Interactivas — Xplora Academy' },
+  { id: 'FZAP5bJ2O5L16da7Ls1YdSGIiGEZfqTf02dR46z8tfk00',       duration: 588.254344,  title: 'Cuento de la Selva' },
+  { id: 'KqSlF5LSKjW028548zaZ5c7aPQNARdgA9pbuTGrL800r8',        duration: 616.782844,  title: 'Desarrollos Regenerativos — Novedades María Teresa' },
+  { id: 'Lsb01QL2dVq63701jEQ01d2DgIo4T2ZzNnRSGNIYeCpX4s',      duration: 17.267256,   title: 'Detrás de las Risas — Teaser' },
+  { id: 'PDLQLpJTnqba3Rn6HBdwb6SJwDR5Tmtm02WZH6jNzsFY',        duration: 2619.033089, title: 'El Maravilloso Mundo de TOXI' },
+  { id: 'z3jU3rp9rTOr95501nz025OP2q9FIz89cwPHO7kyT7Lb8',        duration: 63.866667,   title: 'Galaxy Adventure 2' },
+  { id: '2yiwT02f7uhnx6yX01qo4b52iffRv8CSVqyMBsYNR02zLY',       duration: 1333.457133, title: 'IDA — Claire Fatale & Julian Camps' },
+  { id: '86NmIj818900IFXfcwEhIyZO3TkP7lYd6NOfqOP8ZSCQ',        duration: 6958.04,     title: 'Inteligencia Artificial, Abogacía y el Desafío de la Modernización Judicial — con Ian Silberberg' },
+  { id: '8zmmEvU01roD01y1JxwUY5LWW3OcO61YiGw6UWqpxsyoY',       duration: 196.321133,  title: "It's a Jungle Out There" },
+  { id: 'l3s1Blhidm1trZYlmnOOwH02AzXzPdBo4QNpviWlibF8',        duration: 957.247967,  title: 'Lo Que Se Avecina — Piloto' },
+  { id: 'NMymlct00uz1BJMqcJUjcdfSbXGXfoaYuq3bDg702WQlY',       duration: 556.389178,  title: 'La Biblioteca Café — Viernes 30 de Agosto' },
+  { id: 'xNpGxSdaSkdi8bqzGoQzAo3laBVRgec8t3T827yrT8M',         duration: 206.748211,  title: 'La Irracional' },
+  { id: 'StpQCayHgfczOfy8q9D2UctIoZDrnNTu02ULCQQQr9fA',        duration: 108.483378,  title: 'Las Formas del Laberinto — Tráiler' },
+  { id: 'q2oWATOAQGdVl3AdhoyAmZ8Zwk6BhJkne02Pk31bwHg4',        duration: 42.0003,     title: 'Las Siestas de Sol' },
+  { id: 'vNMBQmE2Q6YaxmESqvh2yYZsqfjtpnu9kJp7QKFvRgs',         duration: 243.952044,  title: 'Lectura en Francés — Juana la Loca' },
+  { id: '02gDf9x8Z01J8ISIKrlC9DMItd02UI029ikQ1T29Sca02z1U',    duration: 53.094711,   title: 'MONIYISUS — Tráiler' },
+  { id: 'GHZVMKXJaoMnrUxUfVhSVn300gxnFxCSJKK01k3rOKmks',       duration: 34.701344,   title: 'Maxi Mancuso Quintet — Difusión' },
+  { id: 'DE01AR1H01dk7JY9q8RsBP7jk122hRQaxKkMJRxirNQWM',       duration: 151.860044,  title: 'Mentoría de Comunicación, Locución y Doblaje — Demi Roch' },
+  { id: '02lxmxwxBURGEtO4XtvXro024Zl8yOCUsf6AzfGEkiuSU',       duration: 1868.408211, title: 'Mesa Torcida — Piloto' },
+  { id: 'd1Mu65Kcey02gQtRDtcV00U01U01JYwn9dZettLfFmErz3E',     duration: 587.0448,    title: 'Misión: Odelar' },
+  { id: 'E3b021s023Mdu65576vdhrby5yciv8SrPeFdy96LZOOas',        duration: 2575.533333, title: 'Moni y Yisus entrevistan a Maxi Mancuso — MONIYISUS #1' },
+  { id: 'h5NFgWueG4nldZesITFtEYpnU01CyExDQ02FZ3tSBrp5w',       duration: 1167.467467, title: 'Moni y Yisus entrevistan a Rose Cafferata — MONIYISUS #2' },
+  { id: 'YSqI5Wj9dGRwjMh005Xs6a4Q4IPTdmAQJYa4WU1dH12w',       duration: 2489.820678, title: 'Moni y Yisus entrevistan al Padre Tomás Méndez — MONIYISUS #4' },
+  { id: '9pXQ7MUiVlTklMCQdQVdbxoMn85YIC3jObLtzBFN801o',        duration: 137.220422,  title: 'Muerte y Miedo en las Calles — Otro Día en la Red' },
+  { id: 'oT00wnOnz00iFEzyaOmue00bXx2HOnyX01dII6t4UlGRM7A',     duration: 181.764922,  title: 'Ni Jorges ni Borges — Odelar #6' },
+  { id: 'Q3kMlL901ouKhER0101Nzija5Y1025jWBV4ORBXTruuFEyM',     duration: 455.538422,  title: 'Odelar — Otro Día en la Red IV' },
+  { id: 'UiK7a7RjMI2LkEnxUEthecrAk4chE00OPr7ic1Tn9lG4',        duration: 376.250878,  title: 'Otro Día en la Red — Capítulo 1' },
+  { id: '1z01wgDyw3WEGJZXc00qZsWXXqo3hIfCQHMWK8mGsKX01Y',     duration: 635.384756,  title: 'Prototipazos — Piloto La Impact' },
+  { id: 'ec1emgWV3VZVz4G0200wUSiUrV5y4j8jlyjgC8JXn1rFs',       duration: 272.939344,  title: 'Palta and the Gang — Luna Park, 9 de Mayo de 2024' },
+  { id: 'X7YJlq50211xQS2d9Vi01aD3QY8QKx8nJOC2hWD1ELc5k',      duration: 224.140589,  title: 'Para Qué Sirve Todo Esto' },
+  { id: 'HPsNUFZfR8NY6Tq2qv02NToxV8noBJ8BAGDE59OCD01Kc',       duration: 217.133589,  title: 'Pierrot le Bolou' },
+  { id: 'dJKlr23ualq86KvwfVoMx02g755YL02p6pQQ8dyfghEsc',        duration: 19.9783,     title: 'Prez — Tráiler' },
+  { id: 'R1EGXfq1DUGMrFblrMMGuppU02fQf01i1LGENQY9m46Ls',       duration: 224.1823,    title: 'RAKU 楽焼' },
+  { id: 'XDIDz4TQ34vozsemiHeyuzMi6OuqQR7oAB1HHaVCIOA',         duration: 166.541378,  title: 'Hedonismo y Seducción' },
+  { id: '2EFUXtMAx4u7QFmnXYC01P00cgpa4z02QqKVgSAkcuqYpg',       duration: 101.551467,  title: 'Hedonismo y Seducción' },
+  { id: 'k5WwHsdgrHNOzSdhUDGjjRVsK02u00WPQgQKhgYUYDtbk',       duration: 104.020589,  title: 'Hedonismo y Seducción' },
+  { id: 'fID5sJbpqtFK01iIllxmwkTE5FvJnI3J7icA3Qjo009gU',       duration: 412.328589,  title: 'Recoleta bajo la Lluvia — Discover BA con Luz' },
+  { id: 'p75vcYJRLEjPMJo011Z1JOERMO5E013B02KCxYN5DR1Dg8',      duration: 604.687422,  title: 'Santuario del Maipo — Proyecto de Infiltración & Agricultura Sintrópica, Aguatierra' },
+  { id: 'A7KK900TZvE7DOahDzDEncIz02GbxxJz8IJo01DCaVbOvE',       duration: 241.241011,  title: 'Sábado a la Noche' },
+  { id: 'qM33QmuwmXJsibPHXJMbFh02V9gT2s7HDEO00v9VB7mHY',       duration: 4983.850522, title: 'TOXI Seminars Vol. II — Peronismos (Fabrizio Sanguinetti)' },
+  { id: 'wj0015QgHhNxFVU01iXuF8z5hvJ7TUnd02UfwqHa447Whs',      duration: 2898.3,      title: 'Más Allá del Más Allá — MONIYISUS #4' },
+  { id: '00kmeFWt6viiA02WHx9P01PnsY1RolhnyufiNhf5na7VsE',       duration: 4863.358511, title: 'The Greatest Showman — Obra Completa EDLP' },
+  { id: 'CAG692TzvxtvAQEoR01byCm01xKJUp6GqyJalgQ0200Z6n00',     duration: 92.251,      title: 'Las Catadoras del Führer — Tráiler' },
+  { id: 'mlTTKbkPDdOTvu963D1p00vz8pihOYpo2iefwZowJP6M',        duration: 241.958333,  title: 'Viaje — Fermín Tz' },
+  { id: '7KfrMVUZL2bANgKGsxeWjCnrOTK1DRuUOe9701UO7424',        duration: 2868.448922, title: 'Xplora Night Live — 8 de Abril de 2025' },
+  { id: 'cseBPfceuHCbWY3D2OF7WMtQ7DmaYhSdR4ekSOD7QT4',         duration: 161.027533,  title: 'Yuyo Noé recorre Las Formas del Laberinto de Dolores Casares' },
+  { id: 'yyJADkna02dmJtNdyUoHDOYQMcjsxKcjf63O00w01mm1ZI',      duration: 149.6495,    title: 'Fiesta en la Cocina' },
+  { id: '00VG6EL1oC4eI96PVQXeobbdZ6GBNwrmUAexIDdiMpTc',        duration: 160.326833,  title: 'Hipo Hip Hop' },
+  { id: 'QUElHo8r5HtNqfh02XfGKm85jUJ01iTGbkyn2D4BeYNZI',       duration: 189.148256,  title: 'Otro Día en la Red 0' },
+  { id: 'K6p6zWxcLOtRXb02eWcic00RYQG8SwDxE014o9007ZTBwm8',     duration: 588.629711,  title: 'Otro Día en la Red III' },
+  { id: '2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE',        duration: 230.480256,  title: 'Viaje a la Luna' },
+  { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY',  duration: 80.830756,   title: '¿Qué es Mamarracho?' },
+];
 
-
-async function fetchDurationFromMux(playbackId) {
-  const tokenId     = process.env.MUX_TOKEN_ID;
-  const tokenSecret = process.env.MUX_TOKEN_SECRET;
-  if (!tokenId || !tokenSecret) return null;
-  try {
-    // Buscar el asset por playback ID
-    const searchRes = await fetch(
-      `https://api.mux.com/video/v1/assets?playback_id=${playbackId}`,
-      { headers: { Authorization: 'Basic ' + Buffer.from(`${tokenId}:${tokenSecret}`).toString('base64') } }
-    );
-    if (!searchRes.ok) return null;
-    const { data } = await searchRes.json();
-    if (data?.length > 0) return data[0].duration ?? null;
-  } catch (_) {}
-  return null;
-}
-
-export default async function handler(req, res) {
+export default function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=120');
-
-  const csvUrl = process.env.PLAYLIST_SHEET_CSV_URL;
-
-  if (!csvUrl) {
-    return res.status(200).json([]);
-  }
-
-  try {
-    const response = await fetch(csvUrl);
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-    const text  = await response.text();
-    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
-
-    // Resolver duraciones faltantes en paralelo
-    const rows = lines.slice(1).map(line => {
-      const cols = parseCSVLine(line);
-      const [id, durationRaw, title, onTV] = cols.map(c => c.trim().replace(/^"|"$/g, ''));
-      if (!id || !title) return null;
-      if (onTV && onTV.toLowerCase() !== 'true') return null;
-      const duration = parseFloat(durationRaw) || 0;
-      return { id, duration, title };
-    }).filter(Boolean);
-
-    // Para filas sin duración, buscar en Mux
-    const resolved = await Promise.all(rows.map(async row => {
-      if (row.duration > 0) return row;
-      const d = await fetchDurationFromMux(row.id);
-      if (!d) return null; // sin duración no se puede incluir
-      return { ...row, duration: d };
-    }));
-
-    const playlist = resolved.filter(Boolean);
-    if (playlist.length === 0) throw new Error('Playlist vacía');
-
-    return res.status(200).json(playlist);
-  } catch (err) {
-    console.error('[/api/playlist] Error, usando fallback:', err.message);
-    return res.status(500).json({ error: err.message });
-  }
-}
-
-function parseCSVLine(line) {
-  const result = [];
-  let cur = '';
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === '"') {
-      if (inQuotes && line[i + 1] === '"') { cur += '"'; i++; }
-      else inQuotes = !inQuotes;
-    } else if (ch === ',' && !inQuotes) {
-      result.push(cur); cur = '';
-    } else {
-      cur += ch;
-    }
-  }
-  result.push(cur);
-  return result;
+  res.status(200).json(PLAYLIST);
 }
