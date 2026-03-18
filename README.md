@@ -176,3 +176,66 @@ npx vercel --prod
 - Repo: https://github.com/jmcafferata/mundo-toxi *(privado)*
 - Dashboard Vercel: https://vercel.com/dashboard
 - MercadoPago: credenciales en `.env` local (no commitear)
+
+---
+
+## Toxi Media TV — App Android
+
+App para Android TV / Google TV que reproduce el canal en vivo sincronizado.
+
+### Estructura
+
+```
+toxi-tv-android/
+  app/src/main/java/media/toxi/tv/
+    MainActivity.kt   # Actividad principal, ExoPlayer, fetch de playlist
+    Playlist.kt       # Playlist hardcodeada + lógica de slot sincronizado
+  app/src/main/res/
+    drawable/banner.png           # Banner del launcher TV (320×180)
+    mipmap-anydpi-v26/ic_launcher.png  # Ícono de app
+  app/src/main/AndroidManifest.xml
+  app/build.gradle.kts
+```
+
+### Cómo funciona
+
+- Al arrancar, busca `https://toxi.media/api/playlist` y reemplaza la playlist hardcodeada
+- Si no hay red o falla el fetch, usa `HARDCODED_PLAYLIST` en `Playlist.kt`
+- El video que se reproduce se calcula con `EPOCH_SEC = 2026-01-01T00:00:00Z` como referencia, igual que la web
+- Cada 30 segundos corrige el drift (si hay diferencia > 5 segundos, hace seek)
+
+### Actualizar la playlist
+
+Editá **ambos** archivos y pusheá:
+1. `src/content.js` → agrega o modificá entradas con `onTV: true` (para la web)
+2. `api/playlist.mjs` → agregá el mismo item al array `PLAYLIST` (para la app)
+
+La app descarga la playlist al arrancar, así que los cambios se propagan sin actualizar el APK.
+
+### Build y distribución
+
+1. Abrí `toxi-tv-android/` en Android Studio
+2. Build → Generate Signed Bundle / APK → Android App Bundle
+3. Subí el `.aab` al Play Console → Toxi Media TV
+
+### Variables de entorno relevantes (Vercel)
+
+| Variable | Descripción |
+|---|---|
+| `MUX_TOKEN_ID` | Token ID de Mux |
+| `MUX_TOKEN_SECRET` | Token Secret de Mux |
+
+### Endpoint de playlist
+
+`GET https://toxi.media/api/playlist` → devuelve JSON:
+```json
+[{ "id": "MuxPlaybackID", "duration": 339.5, "title": "Título" }, ...]
+```
+
+Fuente: `api/playlist.mjs` — lista hardcodeada, **sin dependencias externas**.
+
+### Política de privacidad
+
+URL para Google Play: `https://toxi.media/privacy-policy`
+
+Archivo fuente: `privacy-policy.html` (compilado por Vite, ruteado en `vercel.json`)
