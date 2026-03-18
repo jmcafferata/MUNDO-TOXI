@@ -20,7 +20,7 @@
  * Fallback automático a content.js si el Sheet no está configurado.
  */
 
-import { TV_PLAYLIST } from '../src/content.js';
+
 
 async function fetchDurationFromMux(playbackId) {
   const tokenId     = process.env.MUX_TOKEN_ID;
@@ -46,9 +46,7 @@ export default async function handler(req, res) {
   const csvUrl = process.env.PLAYLIST_SHEET_CSV_URL;
 
   if (!csvUrl) {
-    return res.status(200).json(TV_PLAYLIST.map(v => ({
-      id: v.id, duration: v.duration, title: v.title,
-    })));
+    return res.status(200).json([]);
   }
 
   try {
@@ -82,9 +80,7 @@ export default async function handler(req, res) {
     return res.status(200).json(playlist);
   } catch (err) {
     console.error('[/api/playlist] Error, usando fallback:', err.message);
-    return res.status(200).json(TV_PLAYLIST.map(v => ({
-      id: v.id, duration: v.duration, title: v.title,
-    })));
+    return res.status(500).json({ error: err.message });
   }
 }
 
