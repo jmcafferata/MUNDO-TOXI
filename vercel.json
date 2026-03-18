@@ -17,10 +17,6 @@
       "destination": "/privacy-policy.html"
     },
     {
-      "source": "/api/playlist",
-      "destination": "/api/playlist.js"
-    },
-    {
       "source": "/audiont",
       "destination": "/audiont.html"
     },
