@@ -92,7 +92,7 @@
             <button class="keypad-btn keypad-enter" data-key="enter">✓</button>
           </div>
 
-          <p style="font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif; color: #aaa; font-size: 0.75rem; text-align: center; margin: 14px 0 0 0; cursor: pointer;" id="guest-entry-link">entrar como invitado</p>
+          <p style="font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif; color: #aaa; font-size: 0.75rem; text-align: center; margin: 14px 0 0 0; cursor: pointer;" id="guest-entry-link" onclick="event.stopPropagation(); localStorage.setItem('guest','true'); window.location.href='/main.html';">entrar como invitado</p>
         </div>
       </div>
       
