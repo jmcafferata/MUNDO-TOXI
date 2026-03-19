@@ -78,8 +78,25 @@
             z-index: 5;
             --media-object-fit: contain;
             --media-background-color: #000;
+            --media-primary-color: #fff;
+            --media-accent-color: #fff;
+            --media-secondary-color: #000;
             pointer-events: none;
         }
+
+        #cast-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 20;
+            width: 28px;
+            height: 28px;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            pointer-events: all;
+            transition: color 0.2s;
+        }
+        #cast-btn:hover { color: #fff; }
         
         #now-playing {
             position: absolute;
@@ -186,6 +203,7 @@
 
     <div id="player-wrap">
         <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+        <google-cast-launcher id="cast-btn" title="Chromecast"></google-cast-launcher>
         <div id="age-gate">
             <img class="age-gate-logo" src="/toxi-logo-white.png" alt="TOXI Media" />
             <div class="age-gate-title">¿Cuántos años tenés?</div>
