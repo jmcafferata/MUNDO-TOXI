@@ -700,4 +700,12 @@ export function initPaywall({ musicFile, onEnter }) {
   keypadCard?.addEventListener('pointerdown', (e) => e.stopPropagation());
   keypadCard?.addEventListener('pointerup', (e) => e.stopPropagation());
   keypadCard?.addEventListener('click', (e) => e.stopPropagation());
+
+  // Guest entry
+  const guestEntryLink = document.getElementById('guest-entry-link');
+  guestEntryLink?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    localStorage.setItem('guest', 'true');
+    window.location.href = '/main.html';
+  });
 }
