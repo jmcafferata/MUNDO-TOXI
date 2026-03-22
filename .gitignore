@@ -7,6 +7,8 @@ utils
 .vercel
 .env*.local
 
+toxi-tv-android
+
 # Internal tools (not for deployment)
 dashboard.html
 dashboard-server.js

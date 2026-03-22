@@ -1,5 +1,23 @@
 [
   {
+    "name": "Pizza & Pagni",
+    "slug": "pizza-y-pagni",
+    "description": "Evento de culto. Política, pizza y Pagni.",
+    "contenido": "<p><strong>El Fenómeno Pizza &amp; Pagni</strong> es un evento de culto que desde 2023 viene reuniendo a dichosos por saborear el crocante sabor del análisis político que ofrece Odisea Argentina.</p><figure class=\"w-richtext-figure-type-video w-richtext-align-fullwidth\" data-rt-type=\"video\" data-rt-align=\"fullwidth\"><div><iframe allowfullscreen=\"true\" frameborder=\"0\" scrolling=\"no\" src=\"https://www.youtube.com/embed/4FB4EvVh_Ls\" title=\"Carola Gil le informa a Carlos Pagni sobre Pizza &amp; Pagni | Odisea Argentina\"></iframe></div></figure><div style=\"max-width:360px;margin:2em auto\"><video controls playsinline style=\"width:100%;border-radius:8px;display:block;background:#000\"><source src=\"https://stream.mux.com/u3cvGXuJvTu3xqWh47UrbqAV2RPvVCvD5kHoo1N64LY.m3u8\" type=\"application/x-mpegURL\"><source src=\"https://stream.mux.com/u3cvGXuJvTu3xqWh47UrbqAV2RPvVCvD5kHoo1N64LY/high.mp4\" type=\"video/mp4\">Tu navegador no soporta video HTML5.</video></div>",
+    "card": "/logo-pyp.png",
+    "banner": "/logo-pyp.png",
+    "thumbnail": "/logo-pyp.png",
+    "talentos": [
+      "fabrizio-sanguinetti",
+      "juan-manuel-cafferata"
+    ],
+    "formato": "6",
+    "credits": "<h4>Productor general</h4><p>Fabrizio Sanguinetti</p><h4>Agente de comunicación</h4><p>Juan Manuel Cafferata</p>",
+    "web": "",
+    "categoria": "",
+    "lastUpdated": "2026-03"
+  },
+  {
     "name": "Hedonismo y Seducción",
     "slug": "hedonismo-y-seduccion",
     "description": "Una experiencia teatral de seducción, deseo y poder. Viernes 13 y sábado 14 de marzo.",
