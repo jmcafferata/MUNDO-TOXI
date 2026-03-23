@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Micaela Ledesma — TOXI Media</title>
   <meta name="description" content="Micaela Ledesma, nacida en Venado Tuerto, es una artista multifacética que se desenvuelve con soltura en el cruce entre las artes escénicas y la gestión de proy" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Micaela Ledesma — TOXI Media" />
   <meta property="og:description" content="Micaela Ledesma, nacida en Venado Tuerto, es una artista multifacética que se desenvuelve con soltura en el cruce entre las artes escénicas y la gestión de proy" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/67e712315d828949cb382e0e_La%20rosa%20que%20me%20pari%C3%B3%20-%20Obra%20entera%2031-24%20screenshot.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Micaela Ledesma — TOXI Media" />
+  <meta name="twitter:description" content="Micaela Ledesma, nacida en Venado Tuerto, es una artista multifacética que se desenvuelve con soltura en el cruce entre las artes escénicas y la gestión de proy" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/67e712315d828949cb382e0e_La%20rosa%20que%20me%20pari%C3%B3%20-%20Obra%20entera%2031-24%20screenshot.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

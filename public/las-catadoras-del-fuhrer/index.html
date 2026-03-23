@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Las Catadoras del Führer — TOXI Media</title>
   <meta name="description" content="Las Catadoras del Führer (Le Assaggiatrici) es una película italiana de 2024 dirigida por Silvio Soldini. Basada en hechos reales: durante la Segunda Guerra Mun" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Las Catadoras del Führer — TOXI Media" />
   <meta property="og:description" content="Las Catadoras del Führer (Le Assaggiatrici) es una película italiana de 2024 dirigida por Silvio Soldini. Basada en hechos reales: durante la Segunda Guerra Mun" />
   <meta property="og:image" content="https://lascatadoras.com/material/LAS%20CATADORAS-DEL-FUHRER-BANNER.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Las Catadoras del Führer — TOXI Media" />
+  <meta name="twitter:description" content="Las Catadoras del Führer (Le Assaggiatrici) es una película italiana de 2024 dirigida por Silvio Soldini. Basada en hechos reales: durante la Segunda Guerra Mun" />
+  <meta name="twitter:image" content="https://lascatadoras.com/material/LAS%20CATADORAS-DEL-FUHRER-BANNER.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

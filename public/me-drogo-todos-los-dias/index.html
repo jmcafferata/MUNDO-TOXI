@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Me drogo todos los días — TOXI Media</title>
   <meta name="description" content="" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Me drogo todos los días — TOXI Media" />
   <meta property="og:description" content="" />
   <meta property="og:image" content="https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/6316688e1424854f0ec3b133_Screenshot%202022-09-05%20182211.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Me drogo todos los días — TOXI Media" />
+  <meta name="twitter:description" content="" />
+  <meta name="twitter:image" content="https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/6316688e1424854f0ec3b133_Screenshot%202022-09-05%20182211.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

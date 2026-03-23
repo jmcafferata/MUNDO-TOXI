@@ -49,6 +49,12 @@ function generatePage(slug, title, description, image) {
       `<meta property="og:description" content="${attr(desc)}" />`)
     .replace(/<meta property="og:image" content="[^"]*" \/>/,
       `<meta property="og:image" content="${attr(img)}" />`)
+    .replace(/<meta name="twitter:title" content="[^"]*" \/>/,
+      `<meta name="twitter:title" content="${attr(fullTitle)}" />`)
+    .replace(/<meta name="twitter:description" content="[^"]*" \/>/,
+      `<meta name="twitter:description" content="${attr(desc)}" />`)
+    .replace(/<meta name="twitter:image" content="[^"]*" \/>/,
+      `<meta name="twitter:image" content="${attr(img)}" />`)
     // inject canonical + og:url just before </head>
     .replace('</head>',
       `  <link rel="canonical" href="${attr(url)}" />\n  <meta property="og:url" content="${attr(url)}" />\n</head>`);

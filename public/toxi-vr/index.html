@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TOXI VR — TOXI Media</title>
   <meta name="description" content="Descubre un mundo de realidad virtual inmersiva con la app de TOXI Media, que presenta una diversa colección de experiencias que combinan arte, tecnología y nar" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="TOXI VR — TOXI Media" />
   <meta property="og:description" content="Descubre un mundo de realidad virtual inmersiva con la app de TOXI Media, que presenta una diversa colección de experiencias que combinan arte, tecnología y nar" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/6604ee7c601b171d1e96ec02_Las%20formas%20del%20laberinto%20_%20Trailer%200-49%20screenshot.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="TOXI VR — TOXI Media" />
+  <meta name="twitter:description" content="Descubre un mundo de realidad virtual inmersiva con la app de TOXI Media, que presenta una diversa colección de experiencias que combinan arte, tecnología y nar" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/6604ee7c601b171d1e96ec02_Las%20formas%20del%20laberinto%20_%20Trailer%200-49%20screenshot.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>17 minutos con Cata — TOXI Media</title>
   <meta name="description" content="" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="17 minutos con Cata — TOXI Media" />
   <meta property="og:description" content="" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/66c4e1df320431c9016c6f43_17%20Minutos%20con%20Cata%201-34%20screenshot.jpgbabbb.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="17 minutos con Cata — TOXI Media" />
+  <meta name="twitter:description" content="" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/66c4e1df320431c9016c6f43_17%20Minutos%20con%20Cata%201-34%20screenshot.jpgbabbb.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

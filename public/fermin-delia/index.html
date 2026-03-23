@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fermín Delía — TOXI Media</title>
   <meta name="description" content="Fermín Delía es un músico y productor de sonido argentino con una destacada carrera en la creación de música original para experiencias de realidad virtual, cin" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Fermín Delía — TOXI Media" />
   <meta property="og:description" content="Fermín Delía es un músico y productor de sonido argentino con una destacada carrera en la creación de música original para experiencias de realidad virtual, cin" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/662b40729e1e0b3c1d72d400_bannerfer.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fermín Delía — TOXI Media" />
+  <meta name="twitter:description" content="Fermín Delía es un músico y productor de sonido argentino con una destacada carrera en la creación de música original para experiencias de realidad virtual, cin" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/662b40729e1e0b3c1d72d400_bannerfer.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

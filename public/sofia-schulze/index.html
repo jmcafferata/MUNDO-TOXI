@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sofía Schulze — TOXI Media</title>
   <meta name="description" content="Sofía Schulze es una creadora multifacética que combina su experiencia en tecnología con una fuerte vocación artística. Además de desempeñarse como Project Mana" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Sofía Schulze — TOXI Media" />
   <meta property="og:description" content="Sofía Schulze es una creadora multifacética que combina su experiencia en tecnología con una fuerte vocación artística. Además de desempeñarse como Project Mana" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/6860306427f53aa92d01bbd4_Screenshot%202025-06-28%20151124.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Sofía Schulze — TOXI Media" />
+  <meta name="twitter:description" content="Sofía Schulze es una creadora multifacética que combina su experiencia en tecnología con una fuerte vocación artística. Además de desempeñarse como Project Mana" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/6860306427f53aa92d01bbd4_Screenshot%202025-06-28%20151124.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

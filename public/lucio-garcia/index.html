@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lucio García — TOXI Media</title>
   <meta name="description" content="Lucio García es físico y becario doctoral en el SoPhy Lab (Laboratorio de Sociophysics y Sistemas Complejos), donde investiga el modelado de redes sociales y el" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Lucio García — TOXI Media" />
   <meta property="og:description" content="Lucio García es físico y becario doctoral en el SoPhy Lab (Laboratorio de Sociophysics y Sistemas Complejos), donde investiga el modelado de redes sociales y el" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/686032bb0f057ce0701d62f4_Screenshot%202025-06-28%20152118.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Lucio García — TOXI Media" />
+  <meta name="twitter:description" content="Lucio García es físico y becario doctoral en el SoPhy Lab (Laboratorio de Sociophysics y Sistemas Complejos), donde investiga el modelado de redes sociales y el" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/686032bb0f057ce0701d62f4_Screenshot%202025-06-28%20152118.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

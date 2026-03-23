@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nahuel Ivorra — TOXI Media</title>
   <meta name="description" content="Nahuel Ivorra es un talentoso locutor, influencer y actor de doblaje argentino nacido el 3 de septiembre. Comenzó su carrera en el mundo del doblaje en 2011, de" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Nahuel Ivorra — TOXI Media" />
   <meta property="og:description" content="Nahuel Ivorra es un talentoso locutor, influencer y actor de doblaje argentino nacido el 3 de septiembre. Comenzó su carrera en el mundo del doblaje en 2011, de" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/66db467d797b311ed6f3d1cb_nahuebanner.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Nahuel Ivorra — TOXI Media" />
+  <meta name="twitter:description" content="Nahuel Ivorra es un talentoso locutor, influencer y actor de doblaje argentino nacido el 3 de septiembre. Comenzó su carrera en el mundo del doblaje en 2011, de" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/66db467d797b311ed6f3d1cb_nahuebanner.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

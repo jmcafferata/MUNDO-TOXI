@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Juan Pedro Borrelli — TOXI Media</title>
   <meta name="description" content="Juan Pedro Borrelli es un comunicador y educador argentino especializado en regeneración agroecológica. Es fundador y director de la Escuela de Regeneración, la" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Juan Pedro Borrelli — TOXI Media" />
   <meta property="og:description" content="Juan Pedro Borrelli es un comunicador y educador argentino especializado en regeneración agroecológica. Es fundador y director de la Escuela de Regeneración, la" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/68200bf65369da715978d299_juampe%20borrelli.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Juan Pedro Borrelli — TOXI Media" />
+  <meta name="twitter:description" content="Juan Pedro Borrelli es un comunicador y educador argentino especializado en regeneración agroecológica. Es fundador y director de la Escuela de Regeneración, la" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/68200bf65369da715978d299_juampe%20borrelli.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

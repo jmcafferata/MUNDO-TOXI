@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mamarracho — TOXI Media</title>
   <meta name="description" content="Un viernes a la tarde le digo a mi amigo Toto Bakan, mánager de la fiesta Leoparda, que se venga a la oficina TOXI. Él tenía programado arribar sobre el final d" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Mamarracho — TOXI Media" />
   <meta property="og:description" content="Un viernes a la tarde le digo a mi amigo Toto Bakan, mánager de la fiesta Leoparda, que se venga a la oficina TOXI. Él tenía programado arribar sobre el final d" />
   <meta property="og:image" content="https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/656650ffa6a81aac1afe0192_image%2028.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mamarracho — TOXI Media" />
+  <meta name="twitter:description" content="Un viernes a la tarde le digo a mi amigo Toto Bakan, mánager de la fiesta Leoparda, que se venga a la oficina TOXI. Él tenía programado arribar sobre el final d" />
+  <meta name="twitter:image" content="https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/656650ffa6a81aac1afe0192_image%2028.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

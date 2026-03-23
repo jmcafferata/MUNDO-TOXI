@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hedonismo y Seducción — TOXI Media</title>
   <meta name="description" content="Hedonismo y Seducción es una obra teatral de 0nírica y 1927, inspirada en Nido Vacío I: Laura de Diego J. Cicerchia.Elenco: Alma de Camaleón · Clara Linares · D" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Hedonismo y Seducción — TOXI Media" />
   <meta property="og:description" content="Hedonismo y Seducción es una obra teatral de 0nírica y 1927, inspirada en Nido Vacío I: Laura de Diego J. Cicerchia.Elenco: Alma de Camaleón · Clara Linares · D" />
   <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Hedonismo y Seducción — TOXI Media" />
+  <meta name="twitter:description" content="Hedonismo y Seducción es una obra teatral de 0nírica y 1927, inspirada en Nido Vacío I: Laura de Diego J. Cicerchia.Elenco: Alma de Camaleón · Clara Linares · D" />
+  <meta name="twitter:image" content="https://toxi.media/toxi-media-og.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

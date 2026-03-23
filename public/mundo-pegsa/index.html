@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mundo PEGSA — TOXI Media</title>
   <meta name="description" content="Mundo PEGSA es un proyecto que redefine la manera en que vivimos las historias, fusionando tecnología de vanguardia con narrativas inmersivas. Cada experiencia " />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Mundo PEGSA — TOXI Media" />
   <meta property="og:description" content="Mundo PEGSA es un proyecto que redefine la manera en que vivimos las historias, fusionando tecnología de vanguardia con narrativas inmersivas. Cada experiencia " />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/6737a62eb5a62f8e950b8e48_mundo%20pegsa%20banner.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mundo PEGSA — TOXI Media" />
+  <meta name="twitter:description" content="Mundo PEGSA es un proyecto que redefine la manera en que vivimos las historias, fusionando tecnología de vanguardia con narrativas inmersivas. Cada experiencia " />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/6737a62eb5a62f8e950b8e48_mundo%20pegsa%20banner.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {
