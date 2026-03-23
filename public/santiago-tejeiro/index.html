@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Santiago Tejeiro — TOXI Media</title>
   <meta name="description" content="Santiago Tejeiro es un locutor integral de radio y televisión con matrícula Nro. 14.428 y un actor de voz especializado en doblaje y actuación. Su carrera en lo" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Santiago Tejeiro — TOXI Media" />
   <meta property="og:description" content="Santiago Tejeiro es un locutor integral de radio y televisión con matrícula Nro. 14.428 y un actor de voz especializado en doblaje y actuación. Su carrera en lo" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/66e6feda045a1eb3f8f136a7_banner%20santi.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Santiago Tejeiro — TOXI Media" />
+  <meta name="twitter:description" content="Santiago Tejeiro es un locutor integral de radio y televisión con matrícula Nro. 14.428 y un actor de voz especializado en doblaje y actuación. Su carrera en lo" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/66e6feda045a1eb3f8f136a7_banner%20santi.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

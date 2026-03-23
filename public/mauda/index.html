@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mauda — TOXI Media</title>
   <meta name="description" content="MAUDA es una marca argentina de calzado masculino fundada por Mateo Darget, con una misión clara: recuperar el valor del oficio y traducirlo en objetos que acom" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Mauda — TOXI Media" />
   <meta property="og:description" content="MAUDA es una marca argentina de calzado masculino fundada por Mateo Darget, con una misión clara: recuperar el valor del oficio y traducirlo en objetos que acom" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/685dfbeceb2443cbc2953c62_Screenshot%202025-06-26%20230237.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Mauda — TOXI Media" />
+  <meta name="twitter:description" content="MAUDA es una marca argentina de calzado masculino fundada por Mateo Darget, con una misión clara: recuperar el valor del oficio y traducirlo en objetos que acom" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/685dfbeceb2443cbc2953c62_Screenshot%202025-06-26%20230237.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Fran Viau — TOXI Media</title>
   <meta name="description" content="Franco Rodríguez Viau (Buenos Aires, 2003) es un emprendedor argentino de impacto, enfocado en tecnología para la preservación ambiental y la inclusión. A los 1" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Fran Viau — TOXI Media" />
   <meta property="og:description" content="Franco Rodríguez Viau (Buenos Aires, 2003) es un emprendedor argentino de impacto, enfocado en tecnología para la preservación ambiental y la inclusión. A los 1" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/682008d388d6d1e46ed7f3ab_TOXI%20WEB%20BANNER.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fran Viau — TOXI Media" />
+  <meta name="twitter:description" content="Franco Rodríguez Viau (Buenos Aires, 2003) es un emprendedor argentino de impacto, enfocado en tecnología para la preservación ambiental y la inclusión. A los 1" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/682008d388d6d1e46ed7f3ab_TOXI%20WEB%20BANNER.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

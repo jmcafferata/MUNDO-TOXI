@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vale Tubert — TOXI Media</title>
   <meta name="description" content="Vale Tubert es escritora, comunicadora y cantautora. Con sensibilidad aguda y estilo propio, cada domingo publica Dominguitis, una columna muy leída que circula" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Vale Tubert — TOXI Media" />
   <meta property="og:description" content="Vale Tubert es escritora, comunicadora y cantautora. Con sensibilidad aguda y estilo propio, cada domingo publica Dominguitis, una columna muy leída que circula" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/68603490654eb0cda5c09922_Screenshot%202025-06-28%20152916.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Vale Tubert — TOXI Media" />
+  <meta name="twitter:description" content="Vale Tubert es escritora, comunicadora y cantautora. Con sensibilidad aguda y estilo propio, cada domingo publica Dominguitis, una columna muy leída que circula" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/68603490654eb0cda5c09922_Screenshot%202025-06-28%20152916.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

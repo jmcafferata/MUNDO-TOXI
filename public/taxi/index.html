@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Taxi — TOXI Media</title>
   <meta name="description" content="" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Taxi — TOXI Media" />
   <meta property="og:description" content="" />
   <meta property="og:image" content="https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/62e30ac8b389c50e9aa72796_Screenshot%202022-07-28%20191625.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Taxi — TOXI Media" />
+  <meta name="twitter:description" content="" />
+  <meta name="twitter:image" content="https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/62e30ac8b389c50e9aa72796_Screenshot%202022-07-28%20191625.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

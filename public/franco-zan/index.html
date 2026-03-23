@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Franco Zan — TOXI Media</title>
   <meta name="description" content="Franco Zan es un emprendedor argentino que enlaza tecnología y naturaleza para acelerar la regeneración de ecosistemas y comunidades. Como responsable de Produc" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Franco Zan — TOXI Media" />
   <meta property="og:description" content="Franco Zan es un emprendedor argentino que enlaza tecnología y naturaleza para acelerar la regeneración de ecosistemas y comunidades. Como responsable de Produc" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/68619f42c48367e203a35876_Screenshot%202025-06-29%20171347.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Franco Zan — TOXI Media" />
+  <meta name="twitter:description" content="Franco Zan es un emprendedor argentino que enlaza tecnología y naturaleza para acelerar la regeneración de ecosistemas y comunidades. Como responsable de Produc" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/68619f42c48367e203a35876_Screenshot%202025-06-29%20171347.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

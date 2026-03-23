@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ana Arzoumanian — TOXI Media</title>
   <meta name="description" content="Ana Arzoumanian es una destacada escritora, poeta y abogada argentina, nacida en Buenos Aires en 1962. Con una formación en derecho y psicoanálisis, ha desarrol" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Ana Arzoumanian — TOXI Media" />
   <meta property="og:description" content="Ana Arzoumanian es una destacada escritora, poeta y abogada argentina, nacida en Buenos Aires en 1962. Con una formación en derecho y psicoanálisis, ha desarrol" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/66db0d09ffe8d5a5c8a6d3b3_ana%20banner.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ana Arzoumanian — TOXI Media" />
+  <meta name="twitter:description" content="Ana Arzoumanian es una destacada escritora, poeta y abogada argentina, nacida en Buenos Aires en 1962. Con una formación en derecho y psicoanálisis, ha desarrol" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/66db0d09ffe8d5a5c8a6d3b3_ana%20banner.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

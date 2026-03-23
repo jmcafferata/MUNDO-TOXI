@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>El Jardín de Andarillo — TOXI Media</title>
   <meta name="description" content="‍El Jardín de Andarillo es una experiencia inmersiva que invita al espectador a relajarse y perderse entre ornamentos, estatuas y el canto de los pájaros. Su pr" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="El Jardín de Andarillo — TOXI Media" />
   <meta property="og:description" content="‍El Jardín de Andarillo es una experiencia inmersiva que invita al espectador a relajarse y perderse entre ornamentos, estatuas y el canto de los pájaros. Su pr" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/692272d5fc885193f59134ce_Screenshot%202025-11-22%20233452.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="El Jardín de Andarillo — TOXI Media" />
+  <meta name="twitter:description" content="‍El Jardín de Andarillo es una experiencia inmersiva que invita al espectador a relajarse y perderse entre ornamentos, estatuas y el canto de los pájaros. Su pr" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/692272d5fc885193f59134ce_Screenshot%202025-11-22%20233452.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

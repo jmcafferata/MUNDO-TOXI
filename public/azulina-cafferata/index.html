@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Azulina Cafferata — TOXI Media</title>
   <meta name="description" content="Azulina Cafferata es una profesional integral en el ámbito audiovisual y de la moda, graduada en Fashion Production por la Universidad de Palermo, con sólidos c" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Azulina Cafferata — TOXI Media" />
   <meta property="og:description" content="Azulina Cafferata es una profesional integral en el ámbito audiovisual y de la moda, graduada en Fashion Production por la Universidad de Palermo, con sólidos c" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/6731f540d3c4c66b3e36321a_azu%20banner.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Azulina Cafferata — TOXI Media" />
+  <meta name="twitter:description" content="Azulina Cafferata es una profesional integral en el ámbito audiovisual y de la moda, graduada en Fashion Production por la Universidad de Palermo, con sólidos c" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/6731f540d3c4c66b3e36321a_azu%20banner.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

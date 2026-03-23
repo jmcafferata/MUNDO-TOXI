@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Juan Manuel Bacca Weht — TOXI Media</title>
   <meta name="description" content="Juan Manuel Bacca Weht es un abogado con una sólida formación en comunicación y marketing político. Con una experiencia de más de cuatro años en Febalmi, se ha " />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Juan Manuel Bacca Weht — TOXI Media" />
   <meta property="og:description" content="Juan Manuel Bacca Weht es un abogado con una sólida formación en comunicación y marketing político. Con una experiencia de más de cuatro años en Febalmi, se ha " />
   <meta property="og:image" content="https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/66c7de082e80d9ee6b20d473_banner%20juanma%20bacca%20weht.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Juan Manuel Bacca Weht — TOXI Media" />
+  <meta name="twitter:description" content="Juan Manuel Bacca Weht es un abogado con una sólida formación en comunicación y marketing político. Con una experiencia de más de cuatro años en Febalmi, se ha " />
+  <meta name="twitter:image" content="https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/66c7de082e80d9ee6b20d473_banner%20juanma%20bacca%20weht.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {

@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cata Fusari — TOXI Media</title>
   <meta name="description" content="Catalina Fusari es una actriz argentina con una destacada trayectoria en teatro, cine y doblaje. En el ámbito teatral, ha participado en obras como El acto de c" />
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Cata Fusari — TOXI Media" />
   <meta property="og:description" content="Catalina Fusari es una actriz argentina con una destacada trayectoria en teatro, cine y doblaje. En el ámbito teatral, ha participado en obras como El acto de c" />
   <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/672a319f55f5de4fe8289fe7_cata%20fusari%20banner.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Cata Fusari — TOXI Media" />
+  <meta name="twitter:description" content="Catalina Fusari es una actriz argentina con una destacada trayectoria en teatro, cine y doblaje. En el ámbito teatral, ha participado en obras como El acto de c" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/672a319f55f5de4fe8289fe7_cata%20fusari%20banner.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -947,8 +952,8 @@
     overlay.classList.add('open');
     overlay.scrollTop = 0;
 
-    // Update URL hash for shareability
-    history.replaceState(null, '', '/plantform#' + slug);
+    // Update URL to path-based for shareability (OG tags live at /slug)
+    history.replaceState(null, '', '/' + slug);
   }
 
   function closeDetail() {
