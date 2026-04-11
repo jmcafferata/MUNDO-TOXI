@@ -233,12 +233,6 @@
     <script type="module">
         import { TV_PLAYLIST } from './src/content.js';
 
-<<<<<<< HEAD
-=======
-        // Época fija: cambiala para "reiniciar" el canal desde cero
-        const EPOCH_SEC = new Date('2026-04-01T00:10:00Z').getTime() / 1000;
-
->>>>>>> ab666946fd05d5b1d3c01af1c359fa27346105b3
         const PLAYLIST = TV_PLAYLIST.map(v => ({ id: v.id, duration: v.duration, title: v.title }));
 
         const player      = document.getElementById('mux-player');
