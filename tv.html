@@ -82,7 +82,10 @@
             --media-accent-color: #fff;
             --media-secondary-color: #000;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
+        mux-player.is-active { opacity: 1; z-index: 6; }
 
         #cast-btn {
             position: absolute;
@@ -202,7 +205,8 @@
     </header>
 
     <div id="player-wrap">
-        <mux-player id="mux-player" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+        <mux-player id="mux-player-a" class="is-active" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+        <mux-player id="mux-player-b"                    stream-type="on-demand"         muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
         <google-cast-launcher id="cast-btn" title="Chromecast"></google-cast-launcher>
         <div id="age-gate">
             <img class="age-gate-logo" src="/toxi-logo-white.png" alt="TOXI Media" />
@@ -235,75 +239,117 @@
 
         const PLAYLIST = TV_PLAYLIST.map(v => ({ id: v.id, duration: v.duration, title: v.title }));
 
-        const player      = document.getElementById('mux-player');
-        const npTitle     = document.getElementById('np-title');
-        const npFill      = document.getElementById('np-fill');
-        const nowPlaying  = document.getElementById('now-playing');
-        const clockEl     = document.getElementById('clock');
-        const gridTrack   = document.getElementById('grid-track');
-        const gridPrev    = document.getElementById('grid-prev');
-        const gridNext    = document.getElementById('grid-next');
+        // ── Double-buffer: dos players apilados para zap sin loading ──
+        const players    = [document.getElementById('mux-player-a'), document.getElementById('mux-player-b')];
+        const npTitle    = document.getElementById('np-title');
+        const npFill     = document.getElementById('np-fill');
+        const nowPlaying = document.getElementById('now-playing');
+        const clockEl    = document.getElementById('clock');
+        const gridTrack  = document.getElementById('grid-track');
+        const gridPrev   = document.getElementById('grid-prev');
+        const gridNext   = document.getElementById('grid-next');
 
-        let currentIndex     = -1;
-        let overlayTimer     = null;
-        let programmaticSeek = false;
-        let zapTimeout       = null;
-        let zapState         = null; // { video, offset, index, zapDuration, startedAt }
+        let activeSlot   = 0;          // 0 o 1 — qué player está mostrando
+        let currentIndex = -1;
+        let audioActive  = false;
+        let overlayTimer = null;
+        let zapTimeout   = null;
+        let zapState     = null;       // { video, offset, index, zapDuration, startedAt }
+        let nextZapState = null;       // próximo slot precargado
+        let seekGuard    = [false, false];
 
-        function randInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+        function pickState(excludeIndex) {
+            let idx;
+            do { idx = Math.floor(Math.random() * PLAYLIST.length); }
+            while (PLAYLIST.length > 1 && idx === excludeIndex);
+            const video       = PLAYLIST[idx];
+            const zapDuration = randInt(1, 30);
+            const maxOffset   = Math.max(0, video.duration - zapDuration - 1);
+            const offset      = Math.random() * maxOffset;
+            return { video, offset, index: idx, zapDuration };
+        }
+
+        function preloadNext(excludeIndex) {
+            nextZapState = pickState(excludeIndex);
+            const slot = 1 - activeSlot;
+            const p    = players[slot];
+            p.muted    = true;
+            p.setAttribute('playback-id', nextZapState.video.id);
+            const onMeta = () => {
+                seekGuard[slot] = true;
+                p.currentTime   = nextZapState.offset;
+                seekGuard[slot] = false;
+                p.pause();
+                p.removeEventListener('loadedmetadata', onMeta);
+            };
+            p.addEventListener('loadedmetadata', onMeta);
         }
 
         function doZap() {
             clearTimeout(zapTimeout);
 
-            // Elegir un video random (evitar repetir el mismo si hay más de uno)
-            let idx;
-            do { idx = Math.floor(Math.random() * PLAYLIST.length); }
-            while (PLAYLIST.length > 1 && idx === currentIndex);
+            const wasPreloaded = !!nextZapState;
+            const state   = nextZapState || pickState(currentIndex);
+            const newSlot = 1 - activeSlot;
+            const oldSlot = activeSlot;
+            const newP    = players[newSlot];
+            const oldP    = players[oldSlot];
 
-            const video       = PLAYLIST[idx];
-            const zapDuration = randInt(1, 30);                               // 1-30 s
-            const maxOffset   = Math.max(0, video.duration - zapDuration - 1);
-            const offset      = Math.random() * maxOffset;
+            // Swap visual
+            newP.classList.add('is-active');
+            oldP.classList.remove('is-active');
+            activeSlot   = newSlot;
+            currentIndex = state.index;
+            zapState     = { ...state, startedAt: Date.now() };
+            nextZapState = null;
 
-            currentIndex = idx;
-            zapState = { video, offset, index: idx, zapDuration, startedAt: Date.now() };
+            // Audio
+            if (audioActive) { newP.muted = false; newP.volume = 1; }
+            oldP.muted = true;
 
-            // Cargar video y seekear al offset aleatorio
-            player.setAttribute('playback-id', video.id);
-            const seek = () => {
-                programmaticSeek = true;
-                player.currentTime = offset;
-                programmaticSeek = false;
-                player.play().catch(() => {});
-                player.removeEventListener('loadedmetadata', seek);
-            };
-            player.addEventListener('loadedmetadata', seek);
+            if (wasPreloaded) {
+                // Ya precargado y seekeado — play instantáneo
+                newP.play().catch(() => {});
+            } else {
+                // Primera carga — esperar loadedmetadata
+                newP.setAttribute('playback-id', state.video.id);
+                const onMeta = () => {
+                    seekGuard[newSlot] = true;
+                    newP.currentTime   = state.offset;
+                    seekGuard[newSlot] = false;
+                    newP.play().catch(() => {});
+                    newP.removeEventListener('loadedmetadata', onMeta);
+                };
+                newP.addEventListener('loadedmetadata', onMeta);
+            }
 
             showOverlay();
-
-            // Programar el proximo zap
-            zapTimeout = setTimeout(doZap, zapDuration * 1000);
+            zapTimeout = setTimeout(doZap, state.zapDuration * 1000);
+            // Precargar el siguiente (pequeño delay para no competir con el play actual)
+            setTimeout(() => preloadNext(currentIndex), 1500);
         }
 
-        // Si el video termina antes del timer, zappear de inmediato
-        player.addEventListener('ended', () => { clearTimeout(zapTimeout); doZap(); });
-
-        // Bloquear pausa
-        player.addEventListener('pause', () => {
-            if (!document.hidden) player.play().catch(() => {});
-        });
-
-        // Bloquear seek manual
-        player.addEventListener('seeking', () => {
-            if (programmaticSeek || !zapState) return;
-            const expected = zapState.offset + (Date.now() - zapState.startedAt) / 1000;
-            if (Math.abs(player.currentTime - expected) > 2) {
-                programmaticSeek = true;
-                player.currentTime = expected;
-                programmaticSeek = false;
-            }
+        // Eventos en ambos players (solo el activo importa)
+        players.forEach((p, slot) => {
+            p.addEventListener('ended', () => {
+                if (slot !== activeSlot) return;
+                clearTimeout(zapTimeout); doZap();
+            });
+            p.addEventListener('pause', () => {
+                if (slot !== activeSlot || document.hidden) return;
+                p.play().catch(() => {});
+            });
+            p.addEventListener('seeking', () => {
+                if (seekGuard[slot] || slot !== activeSlot || !zapState) return;
+                const expected = zapState.offset + (Date.now() - zapState.startedAt) / 1000;
+                if (Math.abs(p.currentTime - expected) > 2) {
+                    seekGuard[slot] = true;
+                    p.currentTime   = expected;
+                    seekGuard[slot] = false;
+                }
+            });
         });
 
         // Overlay de "ahora"
@@ -316,7 +362,7 @@
             overlayTimer = setTimeout(() => nowPlaying.classList.remove('visible'), 6000);
         }
 
-        // Barra de progreso: avance dentro del segmento de zap
+        // Barra de progreso
         setInterval(() => {
             if (!zapState) return;
             const elapsed = (Date.now() - zapState.startedAt) / 1000;
@@ -332,23 +378,22 @@
         updateClock();
         setInterval(updateClock, 10000);
 
-        // ── Grid: muestra el video actual a ancho completo ──────
+        // Grid
         function buildGrid() {
             gridTrack.innerHTML = '';
             if (!zapState) return;
             const elapsed = (Date.now() - zapState.startedAt) / 1000;
             const pct     = Math.min(100, (elapsed / zapState.zapDuration) * 100).toFixed(1);
             const card    = document.createElement('div');
-            card.className   = 'grid-card is-now';
-            card.style.flex  = '1';
-            card.innerHTML   =
+            card.className  = 'grid-card is-now';
+            card.style.flex = '1';
+            card.innerHTML  =
                 '<div class="grid-card-label">Ahora · ' + formatAR(new Date()) + '</div>' +
                 '<div class="grid-card-title">' + zapState.video.title + '</div>' +
                 '<div class="grid-card-bar"><div class="grid-card-bar-fill" style="width:' + pct + '%"></div></div>';
             gridTrack.appendChild(card);
         }
 
-        // Sync barra de progreso de la tarjeta cada segundo
         setInterval(() => {
             if (!nowPlaying.classList.contains('visible') || !zapState) return;
             const elapsed = (Date.now() - zapState.startedAt) / 1000;
@@ -357,11 +402,9 @@
             if (fill) fill.style.width = pct + '%';
         }, 1000);
 
-        // Las flechas prev/next del grid disparan un zap manual
         gridPrev.addEventListener('click', e => { e.stopPropagation(); doZap(); });
         gridNext.addEventListener('click', e => { e.stopPropagation(); doZap(); });
 
-        // Click en el player → mostrar/ocultar párpado
         document.getElementById('player-wrap').addEventListener('click', e => {
             if (e.target === gridPrev || gridPrev.contains(e.target)) return;
             if (e.target === gridNext || gridNext.contains(e.target)) return;
@@ -376,8 +419,9 @@
         // Age gate
         const ageGate = document.getElementById('age-gate');
         function dismissAgeGate() {
-            player.muted = false;
-            player.volume = 1;
+            audioActive = true;
+            const p = players[activeSlot];
+            p.muted = false; p.volume = 1;
             ageGate.classList.add('hidden');
         }
         document.getElementById('age-over').addEventListener('click', dismissAgeGate);
