@@ -328,13 +328,38 @@
         updateClock();
         setInterval(updateClock, 10000);
 
-        document.getElementById('player-wrap').addEventListener('click', e => {
-            if (nowPlaying.classList.contains('visible')) {
-                nowPlaying.classList.remove('visible');
-                clearTimeout(overlayTimer);
-            } else {
-                showOverlay();
-            }
+        // ── Registro de skips ─────────────────────────────────
+        function recordSkip() {
+            if (!zapState) return;
+            const elapsed = (Date.now() - zapState.startedAt) / 1000;
+            const entry = {
+                ts:        new Date().toISOString(),
+                id:        zapState.video.id,
+                title:     zapState.video.title,
+                offset:    Math.round(zapState.offset),
+                watched:   Math.round(elapsed),
+                zapBudget: zapState.zapDuration,
+            };
+            try {
+                const skips = JSON.parse(localStorage.getItem('tv_skips') || '[]');
+                skips.push(entry);
+                localStorage.setItem('tv_skips', JSON.stringify(skips));
+            } catch(e) {}
+        }
+
+        function manualZap() {
+            if (!ageGate.classList.contains('hidden')) return; // ignorar antes del age gate
+            recordSkip();
+            doZap();
+        }
+
+        // Click en cualquier parte → skip
+        document.getElementById('player-wrap').addEventListener('click', () => manualZap());
+
+        // Cualquier tecla → skip
+        document.addEventListener('keydown', e => {
+            if (!ageGate.classList.contains('hidden')) return;
+            manualZap();
         });
 
         // Age gate
