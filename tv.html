@@ -157,44 +157,7 @@
         }
         .age-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
 
-        /* ── Grid integrado en el párpado ─────────────────────── */
-        .np-grid {
-            display: flex;
-            align-items: stretch;
-            gap: 0;
-            margin-top: 18px;
-            pointer-events: all;
-        }
 
-        .np-arrow {
-            flex: 0 0 32px;
-            display: flex; align-items: center; justify-content: center;
-            background: none; border: none; cursor: pointer;
-            color: rgba(255,255,255,0.35);
-            transition: color 0.2s;
-            padding: 0;
-        }
-        .np-arrow:hover { color: rgba(255,255,255,0.9); }
-        .np-arrow svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-
-        .np-cards { flex: 1; display: flex; gap: 10px; overflow: hidden; min-width: 0; }
-
-        .grid-card {
-            flex: 0 0 calc(33.333% - 7px);
-            min-width: 0;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 4px;
-            padding: 10px 12px 9px;
-            opacity: 0.45;
-            transition: opacity 0.3s, background 0.3s, border-color 0.3s;
-        }
-        .grid-card.is-now { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.25); opacity: 1; }
-        .grid-card.is-adj { opacity: 0.68; }
-        .grid-card-label { font-size: 0.48rem; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(255,255,255,0.32); margin-bottom: 4px; }
-        .grid-card-title { font-size: 0.72rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .grid-card-bar { margin-top: 7px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
-        .grid-card-bar-fill { height: 100%; background: rgba(255,255,255,0.5); border-radius: 2px; transition: width 1s linear; width: 0%; }
     </style>
 </head>
 <body>
@@ -222,15 +185,6 @@
             <div class="np-label">Ahora</div>
             <div class="np-title" id="np-title">—</div>
             <div class="np-progress"><div class="np-progress-fill" id="np-fill"></div></div>
-            <div class="np-grid">
-                <button class="np-arrow" id="grid-prev" aria-label="Anterior">
-                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-                </button>
-                <div class="np-cards" id="grid-track"></div>
-                <button class="np-arrow" id="grid-next" aria-label="Siguiente">
-                    <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
-                </button>
-            </div>
         </div>
     </div>
 
@@ -245,9 +199,6 @@
         const npFill     = document.getElementById('np-fill');
         const nowPlaying = document.getElementById('now-playing');
         const clockEl    = document.getElementById('clock');
-        const gridTrack  = document.getElementById('grid-track');
-        const gridPrev   = document.getElementById('grid-prev');
-        const gridNext   = document.getElementById('grid-next');
 
         let activeSlot   = 0;          // 0 o 1 — qué player está mostrando
         let currentIndex = -1;
@@ -356,7 +307,6 @@
         function showOverlay() {
             if (!zapState) return;
             npTitle.textContent = zapState.video.title;
-            buildGrid();
             nowPlaying.classList.add('visible');
             clearTimeout(overlayTimer);
             overlayTimer = setTimeout(() => nowPlaying.classList.remove('visible'), 6000);
@@ -378,36 +328,7 @@
         updateClock();
         setInterval(updateClock, 10000);
 
-        // Grid
-        function buildGrid() {
-            gridTrack.innerHTML = '';
-            if (!zapState) return;
-            const elapsed = (Date.now() - zapState.startedAt) / 1000;
-            const pct     = Math.min(100, (elapsed / zapState.zapDuration) * 100).toFixed(1);
-            const card    = document.createElement('div');
-            card.className  = 'grid-card is-now';
-            card.style.flex = '1';
-            card.innerHTML  =
-                '<div class="grid-card-label">Ahora · ' + formatAR(new Date()) + '</div>' +
-                '<div class="grid-card-title">' + zapState.video.title + '</div>' +
-                '<div class="grid-card-bar"><div class="grid-card-bar-fill" style="width:' + pct + '%"></div></div>';
-            gridTrack.appendChild(card);
-        }
-
-        setInterval(() => {
-            if (!nowPlaying.classList.contains('visible') || !zapState) return;
-            const elapsed = (Date.now() - zapState.startedAt) / 1000;
-            const pct     = Math.min(100, (elapsed / zapState.zapDuration) * 100).toFixed(1);
-            const fill    = gridTrack.querySelector('.grid-card.is-now .grid-card-bar-fill');
-            if (fill) fill.style.width = pct + '%';
-        }, 1000);
-
-        gridPrev.addEventListener('click', e => { e.stopPropagation(); doZap(); });
-        gridNext.addEventListener('click', e => { e.stopPropagation(); doZap(); });
-
         document.getElementById('player-wrap').addEventListener('click', e => {
-            if (e.target === gridPrev || gridPrev.contains(e.target)) return;
-            if (e.target === gridNext || gridNext.contains(e.target)) return;
             if (nowPlaying.classList.contains('visible')) {
                 nowPlaying.classList.remove('visible');
                 clearTimeout(overlayTimer);
