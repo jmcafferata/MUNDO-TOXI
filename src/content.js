@@ -79,6 +79,7 @@ export const CONTENT = [
   { id: 'K6p6zWxcLOtRXb02eWcic00RYQG8SwDxE014o9007ZTBwm8', duration: 588.629711, title: 'Otro Día en la Red III', slug: '', type: 'other', year: null, onTV: true },
   { id: '2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE', duration: 230.480256, title: 'Viaje a la Luna', slug: '', type: 'other', year: null, onTV: true },
   { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY', duration: 80.830756, title: '¿Qué es Mamarracho?', slug: '', type: 'other', year: null, onTV: true },
+  { id: '8eWxpM02B4E32tHd4fyQ5o8I20002PNH9WnMaSU6mQKTIY', duration: 2815, title: 'Pizza y Pagni — Piloto LN', slug: '', type: 'other', year: null, onTV: true },
 ];
 
 /** Solo los videos marcados onTV: true, en orden para la playlist del canal */
