@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Venado Tuerto — El Musical / TOXI Media</title>
+    <style>
+        :root {
+            --bg: #080808;
+            --panel: #111;
+            --border: rgba(255,255,255,0.08);
+            --accent: #e8ff47;
+            --text: #f0f0f0;
+            --muted: #666;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Helvetica Now', 'Helvetica', 'Arial', sans-serif;
+            min-height: 100vh;
+            padding: 0 0 80px;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            border-bottom: 1px solid var(--border);
+            padding: 28px 32px 24px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .header-left { display: flex; flex-direction: column; gap: 6px; }
+
+        .project-tag {
+            font-size: 10px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        h1 {
+            font-size: clamp(1.6rem, 5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1;
+            text-transform: uppercase;
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .casting-badge {
+            margin-top: 8px;
+            display: inline-block;
+            background: var(--accent);
+            color: #000;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 2px;
+        }
+
+        .toxi-logo {
+            font-size: 11px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            align-self: flex-start;
+            margin-top: 4px;
+        }
+        .toxi-logo:hover { color: var(--text); }
+
+        /* ── LAYOUT ── */
+        .main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 40px 24px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+        }
+
+        @media (max-width: 680px) {
+            .main { grid-template-columns: 1fr; }
+            .header { padding: 20px 20px 18px; }
+        }
+
+        /* ── SECTION LABELS ── */
+        .section-label {
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        /* ── AUDIO CARDS ── */
+        .audio-col { display: flex; flex-direction: column; gap: 12px; }
+
+        .audio-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px 20px;
+        }
+
+        .audio-card-title {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .audio-card-desc {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .audio-card audio {
+            width: 100%;
+            height: 36px;
+            accent-color: var(--accent);
+            filter: invert(1) hue-rotate(180deg) brightness(0.9);
+            outline: none;
+        }
+
+        /* override back to accent for WebKit */
+        .audio-card audio::-webkit-media-controls-panel {
+            background: rgba(30,30,30,0.9);
+        }
+
+        .audio-card.featured {
+            border-color: rgba(232, 255, 71, 0.25);
+            background: linear-gradient(135deg, #111 0%, rgba(232,255,71,0.04) 100%);
+        }
+
+        .audio-card.featured .audio-card-title {
+            color: var(--accent);
+        }
+
+        /* ── LYRICS ── */
+        .lyrics-col { display: flex; flex-direction: column; }
+
+        .lyrics-box {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            max-height: 560px;
+            overflow-y: auto;
+            flex: 1;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.15) transparent;
+        }
+
+        .lyrics-box::-webkit-scrollbar { width: 4px; }
+        .lyrics-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+        .lyric-block { margin-bottom: 22px; }
+
+        .lyric-section-name {
+            font-size: 9px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .lyric-block p {
+            font-size: 13px;
+            line-height: 1.75;
+            color: #ccc;
+        }
+
+        .lyric-block.chorus p {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .lyric-block.bridge p {
+            color: #aaa;
+            font-style: italic;
+            border-left: 2px solid rgba(232,255,71,0.4);
+            padding-left: 12px;
+        }
+
+        /* ── BAND SECTION ── */
+        .band-section {
+            max-width: 960px;
+            margin: 32px auto 0;
+            padding: 0 24px;
+        }
+
+        .band-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .instrument-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: border-color 0.2s;
+        }
+
+        .instrument-card:hover {
+            border-color: rgba(232, 255, 71, 0.3);
+        }
+
+        .instrument-icon {
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .instrument-name {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .instrument-detail {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        /* ── ROLE INFO ── */
+        .role-box {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-top: 12px;
+        }
+
+        .role-box ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .role-box ul li {
+            font-size: 12px;
+            color: #bbb;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .role-box ul li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="header-left">
+        <div class="project-tag">TOXI Media · Casting abierto</div>
+        <h1>Venado Tuerto<br><span>El Musical</span></h1>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+            <div class="casting-badge">Rol: El Intendente del Momento</div>
+            <div class="casting-badge" style="background:rgba(232,255,71,0.15);color:var(--accent);border:1px solid rgba(232,255,71,0.3);">Banda en vivo</div>
+        </div>
+    </div>
+    <a class="toxi-logo" href="/">TOXI ↗</a>
+</div>
+
+<div class="main">
+
+    <!-- COLUMNA IZQUIERDA: AUDIO + ROL -->
+    <div class="audio-col">
+        <div class="section-label">Material de casting</div>
+
+        <!-- 1: Canción completa -->
+        <div class="audio-card featured">
+            <div class="audio-card-title">Canción completa</div>
+            <div class="audio-card-desc">Referencia oficial — letra + producción.</div>
+            <audio controls preload="metadata">
+                <source src="/venado-tuerto-el-musical/El intendente del momento.mp3" type="audio/mpeg" />
+            </audio>
+        </div>
+
+        <!-- 2: Pista instrumental -->
+        <div class="audio-card">
+            <div class="audio-card-title">Pista instrumental</div>
+            <div class="audio-card-desc">Cantá por encima de esta pista para tu audición.</div>
+            <audio controls preload="metadata">
+                <source src="/venado-tuerto-el-musical/El intendente del momento (Instrumental).mp3" type="audio/mpeg" />
+            </audio>
+        </div>
+
+        <!-- 3: Solo voces -->
+        <div class="audio-card">
+            <div class="audio-card-title">Solo voces</div>
+            <div class="audio-card-desc">Referencia de melodía y fraseo para aprender el tema.</div>
+            <audio controls preload="metadata">
+                <source src="/venado-tuerto-el-musical/El intendente del momento (Vocals).mp3" type="audio/mpeg" />
+            </audio>
+        </div>
+
+        <!-- Rol -->
+        <div class="role-box">
+            <div class="section-label" style="margin-bottom:10px">El rol</div>
+            <ul>
+                <li>El Intendente Joven del Momento</li>
+                <li>Carismático, seguro, un toque irónico</li>
+                <li>Rango vocal: barítono–tenor, con presencia escénica</li>
+                <li>Spoken word en el puente (estilo Hamilton)</li>
+                <li>Trama del musical: a confirmar</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- COLUMNA DERECHA: LETRA -->
+    <div class="lyrics-col">
+        <div class="section-label">Letra — El intendente del momento</div>
+
+        <div class="lyrics-box">
+
+            <div class="lyric-block">
+                <div class="lyric-section-name">Verso 1</div>
+                <p>
+                    Soy el intendente joven del momento,<br>
+                    ganador del Top 30 en Latinoamérica.<br>
+                    Con nombre y apellido denuncio a los narcos,<br>
+                    y en cada cuadra nueva pongo mi rúbrica.
+                </p>
+            </div>
+
+            <div class="lyric-block">
+                <div class="lyric-section-name">Pre-coro</div>
+                <p>
+                    ¡Una cuadra por semana!<br>
+                    Pavimento que no engaña.<br>
+                    Y si preguntan dónde va el dinero…<br>
+                    ¡miren el Excel, soy sincero!
+                </p>
+            </div>
+
+            <div class="lyric-block chorus">
+                <div class="lyric-section-name">Coro</div>
+                <p>
+                    Tus impuestos vuelven en obras,<br>
+                    ese es mi lema, no hay demora.<br>
+                    De lunes a jueves, basura separada,<br>
+                    ¡y el basural se cierra, misión lograda!<br>
+                    Tus impuestos vuelven en obras,<br>
+                    mirá la plaza, mirá las horas.<br>
+                    Con cada baldosa que ves brillar,<br>
+                    ¡Venado Tuerto no para de avanzar!
+                </p>
+            </div>
+
+            <div class="lyric-block">
+                <div class="lyric-section-name">Verso 2</div>
+                <p>
+                    El Parque Municipal se vuelve un gran teatro,<br>
+                    aunque la pista siga todo el año clausurada.<br>
+                    En Plaza San Martín cortamos cintas,<br>
+                    ¡con prensa, selfies y la banda afinada!
+                </p>
+            </div>
+
+            <div class="lyric-block">
+                <div class="lyric-section-name">Pre-coro</div>
+                <p>
+                    Narcos temblando, vecinos aplaudiendo,<br>
+                    pavimento fresco, el pueblo entendiendo:<br>
+                    que cada obra tiene mi firma,<br>
+                    ¡y un dron sacando la mejor toma!
+                </p>
+            </div>
+
+            <div class="lyric-block chorus">
+                <div class="lyric-section-name">Coro</div>
+                <p>
+                    Tus impuestos vuelven en obras,<br>
+                    ese es mi lema, no hay demora.<br>
+                    De lunes a jueves, basura separada,<br>
+                    ¡y el basural se cierra, misión lograda!<br>
+                    Tus impuestos vuelven en obras,<br>
+                    mirá la plaza, mirá las horas.<br>
+                    Con cada baldosa que ves brillar,<br>
+                    ¡Venado Tuerto no para de avanzar!
+                </p>
+            </div>
+
+            <div class="lyric-block bridge">
+                <div class="lyric-section-name">Puente — Spoken word (estilo Hamilton)</div>
+                <p>
+                    "Señoras y señores, el presupuesto es claro:<br>
+                    mil para cultura, dos mil para cloacas,<br>
+                    y lo demás… pavimento diario.<br>
+                    ¡Una cuadra por semana! ¡Eficiencia sin drama!"
+                </p>
+            </div>
+
+            <div class="lyric-block chorus">
+                <div class="lyric-section-name">Coro final — con vecinos coreando</div>
+                <p>
+                    Tus impuestos vuelven en obras,<br>
+                    ¡el intendente nunca se equivoca!<br>
+                    Del top 30 yo soy campeón,<br>
+                    ¡Venado Tuerto canta esta canción!
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- BANDA -->
+<div class="band-section">
+    <div class="section-label">También buscamos — La banda</div>
+    <div class="band-grid">
+
+        <div class="instrument-card">
+            <div class="instrument-icon">🥁</div>
+            <div class="instrument-name">Batería</div>
+            <div class="instrument-detail">Groove pop/latin, capaz de sostener el spoken word y el coro con vecinos</div>
+        </div>
+
+        <div class="instrument-card">
+            <div class="instrument-icon">🎺</div>
+            <div class="instrument-name">Trompetas</div>
+            <div class="instrument-detail">Sección de vientos, 1–2 músicos, onda brass band / Latin pop</div>
+        </div>
+
+        <div class="instrument-card">
+            <div class="instrument-icon">🎷</div>
+            <div class="instrument-name">Trombones</div>
+            <div class="instrument-detail">Sección baja de vientos, punch en el coro y el puente</div>
+        </div>
+
+        <div class="instrument-card">
+            <div class="instrument-icon">🎸</div>
+            <div class="instrument-name">Bajo</div>
+            <div class="instrument-detail">Eléctrico o acústico, ancla rítmica junto a la batería</div>
+        </div>
+
+        <div class="instrument-card">
+            <div class="instrument-icon">🎹</div>
+            <div class="instrument-name">Piano</div>
+            <div class="instrument-detail">Keys / piano eléctrico, arreglos del puente Hamilton-style</div>
+        </div>
+
+        <div class="instrument-card">
+            <div class="instrument-icon">🎤</div>
+            <div class="instrument-name">Coros</div>
+            <div class="instrument-detail">2–4 voces para el coro final con vecinos, dobles en versos</div>
+        </div>
+
+    </div>
+</div>
+
+<!-- PROPUESTA -->
+<div class="band-section" style="margin-top:32px;">
+    <div class="section-label">Enviá tu propuesta</div>
+
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:24px;margin-top:14px;">
+
+        <p style="font-size:13px;color:#bbb;line-height:1.7;margin-bottom:20px;">
+            Mandá tu auto-tape, presentación o material al mail de casting.<br>
+            Podés incluir video, audio, links de Instagram, YouTube o lo que tengas.
+        </p>
+
+        <form id="castingForm" onsubmit="sendMail(event)">
+            <div class="form-row">
+                <div class="field-group">
+                    <label class="field-label">Nombre</label>
+                    <input class="field-input" type="text" name="nombre" placeholder="Tu nombre completo" required />
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Rol / instrumento</label>
+                    <select class="field-input" name="rol" required>
+                        <option value="" disabled selected>Elegir…</option>
+                        <option>El Intendente del Momento (actor/cantante)</option>
+                        <option>Batería</option>
+                        <option>Trompeta</option>
+                        <option>Trombón</option>
+                        <option>Bajo</option>
+                        <option>Piano / Keys</option>
+                        <option>Coros</option>
+                        <option>Otro</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="field-group" style="margin-top:12px;">
+                <label class="field-label">Instagram / YouTube / portfolio</label>
+                <input class="field-input" type="url" name="link" placeholder="https://instagram.com/tuusuario" />
+            </div>
+
+            <div class="field-group" style="margin-top:12px;">
+                <label class="field-label">Mensaje — contanos algo, links extra, etc.</label>
+                <textarea class="field-input" name="mensaje" rows="4" placeholder="Hola, me postulo para… Acá les dejo mi tape: [link]" required></textarea>
+            </div>
+
+            <div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                <button class="send-btn" type="submit">Enviar propuesta →</button>
+            </div>
+            <div id="castingFeedback" class="form-feedback"></div>
+        </form>
+
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+            <span style="font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">También directo a</span>
+            <a href="mailto:admin@toxi.media" style="font-size:13px;color:var(--accent);text-decoration:none;font-weight:600;">admin@toxi.media</a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+    @media (max-width: 520px) { .form-row { grid-template-columns: 1fr; } }
+
+    .field-group { display: flex; flex-direction: column; gap: 5px; }
+
+    .field-label {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+    }
+
+    .field-input {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 6px;
+        padding: 10px 12px;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.2s;
+        width: 100%;
+    }
+
+    .field-input:focus {
+        border-color: rgba(232,255,71,0.4);
+    }
+
+    .field-input option {
+        background: #1a1a1a;
+        color: var(--text);
+    }
+
+    textarea.field-input { resize: vertical; min-height: 90px; }
+
+    .send-btn {
+        background: var(--accent);
+        color: #000;
+        border: none;
+        border-radius: 6px;
+        padding: 11px 22px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: opacity 0.2s, transform 0.1s;
+    }
+
+    .send-btn:hover { opacity: 0.85; }
+    .send-btn:active { transform: scale(0.97); }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .form-feedback { font-size:12px; padding:10px 14px; border-radius:6px; display:none; }
+    .form-feedback.ok  { background:rgba(74,222,128,0.12); color:#4ade80; border:1px solid rgba(74,222,128,0.25); }
+    .form-feedback.err { background:rgba(248,113,113,0.12); color:#f87171; border:1px solid rgba(248,113,113,0.25); }
+</style>
+
+<script>
+async function sendMail(e) {
+    e.preventDefault();
+    const f    = e.target;
+    const btn  = f.querySelector('.send-btn');
+    const fb   = document.getElementById('castingFeedback');
+
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    fb.style.display = 'none';
+
+    const payload = {
+        nombre:  f.nombre.value.trim(),
+        rol:     f.rol.value,
+        link:    f.link.value.trim(),
+        mensaje: f.mensaje.value.trim(),
+    };
+
+    try {
+        const res = await fetch('/api/casting-venado-tuerto', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error('server');
+        fb.textContent = '¡Propuesta enviada! Te vamos a contactar.';
+        fb.className = 'form-feedback ok';
+        f.reset();
+    } catch {
+        fb.textContent = 'Hubo un error al enviar. Escribinos directo a admin@toxi.media.';
+        fb.className = 'form-feedback err';
+    }
+
+    fb.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Enviar propuesta →';
+}
+</script>
+
+<footer style="max-width:960px;margin:48px auto 0;padding:24px 24px 40px;border-top:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;gap:8px;">
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between;">
+        <a href="/" style="font-size:11px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.25);text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='rgba(255,255,255,0.6)'" onmouseout="this.style.color='rgba(255,255,255,0.25)'">TOXI Media ↗</a>
+        <span style="font-size:10px;color:rgba(255,255,255,0.18);letter-spacing:1px;">© 2026</span>
+    </div>
+    <p style="font-size:10px;color:rgba(255,255,255,0.2);line-height:1.7;max-width:640px;">
+        Esta es una obra de ficción. Los personajes, situaciones, instituciones y eventos representados son imaginarios. Cualquier semejanza con personas reales, vivas o fallecidas, hechos reales o lugares existentes es pura coincidencia y no intencional.
+    </p>
+</footer>
+
+</body>
+</html>

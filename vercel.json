@@ -21,6 +21,10 @@
       "destination": "/audiont.html"
     },
     {
+      "source": "/venado-tuerto-el-musical",
+      "destination": "/venado-tuerto-el-musical.html"
+    },
+    {
       "source": "/tv",
       "destination": "/tv.html"
     },
