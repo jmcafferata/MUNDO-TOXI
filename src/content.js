@@ -12,7 +12,6 @@
 export const CONTENT = [
 
   // ── CURADOS: en el canal ───────────────────────────────────
-  { id: 'ascCA5hMxmuLlSRnYiRtuXj7P5hOJdC9ImyfKqaQsQo', duration: 2815, title: '[sin título]', slug: '', type: 'other', year: null, onTV: true },
   { id: 'iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU', duration: 339.548, title: 'Hotel Oriente', slug: 'hotel-oriente', type: 'film', year: 2025, onTV: true },
   { id: 'iVB2ZU00L1WZDQJpqXrIAMg02Cmq4l6C2kKnP02sNP01CQM', duration: 687.228, title: 'Hotel Oriente — Detrás de Escena', slug: 'hotel-oriente-bts', type: 'short', year: 2025, onTV: true },
   { id: 'IHikcrMnpK00Dxsyb7xKpi1qpju01I00JmCpNXXrhg1WZg', duration: 163.081, title: 'Detective Noir', slug: 'detective-noir', type: 'short', year: 2025, onTV: true },
