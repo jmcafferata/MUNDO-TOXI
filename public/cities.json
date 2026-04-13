@@ -22,7 +22,11 @@
     { "name": "San Martín de los Andes", "lat": -40.1537, "lon": -71.3550 },
     { "name": "Pucará", "lat": -40.1900, "lon": -71.6325 },
     { "name": "Villa La Angostura", "lat": -40.7630, "lon": -71.6428 },
-    { "name": "Las Grutas", "lat": -40.8083, "lon": -65.0867 }
+    { "name": "Las Grutas", "lat": -40.8083, "lon": -65.0867 },
+    { "name": "Chacabuco", "lat": -34.6427, "lon": -60.4673 },
+    { "name": "Junín", "lat": -34.5919, "lon": -60.9589 },
+    { "name": "La Paternal", "lat": -34.6027, "lon": -58.4736 },
+    { "name": "Avellaneda", "lat": -34.6621, "lon": -58.3651 }
   ],
   "links": [
     { "from": "Santiago de Chile", "to": "Venado Tuerto" },
@@ -104,6 +108,18 @@
     { "from": "J.B. Molina", "to": "Venado Tuerto" },
 
     { "from": "Rosario", "to": "J.B. Molina" },
-    { "from": "J.B. Molina", "to": "Rosario" }
+    { "from": "J.B. Molina", "to": "Rosario" },
+
+    { "from": "Buenos Aires", "to": "Chacabuco" },
+    { "from": "Chacabuco", "to": "Buenos Aires" },
+
+    { "from": "Buenos Aires", "to": "Junín" },
+    { "from": "Junín", "to": "Buenos Aires" },
+
+    { "from": "Buenos Aires", "to": "La Paternal" },
+    { "from": "La Paternal", "to": "Buenos Aires" },
+
+    { "from": "Buenos Aires", "to": "Avellaneda" },
+    { "from": "Avellaneda", "to": "Buenos Aires" }
   ]
 }
