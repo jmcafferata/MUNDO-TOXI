@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nota Constante - TOXI Media</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Helvetica Now', 'Helvetica', 'Arial', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        /* ── SCANLINES overlay ── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 3px,
+                rgba(0,0,0,0.06) 3px,
+                rgba(0,0,0,0.06) 4px
+            );
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* ── BACK BUTTON ── */
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.25);
+            color: rgba(255,255,255,0.5);
+            padding: 8px 18px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            z-index: 100;
+        }
+        .back-btn:hover {
+            border-color: white;
+            color: white;
+        }
+
+        /* ── TITLE ── */
+        .title {
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            font-weight: 900;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            opacity: 0.9;
+        }
+        .subtitle {
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+            margin-bottom: 40px;
+        }
+
+        /* ── VIZ CANVAS ── */
+        #viz-canvas {
+            display: block;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 32px;
+        }
+
+        /* ── METERS ROW ── */
+        .meters {
+            display: flex;
+            gap: 32px;
+            align-items: flex-end;
+            margin-bottom: 28px;
+        }
+        .meter-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .meter-label {
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.35);
+        }
+        .meter-value {
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            min-width: 90px;
+            text-align: center;
+            transition: color 0.15s;
+        }
+
+        /* ── TARGET ZONE ── */
+        .target-zone {
+            width: 260px;
+            height: 32px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 2px;
+            position: relative;
+            margin-bottom: 28px;
+            overflow: hidden;
+        }
+        .target-zone-fill {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            background: rgba(100,255,120,0.18);
+            border-radius: 1px;
+            transition: left 0.02s, width 0.02s;
+        }
+        .target-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: rgba(100,255,120,0.6);
+        }
+        .needle {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: #fff;
+            transform: translateX(-50%);
+            transition: left 0.05s;
+            box-shadow: 0 0 6px rgba(255,255,255,0.8);
+        }
+        .zone-label {
+            position: absolute;
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.55rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(100,255,120,0.5);
+        }
+
+        /* ── DB BAR ── */
+        .db-bar-wrap {
+            width: 260px;
+            height: 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+        .db-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, #1aff6e, #fff700, #ff3d3d);
+            width: 0%;
+            transition: width 0.06s;
+        }
+
+        /* ── STATUS ── */
+        .status-text {
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+            margin-bottom: 24px;
+            min-height: 1.1em;
+        }
+
+        /* ── SCORE ── */
+        .score-row {
+            display: flex;
+            gap: 48px;
+            margin-bottom: 32px;
+        }
+        .score-block {
+            text-align: center;
+        }
+        .score-label {
+            font-size: 0.55rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+            margin-bottom: 2px;
+        }
+        .score-val {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+        #best-val { color: rgba(255,255,255,0.45); }
+
+        /* ── START BUTTON ── */
+        .start-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.7);
+            padding: 12px 36px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .start-btn:hover {
+            border-color: white;
+            color: white;
+            background: rgba(255,255,255,0.06);
+        }
+        .start-btn:disabled {
+            opacity: 0.3;
+            cursor: default;
+        }
+
+        /* ── IN-ZONE GLOW ── */
+        body.in-zone #viz-canvas {
+            box-shadow: 0 0 40px rgba(100,255,120,0.25);
+            border-color: rgba(100,255,120,0.3);
+        }
+
+        /* ── COMBO TEXT ── */
+        #combo-display {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+            text-shadow: 0 0 40px currentColor;
+            z-index: 200;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="/" class="back-btn">← TOXI</a>
+    <div id="combo-display"></div>
+
+    <div class="title">NOTA CONSTANTE</div>
+    <div class="subtitle">mantené la nota — lo más que puedas</div>
+
+    <canvas id="viz-canvas" width="220" height="220"></canvas>
+
+    <div class="meters">
+        <div class="meter-block">
+            <div class="meter-label">Nota</div>
+            <div class="meter-value" id="note-display">—</div>
+        </div>
+        <div class="meter-block">
+            <div class="meter-label">dB</div>
+            <div class="meter-value" id="db-display">—</div>
+        </div>
+        <div class="meter-block">
+            <div class="meter-label">Hz</div>
+            <div class="meter-value" id="hz-display">—</div>
+        </div>
+    </div>
+
+    <!-- pitch zone bar -->
+    <div class="target-zone" id="pitch-bar">
+        <div class="target-zone-fill" id="target-fill"></div>
+        <div class="target-marker" id="target-lo"></div>
+        <div class="target-marker" id="target-hi"></div>
+        <div class="needle" id="pitch-needle"></div>
+        <div class="zone-label">zona</div>
+    </div>
+
+    <!-- dB bar -->
+    <div class="db-bar-wrap">
+        <div class="db-bar-fill" id="db-bar"></div>
+    </div>
+
+    <div class="status-text" id="status-text">— presioná INICIAR —</div>
+
+    <div class="score-row">
+        <div class="score-block">
+            <div class="score-label">tiempo</div>
+            <div class="score-val" id="time-val">0.0s</div>
+        </div>
+        <div class="score-block">
+            <div class="score-label">record</div>
+            <div class="score-val" id="best-val">0.0s</div>
+        </div>
+    </div>
+
+    <button class="start-btn" id="start-btn">INICIAR</button>
+
+<script>
+// ─────────────────────────────────────────────
+//  CONFIG
+// ─────────────────────────────────────────────
+const TARGET_NOTE_NAMES = ['A3','B3','C4','D4','E4','F4','G4','A4']; // random target each round
+const NOTE_TOLERANCE_SEMITONES = 1.5; // ±semi-tones accepted
+const DB_MIN = -60, DB_MAX = 0;
+const TARGET_DB_LO = -35, TARGET_DB_HI = -10; // comfortable singing range (dBFS)
+const MIN_PITCH_HZ = 60, MAX_PITCH_HZ = 1200;
+
+// ─────────────────────────────────────────────
+//  NOTE / FREQUENCY HELPERS
+// ─────────────────────────────────────────────
+const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+function freqToMidi(f) { return 12 * Math.log2(f / 440) + 69; }
+function midiToFreq(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+function noteNameToMidi(name) {
+    const m = name.match(/^([A-G]#?)(\d)$/);
+    if (!m) return null;
+    const oct = parseInt(m[2]);
+    const idx = NOTE_NAMES.indexOf(m[1]);
+    return idx + (oct + 1) * 12;
+}
+function midiToNoteName(midi) {
+    const note = NOTE_NAMES[midi % 12];
+    const oct = Math.floor(midi / 12) - 1;
+    return { name: note, octave: oct, full: note + oct };
+}
+
+// ─────────────────────────────────────────────
+//  YIN PITCH DETECTOR
+//  Fast, accurate, runs on Float32Array
+// ─────────────────────────────────────────────
+function detectPitch(buf, sampleRate, threshold = 0.12) {
+    const N = buf.length;
+    const half = N >> 1;
+    const d = new Float32Array(half);
+
+    // difference function
+    for (let tau = 1; tau < half; tau++) {
+        let s = 0;
+        for (let j = 0; j < half; j++) {
+            const diff = buf[j] - buf[j + tau];
+            s += diff * diff;
+        }
+        d[tau] = s;
+    }
+
+    // cumulative mean normalised difference
+    const cmnd = new Float32Array(half);
+    cmnd[0] = 1;
+    let runSum = 0;
+    for (let tau = 1; tau < half; tau++) {
+        runSum += d[tau];
+        cmnd[tau] = runSum > 0 ? d[tau] * tau / runSum : 1;
+    }
+
+    // threshold
+    let tau = -1;
+    for (let t = 2; t < half; t++) {
+        if (cmnd[t] < threshold) {
+            // local minimum
+            while (t + 1 < half && cmnd[t + 1] < cmnd[t]) t++;
+            tau = t;
+            break;
+        }
+    }
+    if (tau === -1) return -1;
+
+    // parabolic interpolation
+    if (tau > 0 && tau < half - 1) {
+        const s0 = cmnd[tau - 1], s1 = cmnd[tau], s2 = cmnd[tau + 1];
+        tau += (s2 - s0) / (2 * (2 * s1 - s2 - s0));
+    }
+    return sampleRate / tau;
+}
+
+// ─────────────────────────────────────────────
+//  RMS → dBFS
+// ─────────────────────────────────────────────
+function rmsDb(buf) {
+    let sum = 0;
+    for (let i = 0; i < buf.length; i++) sum += buf[i] * buf[i];
+    const rms = Math.sqrt(sum / buf.length);
+    return rms > 0 ? 20 * Math.log10(rms) : -Infinity;
+}
+
+// ─────────────────────────────────────────────
+//  CANVAS VIZ
+// ─────────────────────────────────────────────
+const canvas = document.getElementById('viz-canvas');
+const ctx2d = canvas.getContext('2d');
+const CX = canvas.width / 2, CY = canvas.height / 2, CR = CX - 8;
+
+let analyserNode, dataArray;
+let animId = null;
+let inZone = false;
+
+function drawViz() {
+    animId = requestAnimationFrame(drawViz);
+    ctx2d.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!analyserNode) {
+        // idle pulsing ring
+        const t = performance.now() / 1200;
+        const pulse = 0.5 + 0.5 * Math.sin(t);
+        ctx2d.beginPath();
+        ctx2d.arc(CX, CY, CR * 0.35, 0, Math.PI * 2);
+        ctx2d.strokeStyle = `rgba(255,255,255,${0.06 + 0.04 * pulse})`;
+        ctx2d.lineWidth = 1;
+        ctx2d.stroke();
+        return;
+    }
+
+    analyserNode.getByteTimeDomainData(dataArray);
+
+    const color = inZone ? '100,255,120' : '255,255,255';
+    const slices = Math.min(dataArray.length, 256);
+    const angleStep = (Math.PI * 2) / slices;
+
+    ctx2d.beginPath();
+    for (let i = 0; i < slices; i++) {
+        const v = (dataArray[i] / 128) - 1; // -1..1
+        const r = CR * 0.55 + v * CR * 0.38;
+        const angle = i * angleStep - Math.PI / 2;
+        const x = CX + r * Math.cos(angle);
+        const y = CY + r * Math.sin(angle);
+        i === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
+    }
+    ctx2d.closePath();
+    ctx2d.strokeStyle = `rgba(${color}, 0.85)`;
+    ctx2d.lineWidth = 1.5;
+    ctx2d.stroke();
+    if (inZone) {
+        ctx2d.fillStyle = `rgba(${color}, 0.04)`;
+        ctx2d.fill();
+    }
+}
+drawViz();
+
+// ─────────────────────────────────────────────
+//  GAME STATE
+// ─────────────────────────────────────────────
+let gameActive = false;
+let streak = 0;
+let bestStreak = parseFloat(localStorage.getItem('nc_best') || '0');
+let zoneTimer = null;
+let roundStartTime = null;
+let targetMidi = null;
+let audioCtx = null, sourceNode = null, analyserN = null, scriptProc = null;
+let stream = null;
+
+const startBtn = document.getElementById('start-btn');
+const statusText = document.getElementById('status-text');
+const noteDisplay = document.getElementById('note-display');
+const dbDisplay = document.getElementById('db-display');
+const hzDisplay = document.getElementById('hz-display');
+const timeVal = document.getElementById('time-val');
+const bestVal = document.getElementById('best-val');
+const pitchNeedle = document.getElementById('pitch-needle');
+const targetFill = document.getElementById('target-fill');
+const targetLo = document.getElementById('target-lo');
+const targetHi = document.getElementById('target-hi');
+const dbBar = document.getElementById('db-bar');
+const comboDisplay = document.getElementById('combo-display');
+
+bestVal.textContent = bestStreak.toFixed(1) + 's';
+
+// ─────────────────────────────────────────────
+//  PICK TARGET
+// ─────────────────────────────────────────────
+function pickTarget() {
+    const name = TARGET_NOTE_NAMES[Math.floor(Math.random() * TARGET_NOTE_NAMES.length)];
+    targetMidi = noteNameToMidi(name);
+    const loMidi = targetMidi - NOTE_TOLERANCE_SEMITONES;
+    const hiMidi = targetMidi + NOTE_TOLERANCE_SEMITONES;
+    const loHz = midiToFreq(loMidi);
+    const hiHz = midiToFreq(hiMidi);
+
+    // Map Hz to bar % (log scale between MIN and MAX pitch)
+    function hzToPercent(hz) {
+        return (Math.log2(hz / MIN_PITCH_HZ) / Math.log2(MAX_PITCH_HZ / MIN_PITCH_HZ)) * 100;
+    }
+    const loP = hzToPercent(loHz);
+    const hiP = hzToPercent(hiHz);
+    targetFill.style.left = loP + '%';
+    targetFill.style.width = (hiP - loP) + '%';
+    targetLo.style.left = loP + '%';
+    targetHi.style.left = hiP + '%';
+
+    statusText.textContent = 'CANTÁ: ' + name + '  (' + Math.round(midiToFreq(targetMidi)) + ' Hz)';
+}
+
+// ─────────────────────────────────────────────
+//  STREAK LOGIC
+// ─────────────────────────────────────────────
+let zoneAccumulator = 0;
+let lastFrameTime = performance.now();
+let zoneActive = false;
+
+function onZoneEnter() {
+    zoneActive = true;
+    if (!roundStartTime) roundStartTime = performance.now();
+    document.body.classList.add('in-zone');
+    inZone = true;
+}
+
+function onZoneLeave() {
+    if (!zoneActive) return;
+    zoneActive = false;
+    const elapsed = (performance.now() - roundStartTime) / 1000;
+    if (elapsed > 0.3) {
+        showCombo(elapsed);
+        if (elapsed > bestStreak) {
+            bestStreak = elapsed;
+            localStorage.setItem('nc_best', bestStreak.toFixed(2));
+            bestVal.textContent = bestStreak.toFixed(1) + 's';
+        }
+    }
+    roundStartTime = null;
+    zoneAccumulator = 0;
+    document.body.classList.remove('in-zone');
+    inZone = false;
+    statusText.textContent = 'PERDISTE — respirá y volvé a cantar: ' + midiToNoteName(targetMidi).full.toUpperCase();
+}
+
+function showCombo(sec) {
+    comboDisplay.style.opacity = '0';
+    comboDisplay.textContent = sec.toFixed(1) + 's';
+    comboDisplay.style.color = sec >= 5 ? '#ffe600' : sec >= 2 ? '#1aff6e' : '#fff';
+    comboDisplay.style.opacity = '1';
+    setTimeout(() => { comboDisplay.style.opacity = '0'; }, 900);
+}
+
+// ─────────────────────────────────────────────
+//  AUDIO PROCESSING
+// ─────────────────────────────────────────────
+const BUF_SIZE = 2048;
+
+function processAudio(buf, sampleRate) {
+    const db = rmsDb(buf);
+    const dbClamped = Math.max(DB_MIN, Math.min(DB_MAX, db));
+    const dbPct = ((dbClamped - DB_MIN) / (DB_MAX - DB_MIN)) * 100;
+
+    // dB meter
+    dbBar.style.width = dbPct + '%';
+    dbDisplay.textContent = isFinite(db) ? Math.round(db) + ' dB' : '—';
+
+    const dbInRange = db >= TARGET_DB_LO && db <= TARGET_DB_HI;
+
+    if (db < TARGET_DB_LO - 5) {
+        // silence / too quiet
+        noteDisplay.textContent = '—';
+        hzDisplay.textContent = '—';
+        dbDisplay.style.color = 'rgba(255,255,255,0.4)';
+        noteDisplay.style.color = 'rgba(255,255,255,0.4)';
+        pitchNeedle.style.left = '50%';
+        if (zoneActive) onZoneLeave();
+        return;
+    }
+
+    const pitchHz = detectPitch(buf, sampleRate, 0.12);
+
+    if (pitchHz > 0 && pitchHz >= MIN_PITCH_HZ && pitchHz <= MAX_PITCH_HZ) {
+        const pitchMidi = freqToMidi(pitchHz);
+        const noteInfo = midiToNoteName(Math.round(pitchMidi));
+        const semitoneErr = pitchMidi - targetMidi;
+        const inPitch = Math.abs(semitoneErr) <= NOTE_TOLERANCE_SEMITONES;
+
+        // pitch needle
+        function hzToPercent(hz) {
+            return (Math.log2(hz / MIN_PITCH_HZ) / Math.log2(MAX_PITCH_HZ / MIN_PITCH_HZ)) * 100;
+        }
+        const needlePct = Math.max(1, Math.min(99, hzToPercent(pitchHz)));
+        pitchNeedle.style.left = needlePct + '%';
+
+        noteDisplay.textContent = noteInfo.full.toUpperCase();
+        hzDisplay.textContent = Math.round(pitchHz) + ' Hz';
+        noteDisplay.style.color = inPitch && dbInRange ? '#1aff6e' : '#fff';
+        dbDisplay.style.color = dbInRange ? '#1aff6e' : '#ff3d3d';
+
+        if (inPitch && dbInRange) {
+            if (!zoneActive) onZoneEnter();
+        } else {
+            if (zoneActive) onZoneLeave();
+        }
+    } else {
+        noteDisplay.textContent = '~';
+        hzDisplay.textContent = '—';
+        noteDisplay.style.color = 'rgba(255,255,255,0.35)';
+        if (zoneActive) onZoneLeave();
+    }
+}
+
+// real-time timer display
+function updateTimer() {
+    if (!gameActive) return;
+    if (zoneActive && roundStartTime) {
+        const elapsed = (performance.now() - roundStartTime) / 1000;
+        timeVal.textContent = elapsed.toFixed(1) + 's';
+        timeVal.style.color = elapsed >= 5 ? '#ffe600' : elapsed >= 2 ? '#1aff6e' : '#fff';
+    } else {
+        timeVal.style.color = '#fff';
+    }
+    requestAnimationFrame(updateTimer);
+}
+
+// ─────────────────────────────────────────────
+//  START / STOP
+// ─────────────────────────────────────────────
+async function startGame() {
+    startBtn.disabled = true;
+    startBtn.textContent = 'ESCUCHANDO...';
+    statusText.textContent = 'Pediendo acceso al micrófono...';
+
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }, video: false });
+    } catch (e) {
+        statusText.textContent = 'Sin acceso al micrófono :(';
+        startBtn.disabled = false;
+        startBtn.textContent = 'INICIAR';
+        return;
+    }
+
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 44100 });
+    sourceNode = audioCtx.createMediaStreamSource(stream);
+
+    analyserN = audioCtx.createAnalyser();
+    analyserN.fftSize = 2048;
+    analyserN.smoothingTimeConstant = 0.3;
+    dataArray = new Uint8Array(analyserN.frequencyBinCount);
+    analyserNode = analyserN;
+    sourceNode.connect(analyserN);
+
+    // ScriptProcessor for pitch (deprecated but universally supported)
+    scriptProc = audioCtx.createScriptProcessor(BUF_SIZE, 1, 1);
+    sourceNode.connect(scriptProc);
+    scriptProc.connect(audioCtx.destination);
+
+    scriptProc.onaudioprocess = (e) => {
+        if (!gameActive) return;
+        const buf = e.inputBuffer.getChannelData(0);
+        processAudio(buf, audioCtx.sampleRate);
+    };
+
+    gameActive = true;
+    pickTarget();
+    startBtn.textContent = 'NUEVA NOTA';
+    startBtn.disabled = false;
+    startBtn.onclick = () => { if (zoneActive) onZoneLeave(); pickTarget(); };
+    updateTimer();
+}
+
+startBtn.onclick = startGame;
+</script>
+</body>
+</html>

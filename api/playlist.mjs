@@ -35,7 +35,7 @@ const PLAYLIST = [
   { id: 'DE01AR1H01dk7JY9q8RsBP7jk122hRQaxKkMJRxirNQWM',       duration: 151.860044,  title: 'Mentoría de Comunicación, Locución y Doblaje — Demi Roch' },
   { id: '02lxmxwxBURGEtO4XtvXro024Zl8yOCUsf6AzfGEkiuSU',       duration: 1868.408211, title: 'Mesa Torcida — Piloto' },
   { id: 'd1Mu65Kcey02gQtRDtcV00U01U01JYwn9dZettLfFmErz3E',     duration: 587.0448,    title: 'Misión: Odelar' },
-  { id: 'E3b021s023Mdu65576vdhrby5yciv8SrPeFdy96LZOOas',        duration: 2575.533333, title: 'Moni y Yisus entrevistan a Maxi Mancuso — MONIYISUS #1' },
+  //{ id: 'E3b021s023Mdu65576vdhrby5yciv8SrPeFdy96LZOOas',        duration: 2575.533333, title: 'Moni y Yisus entrevistan a Maxi Mancuso — MONIYISUS #1' },
   { id: 'h5NFgWueG4nldZesITFtEYpnU01CyExDQ02FZ3tSBrp5w',       duration: 1167.467467, title: 'Moni y Yisus entrevistan a Rose Cafferata — MONIYISUS #2' },
   { id: 'YSqI5Wj9dGRwjMh005Xs6a4Q4IPTdmAQJYa4WU1dH12w',       duration: 2489.820678, title: 'Moni y Yisus entrevistan al Padre Tomás Méndez — MONIYISUS #4' },
   { id: '9pXQ7MUiVlTklMCQdQVdbxoMn85YIC3jObLtzBFN801o',        duration: 137.220422,  title: 'Muerte y Miedo en las Calles — Otro Día en la Red' },
@@ -65,6 +65,7 @@ const PLAYLIST = [
   { id: '00VG6EL1oC4eI96PVQXeobbdZ6GBNwrmUAexIDdiMpTc',        duration: 160.326833,  title: 'Hipo Hip Hop' },
   { id: 'QUElHo8r5HtNqfh02XfGKm85jUJ01iTGbkyn2D4BeYNZI',       duration: 189.148256,  title: 'Otro Día en la Red 0' },
   { id: 'K6p6zWxcLOtRXb02eWcic00RYQG8SwDxE014o9007ZTBwm8',     duration: 588.629711,  title: 'Otro Día en la Red III' },
+  { id: 'HRr2KXg2X800YNuos9Aj2LmZe8XIqHvTMgFrGKc7v7wQ',       duration: 189.898042,   title: 'Volvé a ODELAR — Otro Día en la Red' },
   { id: '2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE',        duration: 230.480256,  title: 'Viaje a la Luna' },
   { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY',  duration: 80.830756,   title: '¿Qué es Mamarracho?' },
 ];

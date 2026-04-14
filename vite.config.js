@@ -67,6 +67,8 @@ export default defineConfig({
         tv: resolve(__dirname, 'tv.html'),
         privacyPolicy: resolve(__dirname, 'privacy-policy.html'),
         venadoTuertoElMusical: resolve(__dirname, 'venado-tuerto-el-musical.html'),
+        trabajos: resolve(__dirname, 'trabajos.html'),
+        notaConstante: resolve(__dirname, 'nota-constante.html'),
       },
     },
   },

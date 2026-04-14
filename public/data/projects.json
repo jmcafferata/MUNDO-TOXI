@@ -682,5 +682,22 @@
     "web": "",
     "categoria": "",
     "lastUpdated": "2019-01"
+  },
+  {
+    "name": "Otro Día en la Red",
+    "slug": "otro-dia-en-la-red",
+    "description": "Serie que explora la vida cotidiana en internet: cultura, política y sociedad a través de la pantalla.",
+    "contenido": "<p><strong>Otro Día en la Red</strong> es una serie documental de TOXI Media que registra y analiza el pulso de la actualidad desde el mundo online. Cada capítulo recorre un tema diferente: desinformación, humor político, memes, redes sociales y la vida que transcurre detrás de la pantalla.</p><p>La serie incluye los capítulos <em>0</em>, <em>Capítulo 1</em>, <em>III</em>, <em>IV — Odelar</em> y <em>Muerte y Miedo en las Calles</em>.</p><p><a href=\"/otro-dia-en-la-red\"><strong>Ver todos los capítulos</strong></a></p>",
+    "card": "/odelar-card.jpg",
+    "banner": "/odelar-card.jpg",
+    "thumbnail": "/odelar-card.jpg",
+    "talentos": [
+      "juan-manuel-cafferata"
+    ],
+    "formato": "1",
+    "credits": "<h4>Producción</h4><p>TOXI Media</p>",
+    "web": "https://toxi.media/otro-dia-en-la-red",
+    "categoria": "",
+    "lastUpdated": "2026-04"
   }
 ]
