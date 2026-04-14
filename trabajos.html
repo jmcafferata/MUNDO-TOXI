@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trabajos – TOXI Media</title>
+  <meta name="description" content="Sumate al equipo de TOXI Media. Posiciones abiertas en producción audiovisual, tecnología y comunicación." />
+  <link rel="icon" href="/favicon.ico" />
+  <style>
+    @font-face {
+      font-family: 'Helvetica Now';
+      src: url('/HelveticaNowDisplay-Bold.otf') format('opentype');
+      font-weight: bold;
+    }
+    @font-face {
+      font-family: 'Helvetica Now';
+      src: url('/HelveticaNowDisplay-Light.otf') format('opentype');
+      font-weight: 300;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: #000;
+      color: #fff;
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-weight: 300;
+      min-height: 100%;
+    }
+
+    header {
+      padding: 40px 48px 0;
+    }
+    header a {
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-weight: bold;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    header a:hover { opacity: 1; }
+
+    main {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 80px 32px 120px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-weight: bold;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 64px;
+      letter-spacing: 0.03em;
+      line-height: 1.6;
+    }
+
+    /* Job cards */
+    .jobs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-bottom: 64px;
+    }
+
+    .job-card {
+      border-top: 1px solid #1a1a1a;
+      padding: 28px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .job-card:last-child {
+      border-bottom: 1px solid #1a1a1a;
+    }
+    .job-card:hover { opacity: 0.75; }
+
+    .job-info { flex: 1; }
+
+    .job-area {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .job-title {
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-weight: bold;
+      font-size: 1.15rem;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .job-detail {
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .job-badge {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 6px 14px;
+      border-radius: 999px;
+      white-space: nowrap;
+      margin-top: 4px;
+    }
+    .job-badge.open::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4cff91;
+      flex-shrink: 0;
+    }
+
+    /* Contact section */
+    .contact-section {
+      border-top: 1px solid #1a1a1a;
+      padding-top: 40px;
+    }
+
+    .contact-section h2 {
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-weight: bold;
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 18px;
+    }
+
+    .contact-section p {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: #ccc;
+    }
+
+    a.inline {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    a.inline:hover { color: #aaa; }
+
+    .apply-btn {
+      display: inline-block;
+      margin-top: 28px;
+      padding: 14px 36px;
+      background: #fff;
+      color: #000;
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-weight: bold;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .apply-btn:hover {
+      background: #ccc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      font-size: 0.75rem;
+      color: #333;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 520px) {
+      header { padding: 28px 24px 0; }
+      main { padding: 56px 20px 80px; }
+      .job-card { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/">← TOXI MEDIA</a>
+</header>
+
+<main>
+  <p class="tag">Equipo</p>
+  <h1>Trabajos</h1>
+  <p class="subtitle">Somos una productora multimedia que hace series, eventos, tecnología y experiencias. Si te interesa sumarte, leé las posiciones abiertas o mandanos un mensaje.</p>
+
+  <div class="jobs-list">
+
+    <div class="job-card">
+      <div class="job-info">
+        <p class="job-area">Captura volumétrica · TOXI VR</p>
+        <p class="job-title">Especialista en escaneo 4D</p>
+        <p class="job-detail">Operación de rigs de cámaras para captura volumétrica y fotogrametría en movimiento. Experiencia con DepthKit, 4DViews o sistemas similares. Para producciones VR e instalaciones inmersivas.</p>
+      </div>
+      <span class="job-badge open">Abierto</span>
+    </div>
+
+    <div class="job-card">
+      <div class="job-info">
+        <p class="job-area">Postproducción 3D · TOXI VR / Xplora</p>
+        <p class="job-title">Editor/a de Gaussian Splats</p>
+        <p class="job-detail">Procesamiento y edición de nubes de puntos y Gaussian Splats a partir de capturas con NeRF o fotogrametría. Manejo de SuperSplat, Luma AI o flujos similares. Integración en WebGL / Three.js.</p>
+      </div>
+      <span class="job-badge open">Abierto</span>
+    </div>
+
+    <div class="job-card">
+      <div class="job-info">
+        <p class="job-area">Infraestructura · Plataforma</p>
+        <p class="job-title">Mantenimiento de infraestructura digital</p>
+        <p class="job-detail">Administración de servidores, CDN y pipelines de video (Mux, Vercel, VPS). Monitoreo de uptime, backups, seguridad y costos. Conocimiento de Linux, Nginx y servicios cloud.</p>
+      </div>
+      <span class="job-badge open">Abierto</span>
+    </div>
+
+    <div class="job-card">
+      <div class="job-info">
+        <p class="job-area">Territorio · Desarrollos Regenerativos</p>
+        <p class="job-title">Especialista en jardinería sintropica</p>
+        <p class="job-detail">Diseño e implementación de sistemas agroforestales sintropicos. Experiencia con Ernst Götsch o metodologías afines. Para proyectos de restauración de suelos en campo, con documentación audiovisual integrada.</p>
+      </div>
+      <span class="job-badge open">Abierto</span>
+    </div>
+
+    <div class="job-card">
+      <div class="job-info">
+        <p class="job-area">Audio · Audiont / Producciones</p>
+        <p class="job-title">Ingeniero/a de sonido y post-audio</p>
+        <p class="job-detail">Mezcla, masterización y diseño sonoro para cine, teatro y streaming. Experiencia con DAWs (Reaper, Pro Tools, Ableton). Posibilidad de colaborar en el desarrollo de Audiont.</p>
+      </div>
+      <span class="job-badge open">Abierto</span>
+    </div>
+
+    <div class="job-card">
+      <div class="job-info">
+        <p class="job-area">IA Aplicada · Turing / Audiont</p>
+        <p class="job-title">Desarrollador/a de pipelines con LLMs</p>
+        <p class="job-detail">Integración de modelos de lenguaje (OpenAI, Gemini, Anthropic) en productos propios. Experiencia con APIs, agentes, RAG y automatizaciones vía WhatsApp, web o CLI.</p>
+      </div>
+      <span class="job-badge open">Abierto</span>
+    </div>
+
+    <div class="job-card">
+      <div class="job-info">
+        <p class="job-area">Dirección de arte · Eventos / Cine</p>
+        <p class="job-title">Diseñador/a de entornos escénicos</p>
+        <p class="job-detail">Creación de mundos visuales para obras teatrales, instalaciones y ficciones. Experiencia en escenografía o dirección de arte. Capacidad de trabajar con bajo presupuesto y alta creatividad.</p>
+      </div>
+      <span class="job-badge open">Abierto</span>
+    </div>
+
+    <div class="job-card">
+      <div class="job-info">
+        <p class="job-area">Prensa · Distribución</p>
+        <p class="job-title">Relacionista de prensa y medios</p>
+        <p class="job-detail">Gestión de prensa para estrenos cinematográficos, eventos y lanzamientos de plataforma. Redacción de gacetillas, armado de listas de medios y seguimiento de cobertura. Buenos Aires y otras plazas.</p>
+      </div>
+      <span class="job-badge open">Abierto</span>
+    </div>
+
+  </div>
+
+  <div class="contact-section">
+    <h2>¿Cómo aplicar?</h2>
+    <p>
+      Mandanos un mail a <a class="inline" href="mailto:admin@toxi.media">admin@toxi.media</a> con tu nombre, el puesto al que te interesa aplicar y un link a tu portfolio o CV. Respondemos a todas las consultas.
+    </p>
+    <p style="margin-top:12px;">
+      También podés escribirnos si no encontrás tu perfil acá pero querés formar parte del equipo. Siempre abrimos nuevos proyectos.
+    </p>
+    <a class="apply-btn" href="mailto:admin@toxi.media">Escribinos</a>
+  </div>
+
+</main>
+
+<footer>© TOXI Media — toxi.media</footer>
+
+</body>
+</html>

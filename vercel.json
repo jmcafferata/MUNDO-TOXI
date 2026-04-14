@@ -17,12 +17,24 @@
       "destination": "/privacy-policy.html"
     },
     {
+      "source": "/trabajos",
+      "destination": "/trabajos.html"
+    },
+    {
       "source": "/audiont",
       "destination": "/audiont.html"
     },
     {
       "source": "/venado-tuerto-el-musical",
       "destination": "/venado-tuerto-el-musical.html"
+    },
+    {
+      "source": "/nota-constante",
+      "destination": "/nota-constante.html"
+    },
+    {
+      "source": "/otro-dia-en-la-red",
+      "destination": "/otro-dia-en-la-red.html"
     },
     {
       "source": "/tv",
