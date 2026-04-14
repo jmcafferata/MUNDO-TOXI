@@ -293,7 +293,8 @@
         }
 
         const paid = hasValidEntry();
-        if (!paid) {
+        const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        if (!paid && !isPWA) {
           // Redirect to index for payment
           window.location.href = '/';
           return;
