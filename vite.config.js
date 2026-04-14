@@ -69,6 +69,7 @@ export default defineConfig({
         venadoTuertoElMusical: resolve(__dirname, 'venado-tuerto-el-musical.html'),
         trabajos: resolve(__dirname, 'trabajos.html'),
         notaConstante: resolve(__dirname, 'nota-constante.html'),
+        otroDiaEnLaRed: resolve(__dirname, 'otro-dia-en-la-red.html'),
       },
     },
   },
