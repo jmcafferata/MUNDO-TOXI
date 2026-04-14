@@ -2,6 +2,109 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import { GoogleGenAI } from '@google/genai';
 
+// ─── SCHEDULE ───────────────────────────────────────────────
+const SCHEDULE_EPOCH = 1767225600; // 2026-01-01T00:00:00Z
+const SCHEDULE_PLAYLIST = [
+  { duration: 339.548,     title: 'Hotel Oriente' },
+  { duration: 687.228,     title: 'Hotel Oriente — Detrás de Escena' },
+  { duration: 163.081,     title: 'Detective Noir' },
+  { duration: 498.499,     title: 'Ver para Coger' },
+  { duration: 5563.892,    title: 'We Will Rock You' },
+  { duration: 79.533333,   title: '(ICU) Think About' },
+  { duration: 1060.893178, title: '17 Minutos con Cata' },
+  { duration: 73.633333,   title: 'A Game of Drones — Early Access Trailer' },
+  { duration: 605.146211,  title: "After You're Gone — Fancy Dogs™" },
+  { duration: 2457.566667, title: 'Alfredo Cafferata en TOXI Media' },
+  { duration: 956.08,      title: 'BAFICI Nights con Fabrizio Sanguinetti' },
+  { duration: 1270.811211, title: 'Bebop Big Band' },
+  { duration: 17.966667,   title: 'Carola Gil le informa a Carlos Pagni la existencia de Pizza & Pagni' },
+  { duration: 30.196844,   title: 'Charlas Interactivas — Xplora Academy' },
+  { duration: 588.254344,  title: 'Cuento de la Selva' },
+  { duration: 616.782844,  title: 'Desarrollos Regenerativos' },
+  { duration: 17.267256,   title: 'Detrás de las Risas — Teaser' },
+  { duration: 2619.033089, title: 'El Maravilloso Mundo de TOXI' },
+  { duration: 63.866667,   title: 'Galaxy Adventure 2' },
+  { duration: 1333.457133, title: 'IDA — Claire Fatale & Julian Camps' },
+  { duration: 6958.04,     title: 'Inteligencia Artificial, Abogacía y el Desafío de la Modernización Judicial' },
+  { duration: 196.321133,  title: "It's a Jungle Out There" },
+  { duration: 957.247967,  title: 'Lo Que Se Avecina — Piloto' },
+  { duration: 556.389178,  title: 'La Biblioteca Café' },
+  { duration: 206.748211,  title: 'La Irracional' },
+  { duration: 108.483378,  title: 'Las Formas del Laberinto — Tráiler' },
+  { duration: 42.0003,     title: 'Las Siestas de Sol' },
+  { duration: 243.952044,  title: 'Lectura en Francés — Juana la Loca' },
+  { duration: 53.094711,   title: 'MONIYISUS — Tráiler' },
+  { duration: 34.701344,   title: 'Maxi Mancuso Quintet — Difusión' },
+  { duration: 151.860044,  title: 'Mentoría de Comunicación — Demi Roch' },
+  { duration: 1868.408211, title: 'Mesa Torcida — Piloto' },
+  { duration: 587.0448,    title: 'Misión: Odelar' },
+  { duration: 1167.467467, title: 'Moni y Yisus entrevistan a Rose Cafferata — MONIYISUS #2' },
+  { duration: 2489.820678, title: 'Moni y Yisus entrevistan al Padre Tomás Méndez — MONIYISUS #4' },
+  { duration: 137.220422,  title: 'Muerte y Miedo en las Calles' },
+  { duration: 181.764922,  title: 'Ni Jorges ni Borges — Odelar #6' },
+  { duration: 455.538422,  title: 'Odelar — Otro Día en la Red IV' },
+  { duration: 376.250878,  title: 'Otro Día en la Red — Capítulo 1' },
+  { duration: 635.384756,  title: 'Prototipazos — Piloto La Impact' },
+  { duration: 272.939344,  title: 'Palta and the Gang — Luna Park' },
+  { duration: 224.140589,  title: 'Para Qué Sirve Todo Esto' },
+  { duration: 217.133589,  title: 'Pierrot le Bolou' },
+  { duration: 19.9783,     title: 'Prez — Tráiler' },
+  { duration: 224.1823,    title: 'RAKU 楽焼' },
+  { duration: 166.541378,  title: 'Hedonismo y Seducción (1)' },
+  { duration: 101.551467,  title: 'Hedonismo y Seducción (2)' },
+  { duration: 104.020589,  title: 'Hedonismo y Seducción (3)' },
+  { duration: 412.328589,  title: 'Recoleta bajo la Lluvia' },
+  { duration: 604.687422,  title: 'Santuario del Maipo' },
+  { duration: 241.241011,  title: 'Sábado a la Noche' },
+  { duration: 4983.850522, title: 'TOXI Seminars Vol. II — Peronismos' },
+  { duration: 2898.3,      title: 'Más Allá del Más Allá — MONIYISUS #4' },
+  { duration: 4863.358511, title: 'The Greatest Showman — Obra Completa EDLP' },
+  { duration: 92.251,      title: 'Las Catadoras del Führer — Tráiler' },
+  { duration: 241.958333,  title: 'Viaje — Fermín Tz' },
+  { duration: 2868.448922, title: 'Xplora Night Live — 8 de Abril de 2025' },
+  { duration: 161.027533,  title: 'Yuyo Noé recorre Las Formas del Laberinto' },
+  { duration: 149.6495,    title: 'Fiesta en la Cocina' },
+  { duration: 160.326833,  title: 'Hipo Hip Hop' },
+  { duration: 189.148256,  title: 'Otro Día en la Red 0' },
+  { duration: 588.629711,  title: 'Otro Día en la Red III' },
+  { duration: 189.898042,  title: 'Volvé a ODELAR' },
+  { duration: 230.480256,  title: 'Viaje a la Luna' },
+  { duration: 80.830756,   title: '¿Qué es Mamarracho?' },
+];
+
+function buildSchedule() {
+  const totalDuration = SCHEDULE_PLAYLIST.reduce((a, b) => a + b.duration, 0);
+  const nowSec = Date.now() / 1000;
+  const elapsed = ((nowSec - SCHEDULE_EPOCH) % totalDuration + totalDuration) % totalDuration;
+  const cycleStart = nowSec - elapsed; // unix seconds when current cycle began
+
+  // Argentina = UTC-3
+  const TZ_OFFSET_SEC = -3 * 3600;
+
+  function toHHMM(unixSec) {
+    const d = new Date((unixSec + TZ_OFFSET_SEC) * 1000);
+    const hh = String(d.getUTCHours()).padStart(2, '0');
+    const mm = String(d.getUTCMinutes()).padStart(2, '0');
+    return `${hh}:${mm}`;
+  }
+
+  let pos = 0;
+  let currentTitle = '';
+  const lines = [];
+  for (const item of SCHEDULE_PLAYLIST) {
+    const startSec = cycleStart + pos;
+    const endSec = startSec + item.duration;
+    const isCurrent = nowSec >= startSec && nowSec < endSec;
+    const marker = isCurrent ? ' ← AHORA' : '';
+    lines.push(`${toHHMM(startSec)} - ${item.title}${marker}`);
+    if (isCurrent) currentTitle = item.title;
+    pos += item.duration;
+  }
+
+  return `PROGRAMACIÓN EN VIVO (hora Argentina):\nAhora está pasando: ${currentTitle}\n${lines.join('\n')}`;
+}
+// ────────────────────────────────────────────────────────────
+
 // Strip HTML tags for cleaner context
 function stripHtml(html) {
   return (html || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -48,7 +151,8 @@ export default async function handler(req, res) {
   ]);
 
   const context = buildContext(projects, talentos, formatos);
-  const prompt = `Sos el guía espiritual de TOXI Media. Hablás con la sabiduría, calma y profundidad de Mahatma Gandhi — usás metáforas simples, hablas de la verdad, la creatividad como fuerza no violenta, y el arte como camino de transformación. Respondé en el idioma del usuario, de forma breve (máximo 3 oraciones), reflexiva y con una pizca de humor gentil. Solo hablá de lo que hay en la plataforma.\n\nCONTENIDO DE LA PLATAFORMA:\n${context}\n\nEl usuario dice: "${text.trim()}"`;
+  const schedule = buildSchedule();
+  const prompt = `Sos el guía espiritual de TOXI Media. Hablás con la sabiduría, calma y profundidad de Mahatma Gandhi — usás metáforas simples, hablas de la verdad, la creatividad como fuerza no violenta, y el arte como camino de transformación. Respondé en el idioma del usuario, de forma breve (máximo 3 oraciones), reflexiva y con una pizca de humor gentil. Solo hablá de lo que hay en la plataforma. Si te preguntan qué están dando o a qué hora pasan algo, consultá la grilla de programación.\n\nCONTENIDO DE LA PLATAFORMA:\n${context}\n\n${schedule}\n\nEl usuario dice: "${text.trim()}"`;
 
   // Call Gemini via @google/genai SDK
   const ai = new GoogleGenAI({ apiKey: geminiKey });
