@@ -8,7 +8,21 @@ export function initPaywall({ musicFile, onEnter }) {
   // If running as installed PWA, skip paywall entirely
   if (isRunningAsPWA()) {
     console.log('[TOXI] PWA detectada - saltando paywall');
-    // Show enter button directly without paywall
+
+    // If already entered this session, skip the button entirely
+    if (sessionStorage.getItem('pwa_entered')) {
+      if (onEnter) onEnter();
+      if (musicFile) {
+        const audio = new Audio(musicFile);
+        audio.loop = true;
+        audio.volume = 0.5;
+        audio.play().catch(e => console.log("Play error", e));
+        window.currentAudio = audio;
+      }
+      return;
+    }
+
+    // First page load: show ENTRAR button once
     setTimeout(() => {
       const enterHtml = `
         <div id="enter-overlay" class="enter-overlay">
@@ -23,6 +37,7 @@ export function initPaywall({ musicFile, onEnter }) {
       enterOverlay.style.cssText = 'opacity: 1; visibility: visible; background-color: #000; display: flex;';
       
       enterBtn.addEventListener('click', () => {
+        sessionStorage.setItem('pwa_entered', '1');
         enterOverlay.style.transition = 'opacity 3s ease, visibility 3s ease';
         enterBtn.style.transition = 'opacity 1s ease';
         enterBtn.style.opacity = '0';
