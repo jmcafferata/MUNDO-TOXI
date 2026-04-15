@@ -70,6 +70,7 @@ export default defineConfig({
         trabajos: resolve(__dirname, 'trabajos.html'),
         notaConstante: resolve(__dirname, 'nota-constante.html'),
         otroDiaEnLaRed: resolve(__dirname, 'otro-dia-en-la-red.html'),
+        audiont: resolve(__dirname, 'audiont.html'),
       },
     },
   },

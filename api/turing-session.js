@@ -102,5 +102,31 @@ export default async function handler(req, res) {
     return res.status(200).json({ sessionId: session.id });
   }
 
+  // ── PUT: submit guess ──────────────────────────────────────────────────────
+  if (req.method === 'PUT') {
+    const { sessionId, guess } = req.body || {};
+    if (!sessionId || !['A', 'B'].includes(guess)) {
+      return res.status(400).json({ error: 'Invalid sessionId or guess (must be A or B)' });
+    }
+
+    const sessions = await sb('GET', 'turing_sessions', null, `?id=eq.${encodeURIComponent(sessionId)}`);
+    if (!sessions?.[0]) return res.status(404).json({ error: 'Session not found' });
+    const session = sessions[0];
+
+    if (session.status === 'concluded') {
+      return res.status(400).json({ error: 'Already concluded' });
+    }
+
+    const correct = guess === session.human_side;
+
+    await sb('PATCH', 'turing_sessions', {
+      status:        'concluded',
+      user_guess:    guess,
+      correct_guess: correct,
+    }, `?id=eq.${encodeURIComponent(sessionId)}`);
+
+    return res.status(200).json({ correct, humanSide: session.human_side });
+  }
+
   return res.status(405).json({ error: 'Method not allowed' });
 }
