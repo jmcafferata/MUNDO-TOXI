@@ -509,6 +509,133 @@
     }
     .footer a:hover { color: rgba(255,255,255,0.7); }
 
+    /* ── DROP ZONE ── */
+    .drop-zone-section {
+      padding: 80px 24px;
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .drop-zone {
+      border: 2px dashed rgba(37,211,102,0.35);
+      background: rgba(37,211,102,0.03);
+      padding: 60px 32px;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      user-select: none;
+    }
+    .drop-zone.dragover {
+      border-color: #25d366;
+      background: rgba(37,211,102,0.08);
+    }
+
+    .drop-zone-icon {
+      font-size: 2.4rem;
+      margin-bottom: 20px;
+      display: block;
+      opacity: 0.7;
+    }
+
+    .drop-zone-label {
+      font-size: 1.05rem;
+      font-weight: bold;
+      color: rgba(255,255,255,0.75);
+      margin: 0 0 10px;
+    }
+
+    .drop-zone-sub {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    #file-input { display: none; }
+
+    /* ── TRANSCRIPTION RESULT ── */
+    .transcription-result {
+      margin-top: 32px;
+      text-align: left;
+    }
+
+    .transcription-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: rgba(37,211,102,0.6);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .transcription-text {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 28px 32px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .transcription-meta {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 1px;
+      margin-top: 12px;
+    }
+
+    .transcription-copy {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.5);
+      padding: 10px 24px;
+      font-family: inherit;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: all 0.3s;
+    }
+    .transcription-copy:hover {
+      border-color: rgba(255,255,255,0.5);
+      color: #fff;
+      background: rgba(255,255,255,0.06);
+    }
+
+    .drop-status {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.45);
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .drop-spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(37,211,102,0.2);
+      border-top-color: #25d366;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .drop-error {
+      color: rgba(255,100,100,0.8);
+      font-size: 0.82rem;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .drop-zone { padding: 44px 20px; }
+      .transcription-text { padding: 20px; }
+    }
+
     @media (max-width: 600px) {
       .nav { padding: 16px 20px; }
       .hero { padding: 100px 20px 70px; }
@@ -547,6 +674,29 @@
       <a href="#precios" class="btn-ghost">Ver precios</a>
     </div>
     <div class="scroll-hint">↓ scroll</div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- DRAG AND DROP TRANSCRIBER -->
+  <section class="drop-zone-section" id="transcribir">
+    <p class="section-label">Transcripción directa</p>
+    <div id="drop-zone" class="drop-zone" role="button" tabindex="0" aria-label="Arrastrá un audio aquí para transcribir">
+      <span class="drop-zone-icon">🎙️</span>
+      <p class="drop-zone-label">Arrastrá cualquier audio acá</p>
+      <p class="drop-zone-sub">o hacé click para elegir un archivo</p>
+      <input type="file" id="file-input" accept="audio/*,.m4a,.ogg,.oga,.opus,.webm,.weba,.wav,.mp3,.aac,.flac,.mp4" />
+    </div>
+
+    <div id="drop-status" class="drop-status" hidden></div>
+    <p id="drop-error" class="drop-error" hidden></p>
+
+    <div id="transcription-result" class="transcription-result" hidden>
+      <span id="transcription-label" class="transcription-label">Transcripción</span>
+      <div id="transcription-text" class="transcription-text"></div>
+      <p id="transcription-meta" class="transcription-meta"></p>
+      <button id="copy-btn" class="transcription-copy">Copiar texto</button>
+    </div>
   </section>
 
   <hr class="divider" />
@@ -729,6 +879,130 @@
       <a href="/">toxi.media</a>
     </div>
   </footer>
+  <script>
+    (function () {
+      const dropZone    = document.getElementById('drop-zone');
+      const fileInput   = document.getElementById('file-input');
+      const statusEl    = document.getElementById('drop-status');
+      const errorEl     = document.getElementById('drop-error');
+      const resultEl    = document.getElementById('transcription-result');
+      const textEl      = document.getElementById('transcription-text');
+      const metaEl      = document.getElementById('transcription-meta');
+      const copyBtn     = document.getElementById('copy-btn');
+      const labelEl     = document.getElementById('transcription-label');
 
+      const SUPPORTED_TYPES = new Set([
+        'audio/mpeg','audio/mp4','audio/mp4a-latm','audio/ogg','audio/opus',
+        'audio/wav','audio/x-wav','audio/webm','audio/aac','audio/flac',
+        'audio/x-m4a','video/mp4','video/webm',
+      ]);
+
+      function showStatus(msg) {
+        statusEl.innerHTML = `<span class="drop-spinner"></span><span>${msg}</span>`;
+        statusEl.hidden = false;
+      }
+      function clearStatus() { statusEl.hidden = true; statusEl.innerHTML = ''; }
+      function showError(msg) { errorEl.textContent = msg; errorEl.hidden = false; }
+      function clearError() { errorEl.hidden = true; errorEl.textContent = ''; }
+
+      dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+      dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) handleFile(file);
+      });
+      dropZone.addEventListener('click', () => fileInput.click());
+      dropZone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') fileInput.click(); });
+      fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+      async function handleFile(file) {
+        clearError();
+        resultEl.hidden = true;
+        textEl.textContent = '';
+
+        const mimeOk = SUPPORTED_TYPES.has(file.type) || file.name.match(/\.(mp3|m4a|ogg|oga|opus|webm|weba|wav|aac|flac|mp4)$/i);
+        if (!mimeOk) {
+          showError('Formato no soportado. Usá mp3, m4a, ogg, opus, wav, webm o flac.');
+          return;
+        }
+
+        const MAX_MB = 24;
+        if (file.size > MAX_MB * 1024 * 1024) {
+          showError(`El archivo es demasiado grande. Máximo ${MAX_MB} MB.`);
+          return;
+        }
+
+        showStatus(`Leyendo "${file.name}"…`);
+
+        let base64;
+        try {
+          base64 = await fileToBase64(file);
+        } catch {
+          clearStatus();
+          showError('No se pudo leer el archivo.');
+          return;
+        }
+
+        showStatus('Transcribiendo con Groq Whisper…');
+
+        let res;
+        try {
+          res = await fetch('/api/transcribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ file: base64, name: file.name, type: file.type }),
+          });
+        } catch {
+          clearStatus();
+          showError('Error de red. Verificá tu conexión e intentá de nuevo.');
+          return;
+        }
+
+        clearStatus();
+
+        if (!res.ok) {
+          let errMsg = `Error ${res.status}`;
+          try { const d = await res.json(); errMsg = d.error || errMsg; } catch {}
+          showError(errMsg);
+          return;
+        }
+
+        const data = await res.json();
+        const transcription = data.text || '';
+
+        labelEl.textContent = `Transcripción — ${file.name}`;
+        textEl.textContent = transcription;
+        metaEl.textContent = `${transcription.length} caracteres · ${Math.round(file.size / 1024)} KB`;
+        resultEl.hidden = false;
+        resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        fileInput.value = '';
+      }
+
+      function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const result = reader.result;
+            const comma = result.indexOf(',');
+            resolve(comma !== -1 ? result.slice(comma + 1) : result);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      copyBtn.addEventListener('click', () => {
+        const txt = textEl.textContent;
+        if (!txt) return;
+        navigator.clipboard.writeText(txt).then(() => {
+          copyBtn.textContent = 'Copiado ✓';
+          setTimeout(() => { copyBtn.textContent = 'Copiar texto'; }, 2000);
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

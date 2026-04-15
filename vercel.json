@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/transcribe.mjs": {
+      "maxDuration": 60
+    }
+  },
   "redirects": [
     {
       "source": "/project/:slug*",
