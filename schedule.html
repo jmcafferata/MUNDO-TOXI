@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grilla Semanal — TOXI</title>
+  <style>
+    :root {
+      --bg:     #080808;
+      --bg2:    #111111;
+      --bg3:    #1a1a1a;
+      --border: #252525;
+      --text:   #d8d8d8;
+      --muted:  #555;
+      --accent: #ffffff;
+      --red:    #f87171;
+      --green:  #4ade80;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-size: 12px;
+      overflow: hidden;
+    }
+
+    #app {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* ── SIDEBAR ────────────────────────────────────────────────────────── */
+    #sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--bg2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-head {
+      padding: 14px 12px 10px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .sidebar-head h1 {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    #search {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      font-size: 12px;
+      padding: 7px 10px;
+      outline: none;
+    }
+    #search:focus { border-color: #444; }
+
+    #library {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .lib-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 12px;
+      cursor: grab;
+      border-bottom: 1px solid var(--border);
+      user-select: none;
+      transition: background .1s;
+    }
+    .lib-item:hover   { background: var(--bg3); }
+    .lib-item:active  { cursor: grabbing; }
+    .lib-item.dragging { opacity: .35; }
+
+    .lib-thumb {
+      width: 56px;
+      height: 32px;
+      border-radius: 3px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--bg3);
+    }
+
+    .lib-info   { flex: 1; min-width: 0; }
+
+    .lib-title {
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text);
+      line-height: 1.35;
+      margin-bottom: 2px;
+    }
+
+    .lib-dur {
+      font-size: 10px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── GRID AREA ──────────────────────────────────────────────────────── */
+    #grid-outer {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    /* Toolbar */
+    #toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .week-nav { display: flex; align-items: center; gap: 6px; }
+
+    .week-nav button {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 15px;
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .week-nav button:hover { border-color: #444; }
+
+    #week-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      min-width: 150px;
+      text-align: center;
+    }
+
+    .spacer { flex: 1; }
+
+    .btn {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 12px;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn:hover { opacity: .85; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 6px 11px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-ghost:hover { border-color: #555; }
+
+    /* ── GRID HEADER (sticky) ──────────────────────────────────────────── */
+    #grid-wrap {
+      flex: 1;
+      overflow: auto;
+      position: relative;
+    }
+
+    #grid-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      background: var(--bg2);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .gh-gutter {
+      width: 52px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+    }
+
+    .gh-day {
+      flex: 1;
+      min-width: 110px;
+      padding: 8px 6px 6px;
+      border-right: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .gh-day-name {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .gh-day-date {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-top: 1px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+    }
+
+    .gh-day.today .gh-day-date {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    .gh-day-total {
+      font-size: 9px;
+      color: var(--muted);
+      margin-top: 2px;
+      height: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── GRID BODY ─────────────────────────────────────────────────────── */
+    #grid-body { display: flex; }
+
+    #time-axis {
+      width: 52px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+
+    .time-label {
+      position: absolute;
+      right: 7px;
+      font-size: 9px;
+      color: var(--muted);
+      transform: translateY(-50%);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    #days-area { flex: 1; display: flex; }
+
+    .day-col {
+      flex: 1;
+      min-width: 110px;
+      position: relative;
+      border-right: 1px solid var(--border);
+    }
+    .day-col.drag-over { background: rgba(255,255,255,.025); }
+
+    /* Grid lines */
+    .hour-line {
+      position: absolute;
+      left: 0; right: 0;
+      border-top: 1px solid var(--border);
+      pointer-events: none;
+    }
+    .hour-line.half {
+      border-top-style: dashed;
+      opacity: .35;
+    }
+
+    /* Current time line */
+    .now-line {
+      position: absolute;
+      left: 0; right: 0;
+      border-top: 2px solid #ef4444;
+      z-index: 12;
+      pointer-events: none;
+    }
+    .now-dot {
+      position: absolute;
+      left: -4px;
+      top: -4px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+    }
+
+    /* Drop indicator ghost */
+    .drop-indicator {
+      position: absolute;
+      left: 2px; right: 2px;
+      background: rgba(255,255,255,.08);
+      border: 1px dashed rgba(255,255,255,.25);
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 15;
+      display: none;
+    }
+
+    /* ── SCHEDULED BLOCKS ───────────────────────────────────────────────── */
+    .sched-block {
+      position: absolute;
+      left: 2px; right: 2px;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: grab;
+      z-index: 8;
+      user-select: none;
+      transition: box-shadow .1s;
+    }
+    .sched-block:hover        { box-shadow: 0 0 0 1px rgba(255,255,255,.35); }
+    .sched-block:active       { cursor: grabbing; }
+    .sched-block.dragging-block { opacity: .4; }
+
+    .block-inner {
+      padding: 3px 18px 3px 6px;
+      height: 100%;
+      overflow: hidden;
+      border-left: 3px solid rgba(255,255,255,.3);
+    }
+
+    .block-title {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,.9);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.35;
+    }
+
+    .block-time {
+      font-size: 9px;
+      color: rgba(255,255,255,.45);
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .block-del {
+      position: absolute;
+      top: 2px; right: 4px;
+      font-size: 13px;
+      color: rgba(255,255,255,.4);
+      cursor: pointer;
+      line-height: 1;
+      display: none;
+      z-index: 2;
+    }
+    .sched-block:hover .block-del { display: block; }
+    .block-del:hover { color: var(--red); }
+
+    /* Zoom control */
+    .zoom-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .zoom-row input { accent-color: var(--accent); width: 80px; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar       { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg2); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #444; }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── SIDEBAR ─────────────────────────────────────────────────────── -->
+  <aside id="sidebar">
+    <div class="sidebar-head">
+      <h1>Biblioteca — <span id="lib-count">0</span> contenidos</h1>
+      <input id="search" type="text" placeholder="Buscar contenido…" autocomplete="off" />
+    </div>
+    <div id="library"></div>
+  </aside>
+
+  <!-- ── MAIN GRID ───────────────────────────────────────────────────── -->
+  <div id="grid-outer">
+    <div id="toolbar">
+      <div class="week-nav">
+        <button id="prev-week" title="Semana anterior">‹</button>
+        <span id="week-label"></span>
+        <button id="next-week" title="Semana siguiente">›</button>
+        <button class="btn-ghost" id="today-btn" style="padding:5px 9px;font-size:9px;">HOY</button>
+      </div>
+      <div class="spacer"></div>
+      <div class="zoom-row">
+        <span>Zoom</span>
+        <input type="range" id="zoom" min="40" max="200" value="80" />
+      </div>
+      <button class="btn-ghost" id="export-btn">Exportar JSON</button>
+      <button class="btn-ghost" id="clear-btn" style="color:var(--red);border-color:var(--red);">Limpiar Semana</button>
+    </div>
+
+    <div id="grid-wrap">
+      <div id="grid-header">
+        <div class="gh-gutter"></div>
+        <!-- day headers injected by JS -->
+      </div>
+      <div id="grid-body">
+        <div id="time-axis"></div>
+        <div id="days-area">
+          <!-- day columns injected by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG ───────────────────────────────────────────────────────────────────
+let PX_PER_HOUR = 80;
+const HOURS     = 24;
+const SNAP_MIN  = 15;  // snap to 15-minute grid
+
+// ── PLAYLIST ─────────────────────────────────────────────────────────────────
+const PLAYLIST = [
+  { id: 'iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU',       duration: 339.548,     title: 'Hotel Oriente — Las Nenas' },
+  { id: 'iVB2ZU00L1WZDQJpqXrIAMg02Cmq4l6C2kKnP02sNP01CQM',    duration: 687.228,     title: 'Hotel Oriente (Detrás de Escena) — Las Nenas' },
+  { id: 'IHikcrMnpK00Dxsyb7xKpi1qpju01I00JmCpNXXrhg1WZg',      duration: 163.081,     title: 'Detective Noir — Chavo Escrotito' },
+  { id: 'RUULhR2QDMRZT01YDXggu7WPKI01nzGyzvK1RPwGY3GyQ',       duration: 498.499,     title: 'Ver para Coger — Juan Manuel Cafferata y Fabrizio Sanguinetti' },
+  { id: 'Mqf9GhKKFmd01IH28ITZ00KT4oGLxmr6gvqbNQjGIv301Y',      duration: 5563.892,    title: 'We Will Rock You — EDLP Drama' },
+  { id: 'cUI9VC3LTXXxk62iQ902Gd84AJVhg3Gd8lhFczPBuqrI',        duration: 79.533333,   title: '(ICU) Think About — lesslowmoremid' },
+  { id: 'B02Qs6Wm3TGMjxm5EZKRowHdNTUPb020048AMJa45YDXVM',      duration: 1060.893178, title: '17 Minutos con Cata — Cata Mas' },
+  { id: 'IjUQQvDDhAOMHHS57ORIVl9f01vvb5425FmzPIdF5LRI',        duration: 73.633333,   title: 'A Game of Drones — Early Access Trailer — TOXI Gaming' },
+  { id: 'A14ToM2G9Mmi101NejPlGtAjj8oNGWnyIt302xeWw3oHw',       duration: 605.146211,  title: "After You're Gone — Fancy Dogs™" },
+  { id: 'CbBSyr5FvC7I00PpxpKNJBW1ibyLuT6Lr52uyeZHHyBg',        duration: 2457.566667, title: 'Modelo Extensivo Regenerativo Sintrópico (MERS) Exposición en TOXI Media — Alfredo Cafferata' },
+  { id: 'z02O01aMd02YkbeUb01syS400owVLRZ4oOJ6m463hcQ7FseQ',    duration: 956.08,      title: 'BAFICI Nights con Fabrizio Sanguinetti — Demi Roch y Nahuel Ivorra' },
+  { id: 'SKB56hnQQV6Tame5VKea02w8E01Ijm7iyHUY5dZXYHKmU',       duration: 1270.811211, title: 'Bebop Big Band — Bebop Club, 7 de Abril de 2025' },
+  { id: 'KrzHBlHcZCL71mIfCoPKiCMs2iBQMAq8vbhXr701OtQg',        duration: 17.966667,   title: 'Carola Gil le informa a Carlos Pagni la existencia de Pizza & Pagni' },
+  { id: 'ascCA5hMxmuLlSRnYiRtuXj7P5hOJdC9ImyfKqaQsQo',         duration: 2815.813967, title: 'Pizza & Pagni — Piloto' },
+  { id: 'm8ehCQajSn5f8LVTIdGUNlAePZ7iARoXJHCFjOCmkxE',         duration: 30.196844,   title: 'Charlas Interactivas — Xplora Academy' },
+  { id: 'FZAP5bJ2O5L16da7Ls1YdSGIiGEZfqTf02dR46z8tfk00',       duration: 588.254344,  title: 'Cuento de la Selva — Juan Manuel Cafferata y Fabrizio Sanguinetti' },
+  { id: 'KqSlF5LSKjW028548zaZ5c7aPQNARdgA9pbuTGrL800r8',        duration: 616.782844,  title: 'Modelo Extensivo Regenerativo Sintrópico (MERS) María Teresa, 2025 — Alfredo Cafferata' },
+  { id: 'Lsb01QL2dVq63701jEQ01d2DgIo4T2ZzNnRSGNIYeCpX4s',      duration: 17.267256,   title: 'Detrás de las Risas — Teaser' },
+  { id: 'PDLQLpJTnqba3Rn6HBdwb6SJwDR5Tmtm02WZH6jNzsFY',        duration: 2619.033089, title: 'El Maravilloso Mundo de TOXI' },
+  { id: 'z3jU3rp9rTOr95501nz025OP2q9FIz89cwPHO7kyT7Lb8',        duration: 63.866667,   title: 'Galaxy Adventure 2 — Fermín Delía' },
+  { id: '2yiwT02f7uhnx6yX01qo4b52iffRv8CSVqyMBsYNR02zLY',       duration: 1333.457133, title: 'IDA — Claire Fatale & Julian Camps' },
+  { id: '86NmIj818900IFXfcwEhIyZO3TkP7lYd6NOfqOP8ZSCQ',        duration: 6958.04,     title: 'Inteligencia Artificial, Abogacía y el Desafío de la Modernización Judicial — con Ian Silberberg' },
+  { id: '8zmmEvU01roD01y1JxwUY5LWW3OcO61YiGw6UWqpxsyoY',       duration: 196.321133,  title: "It's a Jungle Out There — Fabrizio Sanguinetti" },
+  { id: 'l3s1Blhidm1trZYlmnOOwH02AzXzPdBo4QNpviWlibF8',        duration: 957.247967,  title: 'Lo Que Se Avecina — Los Pibardos' },
+  { id: 'NMymlct00uz1BJMqcJUjcdfSbXGXfoaYuq3bDg702WQlY',       duration: 556.389178,  title: 'La Biblioteca Café — Viernes 30 de Agosto' },
+  { id: 'xNpGxSdaSkdi8bqzGoQzAo3laBVRgec8t3T827yrT8M',         duration: 206.748211,  title: 'La Irracional — Juan Manuel Cafferata y Fabrizio Sanguinetti' },
+  { id: 'StpQCayHgfczOfy8q9D2UctIoZDrnNTu02ULCQQQr9fA',        duration: 108.483378,  title: 'Las Formas del Laberinto Tráiler — Dolores Casares' },
+  { id: 'q2oWATOAQGdVl3AdhoyAmZ8Zwk6BhJkne02Pk31bwHg4',        duration: 42.0003,     title: 'Las Siestas de Sol — Sol Despeinada' },
+  { id: 'vNMBQmE2Q6YaxmESqvh2yYZsqfjtpnu9kJp7QKFvRgs',         duration: 243.952044,  title: 'Lectura en Francés — Juana la Loca' },
+  { id: '02gDf9x8Z01J8ISIKrlC9DMItd02UI029ikQ1T29Sca02z1U',    duration: 53.094711,   title: 'MONIYISUS — Tráiler' },
+  { id: 'GHZVMKXJaoMnrUxUfVhSVn300gxnFxCSJKK01k3rOKmks',       duration: 34.701344,   title: 'Maxi Mancuso Quintet — CCNU' },
+  { id: 'DE01AR1H01dk7JY9q8RsBP7jk122hRQaxKkMJRxirNQWM',       duration: 151.860044,  title: 'Mentoría de Comunicación, Locución y Doblaje — Demi Roch' },
+  { id: '02lxmxwxBURGEtO4XtvXro024Zl8yOCUsf6AzfGEkiuSU',       duration: 1868.408211, title: 'Mesa Torcida' },
+  { id: 'd1Mu65Kcey02gQtRDtcV00U01U01JYwn9dZettLfFmErz3E',     duration: 587.0448,    title: 'Misión: ODELaR — Juan Segundo Quiroga' },
+  { id: 'h5NFgWueG4nldZesITFtEYpnU01CyExDQ02FZ3tSBrp5w',       duration: 1167.467467, title: 'Moni y Yisus entrevistan a Rose Cafferata — MONIYISUS #2' },
+  { id: 'YSqI5Wj9dGRwjMh005Xs6a4Q4IPTdmAQJYa4WU1dH12w',       duration: 2489.820678, title: 'Moni y Yisus entrevistan al Padre Tomás Méndez — MONIYISUS #4' },
+  { id: '9pXQ7MUiVlTklMCQdQVdbxoMn85YIC3jObLtzBFN801o',        duration: 137.220422,  title: 'Muerte y Miedo en las Calles — Juan Segundo Quiroga' },
+  { id: 'oT00wnOnz00iFEzyaOmue00bXx2HOnyX01dII6t4UlGRM7A',     duration: 181.764922,  title: 'Ni Jorges ni Borges — Juan Segundo Quiroga' },
+  { id: 'Q3kMlL901ouKhER0101Nzija5Y1025jWBV4ORBXTruuFEyM',     duration: 455.538422,  title: 'Odelar — Juan Segundo Quiroga' },
+  { id: 'UiK7a7RjMI2LkEnxUEthecrAk4chE00OPr7ic1Tn9lG4',        duration: 376.250878,  title: 'Otro Día en la Red — Juan Segundo Quiroga' },
+  { id: '1z01wgDyw3WEGJZXc00qZsWXXqo3hIfCQHMWK8mGsKX01Y',     duration: 635.384756,  title: 'Prototipazos — La Impact' },
+  { id: 'ec1emgWV3VZVz4G0200wUSiUrV5y4j8jlyjgC8JXn1rFs',       duration: 272.939344,  title: 'Palta and the Gang — Luna Park, 9 de Mayo de 2024' },
+  { id: 'X7YJlq50211xQS2d9Vi01aD3QY8QKx8nJOC2hWD1ELc5k',      duration: 224.140589,  title: 'Para Qué Sirve Todo Esto — Juan Manuel Cafferata y Fabrizio Sanguinetti' },
+  { id: 'HPsNUFZfR8NY6Tq2qv02NToxV8noBJ8BAGDE59OCD01Kc',       duration: 217.133589,  title: 'Pierrot le Bolou — Juan Manuel Cafferata y Fabrizio Sanguinetti' },
+  { id: 'dJKlr23ualq86KvwfVoMx02g755YL02p6pQQ8dyfghEsc',        duration: 19.9783,     title: 'Prez — Tráiler' },
+  { id: 'R1EGXfq1DUGMrFblrMMGuppU02fQf01i1LGENQY9m46Ls',       duration: 224.1823,    title: 'RAKU 楽焼 — Male ArteMix' },
+  { id: 'XDIDz4TQ34vozsemiHeyuzMi6OuqQR7oAB1HHaVCIOA',         duration: 166.541378,  title: 'Hedonismo y Seducción — Onírica (v1)' },
+  { id: '2EFUXtMAx4u7QFmnXYC01P00cgpa4z02QqKVgSAkcuqYpg',       duration: 101.551467,  title: 'Hedonismo y Seducción — Onírica (v2)' },
+  { id: 'k5WwHsdgrHNOzSdhUDGjjRVsK02u00WPQgQKhgYUYDtbk',       duration: 104.020589,  title: 'Hedonismo y Seducción — Onírica (v3)' },
+  { id: 'fID5sJbpqtFK01iIllxmwkTE5FvJnI3J7icA3Qjo009gU',       duration: 412.328589,  title: 'Recoleta bajo la Lluvia — Discover BA con Luz' },
+  { id: 'p75vcYJRLEjPMJo011Z1JOERMO5E013B02KCxYN5DR1Dg8',      duration: 604.687422,  title: 'Proyecto de Infiltración & Agricultura Sintrópica en Santuario del Maipo — Aguatierra' },
+  { id: 'A7KK900TZvE7DOahDzDEncIz02GbxxJz8IJo01DCaVbOvE',       duration: 241.241011,  title: 'Sábado a la Noche — Juan Manuel Cafferata' },
+  { id: 'qM33QmuwmXJsibPHXJMbFh02V9gT2s7HDEO00v9VB7mHY',       duration: 4983.850522, title: 'TOXI Seminars presenta Peronismos — Fabrizio Sanguinetti' },
+  { id: 'wj0015QgHhNxFVU01iXuF8z5hvJ7TUnd02UfwqHa447Whs',      duration: 2898.3,      title: 'Más Allá del Más Allá — MONIYISUS #4' },
+  { id: '00kmeFWt6viiA02WHx9P01PnsY1RolhnyufiNhf5na7VsE',       duration: 4863.358511, title: 'The Greatest Showman — EDLP Drama' },
+  { id: 'CAG692TzvxtvAQEoR01byCm01xKJUp6GqyJalgQ0200Z6n00',     duration: 92.251,      title: 'Las Catadoras del Führer — CDI Films' },
+  { id: 'mlTTKbkPDdOTvu963D1p00vz8pihOYpo2iefwZowJP6M',        duration: 241.958333,  title: 'Viaje — Fermín Delía' },
+  { id: '7KfrMVUZL2bANgKGsxeWjCnrOTK1DRuUOe9701UO7424',        duration: 2868.448922, title: 'Xplora Night Live — 8 de Abril de 2025' },
+  { id: 'cseBPfceuHCbWY3D2OF7WMtQ7DmaYhSdR4ekSOD7QT4',         duration: 161.027533,  title: 'Yuyo Noé recorre Las Formas del Laberinto de Dolores Casares' },
+  { id: 'yyJADkna02dmJtNdyUoHDOYQMcjsxKcjf63O00w01mm1ZI',      duration: 149.6495,    title: 'Fiesta en la Cocina — KABRADEPATA' },
+  { id: '00VG6EL1oC4eI96PVQXeobbdZ6GBNwrmUAexIDdiMpTc',        duration: 160.326833,  title: 'Hipo Hip Hop — KABRADEPATA' },
+  { id: 'QUElHo8r5HtNqfh02XfGKm85jUJ01iTGbkyn2D4BeYNZI',       duration: 189.148256,  title: 'Otro Día en la Red 0 — Juan Segundo Quiroga' },
+  { id: 'K6p6zWxcLOtRXb02eWcic00RYQG8SwDxE014o9007ZTBwm8',     duration: 588.629711,  title: 'Otro Día en la Red III — Juan Segundo Quiroga' },
+  { id: 'HRr2KXg2X800YNuos9Aj2LmZe8XIqHvTMgFrGKc7v7wQ',       duration: 189.898042,  title: 'Volvé a ODELAR — Juan Segundo Quiroga' },
+  { id: '2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE',        duration: 230.480256,  title: 'Viaje a la Luna — KABRADEPATA' },
+  { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY',  duration: 80.830756,   title: '¿Qué es Mamarracho? — Nano Catalá' },
+  { id: 'agfEm3toRbicITlQJbJ4ppPrv700kzCrHmFczRDhmcf8',        duration: 5693.633333, title: 'Storytelling y Transgresión — Gael P. Rossi (TOXI University)' },
+  { id: 'N5ISPSMoo502IHjTdvQt02GeR7xgJUiCFTlxrBLLIhpcg',       duration: 2580.9,      title: 'Literatura y Realidad Virtual — Ana Arzoumanian (TOXI University)' },
+  { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00',      duration: 5803.5,      title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)' },
+];
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function fmtDur(secs) {
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = Math.floor(secs % 60);
+  if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+
+function fmtTime(totalMin) {
+  const h = Math.floor(totalMin / 60) % 24;
+  const m = totalMin % 60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+}
+
+function itemColor(title) {
+  let hash = 5381;
+  for (let i = 0; i < title.length; i++) hash = ((hash << 5) + hash) ^ title.charCodeAt(i);
+  const hue = Math.abs(hash) % 360;
+  return {
+    bg:     `hsl(${hue}, 48%, 22%)`,
+    border: `hsl(${hue}, 65%, 52%)`,
+  };
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+function minToPx(min) { return (min / 60) * PX_PER_HOUR; }
+function pxToMin(px)  { return (px / PX_PER_HOUR) * 60;  }
+function snap(min)    { return Math.round(min / SNAP_MIN) * SNAP_MIN; }
+
+// ── WEEK HELPERS ─────────────────────────────────────────────────────────────
+function getMonday(offset = 0) {
+  const now  = new Date();
+  const dow  = now.getDay(); // 0=Sun
+  const diff = dow === 0 ? -6 : 1 - dow;
+  const mon  = new Date(now);
+  mon.setDate(now.getDate() + diff + offset * 7);
+  mon.setHours(0, 0, 0, 0);
+  return mon;
+}
+
+function getWeekDates(offset = 0) {
+  const mon = getMonday(offset);
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(mon);
+    d.setDate(mon.getDate() + i);
+    return d;
+  });
+}
+
+function weekKey(offset = weekOffset) {
+  return getMonday(offset).toISOString().split('T')[0];
+}
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+let weekOffset = 0;
+
+// schedule entries: { id, itemIdx, day (0=Mon … 6=Sun), startMin, week (YYYY-MM-DD of Monday) }
+let schedule = JSON.parse(localStorage.getItem('toxi-schedule-v3') || '[]');
+
+function saveSchedule() {
+  localStorage.setItem('toxi-schedule-v3', JSON.stringify(schedule));
+}
+
+function weekSchedule() {
+  const wk = weekKey();
+  return schedule.filter(s => s.week === wk);
+}
+
+// ── SIDEBAR ──────────────────────────────────────────────────────────────────
+function buildSidebar() {
+  const q   = document.getElementById('search').value.toLowerCase().trim();
+  const lib = document.getElementById('library');
+  const items = PLAYLIST
+    .map((item, i) => ({ item, i }))
+    .filter(({ item }) => !q || item.title.toLowerCase().includes(q));
+
+  document.getElementById('lib-count').textContent = items.length;
+  lib.innerHTML = '';
+
+  items.forEach(({ item, i }) => {
+    const el = document.createElement('div');
+    el.className = 'lib-item';
+    el.draggable = true;
+    el.dataset.idx = i;
+
+    el.innerHTML = `
+      <img class="lib-thumb"
+           src="https://image.mux.com/${item.id}/thumbnail.png?time=4&width=112&height=64"
+           loading="lazy" alt="" onerror="this.style.opacity='.2'" />
+      <div class="lib-info">
+        <div class="lib-title" title="${item.title}">${item.title}</div>
+        <div class="lib-dur">${fmtDur(item.duration)}</div>
+      </div>`;
+
+    el.addEventListener('dragstart', onLibDragStart);
+    el.addEventListener('dragend',   () => { el.classList.remove('dragging'); currentDrag = null; });
+    lib.appendChild(el);
+  });
+}
+
+// ── GRID ─────────────────────────────────────────────────────────────────────
+const GRID_H  = () => HOURS * PX_PER_HOUR;
+const MONTHS  = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const DAYNAME = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+
+function buildGrid() {
+  const dates  = getWeekDates(weekOffset);
+  const today  = new Date(); today.setHours(0,0,0,0);
+  const wk     = weekKey();
+
+  // Week label
+  const d0 = dates[0], d6 = dates[6];
+  document.getElementById('week-label').textContent =
+    `${d0.getDate()} ${MONTHS[d0.getMonth()]} — ${d6.getDate()} ${MONTHS[d6.getMonth()]} ${d6.getFullYear()}`;
+
+  // ── Header ────────────────────────────────────────────────────────────
+  const header = document.getElementById('grid-header');
+  header.innerHTML = '<div class="gh-gutter"></div>';
+
+  dates.forEach((d, i) => {
+    const isToday = d.getTime() === today.getTime();
+    const total   = dayTotal(i, wk);
+    const gh = document.createElement('div');
+    gh.className = 'gh-day' + (isToday ? ' today' : '');
+    gh.innerHTML = `
+      <div class="gh-day-name">${DAYNAME[i]}</div>
+      <div class="gh-day-date">${d.getDate()}</div>
+      <div class="gh-day-total" id="day-total-${i}">${total > 0 ? fmtDur(total) : ''}</div>`;
+    header.appendChild(gh);
+  });
+
+  // ── Time axis ─────────────────────────────────────────────────────────
+  const ta = document.getElementById('time-axis');
+  ta.style.height = GRID_H() + 'px';
+  ta.innerHTML = '';
+  for (let h = 0; h <= HOURS; h++) {
+    const lbl = document.createElement('div');
+    lbl.className   = 'time-label';
+    lbl.style.top   = minToPx(h * 60) + 'px';
+    lbl.textContent = h < HOURS ? String(h).padStart(2,'0') + ':00' : '';
+    ta.appendChild(lbl);
+  }
+
+  // ── Day columns ───────────────────────────────────────────────────────
+  const daysArea = document.getElementById('days-area');
+  daysArea.innerHTML = '';
+
+  for (let day = 0; day < 7; day++) {
+    const col = document.createElement('div');
+    col.className  = 'day-col';
+    col.style.height = GRID_H() + 'px';
+    col.dataset.day  = day;
+
+    // Hour + half-hour lines
+    for (let h = 0; h < HOURS; h++) {
+      const line = document.createElement('div');
+      line.className = 'hour-line';
+      line.style.top = minToPx(h * 60) + 'px';
+      col.appendChild(line);
+
+      const half = document.createElement('div');
+      half.className = 'hour-line half';
+      half.style.top = minToPx(h * 60 + 30) + 'px';
+      col.appendChild(half);
+    }
+    // Final border
+    const bot = document.createElement('div');
+    bot.className = 'hour-line';
+    bot.style.top = GRID_H() + 'px';
+    col.appendChild(bot);
+
+    // Drop indicator ghost
+    const di = document.createElement('div');
+    di.className = 'drop-indicator';
+    di.id = `di-${day}`;
+    col.appendChild(di);
+
+    // "Now" line if today
+    if (dates[day].getTime() === today.getTime()) {
+      const now    = new Date();
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      const nl = document.createElement('div');
+      nl.className = 'now-line';
+      nl.style.top = minToPx(nowMin) + 'px';
+      nl.innerHTML = '<div class="now-dot"></div>';
+      col.appendChild(nl);
+    }
+
+    col.addEventListener('dragover',  onColDragOver);
+    col.addEventListener('dragleave', onColDragLeave);
+    col.addEventListener('drop',      onColDrop);
+    daysArea.appendChild(col);
+  }
+
+  renderBlocks();
+}
+
+// ── RENDER SCHEDULED BLOCKS ───────────────────────────────────────────────────
+function renderBlocks() {
+  document.querySelectorAll('.sched-block').forEach(el => el.remove());
+  const wk = weekKey();
+
+  schedule
+    .filter(s => s.week === wk)
+    .forEach(entry => {
+      const item = PLAYLIST[entry.itemIdx];
+      if (!item) return;
+      const col = document.querySelector(`.day-col[data-day="${entry.day}"]`);
+      if (!col) return;
+
+      const durMin  = item.duration / 60;
+      const topPx   = minToPx(entry.startMin);
+      const highPx  = Math.max(14, minToPx(durMin));
+      const color   = itemColor(item.title);
+
+      const block = document.createElement('div');
+      block.className  = 'sched-block';
+      block.dataset.id = entry.id;
+      block.draggable  = true;
+      block.style.top    = topPx + 'px';
+      block.style.height = highPx + 'px';
+      block.style.background = color.bg;
+
+      const showTitle = highPx >= 20;
+      const showTime  = highPx >= 32;
+
+      block.innerHTML = `
+        <div class="block-inner" style="border-left-color:${color.border}">
+          ${showTitle ? `<div class="block-title">${item.title}</div>` : ''}
+          ${showTime  ? `<div class="block-time">${fmtTime(entry.startMin)} — ${fmtDur(item.duration)}</div>` : ''}
+        </div>
+        <span class="block-del" title="Eliminar">×</span>`;
+
+      block.querySelector('.block-del').addEventListener('click', e => {
+        e.stopPropagation();
+        schedule = schedule.filter(s => s.id !== entry.id);
+        saveSchedule();
+        renderBlocks();
+        refreshTotals();
+      });
+
+      block.addEventListener('dragstart', onBlockDragStart);
+      block.addEventListener('dragend',   onBlockDragEnd);
+      col.appendChild(block);
+    });
+}
+
+// ── TOTALS ─────────────────────────────────────────────────────────────────
+function dayTotal(day, wk) {
+  return schedule
+    .filter(s => s.week === wk && s.day === day)
+    .reduce((sum, s) => sum + (PLAYLIST[s.itemIdx]?.duration || 0), 0);
+}
+
+function refreshTotals() {
+  const wk = weekKey();
+  for (let i = 0; i < 7; i++) {
+    const el = document.getElementById(`day-total-${i}`);
+    if (el) {
+      const t = dayTotal(i, wk);
+      el.textContent = t > 0 ? fmtDur(t) : '';
+    }
+  }
+}
+
+// ── DRAG & DROP ───────────────────────────────────────────────────────────────
+let currentDrag   = null;  // { type:'lib'|'block', itemIdx, schedId? }
+let dragOffsetMin = 0;     // grab offset within block (for block drags)
+
+function onLibDragStart(e) {
+  const idx = parseInt(e.currentTarget.dataset.idx);
+  currentDrag   = { type: 'lib', itemIdx: idx };
+  dragOffsetMin = 0;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'copy';
+  e.dataTransfer.setData('text/plain', String(idx));
+}
+
+function onBlockDragStart(e) {
+  const id    = e.currentTarget.dataset.id;
+  const entry = schedule.find(s => s.id === id);
+  if (!entry) return;
+  const rect    = e.currentTarget.getBoundingClientRect();
+  dragOffsetMin = snap(pxToMin(e.clientY - rect.top));
+  currentDrag   = { type: 'block', itemIdx: entry.itemIdx, schedId: id };
+  e.currentTarget.classList.add('dragging-block');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', id);
+}
+
+function onBlockDragEnd(e) {
+  e.currentTarget.classList.remove('dragging-block');
+  document.querySelectorAll('.lib-item.dragging').forEach(el => el.classList.remove('dragging'));
+  currentDrag = null;
+}
+
+function dropMinute(e, col) {
+  const rect = col.getBoundingClientRect();
+  const raw  = pxToMin(e.clientY - rect.top) - dragOffsetMin;
+  return Math.min(Math.max(0, snap(raw)), 24 * 60 - SNAP_MIN);
+}
+
+function onColDragOver(e) {
+  e.preventDefault();
+  if (!currentDrag) return;
+  e.dataTransfer.dropEffect = currentDrag.type === 'lib' ? 'copy' : 'move';
+
+  const col  = e.currentTarget;
+  col.classList.add('drag-over');
+  const day  = parseInt(col.dataset.day);
+  const item = PLAYLIST[currentDrag.itemIdx];
+  if (!item) return;
+
+  const startMin = dropMinute(e, col);
+  const highPx   = Math.max(14, minToPx(item.duration / 60));
+  const di = document.getElementById(`di-${day}`);
+  if (di) {
+    di.style.display = 'block';
+    di.style.top     = minToPx(startMin) + 'px';
+    di.style.height  = highPx + 'px';
+  }
+}
+
+function onColDragLeave(e) {
+  if (!e.currentTarget.contains(e.relatedTarget)) {
+    e.currentTarget.classList.remove('drag-over');
+    const day = parseInt(e.currentTarget.dataset.day);
+    const di  = document.getElementById(`di-${day}`);
+    if (di) di.style.display = 'none';
+  }
+}
+
+function onColDrop(e) {
+  e.preventDefault();
+  const col = e.currentTarget;
+  col.classList.remove('drag-over');
+  const day = parseInt(col.dataset.day);
+  const di  = document.getElementById(`di-${day}`);
+  if (di) di.style.display = 'none';
+  if (!currentDrag) return;
+
+  const startMin = dropMinute(e, col);
+  const wk       = weekKey();
+
+  if (currentDrag.type === 'lib') {
+    schedule.push({ id: uid(), itemIdx: currentDrag.itemIdx, day, startMin, week: wk });
+    document.querySelectorAll('.lib-item.dragging').forEach(el => el.classList.remove('dragging'));
+  } else {
+    const entry = schedule.find(s => s.id === currentDrag.schedId);
+    if (entry) { entry.day = day; entry.startMin = startMin; entry.week = wk; }
+  }
+
+  saveSchedule();
+  renderBlocks();
+  refreshTotals();
+  currentDrag = null;
+}
+
+// ── TOOLBAR ACTIONS ───────────────────────────────────────────────────────────
+document.getElementById('prev-week').addEventListener('click', () => { weekOffset--; buildGrid(); });
+document.getElementById('next-week').addEventListener('click', () => { weekOffset++; buildGrid(); });
+document.getElementById('today-btn').addEventListener('click', () => { weekOffset = 0; buildGrid(); scrollToNow(); });
+
+document.getElementById('zoom').addEventListener('input', e => {
+  PX_PER_HOUR = parseInt(e.target.value);
+  buildGrid();
+  scrollToNow();
+});
+
+document.getElementById('search').addEventListener('input', buildSidebar);
+
+document.getElementById('export-btn').addEventListener('click', () => {
+  const dates    = getWeekDates(weekOffset);
+  const wk       = weekKey();
+  const exported = schedule
+    .filter(s => s.week === wk)
+    .map(s => {
+      const item = PLAYLIST[s.itemIdx];
+      const date = dates[s.day];
+      return {
+        title:      item.title,
+        mux_id:     item.id,
+        duration_s: item.duration,
+        duration:   fmtDur(item.duration),
+        day:        DAYNAME[s.day],
+        date:       date.toISOString().split('T')[0],
+        start_time: fmtTime(s.startMin),
+      };
+    })
+    .sort((a, b) => a.date.localeCompare(b.date) || a.start_time.localeCompare(b.start_time));
+
+  const blob = new Blob([JSON.stringify(exported, null, 2)], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url;
+  a.download = `toxi-grilla-${wk}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('clear-btn').addEventListener('click', () => {
+  const wk = weekKey();
+  const count = schedule.filter(s => s.week === wk).length;
+  if (!count) return;
+  if (!confirm(`¿Eliminar los ${count} bloques de esta semana?`)) return;
+  schedule = schedule.filter(s => s.week !== wk);
+  saveSchedule();
+  buildGrid();
+});
+
+// ── SCROLL TO NOW ─────────────────────────────────────────────────────────────
+function scrollToNow() {
+  const now    = new Date();
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const top    = Math.max(0, minToPx(nowMin) - 180);
+  document.getElementById('grid-wrap').scrollTop = top;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+buildSidebar();
+buildGrid();
+setTimeout(scrollToNow, 80);
+</script>
+</body>
+</html>
