@@ -293,8 +293,9 @@
         }
 
         const paid = hasValidEntry();
+        const isGuest = localStorage.getItem('guest') === 'true';
         const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-        if (!paid && !isPWA) {
+        if (!paid && !isPWA && !isGuest) {
           // Redirect to index for payment
           window.location.href = '/';
           return;

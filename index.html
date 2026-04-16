@@ -72,27 +72,27 @@
              <div id="keypad-countdown" style="color: #ff0000; font-size: 3rem; font-weight: bold; font-family: 'Helvetica Now', sans-serif;"></div>
           </div>
 
-          <p style="font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif; color: #fff; font-size: 1rem; text-align: center; margin: 0 0 14px 0; letter-spacing: 0.04em;">ingresá la clave secreta</p>
+          <p style="font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif; color: #fff; font-size: 1rem; text-align: center; margin: 0 0 14px 0; letter-spacing: 0.04em;">Ingresá tu clave personal</p>
 
           <div class="keypad-display">
             <div id="keypad-dots"></div>
           </div>
           <div class="keypad-grid">
-            <button class="keypad-btn" data-key="1">1</button>
-            <button class="keypad-btn" data-key="2">2</button>
-            <button class="keypad-btn" data-key="3">3</button>
-            <button class="keypad-btn" data-key="4">4</button>
-            <button class="keypad-btn" data-key="5">5</button>
-            <button class="keypad-btn" data-key="6">6</button>
-            <button class="keypad-btn" data-key="7">7</button>
-            <button class="keypad-btn" data-key="8">8</button>
-            <button class="keypad-btn" data-key="9">9</button>
+            <button class="keypad-btn" data-key="1"><span class="key-num">1</span></button>
+            <button class="keypad-btn" data-key="2"><span class="key-num">2</span><span class="key-letters">ABC</span></button>
+            <button class="keypad-btn" data-key="3"><span class="key-num">3</span><span class="key-letters">DEF</span></button>
+            <button class="keypad-btn" data-key="4"><span class="key-num">4</span><span class="key-letters">GHI</span></button>
+            <button class="keypad-btn" data-key="5"><span class="key-num">5</span><span class="key-letters">JKL</span></button>
+            <button class="keypad-btn" data-key="6"><span class="key-num">6</span><span class="key-letters">MNO</span></button>
+            <button class="keypad-btn" data-key="7"><span class="key-num">7</span><span class="key-letters">PQRS</span></button>
+            <button class="keypad-btn" data-key="8"><span class="key-num">8</span><span class="key-letters">TUV</span></button>
+            <button class="keypad-btn" data-key="9"><span class="key-num">9</span><span class="key-letters">WXYZ</span></button>
             <button class="keypad-btn keypad-clear" data-key="clear">←</button>
-            <button class="keypad-btn" data-key="0">0</button>
+            <button class="keypad-btn" data-key="0"><span class="key-num">0</span></button>
             <button class="keypad-btn keypad-enter" data-key="enter">✓</button>
           </div>
 
-          <p style="font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif; color: #aaa; font-size: 0.75rem; text-align: center; margin: 14px 0 0 0; cursor: pointer;" id="guest-entry-link" onclick="event.stopPropagation(); localStorage.setItem('guest','true'); window.location.href='/main.html';">entrar como invitado</p>
+          <p style="font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif; color: #aaa; font-size: 0.75rem; text-align: center; margin: 14px 0 0 0; cursor: pointer;" id="guest-entry-link" onclick="event.stopPropagation(); localStorage.setItem('guest','true'); window.location.href='/main.html';">Entrar como invitado</p>
         </div>
       </div>
       
