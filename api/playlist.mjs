@@ -69,6 +69,9 @@ export const PLAYLIST = [
   { id: 'HRr2KXg2X800YNuos9Aj2LmZe8XIqHvTMgFrGKc7v7wQ',       duration: 189.898042,   title: 'Volvé a ODELAR — Juan Segundo Quiroga' },
   { id: '2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE',        duration: 230.480256,  title: 'Viaje a la Luna — KABRADEPATA' },
   { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY',  duration: 80.830756,   title: '¿Qué es Mamarracho? — Nano Catalá' },
+  { id: 'agfEm3toRbicITlQJbJ4ppPrv700kzCrHmFczRDhmcf8',        duration: 5693.633333, title: 'Storytelling y Transgresión — Gael P. Rossi (TOXI University)' },
+  { id: 'N5ISPSMoo502IHjTdvQt02GeR7xgJUiCFTlxrBLLIhpcg',       duration: 2580.9,      title: 'Literatura y Realidad Virtual — Ana Arzoumanian (TOXI University)' },
+  { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00',      duration: 5803.5,      title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)' },
 ];
 
 export default function handler(req, res) {
