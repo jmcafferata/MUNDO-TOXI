@@ -80,6 +80,9 @@ export const CONTENT = [
   { id: '2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE', duration: 230.480256, title: 'Viaje a la Luna', slug: '', type: 'other', year: null, onTV: true },
   { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY', duration: 80.830756, title: '¿Qué es Mamarracho?', slug: '', type: 'other', year: null, onTV: true },
   { id: 'ascCA5hMxmuLlSRnYiRtuXj7P5hOJdC9ImyfKqaQsQo', duration: 2815, title: 'Pizza y Pagni — Piloto LN', slug: '', type: 'other', year: null, onTV: true },
+  { id: 'agfEm3toRbicITlQJbJ4ppPrv700kzCrHmFczRDhmcf8', duration: 5693.633333, title: 'Storytelling y Transgresión — Gael P. Rossi (TOXI University)', slug: '', type: 'other', year: null, onTV: true },
+  { id: 'N5ISPSMoo502IHjTdvQt02GeR7xgJUiCFTlxrBLLIhpcg', duration: 2580.9, title: 'Literatura y Realidad Virtual — Ana Arzoumanian (TOXI University)', slug: '', type: 'other', year: null, onTV: true },
+  { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00', duration: 5803.5, title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)', slug: '', type: 'other', year: null, onTV: true },
 ];
 
 /** Solo los videos marcados onTV: true, en orden para la playlist del canal */
