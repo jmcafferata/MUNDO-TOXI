@@ -208,7 +208,9 @@ toxi-tv-android/
 
 Editá **ambos** archivos y pusheá:
 1. `src/content.js` → agrega o modificá entradas con `onTV: true` (para la web)
-2. `api/playlist.mjs` → agregá el mismo item al array `PLAYLIST` (para la app)
+2. `api/playlist.mjs` → agregá el mismo item al array `PLAYLIST` (para la app y para el AI voice)
+
+`api/ai-voice.mjs` importa `PLAYLIST` directamente desde `api/playlist.mjs`, así que **no hay que tocar ai-voice.mjs** al agregar contenido.
 
 La app descarga la playlist al arrancar, así que los cambios se propagan sin actualizar el APK.
 

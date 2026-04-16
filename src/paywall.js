@@ -99,17 +99,17 @@ export function initPaywall({ musicFile, onEnter }) {
           <div id="keypad-dots"></div>
         </div>
         <div class="keypad-grid" id="keypad-grid">
-          <button class="keypad-btn" data-key="1">1</button>
-          <button class="keypad-btn" data-key="2">2</button>
-          <button class="keypad-btn" data-key="3">3</button>
-          <button class="keypad-btn" data-key="4">4</button>
-          <button class="keypad-btn" data-key="5">5</button>
-          <button class="keypad-btn" data-key="6">6</button>
-          <button class="keypad-btn" data-key="7">7</button>
-          <button class="keypad-btn" data-key="8">8</button>
-          <button class="keypad-btn" data-key="9">9</button>
+          <button class="keypad-btn" data-key="1"><span class="key-num">1</span></button>
+          <button class="keypad-btn" data-key="2"><span class="key-num">2</span><span class="key-letters">ABC</span></button>
+          <button class="keypad-btn" data-key="3"><span class="key-num">3</span><span class="key-letters">DEF</span></button>
+          <button class="keypad-btn" data-key="4"><span class="key-num">4</span><span class="key-letters">GHI</span></button>
+          <button class="keypad-btn" data-key="5"><span class="key-num">5</span><span class="key-letters">JKL</span></button>
+          <button class="keypad-btn" data-key="6"><span class="key-num">6</span><span class="key-letters">MNO</span></button>
+          <button class="keypad-btn" data-key="7"><span class="key-num">7</span><span class="key-letters">PQRS</span></button>
+          <button class="keypad-btn" data-key="8"><span class="key-num">8</span><span class="key-letters">TUV</span></button>
+          <button class="keypad-btn" data-key="9"><span class="key-num">9</span><span class="key-letters">WXYZ</span></button>
           <button class="keypad-btn keypad-clear" data-key="clear">←</button>
-          <button class="keypad-btn" data-key="0">0</button>
+          <button class="keypad-btn" data-key="0"><span class="key-num">0</span></button>
           <button class="keypad-btn keypad-enter" data-key="enter">✓</button>
         </div>
       </div>
@@ -464,7 +464,7 @@ export function initPaywall({ musicFile, onEnter }) {
   const keypadDots = document.getElementById('keypad-dots');
   const keypadCard = document.querySelector('.keypad-card');
   const keypadBtns = document.querySelectorAll('.keypad-btn');
-  const SECRET_CODES = ['2058', '1985', '1927'];
+  const SECRET_CODES = ['2058', '1985', '1927', '8694'];
   let currentCode = '';
   let successUnlocked = false;
 

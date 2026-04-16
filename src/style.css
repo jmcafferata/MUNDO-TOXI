@@ -982,6 +982,7 @@ canvas {
   cursor: pointer;
   transition: all 0.15s ease;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   user-select: none;
@@ -989,6 +990,21 @@ canvas {
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   touch-action: manipulation;
+}
+
+.key-num {
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.key-letters {
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 2px;
+  line-height: 1;
 }
 
 .keypad-btn:hover {

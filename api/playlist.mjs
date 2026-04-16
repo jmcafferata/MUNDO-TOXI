@@ -15,7 +15,7 @@ export const PLAYLIST = [
   { id: 'z02O01aMd02YkbeUb01syS400owVLRZ4oOJ6m463hcQ7FseQ',    duration: 956.08,      title: 'BAFICI Nights con Fabrizio Sanguinetti — Demi Roch y Nahuel Ivorra' },
   { id: 'SKB56hnQQV6Tame5VKea02w8E01Ijm7iyHUY5dZXYHKmU',       duration: 1270.811211, title: 'Bebop Big Band — Bebop Club, 7 de Abril de 2025' },
   { id: 'KrzHBlHcZCL71mIfCoPKiCMs2iBQMAq8vbhXr701OtQg',        duration: 17.966667,   title: 'Carola Gil le informa a Carlos Pagni la existencia de Pizza & Pagni' },
-  { id: 'u3cvGXuJvTu3xqWh47UrbqAV2RPvVCvD5kHoo1N64LY',        duration: 2815.813967, title: 'Pizza & Pagni — Piloto' },
+  { id: 'ascCA5hMxmuLlSRnYiRtuXj7P5hOJdC9ImyfKqaQsQo',        duration: 2815.813967, title: 'Pizza & Pagni — Piloto' },
   { id: 'm8ehCQajSn5f8LVTIdGUNlAePZ7iARoXJHCFjOCmkxE',         duration: 30.196844,   title: 'Charlas Interactivas — Xplora Academy' },
   { id: 'FZAP5bJ2O5L16da7Ls1YdSGIiGEZfqTf02dR46z8tfk00',       duration: 588.254344,  title: 'Cuento de la Selva — Juan Manuel Cafferata y Fabrizio Sanguinetti' },
   { id: 'KqSlF5LSKjW028548zaZ5c7aPQNARdgA9pbuTGrL800r8',        duration: 616.782844,  title: 'Modelo Extensivo Regenerativo Sintrópico (MERS) María Teresa, 2025 — Alfredo Cafferata' },
