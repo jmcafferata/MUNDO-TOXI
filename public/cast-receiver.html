@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>TOXI TV</title>
     <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/shaka-player/4.7.3/shaka-player.compiled.js"></script>
     <style>
         body { margin: 0; background: #000; }
         cast-media-player {
@@ -25,38 +26,30 @@
     <cast-media-player></cast-media-player>
     <div id="dbg">Receiver iniciado, esperando LOAD...</div>
     <script>
+        shaka.polyfill.installAll();
+
         const dbg = document.getElementById('dbg');
         const context = cast.framework.CastReceiverContext.getInstance();
         const playerManager = context.getPlayerManager();
-
-        let loadedUrl = '';
-        let loadedT = 0;
 
         playerManager.setMessageInterceptor(
             cast.framework.messages.MessageType.LOAD,
             request => {
                 const media = request.media;
                 if (!media) { dbg.textContent = 'LOAD: media null'; return request; }
-                const url = (media.contentUrl || media.contentId || '').replace('.m3u8', '.mpd');
+                const url = media.contentUrl || media.contentId;
                 media.contentUrl = url;
-                media.contentType = 'application/dash+xml';
-                delete media.hlsVideoSegmentFormat;
-                delete media.hlsAudioSegmentFormat;
-                dbg.textContent = 'LOAD DASH\n' + url;
+                media.contentType = 'application/x-mpegURL';
+                dbg.textContent = 'LOAD HLS+Shaka\n' + url;
                 return request;
             }
-        );
-
-        playerManager.addEventListener(
-            cast.framework.events.EventType.BUFFERING,
-            e => { if (dbg.style.display !== 'none') dbg.textContent += '\nBUFFERING=' + e.isBuffering; }
         );
 
         playerManager.addEventListener(
             cast.framework.events.EventType.ERROR,
             e => {
                 dbg.style.display = '';
-                dbg.textContent = 'ERROR code=' + e.detailedErrorCode + '\n' + JSON.stringify(e.error);
+                dbg.textContent = 'ERR=' + e.detailedErrorCode + '\n' + JSON.stringify(e.error);
             }
         );
 
@@ -67,11 +60,10 @@
 
         setInterval(() => {
             if (dbg.style.display === 'none') return;
-            const state = playerManager.getState();
-            dbg.textContent = dbg.textContent.split('\n').slice(0, 3).join('\n') + '\nstate=' + state;
+            dbg.textContent = dbg.textContent.split('\n').slice(0, 2).join('\n') + '\nstate=' + playerManager.getState();
         }, 3000);
 
-        context.start();
+        context.start({ preferShakaForHls: true });
     </script>
 </body>
 </html>
