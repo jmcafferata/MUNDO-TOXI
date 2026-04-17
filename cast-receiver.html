@@ -37,8 +37,9 @@
                 const url = (media.contentUrl || media.contentId || '').replace('.mpd', '.m3u8'); // ensure m3u8
                 media.contentUrl = url;
                 media.contentType = 'application/x-mpegurl';
+                media.streamType = cast.framework.messages.StreamType.BUFFERED;
                 
-                dbg.textContent = 'LOAD OK\n' + url;
+                dbg.textContent = 'LOAD OK (Shaka VOD)\n' + url + '\noffset=' + request.currentTime;
                 setTimeout(() => {
                     if (dbg.style.display === 'none') return;
                     dbg.textContent += '\nstate=' + playerManager.getState() + ' (15s timeout)';
@@ -60,7 +61,10 @@
             () => { dbg.style.display = 'none'; }
         );
 
-        context.start();
+        context.start({
+            supportedCommands: cast.framework.messages.Command.ALL_BASIC_MEDIA,
+            preferShakaForHls: true
+        });
     </script>
 </body>
 </html>
