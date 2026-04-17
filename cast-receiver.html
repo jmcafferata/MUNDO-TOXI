@@ -35,26 +35,33 @@
                 const media = request.media;
                 if (!media) { dbg.textContent = 'LOAD: media null'; return request; }
                 const url = media.contentUrl || media.contentId;
-                dbg.textContent = 'URL: ' + url + ' | type: ' + media.contentType + ' | t: ' + request.currentTime;
+                media.contentUrl = url;
+                media.contentType = 'application/x-mpegURL';
+                dbg.textContent = 'LOAD OK\nURL: ' + url + '\ntype: ' + media.contentType + '\nt: ' + request.currentTime;
                 console.log('[TOXI] LOAD intercepted:', url, 'startTime:', request.currentTime);
-                if (url && url.includes('.m3u8')) {
-                    media.contentUrl = url;
-                    media.contentType = 'application/x-mpegURL';
-                    request.currentTime = 0;
-                }
                 return request;
             }
         );
 
         playerManager.addEventListener(
             cast.framework.events.EventType.ERROR,
-            e => { dbg.textContent = 'ERROR: ' + JSON.stringify(e.detailedErrorCode) + ' ' + JSON.stringify(e.error); }
+            e => {
+                dbg.style.display = '';
+                dbg.textContent = 'ERROR detailedCode=' + e.detailedErrorCode + '\n' + JSON.stringify(e.error);
+            }
         );
 
         playerManager.addEventListener(
             cast.framework.events.EventType.PLAYING,
             () => { dbg.style.display = 'none'; }
         );
+
+        setInterval(() => {
+            if (dbg.style.display === 'none') return;
+            const state = playerManager.getState();
+            const pos = playerManager.getCurrentTimeSec ? playerManager.getCurrentTimeSec() : '?';
+            dbg.textContent = dbg.textContent.split('\n').slice(0, 3).join('\n') + '\nstate=' + state + ' pos=' + Math.round(pos) + 's';
+        }, 2000);
 
         context.start();
     </script>
