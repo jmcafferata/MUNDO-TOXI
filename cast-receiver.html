@@ -8,13 +8,13 @@
         body { margin: 0; background: #000; }
         cast-media-player {
             --theme-hue: 0;
-            --splash-image: url('/toxi-logo-white.png');
+            --splash-image: url('https://toxi.tv/toxi-logo-white.png');
             --splash-size: 120px;
             --background-image: none;
         }
         #dbg {
             position: fixed; top: 20px; left: 20px; right: 20px;
-            color: #fff; font: bold 28px monospace;
+            color: #fff; font: bold 20px monospace;
             background: rgba(0,0,0,0.8); padding: 20px;
             z-index: 9999; word-break: break-all;
             pointer-events: none;
@@ -23,28 +23,89 @@
 </head>
 <body>
     <cast-media-player></cast-media-player>
-    <div id="dbg">Receiver iniciado, esperando LOAD...</div>
+    <div id="dbg">Receiver iniciado, esperando conectar...</div>
     <script>
         const dbg = document.getElementById('dbg');
         const context = cast.framework.CastReceiverContext.getInstance();
         const playerManager = context.getPlayerManager();
 
+        const EPOCH_SEC = 1767225600; // 2026-01-01T00:00:00Z
+        let playlist = [];
+
+        async function ensurePlaylist() {
+            if (playlist.length > 0) return;
+            try {
+                const res = await fetch('https://toxi.tv/api/playlist');
+                playlist = await res.json();
+            } catch(e) {
+                dbg.textContent = 'API Error: ' + e;
+            }
+        }
+
+        function getCurrentSlot() {
+            const nowSec = Date.now() / 1000;
+            const elapsed = Math.max(0, nowSec - EPOCH_SEC);
+            const totalDuration = playlist.reduce((sum, item) => sum + item.duration, 0);
+            
+            let loopElapsed = elapsed % totalDuration;
+            for (let i = 0; i < playlist.length; i++) {
+                const item = playlist[i];
+                if (loopElapsed < item.duration) {
+                    return { item, offset: loopElapsed, index: i };
+                }
+                loopElapsed -= item.duration;
+            }
+            return { item: playlist[0], offset: 0, index: 0 };
+        }
+
+        // Intercepta cuando la App de Android/iOS le dice "reproducir"
         playerManager.setMessageInterceptor(
             cast.framework.messages.MessageType.LOAD,
-            request => {
-                const media = request.media;
-                if (!media) { dbg.textContent = 'LOAD: media null'; return request; }
-                const url = (media.contentUrl || media.contentId || '').replace('.mpd', '.m3u8'); // ensure m3u8
-                media.contentUrl = url;
-                media.contentType = 'application/x-mpegurl';
-                media.streamType = cast.framework.messages.StreamType.BUFFERED;
+            async request => {
+                dbg.textContent = 'Calculando grilla...';
+                await ensurePlaylist();
+                if (playlist.length === 0) return request;
+
+                const slot = getCurrentSlot();
+                const url = `https://stream.mux.com/${slot.item.id}.m3u8`;
+
+                request.media = request.media || {};
+                request.media.contentId = url;
+                request.media.contentUrl = url;
+                request.media.contentType = 'application/x-mpegurl';
+                request.media.streamType = cast.framework.messages.StreamType.BUFFERED;
                 
-                dbg.textContent = 'LOAD OK (Shaka VOD)\n' + url + '\noffset=' + request.currentTime;
-                setTimeout(() => {
-                    if (dbg.style.display === 'none') return;
-                    dbg.textContent += '\nstate=' + playerManager.getState() + ' (15s timeout)';
-                }, 15000);
+                // Sobrescribe lo que mandó el celular con el offset real de la web
+                request.currentTime = slot.offset;
+
+                dbg.textContent = `? ${slot.item.title}\nOff: ${Math.floor(slot.offset)}s`;
                 return request;
+            }
+        );
+
+        // Cuando termina un programa, carga el siguiente solo
+        playerManager.addEventListener(
+            cast.framework.events.EventType.MEDIA_FINISHED,
+            async (event) => {
+                if (event.reason !== cast.framework.events.EndedReason.STOPPED && 
+                    event.reason !== cast.framework.events.EndedReason.ERROR) {
+                    
+                    dbg.style.display = '';
+                    dbg.textContent = 'Cargando siguiente...';
+                    await ensurePlaylist();
+                    const slot = getCurrentSlot();
+                    const url = `https://stream.mux.com/${slot.item.id}.m3u8`;
+
+                    const request = new cast.framework.messages.LoadRequestData();
+                    request.media = new cast.framework.messages.MediaInformation();
+                    request.media.contentId = url;
+                    request.media.contentUrl = url;
+                    request.media.contentType = 'application/x-mpegurl';
+                    request.media.streamType = cast.framework.messages.StreamType.BUFFERED;
+                    request.currentTime = slot.offset; 
+
+                    playerManager.load(request);
+                }
             }
         );
 
@@ -58,7 +119,9 @@
 
         playerManager.addEventListener(
             cast.framework.events.EventType.PLAYING,
-            () => { dbg.style.display = 'none'; }
+            () => { 
+                setTimeout(() => { dbg.style.display = 'none'; }, 4000); 
+            }
         );
 
         context.start({
