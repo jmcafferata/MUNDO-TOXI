@@ -20,15 +20,17 @@
         const context = cast.framework.CastReceiverContext.getInstance();
         const playerManager = context.getPlayerManager();
 
-        // Forzar contentType correcto para streams HLS de Mux (fMP4/CMAF)
+        // Asegurar contentUrl y contentType para streams HLS de Mux
         playerManager.setMessageInterceptor(
             cast.framework.messages.MessageType.LOAD,
             request => {
                 const media = request.media;
-                const url = media && (media.contentUrl || media.contentId);
+                if (!media) return request;
+                // Shaka usa contentUrl; ExoPlayer CastPlayer puede enviar solo contentId
+                const url = media.contentUrl || media.contentId;
                 if (url && url.includes('.m3u8')) {
+                    media.contentUrl = url;
                     media.contentType = 'application/x-mpegURL';
-                    media.hlsSegmentFormat = cast.framework.messages.HlsSegmentFormat.FMP4;
                 }
                 return request;
             }
