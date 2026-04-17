@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>TOXI TV</title>
+    <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+    <style>
+        body { margin: 0; background: #000; }
+        cast-media-player {
+            --theme-hue: 0;
+            --splash-image: url('/toxi-logo-white.png');
+            --splash-size: 120px;
+            --background-image: none;
+        }
+    </style>
+</head>
+<body>
+    <cast-media-player></cast-media-player>
+    <script>
+        cast.framework.CastReceiverContext.getInstance().start();
+    </script>
+</body>
+</html>
