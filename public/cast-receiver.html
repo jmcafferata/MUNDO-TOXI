@@ -12,31 +12,48 @@
             --splash-size: 120px;
             --background-image: none;
         }
+        #dbg {
+            position: fixed; top: 20px; left: 20px; right: 20px;
+            color: #fff; font: bold 28px monospace;
+            background: rgba(0,0,0,0.8); padding: 20px;
+            z-index: 9999; word-break: break-all;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
     <cast-media-player></cast-media-player>
+    <div id="dbg">Receiver iniciado, esperando LOAD...</div>
     <script>
+        const dbg = document.getElementById('dbg');
         const context = cast.framework.CastReceiverContext.getInstance();
         const playerManager = context.getPlayerManager();
 
-        // Asegurar contentUrl y contentType para streams HLS de Mux
         playerManager.setMessageInterceptor(
             cast.framework.messages.MessageType.LOAD,
             request => {
                 const media = request.media;
-                if (!media) return request;
-                // Shaka usa contentUrl; ExoPlayer CastPlayer puede enviar solo contentId
+                if (!media) { dbg.textContent = 'LOAD: media null'; return request; }
                 const url = media.contentUrl || media.contentId;
+                dbg.textContent = 'URL: ' + url + ' | type: ' + media.contentType + ' | t: ' + request.currentTime;
                 console.log('[TOXI] LOAD intercepted:', url, 'startTime:', request.currentTime);
                 if (url && url.includes('.m3u8')) {
                     media.contentUrl = url;
                     media.contentType = 'application/x-mpegURL';
-                    // Resetear startTime a 0 — seek profundo puede bloquear Shaka
                     request.currentTime = 0;
                 }
                 return request;
             }
+        );
+
+        playerManager.addEventListener(
+            cast.framework.events.EventType.ERROR,
+            e => { dbg.textContent = 'ERROR: ' + JSON.stringify(e.detailedErrorCode) + ' ' + JSON.stringify(e.error); }
+        );
+
+        playerManager.addEventListener(
+            cast.framework.events.EventType.PLAYING,
+            () => { dbg.style.display = 'none'; }
         );
 
         context.start();
