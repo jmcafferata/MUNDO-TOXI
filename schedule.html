@@ -385,6 +385,35 @@
     .sched-block:hover .block-del { display: block; }
     .block-del:hover { color: var(--red); }
 
+    /* ── BLOCK TOOLTIP ────────────────────────────────────────────────── */
+    .block-tooltip {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      background: #1c1c1c;
+      border: 1px solid #383838;
+      border-radius: 6px;
+      padding: 8px 11px;
+      max-width: 240px;
+      pointer-events: none;
+      box-shadow: 0 6px 20px rgba(0,0,0,.6);
+    }
+    .block-tooltip .tt-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1.4;
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+    .block-tooltip .tt-meta {
+      font-size: 9px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      display: flex;
+      gap: 8px;
+    }
+
     /* Zoom control */
     .zoom-row {
       display: flex;
@@ -403,6 +432,13 @@
   </style>
 </head>
 <body>
+<div id="block-tooltip" class="block-tooltip">
+  <div class="tt-title" id="tt-title"></div>
+  <div class="tt-meta">
+    <span id="tt-start"></span>
+    <span id="tt-dur"></span>
+  </div>
+</div>
 <div id="app">
 
   <!-- ── SIDEBAR ─────────────────────────────────────────────────────── -->
@@ -754,13 +790,26 @@ function renderBlocks() {
       block.style.height = highPx + 'px';
       block.style.background = color.bg;
 
-      const showTitle = highPx >= 20;
-      const showTime  = highPx >= 32;
+      // tiny = < ~6 min at default zoom, micro = < ~2 min
+      const isNano  = highPx < 10;
+      const isTiny  = highPx < 20;
+      const isSmall = highPx < 32;
+
+      let innerContent;
+      if (isNano) {
+        innerContent = ''; // just the colored bar
+      } else if (isTiny) {
+        innerContent = `<div class="block-title" style="font-size:8px;line-height:${highPx - 2}px;">${item.title}</div>`;
+      } else if (isSmall) {
+        innerContent = `<div class="block-title">${item.title}</div>`;
+      } else {
+        innerContent = `<div class="block-title">${item.title}</div>
+          <div class="block-time">${fmtTime(entry.startMin)} — ${fmtDur(item.duration)}</div>`;
+      }
 
       block.innerHTML = `
-        <div class="block-inner" style="border-left-color:${color.border}">
-          ${showTitle ? `<div class="block-title">${item.title}</div>` : ''}
-          ${showTime  ? `<div class="block-time">${fmtTime(entry.startMin)} — ${fmtDur(item.duration)}</div>` : ''}
+        <div class="block-inner" style="border-left-color:${color.border};padding:${isNano ? '0 0 0 3px' : ''}">
+          ${innerContent}
         </div>
         <span class="block-del" title="Eliminar">×</span>`;
 
@@ -771,6 +820,14 @@ function renderBlocks() {
         renderBlocks();
         refreshTotals();
       });
+
+      // Tooltip
+      block.addEventListener('mouseenter', showTooltip);
+      block.addEventListener('mousemove',  moveTooltip);
+      block.addEventListener('mouseleave', hideTooltip);
+      block.dataset.title    = item.title;
+      block.dataset.start    = fmtTime(entry.startMin);
+      block.dataset.duration = fmtDur(item.duration);
 
       block.addEventListener('dragstart', onBlockDragStart);
       block.addEventListener('dragend',   onBlockDragEnd);
@@ -794,6 +851,31 @@ function refreshTotals() {
       el.textContent = t > 0 ? fmtDur(t) : '';
     }
   }
+}
+
+// ── TOOLTIP ──────────────────────────────────────────────────────────────────
+const _tt = document.getElementById('block-tooltip');
+
+function showTooltip(e) {
+  document.getElementById('tt-title').textContent = e.currentTarget.dataset.title;
+  document.getElementById('tt-start').textContent = e.currentTarget.dataset.start;
+  document.getElementById('tt-dur').textContent   = e.currentTarget.dataset.duration;
+  _tt.style.display = 'block';
+  positionTooltip(e);
+}
+function moveTooltip(e) { positionTooltip(e); }
+function hideTooltip()  { _tt.style.display = 'none'; }
+
+function positionTooltip(e) {
+  const margin = 10;
+  const tw = _tt.offsetWidth  || 200;
+  const th = _tt.offsetHeight || 60;
+  let x = e.clientX + margin;
+  let y = e.clientY + margin;
+  if (x + tw > window.innerWidth)  x = e.clientX - tw - margin;
+  if (y + th > window.innerHeight) y = e.clientY - th - margin;
+  _tt.style.left = x + 'px';
+  _tt.style.top  = y + 'px';
 }
 
 // ── DRAG & DROP ───────────────────────────────────────────────────────────────

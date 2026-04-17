@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "TOXI TV",
+    "slug": "toxi-tv-ios",
+    "version": "2.1",
+    "orientation": "landscape",
+    "scheme": "toxitv",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#000000"
+    },
+    "ios": {
+      "bundleIdentifier": "media.toxi.tv",
+      "buildNumber": "7",
+      "supportsTablet": true,
+      "requireFullScreen": true,
+      "infoPlist": {
+        "UIStatusBarHidden": true,
+        "UIRequiresFullScreen": true,
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "plugins": [
+      [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": false
+        }
+      ],
+      "expo-screen-orientation"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b68c1663-d689-4aef-8e5a-3486aed4086d"
+      }
+    },
+    "owner": "toxi-media"
+  }
+}
