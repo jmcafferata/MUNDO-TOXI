@@ -34,11 +34,13 @@
             request => {
                 const media = request.media;
                 if (!media) { dbg.textContent = 'LOAD: media null'; return request; }
-                const url = media.contentUrl || media.contentId;
+                const url = (media.contentUrl || media.contentId || '').replace('.mpd', '.m3u8'); // ensure m3u8
                 media.contentUrl = url;
-                media.contentType = 'application/x-mpegURL';
+                media.contentType = 'application/x-mpegurl';
+                media.hlsSegmentFormat = cast.framework.messages.HlsSegmentFormat.TS;
+                
                 request.currentTime = 0;
-                dbg.textContent = 'LOAD OK (Shaka)\n' + url;
+                dbg.textContent = 'LOAD OK (TS)\n' + url;
                 setTimeout(() => {
                     if (dbg.style.display === 'none') return;
                     dbg.textContent += '\nstate=' + playerManager.getState() + ' (15s timeout)';
@@ -60,7 +62,7 @@
             () => { dbg.style.display = 'none'; }
         );
 
-        context.start({ preferShakaForHls: true });
+        context.start();
     </script>
 </body>
 </html>
