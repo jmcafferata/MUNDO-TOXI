@@ -38,17 +38,12 @@
                 const media = request.media;
                 if (!media) { dbg.textContent = 'LOAD: media null'; return request; }
                 const url = media.contentUrl || media.contentId;
-                loadedUrl = url;
-                loadedT = request.currentTime;
                 media.contentUrl = url;
                 media.contentType = 'application/x-mpegURL';
+                media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.FMP4;
+                media.hlsAudioSegmentFormat = cast.framework.messages.HlsAudioSegmentFormat.FMP4;
                 request.currentTime = 0;
-                dbg.textContent = 'LOAD OK t=' + loadedT + '\nURL: ' + url + '\nfetch...';
-                fetch(url).then(r => {
-                    dbg.textContent = 'LOAD OK t=' + loadedT + '\nfetch ' + r.status + ' ' + (r.headers.get('content-type') || '?');
-                }).catch(e => {
-                    dbg.textContent = 'LOAD OK t=' + loadedT + '\nFETCH ERR: ' + e.message;
-                });
+                dbg.textContent = 'LOAD fmp4 t=' + request.currentTime + '\n' + url;
                 return request;
             }
         );
