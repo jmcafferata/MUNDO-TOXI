@@ -20,14 +20,15 @@
         const context = cast.framework.CastReceiverContext.getInstance();
         const playerManager = context.getPlayerManager();
 
-        // Forzar contentType correcto para streams HLS de Mux
+        // Forzar contentType correcto para streams HLS de Mux (fMP4/CMAF)
         playerManager.setMessageInterceptor(
             cast.framework.messages.MessageType.LOAD,
             request => {
                 const media = request.media;
-                if (media && media.contentUrl && media.contentUrl.includes('.m3u8')) {
+                const url = media && (media.contentUrl || media.contentId);
+                if (url && url.includes('.m3u8')) {
                     media.contentType = 'application/x-mpegURL';
-                    media.hlsSegmentFormat = cast.framework.messages.HlsSegmentFormat.TS;
+                    media.hlsSegmentFormat = cast.framework.messages.HlsSegmentFormat.FMP4;
                 }
                 return request;
             }
