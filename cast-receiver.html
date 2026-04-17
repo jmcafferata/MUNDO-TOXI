@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <title>TOXI TV</title>
     <script src="https://www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/shaka-player/4.7.3/shaka-player.compiled.js"></script>
     <style>
         body { margin: 0; background: #000; }
         cast-media-player {
@@ -26,8 +25,6 @@
     <cast-media-player></cast-media-player>
     <div id="dbg">Receiver iniciado, esperando LOAD...</div>
     <script>
-        shaka.polyfill.installAll();
-
         const dbg = document.getElementById('dbg');
         const context = cast.framework.CastReceiverContext.getInstance();
         const playerManager = context.getPlayerManager();
@@ -40,7 +37,12 @@
                 const url = media.contentUrl || media.contentId;
                 media.contentUrl = url;
                 media.contentType = 'application/x-mpegURL';
-                dbg.textContent = 'LOAD HLS+Shaka\n' + url;
+                request.currentTime = 0;
+                dbg.textContent = 'LOAD OK (Shaka)\n' + url;
+                setTimeout(() => {
+                    if (dbg.style.display === 'none') return;
+                    dbg.textContent += '\nstate=' + playerManager.getState() + ' (15s timeout)';
+                }, 15000);
                 return request;
             }
         );
@@ -57,11 +59,6 @@
             cast.framework.events.EventType.PLAYING,
             () => { dbg.style.display = 'none'; }
         );
-
-        setInterval(() => {
-            if (dbg.style.display === 'none') return;
-            dbg.textContent = dbg.textContent.split('\n').slice(0, 2).join('\n') + '\nstate=' + playerManager.getState();
-        }, 3000);
 
         context.start({ preferShakaForHls: true });
     </script>
