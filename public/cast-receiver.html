@@ -28,9 +28,12 @@
                 if (!media) return request;
                 // Shaka usa contentUrl; ExoPlayer CastPlayer puede enviar solo contentId
                 const url = media.contentUrl || media.contentId;
+                console.log('[TOXI] LOAD intercepted:', url, 'startTime:', request.currentTime);
                 if (url && url.includes('.m3u8')) {
                     media.contentUrl = url;
                     media.contentType = 'application/x-mpegURL';
+                    // Resetear startTime a 0 — seek profundo puede bloquear Shaka
+                    request.currentTime = 0;
                 }
                 return request;
             }
