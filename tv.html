@@ -216,7 +216,7 @@
             do { idx = Math.floor(Math.random() * PLAYLIST.length); }
             while (PLAYLIST.length > 1 && idx === excludeIndex);
             const video       = PLAYLIST[idx];
-            const zapDuration = randInt(1, 30);
+            const zapDuration = randInt(5, 30);
             const maxOffset   = Math.max(0, video.duration - zapDuration - 1);
             const offset      = Math.random() * maxOffset;
             return { video, offset, index: idx, zapDuration };
