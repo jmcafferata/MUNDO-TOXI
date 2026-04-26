@@ -159,7 +159,7 @@
     "slug": "fabrizio-sanguinetti",
     "description": "",
     "contenido": "<p><strong id=\"\">Fabrizio Sanguinetti</strong> es un creativo multidisciplinario con una sólida formación en análisis de datos y gestión de proyectos. Como fundador y director creativo en TOXI.media, ha liderado la producción de cortometrajes, mediometrajes, y eventos innovadores, fusionando su pasión por la narrativa visual con un enfoque estratégico y colaborativo. Su experiencia abarca desde la escritura de guiones hasta la dirección de actores, siempre buscando transformar ideas complejas en experiencias memorables. Fabrizio también ha sido investigador y profesor asistente, lo que refleja su amor por el conocimiento y su capacidad para conectar el análisis riguroso con la creatividad artística.</p>",
-    "photo": "/photos/fabrizio-sanguinetti.jpg",
+    "photo": "https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/66c4c80283ef37d7a0b2a54d_1664818025377.jpeg",
     "banner": "https://uploads-ssl.webflow.com/62e2e71beda91e786542f0de/66c7dfa8605537d8ecfe656f_fabri%20banner.jpg",
     "quote": "Analista de datos",
     "proyectos": [
@@ -190,8 +190,7 @@
       "viaje",
       "what-show",
       "para-que-sirve-todo-esto",
-      "17-minutos-con-cata",
-      "pizza-y-pagni"
+      "17-minutos-con-cata"
     ],
     "formatos": [
       "cine",
@@ -327,9 +326,7 @@
       "viaje",
       "violetica-trabajando-duro",
       "what-show",
-      "para-que-sirve-todo-esto",
-      "hedonismo-y-seduccion",
-      "pizza-y-pagni"
+      "para-que-sirve-todo-esto"
     ],
     "formatos": [
       "cine"
@@ -525,7 +522,7 @@
     "slug": "nacho-michalowicz",
     "description": "",
     "contenido": "",
-    "photo": "/photos/nacho-michalowicz.jpg",
+    "photo": "https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/692273d8d05392e7c604046e_485176360_1831421054322401_4349979490355225998_n.jpg",
     "banner": "",
     "quote": "Artista 4D",
     "proyectos": [
@@ -580,19 +577,6 @@
     "proyectos": [
       "pierrot-le-bolou"
     ],
-    "formatos": [],
-    "web": ""
-  },
-  {
-    "name": "Renato Brandán",
-    "slug": "renato-brandan",
-    "description": "",
-    "photo": "/photos/renato-card.jpg",
-    "contenido": "<p id=\"\">Renato Gastón Brandán es Licenciado en Ciencia Política y maestrando en Filosofía Política y en Docencia Universitaria. Con base en Buenos Aires, combina la investigación académica con la docencia activa: los miércoles dicta clases en el CBC de la UBA en Ciudad de Chacabuco, extensión universitaria de la Universidad de Buenos Aires. Además, realiza suplencias en la sede de Avellaneda y es un visitante frecuente de La Paternal, donde se cruzan sus intereses culturales y académicos.</p><p id=\"\">Su trayectoria transita el pensamiento político desde una perspectiva filosófica, con especial énfasis en la articulación entre teoría y práctica docente. Viaja regularmente a Junín, provincia de Buenos Aires, donde también participa de actividades académicas y culturales.</p>",
-    "photo": "",
-    "banner": "",
-    "quote": "Politólogo y maestrando",
-    "proyectos": [],
     "formatos": [],
     "web": ""
   },
@@ -680,19 +664,5 @@
       "eventos"
     ],
     "web": "http://niunpocosofia.webflow.io"
-  },
-  {
-    "name": "Diego Ravetti",
-    "slug": "diego-ravetti",
-    "description": "Director teatral y diseñador de vestuario radicado en Venado Tuerto.",
-    "contenido": "<p>Diego Ravetti es director teatral y dise&ntilde;ador de vestuario radicado en Venado Tuerto. Su trabajo explora los l&iacute;mites entre el teatro convencional y la experiencia inmersiva, borrando la frontera entre el actor y el espectador.</p><p>Es codirector de <strong>Productora <a href=\"https://www.instagram.com/0nirica_/\" target=\"_blank\">0nírica<\/a></strong> junto a <a href=\"/micaela-ledesma\">Micaela Ledesma</a>, sello independiente dedicado a experiencias teatrales inmersivas y locales. Su proyecto m&aacute;s emblema&aacute;tico es <strong>Banquete</strong>, estrenado como <em>Banquete Happening</em> en el Espacio Runciman en septiembre de 2024, donde la premisa central es que &ldquo;se pierden los l&iacute;mites entre el actor y el espectador&rdquo;.</p><p>Tambi&eacute;n codirig&oacute; <strong>Hedonismo y Seducci&oacute;n</strong>, obra inspirada en <em>Nido Vac&iacute;o I: Laura</em> de Diego J. Cicerchia.</p>",
-    "photo": "/diego-ravetti.png",
-    "banner": "",
-    "quote": "Director teatral y diseñador de vestuario",
-    "proyectos": [
-      "hedonismo-y-seduccion"
-    ],
-    "formatos": [],
-    "web": ""
   }
 ]
