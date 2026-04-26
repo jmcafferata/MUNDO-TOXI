@@ -71,6 +71,7 @@ export const PLAYLIST = [
   { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY',  duration: 80.830756,   title: '¿Qué es Mamarracho? — Nano Catalá' },
   { id: 'agfEm3toRbicITlQJbJ4ppPrv700kzCrHmFczRDhmcf8',        duration: 5693.633333, title: 'Storytelling y Transgresión — Gael P. Rossi (TOXI University)' },
   { id: 'N5ISPSMoo502IHjTdvQt02GeR7xgJUiCFTlxrBLLIhpcg',       duration: 2580.9,      title: 'Literatura y Realidad Virtual — Ana Arzoumanian (TOXI University)' },
+  { id: 'irasB01gOUsUd4E4Iy6yVvp7CYMwYMVB00nr4BKU8tn38',       duration: 539.566667,  title: 'Ana Arzoumanian en TV Pública — Inteligencia Artificial Hoy' },
   { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00',      duration: 5803.5,      title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)' },
 ];
 
