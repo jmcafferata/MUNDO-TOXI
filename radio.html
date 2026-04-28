@@ -9,6 +9,7 @@
     <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
     <link rel="icon" href="/favicon.ico" />
     <script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
+    <!-- Radio sincronizada: todos los oyentes escuchan lo mismo al mismo tiempo -->
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -53,13 +54,12 @@
         }
         .radio-dot {
             width: 7px; height: 7px; border-radius: 50%;
-            background: #fff; opacity: 0.7;
-            animation: pulse-dot 2s ease-in-out infinite;
+            background: #f87171; opacity: 1;
+            animation: pulse-dot 1.8s ease-in-out infinite;
         }
-        .radio-dot.playing { background: #f87171; opacity: 1; }
         @keyframes pulse-dot {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50%       { opacity: 1;   transform: scale(1.3); }
+            0%, 100% { opacity: 1;   transform: scale(1); }
+            50%       { opacity: 0.4; transform: scale(0.8); }
         }
 
         #clock {
@@ -77,7 +77,7 @@
             align-items: center;
             justify-content: center;
             gap: 48px;
-            padding: 80px 28px 120px;
+            padding: 80px 28px 80px;
             position: relative;
         }
 
@@ -87,7 +87,7 @@
             align-items: flex-end;
             gap: 5px;
             height: 80px;
-            opacity: 0.18;
+            opacity: 0.15;
             transition: opacity 0.6s ease;
         }
         .visualizer.active { opacity: 1; }
@@ -96,10 +96,7 @@
             width: 4px;
             border-radius: 2px;
             background: #fff;
-            min-height: 4px;
-            animation: none;
             height: 4px;
-            transition: height 0.1s ease;
         }
         .visualizer.active .bar { animation: var(--anim) var(--dur) ease-in-out infinite alternate; }
 
@@ -149,12 +146,12 @@
             margin-bottom: 8px;
             min-height: 1.8em;
         }
-        .track-counter {
-            font-size: 0.65rem;
-            color: rgba(255,255,255,0.3);
-            letter-spacing: 0.1em;
-            font-variant-numeric: tabular-nums;
+        .track-next {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.28);
+            margin-top: 4px;
         }
+        .track-next span { color: rgba(255,255,255,0.5); }
 
         /* ── PROGRESS ── */
         .progress-wrap {
@@ -167,7 +164,6 @@
             border-radius: 2px;
             overflow: hidden;
             margin-bottom: 10px;
-            cursor: pointer;
         }
         .progress-fill {
             height: 100%;
@@ -182,35 +178,6 @@
             font-size: 0.62rem;
             color: rgba(255,255,255,0.3);
             font-variant-numeric: tabular-nums;
-        }
-
-        /* ── CONTROLS ── */
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 36px;
-        }
-        .ctrl-btn {
-            background: transparent;
-            border: none;
-            color: rgba(255,255,255,0.55);
-            cursor: pointer;
-            padding: 8px;
-            transition: color 0.2s, transform 0.15s;
-            line-height: 0;
-        }
-        .ctrl-btn:hover { color: #fff; transform: scale(1.1); }
-        .ctrl-btn:active { transform: scale(0.95); }
-        .ctrl-btn.main-btn {
-            color: #fff;
-            width: 52px; height: 52px;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .ctrl-btn.main-btn:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(255,255,255,0.6);
         }
 
         /* ── AGE GATE ── */
@@ -270,52 +237,29 @@
     <header>
         <a class="logo-link" href="/"><img src="/toxi-logo-white.png" alt="TOXI Media" /></a>
         <div class="radio-badge">
-            <span class="radio-dot" id="radio-dot"></span>
+            <span class="radio-dot"></span>
             <span>Radio</span>
         </div>
         <div id="clock">--:--</div>
     </header>
 
     <main>
-        <div class="visualizer" id="visualizer">
-            <!-- 25 barras — generadas por JS -->
-        </div>
+        <div class="visualizer" id="visualizer"></div>
 
         <div class="track-info">
-            <div class="track-label">Ahora</div>
+            <div class="track-label">Ahora en Radio Toxi</div>
             <div class="track-title" id="track-title">—</div>
-            <div class="track-counter" id="track-counter"></div>
+            <div class="track-next" id="track-next"></div>
         </div>
 
         <div class="progress-wrap">
-            <div class="progress-bar" id="progress-bar">
+            <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
             </div>
             <div class="progress-times">
                 <span id="time-current">0:00</span>
                 <span id="time-total">0:00</span>
             </div>
-        </div>
-
-        <div class="controls">
-            <button class="ctrl-btn" id="btn-prev" title="Anterior">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/>
-                </svg>
-            </button>
-            <button class="ctrl-btn main-btn" id="btn-playpause" title="Play / Pausa">
-                <svg id="icon-play" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z"/>
-                </svg>
-                <svg id="icon-pause" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="display:none">
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                </svg>
-            </button>
-            <button class="ctrl-btn" id="btn-next" title="Siguiente">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
-                </svg>
-            </button>
         </div>
     </main>
 
@@ -333,32 +277,23 @@
     </div>
 
     <script type="module">
-        import { CONTENT } from './src/content.js';
+        import { RADIO_PLAYLIST } from './src/content.js';
 
-        const PLAYLIST = CONTENT.filter(v => v.onTV).map((v, i) => ({
-            id:       v.id,
-            title:    v.title,
-            duration: v.duration || 0,
-            index:    i,
-        }));
+        // Solo tracks con duración conocida para que el cálculo de posición sea exacto
+        const PLAYLIST = RADIO_PLAYLIST;
+
+        const totalDuration = PLAYLIST.reduce((s, v) => s + v.duration, 0);
 
         // ── DOM ──
-        const audio         = document.getElementById('audio');
-        const visualizer    = document.getElementById('visualizer');
-        const trackTitle    = document.getElementById('track-title');
-        const trackCounter  = document.getElementById('track-counter');
-        const progressFill  = document.getElementById('progress-fill');
-        const progressBar   = document.getElementById('progress-bar');
-        const timeCurrent   = document.getElementById('time-current');
-        const timeTotal     = document.getElementById('time-total');
-        const btnPrev       = document.getElementById('btn-prev');
-        const btnPlayPause  = document.getElementById('btn-playpause');
-        const btnNext       = document.getElementById('btn-next');
-        const iconPlay      = document.getElementById('icon-play');
-        const iconPause     = document.getElementById('icon-pause');
-        const radioDot      = document.getElementById('radio-dot');
-        const clockEl       = document.getElementById('clock');
-        const ageGate       = document.getElementById('age-gate');
+        const audio        = document.getElementById('audio');
+        const visualizer   = document.getElementById('visualizer');
+        const trackTitle   = document.getElementById('track-title');
+        const trackNext    = document.getElementById('track-next');
+        const progressFill = document.getElementById('progress-fill');
+        const timeCurrent  = document.getElementById('time-current');
+        const timeTotal    = document.getElementById('time-total');
+        const clockEl      = document.getElementById('clock');
+        const ageGate      = document.getElementById('age-gate');
 
         // ── Waveform bars ──
         const ANIMS = [
@@ -375,11 +310,24 @@
             visualizer.appendChild(bar);
         });
 
-        // ── HLS state ──
-        let hls = null;
-        let currentIndex = 0;
-        let isPlaying    = false;
-        let audioUnlocked = false;
+        // ── Sincronización por reloj ──
+        // Posición global = (epoch_segundos) % totalDuration
+        // Todos los oyentes calculan lo mismo desde el reloj Unix.
+        function getGlobalPosition() {
+            const nowSec = Date.now() / 1000;
+            return nowSec % totalDuration;
+        }
+
+        function resolvePosition(globalPos) {
+            let acc = 0;
+            for (let i = 0; i < PLAYLIST.length; i++) {
+                if (globalPos < acc + PLAYLIST[i].duration) {
+                    return { index: i, offset: globalPos - acc };
+                }
+                acc += PLAYLIST[i].duration;
+            }
+            return { index: 0, offset: 0 };
+        }
 
         function formatTime(s) {
             if (!isFinite(s) || s < 0) return '0:00';
@@ -388,104 +336,55 @@
             return `${m}:${ss.toString().padStart(2, '0')}`;
         }
 
-        function updateUI() {
-            const track = PLAYLIST[currentIndex];
-            trackTitle.textContent   = track.title;
-            trackCounter.textContent = `${currentIndex + 1} / ${PLAYLIST.length}`;
-        }
+        // ── HLS ──
+        let hls = null;
+        let currentIndex = -1;
 
-        function setPlayState(playing) {
-            isPlaying = playing;
-            iconPlay.style.display  = playing ? 'none'  : '';
-            iconPause.style.display = playing ? ''      : 'none';
-            visualizer.classList.toggle('active', playing);
-            radioDot.classList.toggle('playing', playing);
-        }
-
-        function loadTrack(index, autoplay = true) {
-            currentIndex = ((index % PLAYLIST.length) + PLAYLIST.length) % PLAYLIST.length;
-            const track = PLAYLIST[currentIndex];
+        function loadAndSeek(index, offset) {
+            const track = PLAYLIST[index];
             const url   = `https://stream.mux.com/${track.id}.m3u8`;
 
-            // Reset progress
-            progressFill.style.transition = 'none';
-            progressFill.style.width = '0%';
-            timeCurrent.textContent = '0:00';
-            timeTotal.textContent   = track.duration ? formatTime(track.duration) : '0:00';
+            trackTitle.textContent = track.title;
+            const nextTrack = PLAYLIST[(index + 1) % PLAYLIST.length];
+            trackNext.innerHTML = `A continuación: <span>${nextTrack.title}</span>`;
+            timeTotal.textContent = formatTime(track.duration);
 
-            updateUI();
-
-            // Destroy previous HLS instance
             if (hls) { hls.destroy(); hls = null; }
 
+            const seekAndPlay = () => {
+                audio.currentTime = offset;
+                audio.play().catch(() => {});
+            };
+
             if (Hls.isSupported()) {
-                hls = new Hls({ maxBufferLength: 60, startLevel: -1, autoLevelEnabled: true });
+                hls = new Hls({ maxBufferLength: 60, startLevel: -1 });
                 hls.loadSource(url);
                 hls.attachMedia(audio);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    if (autoplay && audioUnlocked) {
-                        audio.play().catch(() => {});
-                    }
-                });
+                hls.on(Hls.Events.MANIFEST_PARSED, seekAndPlay);
             } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-                // Safari native HLS
                 audio.src = url;
-                if (autoplay && audioUnlocked) {
-                    audio.play().catch(() => {});
-                }
+                audio.addEventListener('loadedmetadata', seekAndPlay, { once: true });
             } else {
                 document.getElementById('offline-screen').classList.add('visible');
-                return;
             }
         }
 
-        // ── Progress update ──
-        audio.addEventListener('timeupdate', () => {
-            const dur = audio.duration || PLAYLIST[currentIndex].duration;
-            if (!dur) return;
-            const pct = (audio.currentTime / dur) * 100;
-            progressFill.style.transition = 'width 1s linear';
-            progressFill.style.width      = Math.min(100, pct) + '%';
-            timeCurrent.textContent = formatTime(audio.currentTime);
-            timeTotal.textContent   = formatTime(dur);
-        });
+        // ── Tick de UI — cada segundo ──
+        function tick() {
+            const { index, offset } = resolvePosition(getGlobalPosition());
 
-        // ── Track ended → next ──
-        audio.addEventListener('ended', () => loadTrack(currentIndex + 1, true));
-
-        // ── Play/pause state ──
-        audio.addEventListener('play',  () => setPlayState(true));
-        audio.addEventListener('pause', () => setPlayState(false));
-
-        // ── Seek via progress bar ──
-        progressBar.addEventListener('click', e => {
-            if (!audioUnlocked) return;
-            const pct = e.offsetX / progressBar.offsetWidth;
-            const dur = audio.duration || PLAYLIST[currentIndex].duration;
-            if (dur) { audio.currentTime = pct * dur; }
-        });
-
-        // ── Controls ──
-        btnPlayPause.addEventListener('click', () => {
-            if (!audioUnlocked) return;
-            if (isPlaying) { audio.pause(); }
-            else           { audio.play().catch(() => {}); }
-        });
-
-        btnPrev.addEventListener('click', () => {
-            if (!audioUnlocked) return;
-            // Si llevamos más de 3s → reiniciar track; si no → track anterior
-            if (audio.currentTime > 3) {
-                audio.currentTime = 0;
-            } else {
-                loadTrack(currentIndex - 1, isPlaying);
+            // Cambio de track
+            if (index !== currentIndex) {
+                currentIndex = index;
+                loadAndSeek(index, offset);
             }
-        });
 
-        btnNext.addEventListener('click', () => {
-            if (!audioUnlocked) return;
-            loadTrack(currentIndex + 1, true);
-        });
+            // Progreso visual (basado en reloj, no en audio.currentTime — siempre sincronizado)
+            const dur = PLAYLIST[index].duration;
+            progressFill.style.transition = 'width 1s linear';
+            progressFill.style.width = Math.min(100, (offset / dur) * 100) + '%';
+            timeCurrent.textContent = formatTime(offset);
+        }
 
         // ── Reloj Argentina (UTC-3) ──
         function formatAR(date) {
@@ -498,18 +397,28 @@
 
         // ── Age gate ──
         function dismissAgeGate() {
-            audioUnlocked = true;
             ageGate.classList.add('hidden');
-            audio.play().catch(() => {});
+            visualizer.classList.add('active');
+            // Arrancar desde la posición correcta del reloj
+            const { index, offset } = resolvePosition(getGlobalPosition());
+            currentIndex = index;
+            loadAndSeek(index, offset);
+            setInterval(tick, 1000);
         }
         document.getElementById('age-over').addEventListener('click', dismissAgeGate);
         document.getElementById('age-under').addEventListener('click', dismissAgeGate);
 
-        // ── Arrancar ──
+        // ── Arrancar UI sin audio (pre age gate) ──
         if (!PLAYLIST.length) {
             document.getElementById('offline-screen').classList.add('visible');
         } else {
-            loadTrack(0, false);
+            const { index, offset } = resolvePosition(getGlobalPosition());
+            trackTitle.textContent = PLAYLIST[index].title;
+            timeTotal.textContent  = formatTime(PLAYLIST[index].duration);
+            timeCurrent.textContent = formatTime(offset);
+            const pct = (offset / PLAYLIST[index].duration) * 100;
+            progressFill.style.transition = 'none';
+            progressFill.style.width = pct + '%';
         }
     </script>
 
