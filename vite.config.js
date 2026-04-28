@@ -71,6 +71,7 @@ export default defineConfig({
         notaConstante: resolve(__dirname, 'nota-constante.html'),
         otroDiaEnLaRed: resolve(__dirname, 'otro-dia-en-la-red.html'),
         audiont: resolve(__dirname, 'audiont.html'),
+        radio: resolve(__dirname, 'radio.html'),
       },
     },
   },

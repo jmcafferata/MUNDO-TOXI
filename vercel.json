@@ -46,6 +46,10 @@
       "destination": "/tv.html"
     },
     {
+      "source": "/radio",
+      "destination": "/radio.html"
+    },
+    {
       "source": "/turing",
       "destination": "/turing.html"
     },
