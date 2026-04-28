@@ -24,7 +24,7 @@ export const CONTENT = [
   { id: 'B02Qs6Wm3TGMjxm5EZKRowHdNTUPb020048AMJa45YDXVM', duration: 1060.893178, title: '17 Minutos con Cata', slug: '', type: 'other', year: null, onTV: true },
   { id: 'IjUQQvDDhAOMHHS57ORIVl9f01vvb5425FmzPIdF5LRI', duration: 73.633333, title: 'A Game of Drones — Early Access Trailer', slug: '', type: 'other', year: null, onTV: true },
   { id: 'A14ToM2G9Mmi101NejPlGtAjj8oNGWnyIt302xeWw3oHw', duration: 605.146211, title: 'After You\'re Gone — Fancy Dogs™', slug: '', type: 'other', year: null, onTV: true },
-  { id: 'CbBSyr5FvC7I00PpxpKNJBW1ibyLuT6Lr52uyeZHHyBg', duration: 2457.566667, title: 'Alfredo Cafferata en TOXI Media', slug: '', type: 'other', year: null, onTV: true },
+  { id: 'CbBSyr5FvC7I00PpxpKNJBW1ibyLuT6Lr52uyeZHHyBg', duration: 2457.566667, title: 'Alfredo Cafferata en TOXI Media', slug: '', type: 'other', year: null, onTV: true, onRadio: true },
   { id: 'z02O01aMd02YkbeUb01syS400owVLRZ4oOJ6m463hcQ7FseQ', duration: 956.08, title: 'BAFICI Nights con Fabrizio Sanguinetti', slug: '', type: 'other', year: null, onTV: true },
   { id: 'SKB56hnQQV6Tame5VKea02w8E01Ijm7iyHUY5dZXYHKmU', duration: 1270.811211, title: 'Bebop Big Band — Bebop Club, 7 de Abril de 2025', slug: '', type: 'other', year: null, onTV: true },
   { id: 'KrzHBlHcZCL71mIfCoPKiCMs2iBQMAq8vbhXr701OtQg', duration: 17.966667, title: 'Carola Gil le informa a Carlos Pagni la existencia de Pizza & Pagni', slug: '', type: 'other', year: null, onTV: true },
@@ -80,11 +80,14 @@ export const CONTENT = [
   { id: '2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE', duration: 230.480256, title: 'Viaje a la Luna', slug: '', type: 'other', year: null, onTV: true },
   { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY', duration: 80.830756, title: '¿Qué es Mamarracho?', slug: '', type: 'other', year: null, onTV: true },
   { id: 'ascCA5hMxmuLlSRnYiRtuXj7P5hOJdC9ImyfKqaQsQo', duration: 2815, title: 'Pizza y Pagni — Piloto LN', slug: '', type: 'other', year: null, onTV: true },
-  { id: 'agfEm3toRbicITlQJbJ4ppPrv700kzCrHmFczRDhmcf8', duration: 5693.633333, title: 'Storytelling y Transgresión — Gael P. Rossi (TOXI University)', slug: '', type: 'other', year: null, onTV: true },
-  { id: 'N5ISPSMoo502IHjTdvQt02GeR7xgJUiCFTlxrBLLIhpcg', duration: 2580.9, title: 'Literatura y Realidad Virtual — Ana Arzoumanian (TOXI University)', slug: '', type: 'other', year: null, onTV: true },
+  { id: 'agfEm3toRbicITlQJbJ4ppPrv700kzCrHmFczRDhmcf8', duration: 5693.633333, title: 'Storytelling y Transgresión — Gael P. Rossi (TOXI University)', slug: '', type: 'other', year: null, onTV: true, onRadio: true },
+  { id: 'N5ISPSMoo502IHjTdvQt02GeR7xgJUiCFTlxrBLLIhpcg', duration: 2580.9, title: 'Literatura y Realidad Virtual — Ana Arzoumanian (TOXI University)', slug: '', type: 'other', year: null, onTV: true, onRadio: true },
   { id: 'irasB01gOUsUd4E4Iy6yVvp7CYMwYMVB00nr4BKU8tn38', duration: 539.566667, title: 'Ana Arzoumanian en TV Pública — Inteligencia Artificial Hoy', slug: '', type: 'other', year: null, onTV: true },
-  { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00', duration: 5803.5, title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)', slug: '', type: 'other', year: null, onTV: true },
+  { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00', duration: 5803.5, title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)', slug: '', type: 'other', year: null, onTV: true, onRadio: true },
 ];
 
 /** Solo los videos marcados onTV: true, en orden para la playlist del canal */
 export const TV_PLAYLIST = CONTENT.filter(v => v.onTV && v.title);
+
+/** Playlist de Radio Toxi: contenido de largo aliento */
+export const RADIO_PLAYLIST = CONTENT.filter(v => v.onRadio && v.duration > 0);
