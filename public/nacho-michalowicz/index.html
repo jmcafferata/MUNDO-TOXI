@@ -8,11 +8,11 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Nacho Michalowicz — TOXI Media" />
   <meta property="og:description" content="Artista 4D" />
-  <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+  <meta property="og:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/692273d8d05392e7c604046e_485176360_1831421054322401_4349979490355225998_n.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Nacho Michalowicz — TOXI Media" />
   <meta name="twitter:description" content="Artista 4D" />
-  <meta name="twitter:image" content="https://toxi.media/toxi-media-og.jpg" />
+  <meta name="twitter:image" content="https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/692273d8d05392e7c604046e_485176360_1831421054322401_4349979490355225998_n.jpg" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -599,8 +599,8 @@
       .ai-mic-btn { width: 48px; height: 48px; }
     }
   </style>
-  <link rel="canonical" href="https://toxi.media/nacho-michalowicz" />
-  <meta property="og:url" content="https://toxi.media/nacho-michalowicz" />
+  <link rel="canonical" href="https://www.toxi.media/nacho-michalowicz" />
+  <meta property="og:url" content="https://www.toxi.media/nacho-michalowicz" />
 </head>
 <body>
 
@@ -674,10 +674,11 @@
 
   // ── Data ──────────────────────────────────────────────
   async function loadData() {
+    const nonce = Date.now();
     const [p, t, f] = await Promise.all([
-      fetch('/data/projects.json').then(r => r.json()),
-      fetch('/data/talentos.json').then(r => r.json()),
-      fetch('/data/formatos.json').then(r => r.json()),
+      fetch(`/data/projects.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/data/talentos.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/data/formatos.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
     ]);
     projects = p;
     talentos = t;
@@ -1054,7 +1055,7 @@
   }
 
   const recognition = new SpeechRecognition();
-  recognition.lang = navigator.language || 'es-AR';
+  recognition.lang = 'es-AR';
   recognition.interimResults = true;
   recognition.maxAlternatives = 1;
   recognition.continuous = false;

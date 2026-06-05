@@ -664,5 +664,17 @@
       "eventos"
     ],
     "web": "http://niunpocosofia.webflow.io"
+  },
+  {
+    "name": "Ximena Colombres",
+    "slug": "ximena-colombres",
+    "description": "",
+    "contenido": "<p>Ximena Colombres desarrolla una obra figurativamente abstracta en la que el color es protagonista visible y la forma funciona como vehículo para expresar ideas fijas, obsesiones y motivos personales. Su práctica propone una lectura por capas, como una cebolla, para invitar al espectador a internarse hasta el origen mismo de la creación.</p><p>Fue alumna del artista Miguel Ballesteros y sostiene una formación interdisciplinaria que cruza artes visuales, gestión y trabajo comunitario. En cerámica trabaja junto al grupo Artemix, donde profundiza técnicas complejas y ancestrales como el Raku.</p><p>Su proyección internacional se consolidó al ser seleccionada como #ArtistaBADA en la feria de arte contemporáneo BADA Madrid (Casa de Campo), llevando su obra al mercado europeo. En el circuito local, mantiene su propio taller y participa activamente en Gallery Night, abriendo su espacio al público.</p><p>Desde 2003 integra Uniendo Metas (Asociación Conciencia), donde cumple un rol clave en la producción general, el fundraising y el liderazgo del área artística. Cada año lidera la producción de una canción original interpretada por niños locales para inspirar a los jóvenes participantes. También colabora en dirección artística, gestión y difusión del taller de teatro en inglés juvenil EDLP.</p><p>En comunicación digital, lidera la cuenta no oficial de Instagram @vt.polo.club.golf, donde cubre eventos del club desde el humor y el shitposting, demostrando versatilidad y lectura contemporánea de los lenguajes de internet.</p>",
+    "photo": "/ximena-colombres/xime.webp",
+    "banner": "/ximena-colombres/banner.png",
+    "quote": "Artista visual figurativamente abstracta",
+    "proyectos": [],
+    "formatos": [],
+    "web": "https://toxi.media/ximena-colombres"
   }
 ]

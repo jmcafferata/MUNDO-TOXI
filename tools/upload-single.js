@@ -13,8 +13,13 @@ const RESULTS_FILE = path.join(ROOT, 'mux-upload-results.json');
 
 const filePath = process.argv[2];
 const title    = process.argv[3];
+const quality  = (process.argv[4] || 'plus').toLowerCase();
 if (!filePath || !title) {
     console.error('Uso: node tools/upload-single.js "ruta/video.mp4" "Título"');
+    process.exit(1);
+}
+if (!['basic', 'plus', 'premium'].includes(quality)) {
+    console.error('Calidad inválida. Usar: basic | plus | premium');
     process.exit(1);
 }
 
@@ -103,7 +108,7 @@ async function waitForAsset(uploadId) {
 async function main() {
     console.log('\n▶ ' + filePath);
     const uploadRes = await muxRequest('POST', '/video/v1/uploads', {
-        new_asset_settings: { playback_policy: ['public'] },
+        new_asset_settings: { playback_policy: ['public'], video_quality: quality },
         cors_origin: '*',
     });
     const uploadId  = uploadRes.data.id;

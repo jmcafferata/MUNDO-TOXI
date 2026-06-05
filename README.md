@@ -50,7 +50,8 @@ public/
 | Ruta | Destino |
 |---|---|
 | `/audiont` | `audiont.html` |
-| `/:slug` | `plantform.html` (proyectos y talentos dinámicos) |
+| `/plantform` | `plantform.html` |
+| `/:slug` | `/:slug/index.html` (páginas estáticas generadas por `npm run gen`) |
 
 ## Agregar un proyecto
 

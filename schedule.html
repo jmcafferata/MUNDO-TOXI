@@ -549,7 +549,7 @@ const PLAYLIST = [
   { id: '00kmeFWt6viiA02WHx9P01PnsY1RolhnyufiNhf5na7VsE',       duration: 4863.358511, title: 'The Greatest Showman — EDLP Drama' },
   { id: 'CAG692TzvxtvAQEoR01byCm01xKJUp6GqyJalgQ0200Z6n00',     duration: 92.251,      title: 'Las Catadoras del Führer — CDI Films' },
   { id: 'mlTTKbkPDdOTvu963D1p00vz8pihOYpo2iefwZowJP6M',        duration: 241.958333,  title: 'Viaje — Fermín Delía' },
-  { id: '7KfrMVUZL2bANgKGsxeWjCnrOTK1DRuUOe9701UO7424',        duration: 2868.448922, title: 'Xplora Night Live — 8 de Abril de 2025' },
+  { id: '7KfrMVUZL2bANgKGsxeWjCnrOTK1DRuUOe9701UO7424',        duration: 2868.448922, title: 'Xplora Night Live' },
   { id: 'cseBPfceuHCbWY3D2OF7WMtQ7DmaYhSdR4ekSOD7QT4',         duration: 161.027533,  title: 'Yuyo Noé recorre Las Formas del Laberinto de Dolores Casares' },
   { id: 'yyJADkna02dmJtNdyUoHDOYQMcjsxKcjf63O00w01mm1ZI',      duration: 149.6495,    title: 'Fiesta en la Cocina — KABRADEPATA' },
   { id: '00VG6EL1oC4eI96PVQXeobbdZ6GBNwrmUAexIDdiMpTc',        duration: 160.326833,  title: 'Hipo Hip Hop — KABRADEPATA' },
@@ -623,6 +623,8 @@ function weekKey(offset = weekOffset) {
 
 // ── STATE ────────────────────────────────────────────────────────────────────
 let weekOffset = 0;
+let scheduleTemplate = null;
+const PLAYLIST_INDEX_BY_ID = new Map(PLAYLIST.map((item, index) => [item.id, index]));
 
 // schedule entries: { id, itemIdx, day (0=Mon … 6=Sun), startMin, week (YYYY-MM-DD of Monday) }
 let schedule = JSON.parse(localStorage.getItem('toxi-schedule-v3') || '[]');
@@ -634,6 +636,68 @@ function saveSchedule() {
 function weekSchedule() {
   const wk = weekKey();
   return schedule.filter(s => s.week === wk);
+}
+
+async function fetchScheduleTemplate() {
+  if (scheduleTemplate) return scheduleTemplate;
+
+  try {
+    const response = await fetch('/api/schedule', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+    const remoteSchedule = await response.json();
+    scheduleTemplate = remoteSchedule
+      .map(entry => {
+        const itemIdx = PLAYLIST_INDEX_BY_ID.get(entry.itemId);
+        if (itemIdx === undefined) return null;
+        return {
+          itemIdx,
+          day: entry.dayOfWeek,
+          startMin: entry.startMin,
+        };
+      })
+      .filter(Boolean);
+  } catch (error) {
+    console.warn('No se pudo cargar /api/schedule:', error);
+    scheduleTemplate = [];
+  }
+
+  return scheduleTemplate;
+}
+
+async function ensureWeekScheduleLoaded(offset = weekOffset) {
+  const wk = weekKey(offset);
+  if (schedule.some(entry => entry.week === wk)) return;
+
+  const prevWk = weekKey(offset - 1);
+  const prevWeekEntries = schedule.filter(entry => entry.week === prevWk);
+  if (prevWeekEntries.length) {
+    schedule = schedule.concat(
+      prevWeekEntries.map(entry => ({
+        id: uid(),
+        itemIdx: entry.itemIdx,
+        day: entry.day,
+        startMin: entry.startMin,
+        week: wk,
+      }))
+    );
+    saveSchedule();
+    return;
+  }
+
+  const template = await fetchScheduleTemplate();
+  if (!template.length) return;
+
+  schedule = schedule.concat(
+    template.map(entry => ({
+      id: uid(),
+      itemIdx: entry.itemIdx,
+      day: entry.day,
+      startMin: entry.startMin,
+      week: wk,
+    }))
+  );
+  saveSchedule();
 }
 
 // ── SIDEBAR ──────────────────────────────────────────────────────────────────
@@ -973,9 +1037,22 @@ function onColDrop(e) {
 }
 
 // ── TOOLBAR ACTIONS ───────────────────────────────────────────────────────────
-document.getElementById('prev-week').addEventListener('click', () => { weekOffset--; buildGrid(); });
-document.getElementById('next-week').addEventListener('click', () => { weekOffset++; buildGrid(); });
-document.getElementById('today-btn').addEventListener('click', () => { weekOffset = 0; buildGrid(); scrollToNow(); });
+document.getElementById('prev-week').addEventListener('click', async () => {
+  weekOffset--;
+  await ensureWeekScheduleLoaded();
+  buildGrid();
+});
+document.getElementById('next-week').addEventListener('click', async () => {
+  weekOffset++;
+  await ensureWeekScheduleLoaded();
+  buildGrid();
+});
+document.getElementById('today-btn').addEventListener('click', async () => {
+  weekOffset = 0;
+  await ensureWeekScheduleLoaded();
+  buildGrid();
+  scrollToNow();
+});
 
 document.getElementById('zoom').addEventListener('input', e => {
   PX_PER_HOUR = parseInt(e.target.value);
@@ -1034,8 +1111,12 @@ function scrollToNow() {
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 buildSidebar();
-buildGrid();
-setTimeout(scrollToNow, 80);
+
+(async () => {
+  await ensureWeekScheduleLoaded();
+  buildGrid();
+  setTimeout(scrollToNow, 80);
+})();
 </script>
 </body>
 </html>

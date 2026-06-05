@@ -65,6 +65,7 @@ export default defineConfig({
         university: resolve(__dirname, 'university.html'),
         plantform: resolve(__dirname, 'plantform.html'),
         tv: resolve(__dirname, 'tv.html'),
+        zapping: resolve(__dirname, 'zapping.html'),
         privacyPolicy: resolve(__dirname, 'privacy-policy.html'),
         venadoTuertoElMusical: resolve(__dirname, 'venado-tuerto-el-musical.html'),
         trabajos: resolve(__dirname, 'trabajos.html'),

@@ -8,6 +8,7 @@ import {
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import { CastButton, MediaStreamType, useRemoteMediaClient } from 'react-native-google-cast';
 import { getCurrentSlot, setRemotePlaylist, TvItem, TvSlot } from './src/playlist';
 
 const PLAYLIST_URL = 'https://toxi.media/api/playlist';
@@ -17,9 +18,12 @@ export default function App() {
   const [currentTitle, setCurrentTitle]     = useState('');
 
   const currentIndexRef  = useRef<number>(-1);
+  const currentSlotRef   = useRef<TvSlot | null>(null);
+  const wasCastingRef    = useRef(false);
   const pendingSeekRef   = useRef<number | null>(null);
   const overlayTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
   const driftTimerRef    = useRef<ReturnType<typeof setInterval> | null>(null);
+  const castClient = useRemoteMediaClient();
 
   const player = useVideoPlayer(null, (p) => {
     p.loop = false;
@@ -45,12 +49,43 @@ export default function App() {
 
   // ── Carga de slot ─────────────────────────────────────────────────────────
 
+  const loadSlotOnCast = useCallback(async (slot: TvSlot) => {
+    if (!castClient) return;
+    try {
+      await castClient.loadMedia({
+        autoplay: true,
+        startTime: slot.offsetMs / 1000,
+        mediaInfo: {
+          contentUrl: `https://stream.mux.com/${slot.item.id}.m3u8`,
+          contentType: 'application/x-mpegURL',
+          streamType: MediaStreamType.BUFFERED,
+          streamDuration: slot.item.duration,
+          metadata: {
+            type: 'movie',
+            title: slot.item.title,
+            subtitle: 'TOXI TV',
+          },
+        },
+      });
+    } catch {
+      // Si falla el envio al Chromecast, la app sigue reproduciendo local.
+    }
+  }, [castClient]);
+
   const loadSlot = useCallback((slot: TvSlot) => {
     currentIndexRef.current = slot.index;
-    pendingSeekRef.current  = slot.offsetMs / 1000;
-    player.replace({ uri: `https://stream.mux.com/${slot.item.id}.m3u8` });
+    currentSlotRef.current  = slot;
+
+    if (castClient) {
+      loadSlotOnCast(slot);
+      player.pause();
+    } else {
+      pendingSeekRef.current  = slot.offsetMs / 1000;
+      player.replace({ uri: `https://stream.mux.com/${slot.item.id}.m3u8` });
+    }
+
     showOverlay(slot.item.title);
-  }, [player, showOverlay]);
+  }, [castClient, loadSlotOnCast, player, showOverlay]);
 
   // Seek al punto correcto una vez que el video está listo
   useEffect(() => {
@@ -67,10 +102,26 @@ export default function App() {
   // Al terminar un video cargar el siguiente slot
   useEffect(() => {
     const sub = player.addListener('playToEnd', () => {
+      if (castClient) return;
       loadSlot(getCurrentSlot());
     });
     return () => sub.remove();
-  }, [player, loadSlot]);
+  }, [castClient, player, loadSlot]);
+
+  // Si se conecta/desconecta Cast, cambia la salida entre TV remota y reproductor local.
+  useEffect(() => {
+    if (castClient) {
+      wasCastingRef.current = true;
+      const slot = currentSlotRef.current ?? getCurrentSlot();
+      loadSlot(slot);
+      return;
+    }
+
+    if (wasCastingRef.current) {
+      wasCastingRef.current = false;
+      loadSlot(getCurrentSlot());
+    }
+  }, [castClient, loadSlot]);
 
   // ── Inicio ────────────────────────────────────────────────────────────────
 
@@ -92,6 +143,8 @@ export default function App() {
           const slot = getCurrentSlot();
           if (slot.index !== currentIndexRef.current) {
             loadSlot(slot);
+          } else if (castClient) {
+            // En Cast no forzamos seek continuo; solo resincronizamos por cambio de slot.
           } else {
             const diff = Math.abs(player.currentTime - slot.offsetMs / 1000);
             if (diff > 5) player.currentTime = slot.offsetMs / 1000;
@@ -104,7 +157,7 @@ export default function App() {
       if (driftTimerRef.current)   clearInterval(driftTimerRef.current);
       deactivateKeepAwake();
     };
-  }, [loadSlot]);
+  }, [castClient, loadSlot, player]);
 
   // ── UI ────────────────────────────────────────────────────────────────────
 
@@ -118,6 +171,7 @@ export default function App() {
           contentFit="cover"
           allowsFullscreen={false}
         />
+        <CastButton style={styles.castButton} />
         {overlayVisible && (
           <View style={styles.overlay}>
             <Text style={styles.nowLabel}>AHORA</Text>
@@ -136,6 +190,15 @@ const styles = StyleSheet.create({
   },
   video: {
     flex: 1,
+  },
+  castButton: {
+    position: 'absolute',
+    top: 18,
+    right: 18,
+    width: 32,
+    height: 32,
+    tintColor: '#ffffff',
+    opacity: 0.92,
   },
   overlay: {
     position: 'absolute',
