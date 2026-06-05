@@ -70,7 +70,8 @@ export const CONTENT = [
   { id: '00kmeFWt6viiA02WHx9P01PnsY1RolhnyufiNhf5na7VsE', duration: 4863.358511, title: 'The Greatest Showman — Obra Completa EDLP', slug: '', type: 'other', year: null, onTV: true },
   { id: 'CAG692TzvxtvAQEoR01byCm01xKJUp6GqyJalgQ0200Z6n00', duration: 92.251, title: 'Las Catadoras del Führer — Tráiler', slug: '', type: 'other', year: null, onTV: true },
   { id: 'mlTTKbkPDdOTvu963D1p00vz8pihOYpo2iefwZowJP6M', duration: 241.958333, title: 'Viaje — Fermín Tz', slug: '', type: 'other', year: null, onTV: true },
-  { id: '7KfrMVUZL2bANgKGsxeWjCnrOTK1DRuUOe9701UO7424', duration: 2868.448922, title: 'Xplora Night Live — 8 de Abril de 2025', slug: '', type: 'other', year: null, onTV: true },
+  { id: '7KfrMVUZL2bANgKGsxeWjCnrOTK1DRuUOe9701UO7424', duration: 2868.448922, title: 'Xplora Night Live', slug: '', type: 'other', year: null, onTV: true },
+  { id: 'tUZ7gRedTD1q602xkadggUxC024cXAN7jxGhIfR73AbIE', duration: 110.652211, title: 'Las Formas del Laberinto - Palacio Libertad', slug: '', type: 'other', year: null, onTV: true },
   { id: 'cseBPfceuHCbWY3D2OF7WMtQ7DmaYhSdR4ekSOD7QT4', duration: 161.027533, title: 'Yuyo Noé recorre Las Formas del Laberinto de Dolores Casares', slug: '', type: 'other', year: null, onTV: true },
   { id: 'yyJADkna02dmJtNdyUoHDOYQMcjsxKcjf63O00w01mm1ZI', duration: 149.6495, title: 'Fiesta en la Cocina', slug: '', type: 'other', year: null, onTV: true },
   { id: '00VG6EL1oC4eI96PVQXeobbdZ6GBNwrmUAexIDdiMpTc', duration: 160.326833, title: 'Hipo Hip Hop', slug: '', type: 'other', year: null, onTV: true },
@@ -83,7 +84,7 @@ export const CONTENT = [
   { id: 'agfEm3toRbicITlQJbJ4ppPrv700kzCrHmFczRDhmcf8', duration: 5693.633333, title: 'Storytelling y Transgresión — Gael P. Rossi (TOXI University)', slug: '', type: 'other', year: null, onTV: true, onRadio: true },
   { id: 'N5ISPSMoo502IHjTdvQt02GeR7xgJUiCFTlxrBLLIhpcg', duration: 2580.9, title: 'Literatura y Realidad Virtual — Ana Arzoumanian (TOXI University)', slug: '', type: 'other', year: null, onTV: true, onRadio: true },
   { id: 'irasB01gOUsUd4E4Iy6yVvp7CYMwYMVB00nr4BKU8tn38', duration: 539.566667, title: 'Ana Arzoumanian en TV Pública — Inteligencia Artificial Hoy', slug: '', type: 'other', year: null, onTV: true },
-  { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00', duration: 5803.5, title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)', slug: '', type: 'other', year: null, onTV: true, onRadio: true },
+  { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00', duration: 5803.5, title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)', slug: '', type: 'other', year: null, onTV: true },
 ];
 
 /** Solo los videos marcados onTV: true, en orden para la playlist del canal */

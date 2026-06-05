@@ -575,5 +575,24 @@
     "credits": "<h4>Adaptación e interpretación</h4><p>Fabrizio Sanguinetti</p><h4>Música</h4><p>Fermín Delía</p><h4>Cámara, edición, sonido y dirección</h4><p>Juan Manuel Cafferata</p>",
     "web": "",
     "categoria": ""
+  },
+  {
+    "name": "Palta and the Gang",
+    "slug": "palta-and-the-gang",
+    "description": "Magia en el Luna Park con Kool & The Gang y Village People en una noche inolvidable.",
+    "contenido": "<p>El pasado 9 de mayo, Luna Park se transformó en el epicentro del funk y el disco con una alineación de lujo que trajo a Kool &amp; The Gang y Village People directamente al corazón de Buenos Aires. Abriendo el espectáculo, Palta and the Mood preparó el ambiente con una fusión vibrante de sonidos que capturó la esencia de la noche porteña.</p><p>Con luces deslumbrantes y el rugido de una multitud energética, nuestra cámara captó cada momento épico. Desde los clásicos que hicieron bailar a generaciones hasta los nuevos ritmos que resuenan en las calles de la ciudad, este video no es solo un concierto, es una cápsula del tiempo que te transporta al alma de una era vibrante.</p><h2>Video</h2><figure class=\"w-richtext-figure-type-video w-richtext-align-fullwidth\" style=\"padding-bottom:56.206088992974244%\" data-rt-type=\"video\" data-rt-align=\"fullwidth\" data-rt-max-width=\"\" data-rt-max-height=\"56.206088992974244%\" data-rt-dimensions=\"854:480\" data-page-url=\"https://youtu.be/zXbElYgdGwc\"><div><iframe allowfullscreen=\"true\" frameborder=\"0\" scrolling=\"no\" src=\"https://www.youtube.com/embed/zXbElYgdGwc\" title=\"Palta and the Gang - Luna Park - 9 de mayo de 2024\"></iframe></div></figure><h2>Solo de trombón</h2><p>No te pierdas el asombroso solo de trombón de Jermaine Bryson, capturado en exclusiva por TOXI.Media durante el concierto en Luna Park. Este segmento es una muestra pura de cómo un maestro hace hablar a su instrumento, convirtiendo la música en un lenguaje universal de emoción y pasión.</p><figure class=\"w-richtext-figure-type-video w-richtext-align-fullwidth\" style=\"padding-bottom:56.206088992974244%\" data-rt-type=\"video\" data-rt-align=\"fullwidth\" data-rt-max-width=\"\" data-rt-max-height=\"56.206088992974244%\" data-rt-dimensions=\"854:480\" data-page-url=\"https://www.youtube.com/watch?v=S3BkTO_RHqY\"><div><iframe allowfullscreen=\"true\" frameborder=\"0\" scrolling=\"no\" src=\"https://www.youtube.com/embed/S3BkTO_RHqY\" title=\"Jermaine Bryson Epic Trombone Solo - Kool and the Gang - May 9 2024\"></iframe></div></figure>",
+    "card": "https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/6642223c26361033b54a666e_card%20palta.jpg",
+    "banner": "https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/66421a256309541dee7905ac_banner%20palta.jpg",
+    "thumbnail": "https://cdn.prod.website-files.com/62e2e71beda91e786542f0de/66421e6a62f8e4b86c3f52cf_crudo.00_00_16_04.Still003.jpg",
+    "talentos": [
+      "juan-manuel-cafferata",
+      "niunpocosofia",
+      "fermin-delia",
+      "fabrizio-sanguinetti"
+    ],
+    "formato": "1",
+    "credits": "<h4>Cámara</h4><p>Juan Manuel Cafferata</p><p>niunpocosofia</p><h4>Producción</h4><p>Fermín Delia</p><p>Fabrizio Sanguinetti</p>",
+    "web": "",
+    "categoria": ""
   }
 ]

@@ -17,7 +17,7 @@ const talentos = JSON.parse(fs.readFileSync('public/data/talentos.json', 'utf8')
 // Usamos el fuente (no el build) para preservar rutas absolutas
 const template = fs.readFileSync('plantform.html', 'utf8');
 
-const BASE_URL = 'https://toxi.media';
+const BASE_URL = 'https://www.toxi.media';
 
 function attr(s) {
   return String(s || '')
@@ -35,7 +35,13 @@ function generatePage(slug, title, description, image) {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 160);
-  const img  = image && image.startsWith('http') ? image : `${BASE_URL}/toxi-media-og.jpg`;
+  const img = image
+    ? (image.startsWith('http')
+      ? image
+      : image.startsWith('/')
+        ? `${BASE_URL}${image}`
+        : `${BASE_URL}/${image}`)
+    : `${BASE_URL}/toxi-media-og.jpg`;
   const url  = `${BASE_URL}/${slug}`;
 
   return template
@@ -58,6 +64,28 @@ function generatePage(slug, title, description, image) {
     // inject canonical + og:url just before </head>
     .replace('</head>',
       `  <link rel="canonical" href="${attr(url)}" />\n  <meta property="og:url" content="${attr(url)}" />\n</head>`);
+}
+
+function toIsoDate(date = new Date()) {
+  return date.toISOString().split('T')[0];
+}
+
+function buildSitemap(urls) {
+  const lastmod = toIsoDate();
+  const lines = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+  ];
+
+  for (const url of urls) {
+    lines.push('  <url>');
+    lines.push(`    <loc>${attr(url)}</loc>`);
+    lines.push(`    <lastmod>${lastmod}</lastmod>`);
+    lines.push('  </url>');
+  }
+
+  lines.push('</urlset>');
+  return `${lines.join('\n')}\n`;
 }
 
 let count = 0;
@@ -88,4 +116,35 @@ for (const t of talentos) {
   process.stdout.write(`  [talento]  ${t.slug}\n`);
 }
 
+const slugSet = new Set();
+
+for (const p of projects) {
+  if (p.slug) slugSet.add(p.slug);
+}
+
+for (const t of talentos) {
+  if (t.slug) slugSet.add(t.slug);
+}
+
+const sitemapUrls = [
+  `${BASE_URL}/`,
+  `${BASE_URL}/index.html`,
+  `${BASE_URL}/main.html`,
+  ...Array.from(slugSet).sort().map((slug) => `${BASE_URL}/${slug}`)
+];
+
+fs.writeFileSync('public/sitemap.xml', buildSitemap(sitemapUrls), 'utf8');
+
+const robotsTxt = [
+  'User-agent: *',
+  'Allow: /',
+  '',
+  `Sitemap: ${BASE_URL}/sitemap.xml`,
+  ''
+].join('\n');
+
+fs.writeFileSync('public/robots.txt', robotsTxt, 'utf8');
+
 console.log(`\n✓ ${count} páginas generadas en public/[slug]/index.html`);
+console.log(`✓ Sitemap generado con ${sitemapUrls.length} URLs en public/sitemap.xml`);
+console.log('✓ Robots generado en public/robots.txt');

@@ -1,0 +1,78 @@
+[
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-mdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\drawable_toxi_logo.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\drawable\\toxi_logo.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-xhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\drawable_ic_launcher_foreground_backup.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\drawable\\ic_launcher_foreground_backup.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "media.toxi.radio.app-debug-33:/layout_activity_main.xml.flat",
+        "source": "media.toxi.radio.app-main-35:/layout/activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\drawable_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\drawable\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\drawable_overlay_gradient.xml.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\drawable\\overlay_gradient.xml"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-mdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-mdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-xxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-xxxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-xhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-hdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\mipmap-xxxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-debug-33:\\drawable_banner.png.flat",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\drawable\\banner.png"
+    }
+]

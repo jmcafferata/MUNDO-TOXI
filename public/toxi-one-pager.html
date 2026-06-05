@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>TOXI MEDIA — One Pager</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @page { size: A4; margin: 0; }
+
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      background: #888;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ─── PAGE 1 — INSTITUCIONAL ─── */
+    .page-1 {
+      background: #fff;
+      color: #111;
+      padding: 16mm 20mm 14mm;
+      display: flex;
+      flex-direction: column;
+      page-break-after: always;
+    }
+
+    .toxi-logo-wrap {
+      width: 120mm;
+      max-width: 100%;
+    }
+
+    .toxi-logo {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .toxi-sub {
+      font-size: 8.3pt;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      margin-top: 4mm;
+      color: #777;
+    }
+
+    .divider {
+      border: none;
+      border-top: 0.25mm solid #d9d9d9;
+      margin: 7mm 0;
+    }
+
+    .tagline {
+      font-size: 13pt;
+      font-weight: 700;
+      line-height: 1.35;
+      max-width: 150mm;
+      margin-bottom: 5mm;
+    }
+
+    .description {
+      font-size: 8.9pt;
+      line-height: 1.65;
+      color: #444;
+      max-width: 165mm;
+    }
+
+    .description p + p { margin-top: 2.5mm; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10mm;
+      margin-top: 9mm;
+      flex: 1;
+    }
+
+    .col-label {
+      font-size: 6.2pt;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 3mm;
+    }
+
+    .item-list { list-style: none; }
+
+    .item-list li {
+      font-size: 8.4pt;
+      line-height: 1;
+      border-bottom: 0.2mm solid #e7e7e7;
+      padding: 2mm 0;
+      color: #222;
+    }
+
+    .item-list li::before {
+      content: "— ";
+      color: #999;
+    }
+
+    .formats-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2mm;
+      margin-bottom: 7mm;
+    }
+
+    .format-tag {
+      border: 0.25mm solid #cfcfcf;
+      padding: 1mm 3mm;
+      font-size: 7.1pt;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #444;
+    }
+
+    .footer-1 {
+      margin-top: auto;
+      padding-top: 7mm;
+      border-top: 0.25mm solid #e3e3e3;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .footer-contact {
+      font-size: 7.8pt;
+      color: #666;
+      line-height: 1.9;
+    }
+
+    .footer-url {
+      font-size: 14pt;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      color: #111;
+    }
+
+    /* ─── PAGE 2 — GRILLA ─── */
+    .page-2 {
+      background: #fff;
+      color: #000;
+      padding: 11mm 13mm 9mm;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .schedule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 5mm;
+    }
+
+    .schedule-title {
+      font-size: 40pt;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .schedule-eyebrow {
+      font-size: 6.7pt;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 1mm;
+    }
+
+    .schedule-meta {
+      font-size: 7.2pt;
+      color: #aaa;
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    .schedule-brand {
+      display: block;
+      width: 42mm;
+      height: auto;
+      margin-top: 2.5mm;
+      margin-left: auto;
+      opacity: 0.9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      flex: 1;
+    }
+
+    thead th {
+      background: #000;
+      color: #fff;
+      font-size: 7.1pt;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 2.5mm 2mm;
+      text-align: center;
+    }
+
+    thead th.th-hora {
+      width: 10mm;
+      background: #000;
+    }
+
+    td {
+      border: 0.2mm solid #e8e8e8;
+      padding: 2mm 2.5mm;
+      vertical-align: top;
+      font-size: 6.9pt;
+      line-height: 1.35;
+    }
+
+    td.hora {
+      background: #000;
+      color: #fff;
+      text-align: center;
+      font-weight: 900;
+      font-size: 7.8pt;
+      white-space: nowrap;
+      vertical-align: middle;
+      width: 10mm;
+    }
+
+    td.fixed {
+      background: #f7f7f7;
+      color: #333;
+    }
+
+    .s-title {
+      font-weight: 700;
+      font-size: 6.9pt;
+      display: block;
+      margin-bottom: 0.5mm;
+    }
+
+    .s-sub {
+      font-size: 6.1pt;
+      color: #999;
+      display: block;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #000;
+      color: #fff;
+      font-size: 5pt;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.4mm 1.5mm;
+      margin-bottom: 1mm;
+    }
+
+    .s-time-mini {
+      font-size: 5.6pt;
+      color: #bbb;
+      display: block;
+      margin-top: 1.5mm;
+      margin-bottom: 0.3mm;
+      letter-spacing: 0.1em;
+    }
+
+    .footer-2 {
+      margin-top: 3.5mm;
+      display: flex;
+      justify-content: space-between;
+      font-size: 6.1pt;
+      color: #ccc;
+      border-top: 0.2mm solid #e8e8e8;
+      padding-top: 2.5mm;
+    }
+
+    .playlist-rotation {
+      margin-top: 2.5mm;
+      border-top: 0.2mm solid #e8e8e8;
+      padding-top: 2mm;
+    }
+
+    .playlist-rotation-title {
+      font-size: 6.1pt;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 1mm;
+    }
+
+    .playlist-rotation-text {
+      font-size: 6.1pt;
+      line-height: 1.45;
+      color: #666;
+    }
+
+    @media screen {
+      body { padding: 10mm; display: flex; flex-direction: column; gap: 10mm; }
+    }
+
+    @media print {
+      body { background: none; padding: 0; gap: 0; }
+      .page-1 { page-break-after: always; }
+      .page-2 { page-break-after: avoid; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 1 — INSTITUCIONAL
+═══════════════════════════════════════════════════════ -->
+<div class="page page-1">
+
+  <div>
+    <div class="toxi-logo-wrap">
+      <img class="toxi-logo" src="/toxi-logo-black.png" alt="TOXI Media logo negro">
+    </div>
+    <div class="toxi-sub">Producción &nbsp;·&nbsp; Exhibición &nbsp;·&nbsp; Distribución</div>
+  </div>
+
+  <hr class="divider">
+
+  <p class="tagline">Una plataforma de producción, exhibición y distribución<br>de experiencias audiovisuales, interactivas e inmersivas.</p>
+
+  <div class="description">
+    <p>TOXI Media desarrolla proyectos simultáneos a través de una red operativa internacional con presencia en Argentina, Chile, Uruguay, Estados Unidos, Reino Unido y Tanzania.</p>
+    <p>La actividad integra la narrativa audiovisual con tecnologías interactivas: documentales, videojuegos, realidad virtual, eventos culturales y transmisión en vivo. A través de su plataforma digital propietaria, TOXI centraliza la exhibición de sus obras y administra un canal de broadcasting 24 horas destinado a la difusión de estrenos, proyecciones y conferencias en tiempo real.</p>
+    <p>TOXI opera simultáneamente como estudio, canal y sistema de acceso.</p>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="col-label">Capacidades</div>
+      <ul class="item-list">
+        <li>Producción audiovisual original</li>
+        <li>Plataforma digital propietaria</li>
+        <li>Streaming en vivo 24/7 — TOXI TV</li>
+        <li>Realidad virtual e interactivo</li>
+        <li>Desarrollo de videojuegos</li>
+        <li>Producción cultural y eventos</li>
+        <li>Distribución y exhibición digital</li>
+        <li>Formación — TOXI University</li>
+      </ul>
+    </div>
+    <div>
+      <div class="col-label">Formatos</div>
+      <div class="formats-grid">
+        <span class="format-tag">Cine</span>
+        <span class="format-tag">Podcast</span>
+        <span class="format-tag">Foto</span>
+        <span class="format-tag">Texto</span>
+        <span class="format-tag">VR</span>
+        <span class="format-tag">Eventos</span>
+        <span class="format-tag">Software</span>
+        <span class="format-tag">Música</span>
+      </div>
+
+      <div class="col-label">Acceso</div>
+      <ul class="item-list">
+        <li>toxi.media — web y app instalable</li>
+        <li>TOXI TV — canal 24h · Android TV, iOS y Android</li>
+        <li>Audion't — asistente vía WhatsApp</li>
+        <li>MERS: El Juego — videojuego propio</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-1">
+    <div class="footer-contact">
+      instagram.com/toxi.media<br>
+      wa.me/5491132576432 &nbsp;—&nbsp; Audion't<br>
+      youtube.com/@toximedia
+    </div>
+    <div style="text-align:right">
+      <div class="footer-url">toxi.media</div>
+      <div style="font-size:5.5pt; color:#333; margin-top:1.5mm; letter-spacing:0.15em;">BUENOS AIRES &nbsp;·&nbsp; 2026</div>
+    </div>
+  </div>
+
+</div><!-- /page-1 -->
+
+
+<!-- ════════════════════════════════════════════════════
+     PAGE 2 — GRILLA TOXI TV
+═══════════════════════════════════════════════════════ -->
+<div class="page page-2">
+
+  <div class="schedule-header">
+    <div>
+      <div class="schedule-eyebrow">Grilla semanal</div>
+      <div class="schedule-title">TOXI TV</div>
+    </div>
+    <div class="schedule-meta">
+      Canal en vivo · 24 horas<br>
+      toxi.media &nbsp;·&nbsp; Android TV &nbsp;·&nbsp; iOS &nbsp;·&nbsp; Android<br>
+      Hora Argentina (ART, UTC−3)
+      <img class="schedule-brand" src="/toxi-logo-black.png" alt="TOXI Media logo negro">
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="th-hora">HORA</th>
+        <th>LUNES</th>
+        <th>MARTES</th>
+        <th>MIÉRCOLES</th>
+        <th>JUEVES</th>
+        <th>VIERNES</th>
+        <th>SÁBADO</th>
+        <th>DOMINGO</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- 10:00 — KABRADEPATA (igual todos los días) -->
+      <tr>
+        <td class="hora">10:00</td>
+        <td colspan="7" class="fixed">
+          <span class="badge">bloque fijo · todos los días</span>
+          <span class="s-title">Fiesta en la Cocina &nbsp;·&nbsp; Hipo Hip Hop &nbsp;·&nbsp; Viaje a la Luna</span>
+          <span class="s-sub">KABRADEPATA — cortometrajes</span>
+        </td>
+      </tr>
+
+      <!-- 11:00 — Ian Silberberg (igual todos los días) -->
+      <tr>
+        <td class="hora">11:00</td>
+        <td colspan="7" class="fixed">
+          <span class="s-title">Inteligencia Artificial, Abogacía y el Desafío de la Modernización Judicial</span>
+          <span class="s-sub">con Ian Silberberg &nbsp;·&nbsp; ~1h55</span>
+        </td>
+      </tr>
+
+      <!-- 13:00 — TOXI Seminars (igual todos los días) -->
+      <tr>
+        <td class="hora">13:00</td>
+        <td colspan="7" class="fixed">
+          <span class="s-title">TOXI Seminars — Peronismos</span>
+          <span class="s-sub">Fabrizio Sanguinetti &nbsp;·&nbsp; ~1h23</span>
+        </td>
+      </tr>
+
+      <!-- 15:00 — TOXI University (igual todos los días) -->
+      <tr>
+        <td class="hora">15:00</td>
+        <td colspan="7" class="fixed">
+          <span class="s-title">Storytelling y Transgresión</span>
+          <span class="s-sub">Gael P. Rossi &nbsp;·&nbsp; TOXI University &nbsp;·&nbsp; ~1h34</span>
+        </td>
+      </tr>
+
+      <!-- 17:00 — Ana Arzoumanian (igual todos los días) -->
+      <tr>
+        <td class="hora">17:00</td>
+        <td colspan="7" class="fixed">
+          <span class="s-title">Ana Arzoumanian en TV Pública &nbsp;+&nbsp; Literatura y Realidad Virtual</span>
+          <span class="s-sub">TOXI University &nbsp;·&nbsp; ~43min</span>
+        </td>
+      </tr>
+
+      <!-- 18:00 — Bloque cine (igual todos los días) -->
+      <tr>
+        <td class="hora">18:00</td>
+        <td colspan="7" class="fixed">
+          <span class="badge">bloque cine</span>
+          <span class="s-title">Hotel Oriente &nbsp;·&nbsp; Hotel Oriente BTS &nbsp;·&nbsp; Detective Noir &nbsp;·&nbsp; Ver para Coger</span>
+          <span class="s-sub">Las Nenas / Chavo Escrotito / JM Cafferata &amp; Fabrizio Sanguinetti</span>
+        </td>
+      </tr>
+
+      <!-- 19:00 — Bloque cortos (igual todos los días) -->
+      <tr>
+        <td class="hora">19:00</td>
+        <td colspan="7" class="fixed">
+          <span class="s-title">17 Minutos con Cata &nbsp;·&nbsp; La Irracional &nbsp;·&nbsp; Las Formas del Laberinto — Tráiler &nbsp;·&nbsp; Hedonismo y Seducción — Tráiler</span>
+          <span class="s-sub">Cata Mas / JM Cafferata &amp; Sanguinetti / Dolores Casares / Onírica</span>
+        </td>
+      </tr>
+
+      <!-- 20:00 — VARIABLE -->
+      <tr>
+        <td class="hora">20:00</td>
+
+        <!-- LUNES -->
+        <td>
+          <span class="s-title">Odelar</span>
+          <span class="s-sub">Otro Día en la Red</span>
+          <span class="s-sub">Ni Jorges ni Borges</span>
+          <span class="s-sub">Muerte y Miedo en las Calles</span>
+          <span class="s-sub" style="color:#ccc; margin-top:1mm">J.S. Quiroga</span>
+        </td>
+
+        <!-- MARTES -->
+        <td>
+          <span class="s-title">Otro Día en la Red 0</span>
+          <span class="s-sub">Volvé a ODELAR</span>
+          <span class="s-sub">Otro Día en la Red III</span>
+          <span class="s-sub">Misión: ODELaR</span>
+          <span class="s-sub" style="color:#ccc; margin-top:1mm">J.S. Quiroga</span>
+        </td>
+
+        <!-- MIÉRCOLES (= Lunes) -->
+        <td>
+          <span class="s-title">Odelar</span>
+          <span class="s-sub">Otro Día en la Red</span>
+          <span class="s-sub">Ni Jorges ni Borges</span>
+          <span class="s-sub">Muerte y Miedo en las Calles</span>
+          <span class="s-sub" style="color:#ccc; margin-top:1mm">J.S. Quiroga</span>
+        </td>
+
+        <!-- JUEVES -->
+        <td>
+          <span class="s-title">Otro Día en la Red 0</span>
+          <span class="s-sub">Otro Día en la Red III</span>
+          <span class="s-sub">Volvé a ODELAR</span>
+          <span class="s-sub">Misión: ODELaR</span>
+          <span class="s-sub" style="color:#ccc; margin-top:1mm">J.S. Quiroga</span>
+        </td>
+
+        <!-- VIERNES -->
+        <td>
+          <span class="s-title">Muerte y Miedo en las Calles</span>
+          <span class="s-sub">Ni Jorges ni Borges</span>
+          <span class="s-sub">Odelar</span>
+          <span class="s-sub">Otro Día en la Red</span>
+          <span class="s-sub" style="color:#ccc; margin-top:1mm">J.S. Quiroga</span>
+        </td>
+
+        <!-- SÁBADO (= Martes) -->
+        <td>
+          <span class="s-title">Otro Día en la Red 0</span>
+          <span class="s-sub">Otro Día en la Red III</span>
+          <span class="s-sub">Volvé a ODELAR</span>
+          <span class="s-sub">Misión: ODELaR</span>
+          <span class="s-sub" style="color:#ccc; margin-top:1mm">J.S. Quiroga</span>
+        </td>
+
+        <!-- DOMINGO -->
+        <td>
+          <span class="s-title">Muerte y Miedo en las Calles</span>
+          <span class="s-sub">17 Minutos con Cata</span>
+          <span class="s-sub">Otro Día en la Red</span>
+          <span class="s-sub" style="color:#ccc; margin-top:1mm">J.S. Quiroga / Cata Mas</span>
+        </td>
+      </tr>
+
+      <!-- 21:00 — Santuario + MERS (igual todos los días) -->
+      <tr>
+        <td class="hora">21:00</td>
+        <td colspan="7" class="fixed">
+          <span class="s-title">Santuario del Maipo — Proyecto de Infiltración &amp; Agricultura Sintrópica</span>
+          <span class="s-sub">Aguatierra &nbsp;·&nbsp; seguido de MERS: Exposición en TOXI Media — Alfredo Cafferata</span>
+        </td>
+      </tr>
+
+      <!-- 22:00–23:00 — TOXI Live (MONIYISUS + Xplora) -->
+      <tr>
+        <td class="hora">22:00–23:00</td>
+
+        <!-- LUNES -->
+        <td>
+          <span class="s-title">Más Allá del Más Allá</span>
+          <span class="s-sub">MONIYISUS #4</span>
+          <span class="s-time-mini">23:00</span>
+          <span class="s-sub">Xplora Night Live</span>
+        </td>
+
+        <!-- MARTES -->
+        <td>
+          <span class="s-title">MONIYISUS #2</span>
+          <span class="s-sub">Moni y Yisus con Rose Cafferata</span>
+          <span class="s-time-mini">22:20</span>
+          <span class="s-title">MONIYISUS #4</span>
+          <span class="s-sub">Moni y Yisus con P. Tomás Méndez</span>
+          <span class="s-time-mini">23:00</span>
+          <span class="s-sub">Xplora Night Live</span>
+        </td>
+
+        <!-- MIÉRCOLES -->
+        <td>
+          <span class="s-title">Más Allá del Más Allá</span>
+          <span class="s-sub">MONIYISUS #4</span>
+          <span class="s-time-mini">23:00</span>
+          <span class="s-sub">Xplora Night Live</span>
+        </td>
+
+        <!-- JUEVES -->
+        <td>
+          <span class="s-title">MONIYISUS #2</span>
+          <span class="s-sub">Moni y Yisus con Rose Cafferata</span>
+          <span class="s-time-mini">22:20</span>
+          <span class="s-title">MONIYISUS #4</span>
+          <span class="s-sub">Moni y Yisus con P. Tomás Méndez</span>
+          <span class="s-time-mini">23:00</span>
+          <span class="s-sub">Xplora Night Live</span>
+        </td>
+
+        <!-- VIERNES -->
+        <td>
+          <span class="s-title">Más Allá del Más Allá</span>
+          <span class="s-sub">MONIYISUS #4</span>
+          <span class="s-time-mini">23:00</span>
+          <span class="s-sub">Xplora Night Live</span>
+        </td>
+
+        <!-- SÁBADO -->
+        <td>
+          <span class="s-title">MONIYISUS #2</span>
+          <span class="s-sub">Moni y Yisus con Rose Cafferata</span>
+          <span class="s-time-mini">22:20</span>
+          <span class="s-title">MONIYISUS #4</span>
+          <span class="s-sub">Moni y Yisus con P. Tomás Méndez</span>
+          <span class="s-time-mini">23:00</span>
+          <span class="s-sub">Xplora Night Live</span>
+        </td>
+
+        <!-- DOMINGO -->
+        <td>
+          <span class="s-title">MONIYISUS #2</span>
+          <span class="s-sub">Moni y Yisus con Rose Cafferata</span>
+          <span class="s-time-mini">22:20</span>
+          <span class="s-title">MONIYISUS #4</span>
+          <span class="s-sub">Moni y Yisus con P. Tomás Méndez</span>
+          <span class="s-time-mini">23:00</span>
+          <span class="s-sub">Xplora Night Live</span>
+        </td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <div class="playlist-rotation">
+    <div class="playlist-rotation-title">Rotación Playlist (aleatoria entre bloques)</div>
+    <div class="playlist-rotation-text">
+      Ejemplos de títulos en rotación: We Will Rock You · The Greatest Showman · Xplora Night Live · Bebop Big Band ·
+      Pizza &amp; Pagni · Cuento de la Selva · Recoleta bajo la Lluvia · BAFICI Nights · Hedonismo y Seducción · RAKU.
+    </div>
+  </div>
+
+  <div class="footer-2">
+    <span>La programación puede variar. El canal transmite las 24hs con contenido rotativo entre emisiones programadas.</span>
+    <span>toxi.media &nbsp;·&nbsp; 2026</span>
+  </div>
+
+</div><!-- /page-2 -->
+
+</body>
+</html>

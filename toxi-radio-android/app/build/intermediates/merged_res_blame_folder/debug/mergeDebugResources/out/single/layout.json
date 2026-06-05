@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-mergeDebugResources-32:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\JM\\.gradle\\daemon\\8.6\\media.toxi.radio.app-main-35:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "media.toxi.radio.app-mergeDebugResources-32:/layout/activity_main.xml",
+        "source": "media.toxi.radio.app-main-35:/layout/activity_main.xml"
+    }
+]

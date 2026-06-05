@@ -672,10 +672,11 @@
 
   // ── Data ──────────────────────────────────────────────
   async function loadData() {
+    const nonce = Date.now();
     const [p, t, f] = await Promise.all([
-      fetch('/data/projects.json').then(r => r.json()),
-      fetch('/data/talentos.json').then(r => r.json()),
-      fetch('/data/formatos.json').then(r => r.json()),
+      fetch(`/data/projects.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/data/talentos.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/data/formatos.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
     ]);
     projects = p;
     talentos = t;

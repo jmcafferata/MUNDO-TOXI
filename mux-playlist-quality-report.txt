@@ -1,0 +1,89 @@
+﻿
+> toxi-media@1.0.0 mux:playlist-quality
+> node tools/check-playlist-quality.js
+
+=== RESUMEN PLAYLIST ===
+basic: 64
+plus: 3
+premium: 5
+
+=== BASIC (64) ===
+- (ICU) Think About ΓÇö lesslowmoremid | cUI9VC3LTXXxk62iQ902Gd84AJVhg3Gd8lhFczPBuqrI | asset: nwiUTFyziViydc7ciDkxWPrcg4zaqSLLuI201p4aXlWI
+- 17 Minutos con Cata ΓÇö Cata Mas | B02Qs6Wm3TGMjxm5EZKRowHdNTUPb020048AMJa45YDXVM | asset: 9PjKb9sAobDgc00pbBeBbjSl1NLP5gLE2dl2r9vXuzkQ
+- A Game of Drones ΓÇö Early Access Trailer ΓÇö TOXI Gaming | IjUQQvDDhAOMHHS57ORIVl9f01vvb5425FmzPIdF5LRI | asset: z1iCWG8vVh4p1jtSQzUjhROFnbqwonhMDVXJ3FP00txU
+- After You're Gone ΓÇö Fancy DogsΓäó | A14ToM2G9Mmi101NejPlGtAjj8oNGWnyIt302xeWw3oHw | asset: ge69USZTaDolcY9AY3a00mCsR00U5cvFBUcJ9lpg5Jm8A
+- Modelo Extensivo Regenerativo Sintr├│pico (MERS) Exposici├│n en TOXI Media ΓÇö Alfredo Cafferata | CbBSyr5FvC7I00PpxpKNJBW1ibyLuT6Lr52uyeZHHyBg | asset: 00W5GLFYwVYlYvll3d01A6g18pip56DkdMXJKNBCi6inQ
+- BAFICI Nights con Fabrizio Sanguinetti ΓÇö Demi Roch y Nahuel Ivorra | z02O01aMd02YkbeUb01syS400owVLRZ4oOJ6m463hcQ7FseQ | asset: 4yEBHM5Wa4uBg72Ib5ruNT1DQRPBrylcD6x01LG1eZHU
+- Bebop Big Band ΓÇö Bebop Club, 7 de Abril de 2025 | SKB56hnQQV6Tame5VKea02w8E01Ijm7iyHUY5dZXYHKmU | asset: GYyl005l5vyPK8Q00Ur8uoLNv5ankh01XSW01r21XxjYvao
+- Carola Gil le informa a Carlos Pagni la existencia de Pizza & Pagni | KrzHBlHcZCL71mIfCoPKiCMs2iBQMAq8vbhXr701OtQg | asset: KLXCNSXGHjMRHBjBHD16Qq6C02SapqVZnXbdIUzQlpTM
+- Charlas Interactivas ΓÇö Xplora Academy | m8ehCQajSn5f8LVTIdGUNlAePZ7iARoXJHCFjOCmkxE | asset: oMF800HYLpYn6qX4wFPssuHtoK2AWfGrX88qtOMp02YOE
+- Cuento de la Selva ΓÇö Juan Manuel Cafferata y Fabrizio Sanguinetti | FZAP5bJ2O5L16da7Ls1YdSGIiGEZfqTf02dR46z8tfk00 | asset: FT948ZNRtMPleEB34CIteXQtC9DbcUTZ1vPOPTQLVe4
+- Modelo Extensivo Regenerativo Sintr├│pico (MERS) Mar├¡a Teresa, 2025 ΓÇö Alfredo Cafferata | KqSlF5LSKjW028548zaZ5c7aPQNARdgA9pbuTGrL800r8 | asset: Lsh8SS02ZKDzb902z8AFw029DTnOdKjlF3RFROmYeNdY00A
+- Detr├ís de las Risas ΓÇö Teaser | Lsb01QL2dVq63701jEQ01d2DgIo4T2ZzNnRSGNIYeCpX4s | asset: 38DL7H4j01MKF7eGOpQFtvEDfsU201a9VC8TutXxesYpo
+- El Maravilloso Mundo de TOXI | PDLQLpJTnqba3Rn6HBdwb6SJwDR5Tmtm02WZH6jNzsFY | asset: CjWM6y1vXWGAKPjU2JEytrZo5wVA0069o5RSbZGsT00h8
+- Galaxy Adventure 2 ΓÇö Ferm├¡n Del├¡a | z3jU3rp9rTOr95501nz025OP2q9FIz89cwPHO7kyT7Lb8 | asset: 3lyLP3ODg5XUyaCaPvgH5CQ5LI2t1Nrd9R48vUp7QQ4
+- IDA ΓÇö Claire Fatale & Julian Camps | 2yiwT02f7uhnx6yX01qo4b52iffRv8CSVqyMBsYNR02zLY | asset: D4wHo8JkWzNdtrHdGff8t1B1IN02OUbZMuNdHaP02iLrg
+- Inteligencia Artificial, Abogac├¡a y el Desaf├¡o de la Modernizaci├│n Judicial ΓÇö con Ian Silberberg | 86NmIj818900IFXfcwEhIyZO3TkP7lYd6NOfqOP8ZSCQ | asset: B8XzgDuz6X1I2FlMhEfnxpYLInpfa8H802wCvwIb5XFo
+- It's a Jungle Out There ΓÇö Fabrizio Sanguinetti | 8zmmEvU01roD01y1JxwUY5LWW3OcO61YiGw6UWqpxsyoY | asset: BIC6RoO021u2sV8i01o3ArHY1C2g3Rv6mYOssveiSg00Fo
+- Lo Que Se Avecina ΓÇö Los Pibardos | l3s1Blhidm1trZYlmnOOwH02AzXzPdBo4QNpviWlibF8 | asset: g7r901oZF2EyuTLtqBBfK02v7cuVmQR1Wvpqe02pVRvUVI
+- La Biblioteca Caf├⌐ ΓÇö Viernes 30 de Agosto | NMymlct00uz1BJMqcJUjcdfSbXGXfoaYuq3bDg702WQlY | asset: 5dbeXPr02t6pPvLbRlygB014NuHubWzzooQABpxzmY3xE
+- La Irracional ΓÇö Juan Manuel Cafferata y Fabrizio Sanguinetti | xNpGxSdaSkdi8bqzGoQzAo3laBVRgec8t3T827yrT8M | asset: 8Dw8KvbU2z6aHaSDNwIAxTlojc38driv901OFPqHc8nQ
+- Las Formas del Laberinto Tr├íiler ΓÇö Dolores Casares | StpQCayHgfczOfy8q9D2UctIoZDrnNTu02ULCQQQr9fA | asset: hVkzEMDwqmDMN6WoiuBUybpcJ4mm00RK1F4P1TKfh3HY
+- Las Siestas de Sol ΓÇö Sol Despeinada | q2oWATOAQGdVl3AdhoyAmZ8Zwk6BhJkne02Pk31bwHg4 | asset: Xfnwq0101hKbHv8mO901VGOszqlg2QUimXyjzxq00m302N00s
+- Lectura en Franc├⌐s ΓÇö Juana la Loca | vNMBQmE2Q6YaxmESqvh2yYZsqfjtpnu9kJp7QKFvRgs | asset: IRJVAe6H7xHpqGpznEGqro800ejtDbGJuK01XNHGKhH500
+- MONIYISUS ΓÇö Tr├íiler | 02gDf9x8Z01J8ISIKrlC9DMItd02UI029ikQ1T29Sca02z1U | asset: Qd01b6szpJ02Fqug6800CcUgfwXnXqOTDThqLz1PKiXp200
+- Maxi Mancuso Quintet ΓÇö CCNU | GHZVMKXJaoMnrUxUfVhSVn300gxnFxCSJKK01k3rOKmks | asset: O2o027jfxTRvLCCrGL02KsBx7Q2qHgbmMEOWjFcucRzqA
+- Mentor├¡a de Comunicaci├│n, Locuci├│n y Doblaje ΓÇö Demi Roch | DE01AR1H01dk7JY9q8RsBP7jk122hRQaxKkMJRxirNQWM | asset: a9kmPoELmS3Cplq4EMcOTCgq3DiWrVEFLy00lWFyZ184
+- Mesa Torcida | 02lxmxwxBURGEtO4XtvXro024Zl8yOCUsf6AzfGEkiuSU | asset: 002sJ4nKmglXQyzzgI8rvzNqcxtMht49gqsvUG1xelBo
+- Misi├│n: ODELaR ΓÇö Juan Segundo Quiroga | d1Mu65Kcey02gQtRDtcV00U01U01JYwn9dZettLfFmErz3E | asset: ZsHtMlLkk01GtrJfUqT1ogTWiJhU01jb2006n137wVLTa00
+- Moni y Yisus entrevistan a Rose Cafferata ΓÇö MONIYISUS #2 | h5NFgWueG4nldZesITFtEYpnU01CyExDQ02FZ3tSBrp5w | asset: 78r9c02B8x2btm6DMCr9tRse1THxRcgYnZQBT6PVDIDk
+- Moni y Yisus entrevistan al Padre Tom├ís M├⌐ndez ΓÇö MONIYISUS #4 | YSqI5Wj9dGRwjMh005Xs6a4Q4IPTdmAQJYa4WU1dH12w | asset: a302wdWUf00ytoiFCtomrX7zCLoKNqkyA0000i1ttKDNHEQ
+- Muerte y Miedo en las Calles ΓÇö Juan Segundo Quiroga | 9pXQ7MUiVlTklMCQdQVdbxoMn85YIC3jObLtzBFN801o | asset: x1YnrGHErU6G2vxDMiDwLTSIWMEluMKIZDxXBYrXSC00
+- Ni Jorges ni Borges ΓÇö Juan Segundo Quiroga | oT00wnOnz00iFEzyaOmue00bXx2HOnyX01dII6t4UlGRM7A | asset: Ipa1F31wo6wKL02wv2xfENG01cVqS4qVcpxZRBdLMr02018
+- Odelar ΓÇö Juan Segundo Quiroga | Q3kMlL901ouKhER0101Nzija5Y1025jWBV4ORBXTruuFEyM | asset: tUpEjAIc25bDglANfJMnluYxuyhdl70202RMQUXNuOmAs
+- Otro D├¡a en la Red ΓÇö Juan Segundo Quiroga | UiK7a7RjMI2LkEnxUEthecrAk4chE00OPr7ic1Tn9lG4 | asset: w4fBw02lFPBfXjvbRkWY2QIR01399eX202KD01DCkBiVcrE
+- Prototipazos ΓÇö La Impact | 1z01wgDyw3WEGJZXc00qZsWXXqo3hIfCQHMWK8mGsKX01Y | asset: kcU54gae4NWER3oxk5AKvkbpc9TrPLt9DUQyZLAFmfE
+- Palta and the Gang ΓÇö Luna Park, 9 de Mayo de 2024 | ec1emgWV3VZVz4G0200wUSiUrV5y4j8jlyjgC8JXn1rFs | asset: XEDaDDAJn7HkR2rHtG8Gae8KCgJsJbzNlHyiguEvMT00
+- Para Qu├⌐ Sirve Todo Esto ΓÇö Juan Manuel Cafferata y Fabrizio Sanguinetti | X7YJlq50211xQS2d9Vi01aD3QY8QKx8nJOC2hWD1ELc5k | asset: 8sNtVxmXUAr3bCBE02bMTV7mcAQbATEKiBbR2mjFPKsU
+- Pierrot le Bolou ΓÇö Juan Manuel Cafferata y Fabrizio Sanguinetti | HPsNUFZfR8NY6Tq2qv02NToxV8noBJ8BAGDE59OCD01Kc | asset: u8sPw00nBfV00tOdcQnH9MfDqW018sGc9O55fAI301LvUCY
+- Prez ΓÇö Tr├íiler | dJKlr23ualq86KvwfVoMx02g755YL02p6pQQ8dyfghEsc | asset: iWRMfSASYk5baMRg88bXwwY5d01N2tKkXhctRIUT7FYY
+- RAKU µÑ╜τä╝ ΓÇö Male ArteMix | R1EGXfq1DUGMrFblrMMGuppU02fQf01i1LGENQY9m46Ls | asset: yftGUcMolQP01B00ALwIozn01Pq1kp3eGMhLY99ZGH00HvQ
+- Hedonismo y Seducci├│n ΓÇö On├¡rica | XDIDz4TQ34vozsemiHeyuzMi6OuqQR7oAB1HHaVCIOA | asset: KptJPmev7MBL94QJ01aSisMjJzkkd6FSPaWAdClQITSQ
+- Hedonismo y Seducci├│n ΓÇö On├¡rica | 2EFUXtMAx4u7QFmnXYC01P00cgpa4z02QqKVgSAkcuqYpg | asset: 8gEH9LNW2d7V2ADBpMlUxtlmyhIaOiTJ97MROa2lF94
+- Hedonismo y Seducci├│n ΓÇö On├¡rica | k5WwHsdgrHNOzSdhUDGjjRVsK02u00WPQgQKhgYUYDtbk | asset: Ezp4VPIlWbR00T102r9015Yj00tLW2GMI9ivOSjTrIlgIzU
+- Recoleta bajo la Lluvia ΓÇö Discover BA con Luz | fID5sJbpqtFK01iIllxmwkTE5FvJnI3J7icA3Qjo009gU | asset: RpOy4wZfN001OOR7TkrKFLCIksCJkIfiZRVqTvEjVuFc
+- Proyecto de Infiltraci├│n & Agricultura Sintr├│pica en Santuario del Maipo ΓÇö Aguatierra | p75vcYJRLEjPMJo011Z1JOERMO5E013B02KCxYN5DR1Dg8 | asset: dUMH5b6i2uybHfMlyGGQA8GBEO29Wl5eA1gA2rwqixE
+- S├íbado a la Noche ΓÇö Juan Manuel Cafferata | A7KK900TZvE7DOahDzDEncIz02GbxxJz8IJo01DCaVbOvE | asset: roQGAeFH00vulmtxENF00H3sqUkFkiHyXyg00oEY3NDArE
+- TOXI Seminars presenta Peronismos ΓÇö Fabrizio Sanguinetti | qM33QmuwmXJsibPHXJMbFh02V9gT2s7HDEO00v9VB7mHY | asset: y6ft8rijnDyxfoUJnkNCkpEkFtgwsVP021I3d2M31bU00
+- M├ís All├í del M├ís All├í ΓÇö MONIYISUS #4 | wj0015QgHhNxFVU01iXuF8z5hvJ7TUnd02UfwqHa447Whs | asset: lbrm00ryXxyYQDOQu6EcF9VKt8NEbCWm5ebdMfYSU6nk
+- The Greatest Showman ΓÇö EDLP Drama | 00kmeFWt6viiA02WHx9P01PnsY1RolhnyufiNhf5na7VsE | asset: Crwglh9jnZh7L4Hfsl8fo6xQeolN7Ei5502mQ1n1DlJU
+- Las Catadoras del F├╝hrer ΓÇö CDI Films | CAG692TzvxtvAQEoR01byCm01xKJUp6GqyJalgQ0200Z6n00 | asset: C9fGqc9PJ00bZdWhxNsP1mip2nmf9l01WtvL02ceptgr400
+- Viaje ΓÇö Ferm├¡n Del├¡a | mlTTKbkPDdOTvu963D1p00vz8pihOYpo2iefwZowJP6M | asset: eFdc4djmhN4YE9xFNzD02ajBbZtqhE02S5qxmyirkahFg
+- Xplora Night Live | 7KfrMVUZL2bANgKGsxeWjCnrOTK1DRuUOe9701UO7424 | asset: WAxL3Eg842T8gURDH01UzbjSDpdjzAvhw4O00BV1iRaZE
+- Yuyo No├⌐ recorre Las Formas del Laberinto de Dolores Casares | cseBPfceuHCbWY3D2OF7WMtQ7DmaYhSdR4ekSOD7QT4 | asset: wIdg02Bjynui6obCyllF401hsByxUbFN9c22220102G7VEY
+- Fiesta en la Cocina ΓÇö KABRADEPATA | yyJADkna02dmJtNdyUoHDOYQMcjsxKcjf63O00w01mm1ZI | asset: jNA4FWecXZfEBagBwF3pzo01qmtbS01WNnXZ02MjtLx3ow
+- Hipo Hip Hop ΓÇö KABRADEPATA | 00VG6EL1oC4eI96PVQXeobbdZ6GBNwrmUAexIDdiMpTc | asset: HhA02kHcGCe701sG6Ce00ddKGp3G7EzdkezZna8GIB3d01A
+- Otro D├¡a en la Red 0 ΓÇö Juan Segundo Quiroga | QUElHo8r5HtNqfh02XfGKm85jUJ01iTGbkyn2D4BeYNZI | asset: QE61SWgSEyLMM7UaGvW00zWchA6xtLD4HBQKK01qOQC9c
+- Otro D├¡a en la Red III ΓÇö Juan Segundo Quiroga | K6p6zWxcLOtRXb02eWcic00RYQG8SwDxE014o9007ZTBwm8 | asset: ktNwWGQustoEtXp01KevYHXwGqFYEOtpw9z4yFLlNvpc
+- Volv├⌐ a ODELAR ΓÇö Juan Segundo Quiroga | HRr2KXg2X800YNuos9Aj2LmZe8XIqHvTMgFrGKc7v7wQ | asset: O9Xl9AGCz4VSTq5lSc4pumvDV003AiwOAtVpzY00TXmRI
+- Viaje a la Luna ΓÇö KABRADEPATA | 2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE | asset: FnetDhT434VKWdVBIhW02lEttdNysHZ485jKzPKnC97c
+- ┬┐Qu├⌐ es Mamarracho? ΓÇö Nano Catal├í | jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY | asset: DgbwTGdvv85H015pvVeJPAZMFsw2vFkpkkvSg27vDR02I
+- Storytelling y Transgresi├│n ΓÇö Gael P. Rossi (TOXI University) | agfEm3toRbicITlQJbJ4ppPrv700kzCrHmFczRDhmcf8 | asset: AVZFiN5bl02A7YwA300oYD6KIXiaMnXYU5PWt8xzL5wek
+- Literatura y Realidad Virtual ΓÇö Ana Arzoumanian (TOXI University) | N5ISPSMoo502IHjTdvQt02GeR7xgJUiCFTlxrBLLIhpcg | asset: pVq382IUwBHbtnrUgK6o00EaR01rDigzJZG3vC3q2JNvU
+- Ana Arzoumanian en TV P├║blica ΓÇö Inteligencia Artificial Hoy | irasB01gOUsUd4E4Iy6yVvp7CYMwYMVB00nr4BKU8tn38 | asset: jLQXSrmzGBtmg99PPqtm6GDZceyeUiuq2THcvqhfeqU
+- Masterclass de Python ΓÇö Nicol├ís Martorell (Xplora Academy) | RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00 | asset: P2IJ2267tdAT43NP1RnfxmpOlAQZ97l01QgNzEpyUGvM
+
+=== PLUS (3) ===
+- Pizza & Pagni ΓÇö Piloto | ascCA5hMxmuLlSRnYiRtuXj7P5hOJdC9ImyfKqaQsQo | asset: 8eWxpM02B4E32tHd4fyQ5o8I20002PNH9WnMaSU6mQKTIY
+- Hedonismo y Seducci├│n ΓÇö Tr├íiler | LsytAjQ02NdIG2Kh4lOPIAneHBKzTNoasBVOnLd3KHtM | asset: 01xpHFuFTRUwvq01k9Y9qlDgnOPaikeAk01vwxVGjLdwYY
+- Las Formas del Laberinto - Palacio Libertad | tUZ7gRedTD1q602xkadggUxC024cXAN7jxGhIfR73AbIE | asset: hXUo5pZ2Uh3Db601qOksJAESo02lLklSEYiuwpY73PH28
+
+=== PREMIUM (5) ===
+- Hotel Oriente ΓÇö Las Nenas | iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU | asset: cAVyfeolsNIhqRqoUXhhOjrlh6i9VfFkO2CjiXoBzEg
+- Hotel Oriente (Detr├ís de Escena) ΓÇö Las Nenas | iVB2ZU00L1WZDQJpqXrIAMg02Cmq4l6C2kKnP02sNP01CQM | asset: rMJF02G6lGGn1JY3mIUI7rM16f5av8KDSIJq02jQpzvvY
+- Detective Noir ΓÇö Chavo Escrotito | IHikcrMnpK00Dxsyb7xKpi1qpju01I00JmCpNXXrhg1WZg | asset: hi3sBcvAOk21pur3X00td014mqBYhCDtjc5rVlLVJNCQ8
+- Ver para Coger ΓÇö Juan Manuel Cafferata y Fabrizio Sanguinetti | RUULhR2QDMRZT01YDXggu7WPKI01nzGyzvK1RPwGY3GyQ | asset: zYP5BLK9VO6HL01N02wZRJt4DhXW3tYXNf6DNLi3OXsiA
+- We Will Rock You ΓÇö EDLP Drama | Mqf9GhKKFmd01IH28ITZ00KT4oGLxmr6gvqbNQjGIv301Y | asset: pzPAuQPw7juGOGsE4xF1dg7gpGgy36dE2UNUGAyQ9Bo
+
+=== NO ENCONTRADOS (0) ===
+- sin resultados

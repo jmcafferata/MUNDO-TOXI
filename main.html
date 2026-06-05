@@ -89,7 +89,6 @@
             const overlay = document.getElementById('looping-poster-overlay');
             
             let posters = [
-                { src: 'h-y-s%20poster%201920x1080.jpg', link: 'hedonismo-y-seduccion.html', id: 'hedonismo' },
                 { src: 'we%20will%20rock%20you%20poster.jpg', link: 'we-will-rock-you.html', id: 'we-will-rock-you' },
                 { src: 'hotel%20oriente%20poster.jpg', link: 'hotel-oriente.html', id: 'hotel' },
                 { src: 'detective%20no%20ir%20poster.jpg', link: 'detective-noir.html', id: 'detective' }
@@ -100,10 +99,7 @@
                 const rawEntry = localStorage.getItem('toxi_entry_pass');
                 if (rawEntry) {
                     const entry = JSON.parse(rawEntry);
-                    if (entry && entry.entryCode === '1927') {
-                        // Hedonismo already first in array — keep default order
-                        console.log('Order: Hedonismo First (1927)');
-                    } else if (entry && entry.entryCode === '1985') {
+                  if (entry && entry.entryCode === '1985') {
                         // Move Detective Noir to first position if found
                         const idx = posters.findIndex(p => p.id === 'detective');
                         if (idx > -1) {
@@ -202,7 +198,7 @@
     <!-- Mux Overlay -->
     <div id="mux-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; flex-direction: column; align-items: center; justify-content: center;">
       <button id="mux-close" style="position: absolute; top: 20px; right: 20px; z-index: 10000; color: white; background: transparent; border: none; font-size: 2rem; cursor: pointer;">&times;</button>
-      <video id="mux-player" controls style="width: 100%; height: 100%;"></video>
+      <video id="mux-player" style="width: 100%; height: 100%;"></video>
     </div>
 
     <!-- Video Modal -->
