@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reporte de práctica — Ximena Colombres</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #f5f4f0;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: #1a1a1a;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .page {
+      max-width: 700px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 2.2rem 3rem;
+      box-shadow: 0 2px 24px rgba(0,0,0,.08);
+    }
+
+    /* ── Membrete ── */
+    .letterhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #1a1a1a;
+      margin-bottom: 1.2rem;
+    }
+    .lh-brand {
+      font-family: 'Arial', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #1a1a1a;
+    }
+    .lh-sub {
+      font-family: 'Arial', sans-serif;
+      font-size: .65rem;
+      color: #888;
+      letter-spacing: .04em;
+      margin-top: .1rem;
+    }
+    .lh-date {
+      font-family: 'Arial', sans-serif;
+      font-size: .72rem;
+      color: #888;
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    /* ── Título del documento ── */
+    .doc-type {
+      font-family: 'Arial', sans-serif;
+      font-size: .62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: #888;
+      margin-bottom: .25rem;
+    }
+    .doc-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      font-style: italic;
+      color: #1a1a1a;
+      line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Cuerpo ── */
+    .body-text {
+      font-size: .82rem;
+      line-height: 1.6;
+      color: #2a2a2a;
+    }
+    .body-text p {
+      margin-bottom: .6rem;
+    }
+    .body-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Actividades destacadas ── */
+    .activities {
+      margin: .9rem 0;
+      border-left: 3px solid #1a1a1a;
+      padding-left: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+    .act-item {}
+    .act-num {
+      font-family: 'Arial', sans-serif;
+      font-size: .6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: #888;
+      margin-bottom: .08rem;
+    }
+    .act-name {
+      font-size: .84rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: .08rem;
+    }
+    .act-desc {
+      font-size: .77rem;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    /* ── Firma ── */
+    .signature {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+      gap: .2rem;
+    }
+    .sig-line {
+      width: 200px;
+      height: 1px;
+      background: #1a1a1a;
+      margin-bottom: .4rem;
+    }
+    .sig-name {
+      font-size: .95rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+    .sig-role {
+      font-size: .8rem;
+      color: #888;
+      font-family: 'Arial', sans-serif;
+    }
+    .sig-org {
+      font-size: .8rem;
+      color: #888;
+      font-family: 'Arial', sans-serif;
+    }
+
+    /* ── Print ── */
+    @page { size: A4; margin: 1.2cm; }
+    @media print {
+      body { background: white; padding: 0; }
+      .page { box-shadow: none; padding: 0; max-width: 100%; }
+      .print-btn { display: none; }
+    }
+
+    /* ── Print button ── */
+    .print-btn {
+      display: block;
+      max-width: 700px;
+      margin: 1.5rem auto 0;
+      text-align: right;
+    }
+    .print-btn button {
+      background: #1a1a1a;
+      color: #fff;
+      border: none;
+      padding: .55rem 1.25rem;
+      font-size: .82rem;
+      font-family: 'Arial', sans-serif;
+      font-weight: 600;
+      letter-spacing: .04em;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .print-btn button:hover { background: #333; }
+  </style>
+</head>
+<body>
+
+<div class="print-btn">
+  <button onclick="window.print()">Imprimir / Guardar PDF</button>
+</div>
+
+<div class="page">
+
+  <div class="letterhead">
+    <div>
+      <img src="dist/toxi-logo-black.png" alt="Toxi Media" style="height:36px; display:block; margin-bottom:.35rem;" />
+      <div class="lh-sub">Productora multimedia · Buenos Aires, Argentina</div>
+      <div class="lh-sub">toxi.media</div>
+    </div>
+    <div class="lh-date">
+      Buenos Aires<br>
+      11 de mayo de 2026
+    </div>
+  </div>
+
+  <div class="doc-type">Reporte de práctica profesional</div>
+  <div class="doc-title">Contribución de Ximena Colombres<br>en la organización interna de Toxi Media</div>
+
+  <div class="body-text">
+
+    <p>
+      Por medio del presente documento, certifica Toxi Media que <strong>Ximena Colombres</strong> realizó su práctica profesional en el área de periodismo de esta productora durante el período correspondiente, colaborando de manera activa y comprometida en el diseño y desarrollo de herramientas organizacionales internas orientadas a la mejora de los procesos de gestión y comunicación del equipo.
+    </p>
+
+    <p>
+      En el marco de dicha práctica, Ximena participó en la definición, redacción y estructuración de tres actividades clave:
+    </p>
+
+    <div class="activities">
+      <div class="act-item">
+        <div class="act-num">Actividad I</div>
+        <div class="act-name">Wiki interna de Toxi Media</div>
+        <div class="act-desc">
+          Relevamiento y organización del conocimiento operativo de la empresa: stack tecnológico, flujos de deploy, guías de streaming, estructura de archivos y catálogo de proyectos. Ximena colaboró en la revisión editorial de los contenidos, asegurando claridad, consistencia y accesibilidad para todos los integrantes del equipo, independientemente de su área de especialización.
+        </div>
+      </div>
+      <div class="act-item">
+        <div class="act-num">Actividad II</div>
+        <div class="act-name">Guía de onboarding para colaboradores externos</div>
+        <div class="act-desc">
+          Diseño del protocolo de inducción para nuevos integrantes y pasantes. La guía cubre presentación institucional, descripción del equipo y sus roles, accesos y herramientas, equipamiento disponible, proyectos activos y procedimientos de entrega. Ximena aportó su mirada periodística para estructurar la información de manera progresiva y reducir la carga administrativa del núcleo en cada incorporación.
+        </div>
+      </div>
+      <div class="act-item">
+        <div class="act-num">Actividad III</div>
+        <div class="act-name">Matriz de priorización y alianzas estratégicas</div>
+        <div class="act-desc">
+          Relevamiento y mapeo de los proyectos de la productora en función de su valor creativo y su potencial de rentabilidad, con identificación de alianzas de distribución externa para cada cuadrante. Ximena contribuyó en la investigación de cada proyecto, la categorización editorial y la redacción del plan de acción asociado, conectando el análisis estratégico con el lenguaje comunicacional de la organización.
+        </div>
+      </div>
+    </div>
+
+    <p>
+      El trabajo de Ximena se distinguió por su capacidad de traducir información técnica y estratégica en documentos accesibles, por su iniciativa para proponer mejoras en la organización de los contenidos y por su integración fluida con el equipo interdisciplinario de Toxi Media.
+    </p>
+
+    <p>
+      Las tres herramientas desarrolladas están actualmente en uso activo y se encuentran disponibles en el entorno interno de la plataforma. Su aporte fue determinante para que la organización contara, por primera vez, con una base documental centralizada y un proceso de incorporación estandarizado.
+    </p>
+
+    <p>
+      Se extiende el presente reporte a solicitud de la interesada, para los fines académicos e institucionales que correspondan.
+    </p>
+
+  </div>
+
+  <div class="signature">
+    <div class="sig-line"></div>
+    <div class="sig-name">Fabrizio Sanguinetti</div>
+    <div class="sig-role">Co-fundador</div>
+    <div class="sig-org">Toxi Media · Buenos Aires, Argentina</div>
+  </div>
+
+</div>
+
+</body>
+</html>

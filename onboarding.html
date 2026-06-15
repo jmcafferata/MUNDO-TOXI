@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Onboarding — Toxi Media</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --border: #252525;
+      --text: #e5e5e5;
+      --muted: #888;
+      --yellow: #facc15;
+      --accent: #ffffff;
+      --green: #4ade80;
+      --red: #f87171;
+      --blue: #60a5fa;
+      --radius: 8px;
+      --max: 780px;
+    }
+
+    html { font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.7;
+      padding: 0 1rem 6rem;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .site-header a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .85rem;
+    }
+    .site-header a:hover { color: var(--accent); }
+    .header-logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--yellow);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+    }
+    .header-sep { color: var(--border); }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: var(--max);
+      margin: 3rem auto 0;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: var(--yellow);
+      color: #000;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .25rem .6rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.2;
+      margin-bottom: .75rem;
+    }
+    .hero p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 560px;
+    }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      max-width: var(--max);
+      margin: 2.5rem auto 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: .6rem;
+    }
+    .progress-label span:last-child { color: var(--yellow); font-weight: 600; }
+    .progress-track {
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--yellow);
+      border-radius: 99px;
+      transition: width .4s ease;
+      width: 0%;
+    }
+
+    /* ── Main layout ── */
+    .content {
+      max-width: var(--max);
+      margin: 3rem auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    /* ── Sections ── */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+    .section-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .section-step {
+      margin-left: auto;
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--border);
+      padding: .2rem .6rem;
+      border-radius: 4px;
+    }
+
+    h3 {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin: 1.25rem 0 .6rem;
+    }
+    h3:first-of-type { margin-top: 0; }
+
+    p { color: var(--text); font-size: .95rem; margin-bottom: .5rem; }
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Checklist ── */
+    .checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+    }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      padding: .7rem .9rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background .15s, border-color .15s;
+      user-select: none;
+    }
+    .checklist li:hover { background: rgba(255,255,255,.03); }
+    .checklist li.done {
+      background: rgba(74, 222, 128, .06);
+      border-color: rgba(74, 222, 128, .25);
+    }
+    .check-box {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .7rem;
+      transition: background .15s, border-color .15s;
+    }
+    .done .check-box {
+      background: var(--green);
+      border-color: var(--green);
+      color: #000;
+    }
+    .check-text {
+      font-size: .9rem;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .done .check-text { color: var(--muted); text-decoration: line-through; }
+    .check-sub {
+      font-size: .78rem;
+      color: var(--muted);
+      display: block;
+      margin-top: .15rem;
+    }
+    .done .check-sub { text-decoration: none; }
+
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .88rem;
+      margin-bottom: .5rem;
+    }
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: .75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: .4rem .75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: .6rem .75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    strong { color: var(--accent); font-weight: 600; }
+    code {
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      padding: .1em .4em;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', 'Fira Mono', monospace;
+      font-size: .82em;
+      color: var(--yellow);
+    }
+
+    /* ── Callout ── */
+    .callout {
+      border-radius: 6px;
+      padding: .9rem 1rem;
+      font-size: .88rem;
+      margin-top: .75rem;
+    }
+    .callout.info {
+      background: rgba(96, 165, 250, .07);
+      border-left: 3px solid var(--blue);
+      color: #93c5fd;
+    }
+    .callout.warn {
+      background: rgba(250, 204, 21, .07);
+      border-left: 3px solid var(--yellow);
+      color: #fde68a;
+    }
+    .callout.ok {
+      background: rgba(74, 222, 128, .07);
+      border-left: 3px solid var(--green);
+      color: #86efac;
+    }
+
+    /* ── People grid ── */
+    .people-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: .75rem;
+    }
+    .person-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .9rem 1rem;
+    }
+    .person-name {
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .person-role {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: .15rem;
+    }
+    .person-tag {
+      display: inline-block;
+      font-size: .65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: .15rem .45rem;
+      border-radius: 3px;
+      margin-top: .4rem;
+    }
+    .tag-core { background: rgba(250,204,21,.15); color: var(--yellow); }
+    .tag-vr { background: rgba(96,165,250,.15); color: var(--blue); }
+    .tag-series { background: rgba(74,222,128,.15); color: var(--green); }
+    .tag-dev { background: rgba(167,139,250,.15); color: #c4b5fd; }
+    .tag-period { background: rgba(251,146,60,.15); color: #fdba74; }
+    .tag-pasante { background: rgba(255,255,255,.08); color: var(--muted); }
+
+    /* ── Footer note ── */
+    .footer-note {
+      max-width: var(--max);
+      margin: 3rem auto 0;
+      text-align: center;
+      font-size: .82rem;
+      color: var(--muted);
+    }
+    .footer-note a { color: var(--yellow); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 1.6rem; }
+      .section { padding: 1.25rem; }
+      .people-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="header-logo">Toxi Media</span>
+  <span class="header-sep">/</span>
+  <a href="/wiki">Wiki interna</a>
+</header>
+
+<div class="hero">
+  <span class="hero-tag">Onboarding</span>
+  <h1>Bienvenido al equipo</h1>
+  <p>Esta guía te da todo lo que necesitás para arrancar a trabajar. Marcá los ítems a medida que los completás.</p>
+</div>
+
+<!-- Progress -->
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>Progreso de onboarding</span>
+    <span id="prog-label">0 / 0 completados</span>
+  </div>
+  <div class="progress-track">
+    <div class="progress-fill" id="prog-fill"></div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ── PASO 1: Checklist de arranque ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">✅</span>
+      <h2>Checklist de arranque</h2>
+      <span class="section-step">Paso 1</span>
+    </div>
+    <ul class="checklist" id="checklist">
+      <li data-check>
+        <div class="check-box"></div>
+        <div class="check-text">
+          Leí esta guía completa
+          <span class="check-sub">Al menos una vez antes de empezar a trabajar.</span>
+        </div>
+      </li>
+      <li data-check>
+        <div class="check-box"></div>
+        <div class="check-text">
+          Tengo el número de WhatsApp de mi referente
+          <span class="check-sub">Ver sección "Equipo" — identificar quién es tu referente directo.</span>
+        </div>
+      </li>
+      <li data-check>
+        <div class="check-box"></div>
+        <div class="check-text">
+          Conozco la dirección de la oficina
+          <span class="check-sub">Rodríguez Peña 158, Buenos Aires.</span>
+        </div>
+      </li>
+      <li data-check>
+        <div class="check-box"></div>
+        <div class="check-text">
+          Sé a qué proyecto estoy asignado/a
+          <span class="check-sub">Ver sección "Proyectos activos".</span>
+        </div>
+      </li>
+      <li data-check>
+        <div class="check-box"></div>
+        <div class="check-text">
+          Solicité los accesos que necesito
+          <span class="check-sub">GitHub, Google Drive, Meta Quest — según mi rol.</span>
+        </div>
+      </li>
+      <li data-check>
+        <div class="check-box"></div>
+        <div class="check-text">
+          Revisé el equipamiento disponible
+          <span class="check-sub">Ver sección "Equipamiento" — saber qué hay y cómo pedirlo.</span>
+        </div>
+      </li>
+      <li data-check>
+        <div class="check-box"></div>
+        <div class="check-text">
+          Conozco el formato de entrega
+          <span class="check-sub">Ver sección "Cómo entrego mi trabajo".</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ── PASO 2: Quiénes somos ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🎬</span>
+      <h2>Quiénes somos</h2>
+      <span class="section-step">Paso 2</span>
+    </div>
+    <p>
+      <strong>Toxi Media</strong> es una productora multimedia con base en Buenos Aires. Hacemos experiencias de VR, series de contenido audiovisual, streaming en vivo y desarrollo web creativo. Nuestro sitio principal es <code>toxi.media</code>.
+    </p>
+    <div class="callout info" style="margin-top:1rem;">
+      El estilo de trabajo es horizontal y ágil. No hay jerarquías rígidas, pero cada área tiene un referente claro. Ante cualquier duda, preguntá directo.
+    </div>
+    <h3>Áreas de trabajo</h3>
+    <table>
+      <thead><tr><th>Área</th><th>Qué hace</th></tr></thead>
+      <tbody>
+        <tr><td><strong>VR</strong></td><td>Producción y exhibición de experiencias de realidad virtual. Trabajo con Meta Quest 2 y Quest 3S.</td></tr>
+        <tr><td><strong>Series</strong></td><td>Producción de contenido audiovisual en serie para la plataforma y canales externos.</td></tr>
+        <tr><td><strong>Dev / Web</strong></td><td>Plataforma <code>toxi.media</code>, Toxi TV, herramientas internas. Stack: Vite, Three.js, Vercel.</td></tr>
+        <tr><td><strong>Periodismo</strong></td><td>Cobertura, guiones, crónicas y contenido editorial ligado a proyectos activos.</td></tr>
+        <tr><td><strong>Streaming</strong></td><td>Transmisiones en vivo vía Icecast / Zeno.fm integradas a Toxi TV.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── PASO 3: El equipo ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">👥</span>
+      <h2>El equipo</h2>
+      <span class="section-step">Paso 3</span>
+    </div>
+    <h3>Core</h3>
+    <div class="people-grid">
+      <div class="person-card">
+        <div class="person-name">Juan Manuel Cafferata</div>
+        <div class="person-role">Co-fundador · estrategia · web</div>
+        <span class="person-tag tag-core">Core</span>
+      </div>
+      <div class="person-card">
+        <div class="person-name">Fabrizio Sanguinetti</div>
+        <div class="person-role">Co-fundador · estrategia · producción</div>
+        <span class="person-tag tag-core">Core</span>
+      </div>
+      <div class="person-card">
+        <div class="person-name">Sofía Nicolá Patrón</div>
+        <div class="person-role">Socia capitalista</div>
+        <span class="person-tag tag-core">Core</span>
+      </div>
+    </div>
+    <h3>Líderes de área</h3>
+    <div class="people-grid">
+      <div class="person-card">
+        <div class="person-name">Fermín Delía</div>
+        <div class="person-role">VR — producción</div>
+        <span class="person-tag tag-vr">VR</span>
+      </div>
+      <div class="person-card">
+        <div class="person-name">Julián Toninello</div>
+        <div class="person-role">VR — exhibición</div>
+        <span class="person-tag tag-vr">VR</span>
+      </div>
+      <div class="person-card">
+        <div class="person-name">Juan Segundo Quiroga</div>
+        <div class="person-role">Series — líder</div>
+        <span class="person-tag tag-series">Series</span>
+      </div>
+      <div class="person-card">
+        <div class="person-name">Nicolás Martorell</div>
+        <div class="person-role">Programación — líder</div>
+        <span class="person-tag tag-dev">Dev</span>
+      </div>
+    </div>
+    <h3>Pasantes / Prácticas profesionales</h3>
+    <div class="people-grid">
+      <div class="person-card">
+        <div class="person-name">Luis Fernando Guerra Velarde</div>
+        <div class="person-role">VR</div>
+        <span class="person-tag tag-pasante">Pasante</span>
+      </div>
+      <div class="person-card">
+        <div class="person-name">Martín Pollo</div>
+        <div class="person-role">VR</div>
+        <span class="person-tag tag-pasante">Pasante</span>
+      </div>
+      <div class="person-card">
+        <div class="person-name">Ximena Colombres</div>
+        <div class="person-role">Periodismo</div>
+        <span class="person-tag tag-period">Práctica profesional</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PASO 4: Accesos ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔑</span>
+      <h2>Accesos y herramientas</h2>
+      <span class="section-step">Paso 4</span>
+    </div>
+    <p>Solicitá los accesos que correspondan a tu rol. Tu referente los otorga.</p>
+    <table>
+      <thead><tr><th>Herramienta</th><th>Para quién</th><th>Cómo pedirlo</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>GitHub</strong> — repo <code>MUNDO-TOXI</code></td>
+          <td>Dev / web</td>
+          <td>Pedirle invitación a Nicolás Martorell</td>
+        </tr>
+        <tr>
+          <td><strong>Vercel</strong> — dashboard</td>
+          <td>Dev / web</td>
+          <td>Ídem GitHub</td>
+        </tr>
+        <tr>
+          <td><strong>Google Drive</strong> — carpeta del proyecto</td>
+          <td>Todos</td>
+          <td>Pedirle link compartido a tu referente de área</td>
+        </tr>
+        <tr>
+          <td><strong>Meta Quest</strong> — unidad asignada</td>
+          <td>VR</td>
+          <td>Coordinar con Fermín Delía o Julián Toninello</td>
+        </tr>
+        <tr>
+          <td><strong>WhatsApp grupos</strong></td>
+          <td>Todos</td>
+          <td>Tu referente te agrega al grupo del proyecto</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout warn">
+      No compartas credenciales ni links de Drive fuera del equipo. Para acceso de terceros, coordiná con el core.
+    </div>
+  </div>
+
+  <!-- ── PASO 5: Espacios ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📍</span>
+      <h2>Espacios de trabajo</h2>
+      <span class="section-step">Paso 5</span>
+    </div>
+    <h3>Sede física</h3>
+    <table>
+      <thead><tr><th>Espacio</th><th>Detalle</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Oficina principal</strong></td><td>Rodríguez Peña 158, Buenos Aires — estudio, reuniones, grabaciones</td></tr>
+        <tr><td><strong>Pantalla verde / chroma</strong></td><td>Disponible en la oficina para grabaciones en set</td></tr>
+      </tbody>
+    </table>
+    <h3>Equipamiento disponible</h3>
+    <table>
+      <thead><tr><th>Categoría</th><th>Equipo</th><th>Referente para pedirlo</th></tr></thead>
+      <tbody>
+        <tr><td>Cámara</td><td>Sony A7 III · Sony A7 IV · Ronin SC (gimbal)</td><td>Fabrizio Sanguinetti</td></tr>
+        <tr><td>Iluminación</td><td>Reflectores LED 200W / 100W / 50W</td><td>Fabrizio Sanguinetti</td></tr>
+        <tr><td>Audio</td><td>Scarlett i2 · Samson C01 · Rode NTG1 · Zoom H4n</td><td>Fabrizio Sanguinetti</td></tr>
+        <tr><td>VR</td><td>5× Meta Quest 2 · 2× Meta Quest 3S</td><td>Fermín Delía / Julián Toninello</td></tr>
+        <tr><td>Instrumentos</td><td>Yamaha P90 · 2 guitarras · violín · clarinete · trompeta</td><td>Fabrizio Sanguinetti</td></tr>
+        <tr><td>Transporte</td><td>Citroën Picasso Xsara</td><td>Coordinar con el core</td></tr>
+      </tbody>
+    </table>
+    <div class="callout ok">
+      Todo equipo sale y entra con registro. Avisá siempre antes de llevarte algo de la oficina.
+    </div>
+  </div>
+
+  <!-- ── PASO 6: Proyectos activos ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🗂</span>
+      <h2>Proyectos activos</h2>
+      <span class="section-step">Paso 6</span>
+    </div>
+    <p>Estos son los principales proyectos en curso. Tu referente te indicará a cuál estás asignado/a y cuál es tu entregable.</p>
+    <table>
+      <thead><tr><th>Proyecto</th><th>Tipo</th><th>Referente</th></tr></thead>
+      <tbody>
+        <tr><td><strong>toxi.media</strong></td><td>Plataforma web · streaming · tickets</td><td>JM Cafferata / N. Martorell</td></tr>
+        <tr><td><strong>Toxi TV</strong></td><td>Canal de streaming en vivo (web + Android TV)</td><td>JM Cafferata / N. Martorell</td></tr>
+        <tr><td><strong>Experiencias VR</strong></td><td>Contenidos inmersivos para exhibición</td><td>Fermín Delía / Julián Toninello</td></tr>
+        <tr><td><strong>Series</strong></td><td>Producción audiovisual episódica</td><td>Juan Segundo Quiroga</td></tr>
+      </tbody>
+    </table>
+    <div class="callout info">
+      El catálogo completo de proyectos está en la <a href="/wiki#projects-list" style="color:var(--blue);">wiki interna → Catálogo de proyectos</a>.
+    </div>
+  </div>
+
+  <!-- ── PASO 7: Flujo de trabajo ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⚙</span>
+      <h2>Flujo de trabajo</h2>
+      <span class="section-step">Paso 7</span>
+    </div>
+    <h3>Ciclo general</h3>
+    <table>
+      <thead><tr><th>#</th><th>Paso</th><th>Detalle</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Brief</strong></td><td>Tu referente te da el brief del entregable: qué, para cuándo, en qué formato.</td></tr>
+        <tr><td>2</td><td><strong>Producción</strong></td><td>Trabajás en la tarea. Si bloqueás, avisás por WhatsApp al referente antes de perder tiempo.</td></tr>
+        <tr><td>3</td><td><strong>Revisión</strong></td><td>Subís un borrador / avance al Drive o repo según corresponda. El referente revisa y devuelve feedback.</td></tr>
+        <tr><td>4</td><td><strong>Entrega</strong></td><td>Versión final subida al lugar acordado, con nombre de archivo correcto (ver abajo).</td></tr>
+        <tr><td>5</td><td><strong>Cierre</strong></td><td>Avisás por WhatsApp que está entregado. El referente confirma y cierra el ítem.</td></tr>
+      </tbody>
+    </table>
+    <h3>Comunicación</h3>
+    <table>
+      <thead><tr><th>Canal</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td><strong>WhatsApp</strong></td><td>Comunicación cotidiana, avisos rápidos, coordinación de agenda</td></tr>
+        <tr><td><strong>Presencial — oficina</strong></td><td>Revisiones de materiales, grabaciones, reuniones de proyecto</td></tr>
+        <tr><td><strong>Google Drive</strong></td><td>Archivos, materiales de referencia, entregables</td></tr>
+        <tr><td><strong>GitHub</strong></td><td>Código únicamente (solo para el área dev)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── PASO 8: Cómo entrego ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📤</span>
+      <h2>Cómo entrego mi trabajo</h2>
+      <span class="section-step">Paso 8</span>
+    </div>
+    <h3>Archivos — nomenclatura</h3>
+    <table>
+      <thead><tr><th>Tipo de archivo</th><th>Formato de nombre</th><th>Ejemplo</th></tr></thead>
+      <tbody>
+        <tr><td>Video entregable</td><td><code>proyecto_version_fecha.mp4</code></td><td><code>toxi-tv-intro_v2_20260511.mp4</code></td></tr>
+        <tr><td>Audio</td><td><code>proyecto_descripcion_fecha.wav</code></td><td><code>vr-ambient_loop_20260511.wav</code></td></tr>
+        <tr><td>Texto / guión</td><td><code>proyecto_tipo_fecha.pdf</code></td><td><code>series-ep3_guion_20260511.pdf</code></td></tr>
+        <tr><td>Código (web)</td><td>Rama en Git con nombre descriptivo</td><td><code>feat/toxi-tv-player</code></td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn">
+      Nunca subas archivos sin fecha al nombre. Facilita el seguimiento de versiones y evita confusiones.
+    </div>
+    <h3>Formatos de exportación recomendados</h3>
+    <table>
+      <thead><tr><th>Contenido</th><th>Formato</th><th>Notas</th></tr></thead>
+      <tbody>
+        <tr><td>Video final</td><td><code>.mp4</code> H.264 o H.265</td><td>Master sin comprimir en Drive aparte si pesa +10 GB</td></tr>
+        <tr><td>Audio final</td><td><code>.wav</code> 48kHz 24bit</td><td>Para mezcla o entrega a plataforma</td></tr>
+        <tr><td>Foto / thumbnail</td><td><code>.jpg</code> o <code>.webp</code></td><td>1920×1080 mínimo para web</td></tr>
+        <tr><td>VR / 3D</td><td><code>.glb</code> o <code>.splat</code></td><td>Coordinar compresión con Fermín Delía</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<div class="footer-note">
+  <p>¿Algo no está acá? Sugerí agregarlo → hablá con <strong>JM Cafferata</strong>.</p>
+  <p style="margin-top:.5rem;">
+    <a href="/wiki">Wiki interna</a> · <a href="/">toxi.media</a>
+  </p>
+</div>
+
+<script>
+  // ── Checklist interactivo con persistencia en localStorage ──
+  const items = document.querySelectorAll('#checklist li[data-check]');
+  const fill = document.getElementById('prog-fill');
+  const label = document.getElementById('prog-label');
+  const STORAGE_KEY = 'toxi-onboarding-checks';
+
+  function saveState() {
+    const state = Array.from(items).map(li => li.classList.contains('done'));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function updateProgress() {
+    const done = document.querySelectorAll('#checklist li.done').length;
+    const total = items.length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    fill.style.width = pct + '%';
+    label.textContent = done + ' / ' + total + ' completados';
+  }
+
+  function restoreState() {
+    try {
+      const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      items.forEach((li, i) => {
+        if (state[i]) {
+          li.classList.add('done');
+          li.querySelector('.check-box').textContent = '✓';
+        }
+      });
+    } catch (e) {}
+    updateProgress();
+  }
+
+  items.forEach(li => {
+    li.addEventListener('click', () => {
+      const isDone = li.classList.toggle('done');
+      li.querySelector('.check-box').textContent = isDone ? '✓' : '';
+      updateProgress();
+      saveState();
+    });
+  });
+
+  restoreState();
+</script>
+
+</body>
+</html>

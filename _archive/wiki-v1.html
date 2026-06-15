@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOXI MEDIA — Wiki Interna</title>
+  <style>
+    :root {
+      --bg: #080808;
+      --bg2: #111111;
+      --bg3: #1a1a1a;
+      --border: #252525;
+      --text: #d8d8d8;
+      --muted: #555;
+      --accent: #ffffff;
+      --highlight: #facc15;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+    header h1 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    header span {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Search ── */
+    .search-bar {
+      padding: 16px 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .search-bar input {
+      width: 100%;
+      max-width: 520px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 9px 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-bar input:focus {
+      border-color: #444;
+    }
+    .search-bar input::placeholder { color: var(--muted); }
+
+    /* ── Tag filters ── */
+    .tags {
+      padding: 12px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tag-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .tag-btn:hover, .tag-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: calc(100vh - 110px);
+    }
+
+    /* ── Sidebar ── */
+    aside {
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+      position: sticky;
+      top: 57px;
+      height: calc(100vh - 57px);
+      overflow-y: auto;
+    }
+    .sidebar-section {
+      margin-bottom: 24px;
+    }
+    .sidebar-label {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 20px 8px;
+    }
+    .sidebar-link {
+      display: block;
+      padding: 6px 20px;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: all 0.12s;
+      cursor: pointer;
+    }
+    .sidebar-link:hover {
+      color: var(--text);
+      border-left-color: var(--border);
+    }
+    .sidebar-link.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+    }
+
+    /* ── Main ── */
+    main {
+      padding: 32px 40px;
+      max-width: 860px;
+    }
+
+    /* ── Entry ── */
+    .entry {
+      margin-bottom: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--border);
+    }
+    .entry:last-child { border-bottom: none; }
+
+    .entry-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .entry-tag {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+    .entry-date {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .entry h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+
+    .entry p {
+      color: var(--text);
+      margin-bottom: 10px;
+      font-size: 13px;
+    }
+
+    .entry ul {
+      padding-left: 18px;
+      margin-bottom: 10px;
+    }
+    .entry li {
+      font-size: 13px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .entry li strong {
+      color: var(--accent);
+    }
+
+    .entry h3 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--highlight);
+      margin: 20px 0 8px;
+    }
+
+    /* ── No results ── */
+    .no-results {
+      padding: 60px 40px;
+      font-size: 13px;
+      color: var(--muted);
+      display: none;
+    }
+
+    /* ── Result count ── */
+    .result-count {
+      font-size: 11px;
+      color: var(--muted);
+      padding: 10px 28px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 0.04em;
+    }
+
+    mark {
+      background: #facc1533;
+      color: var(--highlight);
+      border-radius: 2px;
+      padding: 0 2px;
+    }
+
+    @media (max-width: 700px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { display: none; }
+      main { padding: 20px 16px; }
+      .search-bar, .tags, .result-count { padding-left: 16px; padding-right: 16px; }
+      header { padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>TOXI MEDIA — Wiki Interna</h1>
+  <span>Solo lectura · v1.0</span>
+</header>
+
+<div class="search-bar">
+  <input type="text" id="search" placeholder="Buscar en la wiki..." autocomplete="off" spellcheck="false" />
+</div>
+
+<div class="tags">
+  <button class="tag-btn active" data-tag="all">Todos</button>
+  <button class="tag-btn" data-tag="cultura">Cultura</button>
+  <button class="tag-btn" data-tag="estrategia">Estrategia</button>
+  <button class="tag-btn" data-tag="operaciones">Operaciones</button>
+  <button class="tag-btn" data-tag="procesos">Procesos</button>
+  <button class="tag-btn" data-tag="tecnologia">Tecnología</button>
+</div>
+
+<div class="result-count" id="result-count"></div>
+
+<div class="layout">
+  <aside id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Cultura</div>
+      <a class="sidebar-link" data-id="e1">Identidad y valores</a>
+      <a class="sidebar-link" data-id="e2">Ética del compañerismo</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Estrategia</div>
+      <a class="sidebar-link" data-id="e3">FODA — Fortalezas</a>
+      <a class="sidebar-link" data-id="e4">FODA — Oportunidades</a>
+      <a class="sidebar-link" data-id="e5">FODA — Debilidades</a>
+      <a class="sidebar-link" data-id="e6">FODA — Amenazas</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Operaciones</div>
+      <a class="sidebar-link" data-id="e7">Estructura del equipo</a>
+      <a class="sidebar-link" data-id="e8">Onboarding de colaboradores</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Procesos</div>
+      <a class="sidebar-link" data-id="e9">Blindaje del know-how</a>
+      <a class="sidebar-link" data-id="e10">Matriz de priorización</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tecnología</div>
+      <a class="sidebar-link" data-id="e11">Ecosistema transmedia</a>
+      <a class="sidebar-link" data-id="e12">Tendencias de expansión</a>
+    </div>
+  </aside>
+
+  <main id="entries">
+
+    <div class="entry" id="e1" data-tag="cultura" data-text="identidad valores productora transmedia argentina laboratorio creativo series documentales videojuegos realidad virtual inteligencia artificial ecosistema contenido propio estructura horizontal ágil núcleo central">
+      <div class="entry-meta">
+        <span class="entry-tag">Cultura</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>Identidad y valores</h2>
+      <p>Toxi Media es una productora transmedia argentina que opera como un laboratorio creativo de vanguardia. Su oferta de valor integra series documentales, videojuegos, realidad virtual e inteligencia artificial.</p>
+      <h3>Propuesta de valor central</h3>
+      <ul>
+        <li>Traduce conceptos estéticos complejos en realidades tangibles.</li>
+        <li>Estructura horizontal y ágil: núcleo central + colaboradores externos especializados.</li>
+        <li>Orientada a la resolución de problemas reales ("fixer").</li>
+      </ul>
+      <h3>Posicionamiento</h3>
+      <p>La comunicación estratégica y la capacidad resolutiva como motor principal. No solo producir contenido, sino hacer que las cosas sucedan en el terreno.</p>
+    </div>
+
+    <div class="entry" id="e2" data-tag="cultura" data-text="ética compañerismo amistad confianza personal autonomía radical educación cohesión alegría pasiones tristes miedo control empatía jerarquías">
+      <div class="entry-meta">
+        <span class="entry-tag">Cultura</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>Ética del compañerismo</h2>
+      <p>La cultura de Toxi Media está sustentada en la amistad y la confianza personal. Las jerarquías rígidas se disuelven en favor de la autonomía radical y la educación constante hacia el otro.</p>
+      <h3>Principios operativos</h3>
+      <ul>
+        <li>La empatía es un motor operativo, no solo un valor declarativo.</li>
+        <li>La cohesión se mantiene frente a un mercado que opera desde el control y el miedo.</li>
+        <li>La potencia del equipo crece cuando los cuerpos se unen: principio de colaboración expansiva.</li>
+      </ul>
+      <h3>Implicación práctica</h3>
+      <p>La comunicación interna más efectiva es cara a cara, en ambientes distendidos. Las decisiones importantes se toman en contextos de confianza mutua, no en estructuras jerárquicas formales.</p>
+    </div>
+
+    <div class="entry" id="e3" data-tag="estrategia" data-text="fortalezas multidisciplina gestión ágil sensibilidad artística ecosistema narrativo capacidad resolutiva fixer aura">
+      <div class="entry-meta">
+        <span class="entry-tag">Estrategia</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>FODA — Fortalezas</h2>
+      <ul>
+        <li><strong>Dominio multidisciplinar:</strong> capacidad de transitar con rigor entre formatos radicalmente distintos (documental, VR, videojuego, IA).</li>
+        <li><strong>Gestión ágil + sensibilidad artística:</strong> el núcleo combina know-how técnico con un "aura" que distingue cada obra.</li>
+        <li><strong>Visión de ecosistema:</strong> los proyectos diseñan universos narrativos expansivos. El relato fluye entre apps, experiencias presenciales y plataformas digitales.</li>
+        <li><strong>Capacidad resolutiva (fixer):</strong> habilidad para materializar proyectos inverosímiles con ejecución impecable.</li>
+      </ul>
+    </div>
+
+    <div class="entry" id="e4" data-tag="estrategia" data-text="oportunidades phygital narrativas biométricas IA emocional web3 economía co-creación espacios físicos interactivos tickets ingresos diversificar comunidad financiación">
+      <div class="entry-meta">
+        <span class="entry-tag">Estrategia</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>FODA — Oportunidades</h2>
+      <ul>
+        <li><strong>Experiencias "Phygital":</strong> trasladar el arte digital a espacios físicos interactivos para diversificar ingresos con tickets presenciales.</li>
+        <li><strong>Narrativas biométricas:</strong> integrar IA emocional para que el contenido afecte al espectador en tiempo real.</li>
+        <li><strong>Economía de co-creación (Web3):</strong> involucrar a la comunidad en la financiación y toma de decisiones, reduciendo dependencia de clientes tradicionales.</li>
+      </ul>
+    </div>
+
+    <div class="entry" id="e5" data-tag="estrategia" data-text="debilidades saturación núcleo cuellos de botella colaboradores externos procesos estandarizados monetización largo plazo objetivos comerciales">
+      <div class="entry-meta">
+        <span class="entry-tag">Estrategia</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>FODA — Debilidades</h2>
+      <ul>
+        <li><strong>Saturación del núcleo:</strong> la gestión de múltiples colaboradores externos sin procesos estandarizados genera cuellos de botella.</li>
+        <li><strong>Carencia de anclaje comercial:</strong> la prioridad por la innovación tecnológica desplaza la definición de objetivos de monetización a largo plazo.</li>
+      </ul>
+    </div>
+
+    <div class="entry" id="e6" data-tag="estrategia" data-text="amenazas conservadurismo mercado ego miedo clientes tradicionales inestabilidad macroeconómica costo dolarizado tecnología volatilidad">
+      <div class="entry-meta">
+        <span class="entry-tag">Estrategia</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>FODA — Amenazas</h2>
+      <ul>
+        <li><strong>Conservadurismo del mercado:</strong> clientes tradicionales que se resisten a modelos de trabajo autónomos operando desde el ego y el miedo.</li>
+        <li><strong>Inestabilidad macroeconómica:</strong> el costo dolarizado de la tecnología frente a la volatilidad local.</li>
+      </ul>
+    </div>
+
+    <div class="entry" id="e7" data-tag="operaciones" data-text="estructura equipo núcleo central colaboradores externos horizontal ágil modelo laboratorio creativo roles">
+      <div class="entry-meta">
+        <span class="entry-tag">Operaciones</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>Estructura del equipo</h2>
+      <p>Toxi Media opera con un modelo de núcleo + satélites:</p>
+      <h3>Núcleo central</h3>
+      <ul>
+        <li>Gestiona la visión global, la tecnología y la identidad del proyecto.</li>
+        <li>Toma de decisiones estratégicas y artísticas.</li>
+        <li>Punto de convergencia de todo aprendizaje generado en proyectos.</li>
+      </ul>
+      <h3>Colaboradores externos</h3>
+      <ul>
+        <li>Especialistas convocados por proyecto o fase.</li>
+        <li>Se articulan con el núcleo para ejecutar objetivos específicos.</li>
+        <li>Sin integración formal a la cultura interna → punto de mejora identificado.</li>
+      </ul>
+    </div>
+
+    <div class="entry" id="e8" data-tag="procesos operaciones" data-text="onboarding estandarizado colaboradores externos inducción ágil integración carga administrativa núcleo orgánico">
+      <div class="entry-meta">
+        <span class="entry-tag">Procesos</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>Onboarding de colaboradores</h2>
+      <p>Propuesta de mejora activa: implementar una inducción ágil para nuevos colaboradores externos.</p>
+      <h3>Objetivo</h3>
+      <ul>
+        <li>Reducir la carga administrativa del núcleo ante cada incorporación.</li>
+        <li>Que la integración sea tan orgánica como el arte que producen.</li>
+      </ul>
+      <h3>Elementos clave del onboarding</h3>
+      <ul>
+        <li>Documento de cultura y valores (este wiki como punto de partida).</li>
+        <li>Glosario de proyectos activos y sus estados.</li>
+        <li>Canales de comunicación y protocolos mínimos.</li>
+        <li>Expectativas de entrega y formatos aceptados.</li>
+      </ul>
+    </div>
+
+    <div class="entry" id="e9" data-tag="procesos" data-text="blindaje know-how repositorio conocimiento aprendizaje técnico proyectos contratos externos wiki interna legado">
+      <div class="entry-meta">
+        <span class="entry-tag">Procesos</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>Blindaje del know-how</h2>
+      <p>El aprendizaje técnico generado en cada proyecto debe quedar en el núcleo central y no diluirse al finalizar los contratos externos.</p>
+      <h3>Qué documentar</h3>
+      <ul>
+        <li>Decisiones técnicas y por qué se tomaron.</li>
+        <li>Herramientas y flujos de trabajo descubiertos por proyecto.</li>
+        <li>Errores y cómo se resolvieron.</li>
+        <li>Contactos clave y sus capacidades específicas.</li>
+      </ul>
+      <h3>Cómo usar este wiki</h3>
+      <ul>
+        <li>Al cerrar cada proyecto, agregar una entrada con las lecciones aprendidas.</li>
+        <li>Etiquetar por área (tecnología, operaciones, etc.) para búsqueda posterior.</li>
+        <li>Revisión trimestral para actualizar entradas obsoletas.</li>
+      </ul>
+    </div>
+
+    <div class="entry" id="e10" data-tag="procesos estrategia" data-text="matriz priorización alianzas recursos financieros distribución rentabilidad innovación valor">
+      <div class="entry-meta">
+        <span class="entry-tag">Procesos</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>Matriz de priorización y alianzas</h2>
+      <p>Enfocar los recursos financieros en la creación de valor, buscando alianzas de distribución externa para asegurar la rentabilidad sin descuidar la innovación.</p>
+      <h3>Criterios de priorización de proyectos</h3>
+      <ul>
+        <li><strong>Impacto artístico:</strong> ¿Expande el universo narrativo de Toxi Media?</li>
+        <li><strong>Viabilidad financiera:</strong> ¿Tiene un modelo de recupero claro?</li>
+        <li><strong>Alineación cultural:</strong> ¿El cliente o partner respeta la autonomía del equipo?</li>
+        <li><strong>Aprendizaje técnico:</strong> ¿Deja know-how en el núcleo?</li>
+      </ul>
+      <h3>Premisa estratégica</h3>
+      <p>La rentabilidad no es un límite a la creatividad, sino el combustible que protege la autonomía del equipo. Si el proyecto es sostenible, el arte es libre.</p>
+    </div>
+
+    <div class="entry" id="e11" data-tag="tecnologia" data-text="ecosistema transmedia plataformas streaming documental VR videojuego IA narrativas múltiples soportes universo narrativo expansivo flujo contenido">
+      <div class="entry-meta">
+        <span class="entry-tag">Tecnología</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>Ecosistema transmedia</h2>
+      <p>Las piezas de Toxi Media diseñan universos narrativos expansivos donde el relato nunca se agota en un solo soporte.</p>
+      <h3>Cómo fluye el contenido</h3>
+      <ul>
+        <li><strong>Apps:</strong> acceso interactivo y personalizado a capas del universo.</li>
+        <li><strong>Experiencias presenciales:</strong> el arte digital se materializa en espacio físico.</li>
+        <li><strong>Plataformas digitales:</strong> distribución masiva y documentación del proceso.</li>
+      </ul>
+      <h3>Principio rector</h3>
+      <p>Cada formato aporta una perspectiva nueva y necesaria a una misma historia viva. El contenido evoluciona orgánicamente entre soportes.</p>
+    </div>
+
+    <div class="entry" id="e12" data-tag="tecnologia estrategia" data-text="tendencias expansión phygital biométrico IA emocional web3 co-creación mercados globales arte artesanal vínculo humano libertad creación tecnología avanzada">
+      <div class="entry-meta">
+        <span class="entry-tag">Tecnología</span>
+        <span class="entry-date">Actualizado: mayo 2026</span>
+      </div>
+      <h2>Tendencias de expansión</h2>
+      <p>El horizonte de Toxi Media: consolidar un ecosistema capaz de colonizar mercados globales manteniendo su "aura" artesanal.</p>
+      <h3>Vectores tecnológicos a explorar</h3>
+      <ul>
+        <li><strong>IA emocional:</strong> contenido que afecta al espectador en tiempo real según su estado biométrico.</li>
+        <li><strong>Espacios phygital:</strong> arte digital en entornos físicos interactivos (ingresos por ticket).</li>
+        <li><strong>Web3 / co-creación:</strong> comunidad que financia y decide, reduciendo dependencia de clientes.</li>
+      </ul>
+      <h3>Tesis de fondo</h3>
+      <p>En la era de la IA, el vínculo humano y la libertad de creación son la tecnología más avanzada de todas.</p>
+    </div>
+
+  </main>
+
+  <div class="no-results" id="no-results">
+    No se encontraron resultados para esta búsqueda.
+  </div>
+</div>
+
+<script>
+  const searchInput = document.getElementById('search');
+  const entriesEl = document.getElementById('entries');
+  const noResults = document.getElementById('no-results');
+  const resultCount = document.getElementById('result-count');
+  const tagBtns = document.querySelectorAll('.tag-btn');
+  const sidebarLinks = document.querySelectorAll('.sidebar-link');
+  const allEntries = Array.from(document.querySelectorAll('.entry'));
+
+  let activeTag = 'all';
+  let searchTerm = '';
+
+  function normalize(str) {
+    return str.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function highlight(text, term) {
+    if (!term) return text;
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escaped})`, 'gi');
+    return text.replace(regex, '<mark>$1</mark>');
+  }
+
+  function clearHighlights() {
+    allEntries.forEach(entry => {
+      entry.querySelectorAll('h2, p, li').forEach(el => {
+        el.innerHTML = el.innerHTML.replace(/<\/?mark>/g, '');
+      });
+    });
+  }
+
+  function applyHighlights(term) {
+    if (!term) return;
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escaped})`, 'gi');
+    allEntries.forEach(entry => {
+      entry.querySelectorAll('h2, p, li').forEach(el => {
+        if (el.children.length === 0 || el.tagName === 'LI') {
+          el.innerHTML = el.innerHTML.replace(regex, '<mark>$1</mark>');
+        }
+      });
+    });
+  }
+
+  function filterEntries() {
+    const term = normalize(searchTerm);
+    let visible = 0;
+
+    clearHighlights();
+
+    allEntries.forEach(entry => {
+      const tags = entry.dataset.tag || '';
+      const text = normalize(entry.dataset.text + ' ' + entry.textContent);
+      const tagMatch = activeTag === 'all' || tags.includes(activeTag);
+      const searchMatch = !term || text.includes(term);
+
+      if (tagMatch && searchMatch) {
+        entry.style.display = '';
+        visible++;
+      } else {
+        entry.style.display = 'none';
+      }
+    });
+
+    if (searchTerm) applyHighlights(searchTerm);
+
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+    entriesEl.style.display = visible === 0 ? 'none' : '';
+
+    const total = allEntries.length;
+    resultCount.textContent = visible < total
+      ? `${visible} de ${total} entradas`
+      : `${total} entradas`;
+  }
+
+  searchInput.addEventListener('input', e => {
+    searchTerm = e.target.value.trim();
+    filterEntries();
+  });
+
+  tagBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tagBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTag = btn.dataset.tag;
+      filterEntries();
+    });
+  });
+
+  sidebarLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const id = link.dataset.id;
+      const target = document.getElementById(id);
+      if (!target) return;
+      // Reset filters to show target
+      searchTerm = '';
+      activeTag = 'all';
+      searchInput.value = '';
+      tagBtns.forEach(b => b.classList.remove('active'));
+      tagBtns[0].classList.add('active');
+      filterEntries();
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+      sidebarLinks.forEach(l => l.classList.remove('active'));
+      link.classList.add('active');
+    });
+  });
+
+  // Init count
+  filterEntries();
+
+  // Highlight active sidebar on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        sidebarLinks.forEach(l => {
+          l.classList.toggle('active', l.dataset.id === id);
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+
+  allEntries.forEach(entry => observer.observe(entry));
+</script>
+
+</body>
+</html>

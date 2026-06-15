@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matriz de Priorización — Toxi Media</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080808;
+      --surface: #111111;
+      --border: #252525;
+      --text: #e5e5e5;
+      --muted: #888;
+      --yellow: #facc15;
+      --accent: #ffffff;
+      --green: #4ade80;
+      --red: #f87171;
+      --blue: #60a5fa;
+      --purple: #c084fc;
+      --orange: #fb923c;
+      --radius: 8px;
+      --max: 1100px;
+
+      /* Cuadrantes */
+      --q1: #4ade80;   /* enfocar */
+      --q2: #60a5fa;   /* alianzas */
+      --q3: #facc15;   /* explotar */
+      --q4: #888888;   /* deprioritizar */
+    }
+
+    html { font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      padding: 0 1rem 6rem;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 2.5rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .header-logo { font-size: 1.1rem; font-weight: 700; color: var(--yellow); letter-spacing: .05em; text-transform: uppercase; }
+    .header-sep { color: var(--border); }
+    .site-header a { color: var(--muted); text-decoration: none; font-size: .85rem; }
+    .site-header a:hover { color: var(--accent); }
+
+    /* ── Hero ── */
+    .hero {
+      max-width: var(--max);
+      margin: 3rem auto 0;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: var(--yellow);
+      color: #000;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      padding: .25rem .6rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    .hero h1 { font-size: 2rem; font-weight: 800; color: var(--accent); line-height: 1.2; margin-bottom: .5rem; }
+    .hero p { color: var(--muted); font-size: .95rem; max-width: 620px; margin-bottom: .35rem; }
+
+    /* ── Leyenda de ejes ── */
+    .axis-legend {
+      max-width: var(--max);
+      margin: 2.5rem auto 0;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .axis-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: .75rem 1rem;
+      flex: 1;
+      min-width: 240px;
+    }
+    .axis-label {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin-bottom: .3rem;
+    }
+    .axis-desc { font-size: .88rem; color: var(--text); }
+
+    /* ── Cuadrante legend dots ── */
+    .quad-legend {
+      max-width: var(--max);
+      margin: 1.5rem auto 0;
+      display: flex;
+      gap: .75rem;
+      flex-wrap: wrap;
+    }
+    .ql-item {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+    .ql-dot {
+      width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0;
+    }
+
+    /* ── Matriz ── */
+    .matrix-wrap {
+      max-width: var(--max);
+      margin: 2rem auto 0;
+      position: relative;
+    }
+
+    /* Grid 2×2 */
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 3px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .quadrant {
+      background: var(--surface);
+      padding: 1.5rem;
+      min-height: 280px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    /* Color strip top */
+    .quadrant::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .q1::before { background: var(--q1); }
+    .q2::before { background: var(--q2); }
+    .q3::before { background: var(--q3); }
+    .q4::before { background: var(--q4); }
+
+    .quad-header {
+      display: flex;
+      align-items: flex-start;
+      gap: .6rem;
+    }
+    .quad-icon { font-size: 1.4rem; line-height: 1; flex-shrink: 0; }
+    .quad-title-wrap { flex: 1; }
+    .quad-action {
+      font-size: .65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      padding: .2rem .55rem;
+      border-radius: 3px;
+      display: inline-block;
+      margin-bottom: .2rem;
+    }
+    .q1 .quad-action { background: rgba(74,222,128,.15); color: var(--q1); }
+    .q2 .quad-action { background: rgba(96,165,250,.15); color: var(--q2); }
+    .q3 .quad-action { background: rgba(250,204,21,.15); color: var(--q3); }
+    .q4 .quad-action { background: rgba(136,136,136,.12); color: var(--q4); }
+
+    .quad-title {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .quad-subtitle {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-top: .1rem;
+    }
+
+    /* Tags de proyectos */
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem;
+      margin-top: .25rem;
+    }
+    .ptag {
+      font-size: .75rem;
+      padding: .22rem .55rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: #161616;
+      line-height: 1.3;
+    }
+    .ptag strong { font-weight: 600; color: var(--accent); }
+    .ptag small { display: block; color: var(--muted); font-size: .68rem; }
+
+    /* Alianzas sugeridas dentro del cuadrante */
+    .quad-alliances {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding-top: .75rem;
+    }
+    .qa-label {
+      font-size: .68rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--muted);
+      margin-bottom: .4rem;
+    }
+    .qa-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+    }
+    .qa-pill {
+      font-size: .72rem;
+      padding: .15rem .5rem;
+      border-radius: 3px;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      background: transparent;
+    }
+    .q1 .qa-pill { border-color: rgba(74,222,128,.3); color: rgba(74,222,128,.8); }
+    .q2 .qa-pill { border-color: rgba(96,165,250,.3); color: rgba(96,165,250,.8); }
+    .q3 .qa-pill { border-color: rgba(250,204,21,.3); color: rgba(250,204,21,.8); }
+
+    /* ── Ejes visuales ── */
+    .matrix-axis-y {
+      position: absolute;
+      left: -3rem;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      font-size: .72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .matrix-axis-x {
+      text-align: center;
+      font-size: .72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--muted);
+      margin-top: .75rem;
+    }
+    .axis-arrow {
+      display: flex;
+      justify-content: space-between;
+      font-size: .68rem;
+      color: var(--border);
+      margin-top: .2rem;
+      padding: 0 2px;
+    }
+
+    /* ── Plan de acción ── */
+    .section-title {
+      max-width: var(--max);
+      margin: 3.5rem auto .75rem;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding-bottom: .5rem;
+    }
+
+    .action-grid {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: .75rem;
+    }
+    .action-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .ac-header {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: .75rem;
+    }
+    .ac-num {
+      width: 22px; height: 22px;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .72rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .ac-1 { background: rgba(74,222,128,.15); color: var(--q1); }
+    .ac-2 { background: rgba(96,165,250,.15); color: var(--q2); }
+    .ac-3 { background: rgba(250,204,21,.15); color: var(--q3); }
+    .ac-4 { background: rgba(192,132,252,.15); color: var(--purple); }
+    .ac-5 { background: rgba(251,146,60,.15); color: var(--orange); }
+    .ac-title { font-size: .88rem; font-weight: 600; color: var(--accent); }
+    .ac-body { font-size: .82rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .matrix-grid { grid-template-columns: 1fr; }
+      .matrix-axis-y { display: none; }
+      .hero h1 { font-size: 1.5rem; }
+      .matrix-wrap { padding-left: 0; }
+    }
+    @media (min-width: 701px) {
+      .matrix-wrap { padding-left: 3.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <span class="header-logo">Toxi Media</span>
+  <span class="header-sep">/</span>
+  <a href="/wiki">Wiki</a>
+  <span class="header-sep">/</span>
+  <a href="/onboarding">Onboarding</a>
+</header>
+
+<div class="hero">
+  <span class="hero-tag">Estrategia</span>
+  <h1>Matriz de Priorización & Alianzas</h1>
+  <p>Dónde poner los recursos financieros, qué proyectos necesitan alianzas de distribución externa y qué capitalizar para sostener la innovación.</p>
+  <p style="font-size:.82rem;color:#555;margin-top:.5rem;">Ejes: <strong style="color:var(--muted)">Innovación / Valor creativo</strong> (vertical) · <strong style="color:var(--muted)">Potencial de rentabilidad propia</strong> (horizontal)</p>
+</div>
+
+<!-- Leyenda ejes -->
+<div class="axis-legend">
+  <div class="axis-item">
+    <div class="axis-label">Eje Y — Innovación / Valor creativo</div>
+    <div class="axis-desc">¿Cuánto diferencia a Toxi del mercado? ¿Cuánto potencial de impacto cultural tiene?</div>
+  </div>
+  <div class="axis-item">
+    <div class="axis-label">Eje X — Potencial de rentabilidad propia</div>
+    <div class="axis-desc">¿Cuánto puede generar ingresos directos (tickets, licencias, suscripciones) sin depender de un tercero?</div>
+  </div>
+</div>
+
+<!-- Leyenda cuadrantes -->
+<div class="quad-legend">
+  <div class="ql-item"><div class="ql-dot" style="background:var(--q1)"></div> <span>Q1 — Enfocar recursos</span></div>
+  <div class="ql-item"><div class="ql-dot" style="background:var(--q2)"></div> <span>Q2 — Buscar alianza de distribución</span></div>
+  <div class="ql-item"><div class="ql-dot" style="background:var(--q3)"></div> <span>Q3 — Explotar / Servicios</span></div>
+  <div class="ql-item"><div class="ql-dot" style="background:var(--q4)"></div> <span>Q4 — Deprioritizar o reformular</span></div>
+</div>
+
+<!-- Matriz -->
+<div class="matrix-wrap">
+  <div class="matrix-axis-y">↑ Alta innovación · Baja innovación ↓</div>
+
+  <div class="matrix-grid">
+
+    <!-- Q2: Alta innovación, Baja rentabilidad propia → ALIANZA DE DISTRIBUCIÓN (top-left) -->
+    <div class="quadrant q2">
+      <div class="quad-header">
+        <div class="quad-icon">🤝</div>
+        <div class="quad-title-wrap">
+          <span class="quad-action">Buscar alianza de distribución</span>
+          <div class="quad-title">Alto valor · Poco canal propio</div>
+          <div class="quad-subtitle">La innovación está, falta quién la lleve a escala</div>
+        </div>
+      </div>
+      <div class="project-tags">
+        <div class="ptag"><strong>Experiencias VR propias</strong><small>El Jardín de Andarillo · contenidos VR artísticos</small></div>
+        <div class="ptag"><strong>Polo IA</strong><small>Musical interactivo · distribuye por YouTube/Suno</small></div>
+        <div class="ptag"><strong>Fancy Dogs™</strong><small>Jazz interactivo · necesita más venues y fechas</small></div>
+        <div class="ptag"><strong>Series originales</strong><small>Contenido episódico sin plataforma de distribución pagada</small></div>
+      </div>
+      <div class="quad-alliances">
+        <div class="qa-label">Alianzas sugeridas</div>
+        <div class="qa-list">
+          <span class="qa-pill">Festivales VR (Ars Electronica, MUTEK)</span>
+          <span class="qa-pill">Centros culturales BA</span>
+          <span class="qa-pill">INCAA / Mecenazgo</span>
+          <span class="qa-pill">Netflix / Prime (licencias)</span>
+          <span class="qa-pill">Venues de jazz (CCEBA, Notorious)</span>
+          <span class="qa-pill">Streaming (MUBI, Filmin)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q1: Alta innovación, Alta rentabilidad → ENFOCAR (top-right) -->
+    <div class="quadrant q1">
+      <div class="quad-header">
+        <div class="quad-icon">🎯</div>
+        <div class="quad-title-wrap">
+          <span class="quad-action">Enfocar recursos financieros</span>
+          <div class="quad-title">Alto valor · Alto potencial de ingresos</div>
+          <div class="quad-subtitle">Máxima prioridad de inversión y tiempo</div>
+        </div>
+      </div>
+      <div class="project-tags">
+        <div class="ptag"><strong>toxi.media / Plantform</strong><small>Plataforma propia · tickets · suscripción · control total</small></div>
+        <div class="ptag"><strong>Pizza & Pagni</strong><small>Evento de culto recurrente · alta demanda · escalable</small></div>
+        <div class="ptag"><strong>Mundo PEGSA</strong><small>VR con alianzas ya activas (Netflix, Disney, ESPN, Red Bull)</small></div>
+        <div class="ptag"><strong>Toxi TV</strong><small>Canal propio · streaming · audiencia fidelizable</small></div>
+      </div>
+      <div class="quad-alliances">
+        <div class="qa-label">Alianzas que potencian</div>
+        <div class="qa-list">
+          <span class="qa-pill">Marcas premium (sponsors de eventos)</span>
+          <span class="qa-pill">Alpogo / ticketing</span>
+          <span class="qa-pill">Mux (video CDN)</span>
+          <span class="qa-pill">Espacios privados para PEGSA</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q4: Baja innovación, Baja rentabilidad → DEPRIORITIZAR (bottom-left) -->
+    <div class="quadrant q4">
+      <div class="quad-header">
+        <div class="quad-icon">⏸</div>
+        <div class="quad-title-wrap">
+          <span class="quad-action">Deprioritizar · reformular</span>
+          <div class="quad-title">Baja diferenciación · Poco ingreso</div>
+          <div class="quad-subtitle">No drenar recursos del núcleo</div>
+        </div>
+      </div>
+      <div class="project-tags">
+        <div class="ptag"><strong>Proyectos experimentales sin audiencia clara</strong><small>Ciclos sin continuidad, sin métricas</small></div>
+        <div class="ptag"><strong>Producciones cerradas sin licencia</strong><small>Archivo — sin retorno adicional previsto</small></div>
+        <div class="ptag"><strong>Acciones de baja tracción en redes</strong><small>Contenido genérico sin diferenciador de marca</small></div>
+      </div>
+      <div class="quad-alliances">
+        <div class="qa-label">Acción recomendada</div>
+        <div class="qa-list">
+          <span class="qa-pill">Archivar o reformular con foco claro</span>
+          <span class="qa-pill">No invertir recursos del core</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Q3: Baja innovación, Alta rentabilidad → EXPLOTAR (bottom-right) -->
+    <div class="quadrant q3">
+      <div class="quad-header">
+        <div class="quad-icon">⚡</div>
+        <div class="quad-title-wrap">
+          <span class="quad-action">Explotar · Servicios</span>
+          <div class="quad-title">Alta rentabilidad · Ejecución eficiente</div>
+          <div class="quad-subtitle">Fuente de caja para financiar la innovación</div>
+        </div>
+      </div>
+      <div class="project-tags">
+        <div class="ptag"><strong>Producción para terceros</strong><small>Las Catadoras (CDI) · Mauda · Desarrollos Regenerativos</small></div>
+        <div class="ptag"><strong>Web & marketing para clientes</strong><small>Sitios, videos, flyers, campañas</small></div>
+        <div class="ptag"><strong>Audion't</strong><small>Bot de transcripción · potencial de modelo freemium/SaaS</small></div>
+        <div class="ptag"><strong>Cobertura de eventos</strong><small>Registro audiovisual por encargo</small></div>
+      </div>
+      <div class="quad-alliances">
+        <div class="qa-label">Alianzas sugeridas</div>
+        <div class="qa-list">
+          <span class="qa-pill">Distribuidoras de cine (CDI, BF)</span>
+          <span class="qa-pill">Agencias de publicidad</span>
+          <span class="qa-pill">Productoras mid-size</span>
+          <span class="qa-pill">Marcas locales D2C</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /matrix-grid -->
+
+  <div class="matrix-axis-x">
+    <div class="axis-arrow"><span>← Baja rentabilidad propia</span><span>Alta rentabilidad propia →</span></div>
+  </div>
+</div><!-- /matrix-wrap -->
+
+<!-- Plan de acción -->
+<div class="section-title">Plan de acción — cómo usar esta matriz</div>
+<div class="action-grid">
+  <div class="action-card">
+    <div class="ac-header">
+      <div class="ac-num ac-1">1</div>
+      <div class="ac-title">Financiar Q1 con caja de Q3</div>
+    </div>
+    <div class="ac-body">Los servicios para terceros (Q3) generan ingresos predecibles. Ese flujo financia la inversión en toxi.media, Pizza&nbsp;&amp;&nbsp;Pagni y Mundo&nbsp;PEGSA (Q1), que tienen mayor retorno a largo plazo.</div>
+  </div>
+  <div class="action-card">
+    <div class="ac-header">
+      <div class="ac-num ac-2">2</div>
+      <div class="ac-title">Activar alianzas de distribución para Q2</div>
+    </div>
+    <div class="ac-body">El Jardín de Andarillo, Polo IA y las Series tienen alto valor creativo pero dependen de quién las distribuye. Primer paso: contactar festivales VR, centros culturales y plataformas de streaming para acordar co-exhibición o licencia.</div>
+  </div>
+  <div class="action-card">
+    <div class="ac-header">
+      <div class="ac-num ac-3">3</div>
+      <div class="ac-title">Estandarizar el pipeline de servicios</div>
+    </div>
+    <div class="ac-body">Para que Q3 escale sin consumir tiempo del core, crear un proceso de brief → producción → entrega repetible. El onboarding interno (<a href="/onboarding" style="color:var(--blue);">ver página</a>) apunta a esto: pasantes y practicantes ejecutan, el core supervisa.</div>
+  </div>
+  <div class="action-card">
+    <div class="ac-header">
+      <div class="ac-num ac-4">4</div>
+      <div class="ac-title">No invertir en Q4</div>
+    </div>
+    <div class="ac-body">Proyectos sin audiencia clara y sin diferenciador van a Q4. No cerrarlos de golpe, pero sí dejar de asignarles horas del core. Si en 2 meses no tienen un vector claro de tracción, archivar.</div>
+  </div>
+  <div class="action-card">
+    <div class="ac-header">
+      <div class="ac-num ac-5">5</div>
+      <div class="ac-title">Revisar la matriz cada trimestre</div>
+    </div>
+    <div class="ac-body">Los proyectos se mueven entre cuadrantes. Un proyecto de Q2 puede pasar a Q1 si consigue distribución. Uno de Q3 puede quedar obsoleto. Revisión recomendada: cada 3 meses con el core.</div>
+  </div>
+</div>
+
+<div style="max-width:var(--max);margin:3rem auto 0;text-align:center;font-size:.82rem;color:var(--muted);">
+  <a href="/wiki" style="color:var(--yellow);text-decoration:none;">Wiki interna</a> ·
+  <a href="/onboarding" style="color:var(--yellow);text-decoration:none;">Onboarding</a> ·
+  <a href="/" style="color:var(--yellow);text-decoration:none;">toxi.media</a>
+</div>
+
+</body>
+</html>
