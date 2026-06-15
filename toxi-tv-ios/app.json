@@ -3,6 +3,7 @@
     "name": "TOXI TV",
     "slug": "toxi-tv-ios",
     "version": "2.1",
+    "icon": "./assets/icon.png",
     "orientation": "landscape",
     "scheme": "toxitv",
     "userInterfaceStyle": "dark",
@@ -11,7 +12,7 @@
     },
     "ios": {
       "bundleIdentifier": "media.toxi.tv",
-      "buildNumber": "7",
+      "buildNumber": "8",
       "supportsTablet": true,
       "requireFullScreen": true,
       "infoPlist": {
@@ -28,7 +29,14 @@
           "supportsPictureInPicture": false
         }
       ],
-      "expo-screen-orientation"
+      [
+        "react-native-google-cast",
+        {
+          "receiverAppId": "B668F863"
+        }
+      ],
+      "expo-screen-orientation",
+      "expo-asset"
     ],
     "extra": {
       "eas": {

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Política de Privacidad – Toxi Media TV</title>
-  <meta name="description" content="Política de privacidad de la aplicación Toxi Media TV para Android TV." />
+  <title>Privacy Policy / Política de Privacidad – Toxi Media TV</title>
+  <meta name="description" content="Privacy policy / Política de privacidad de la aplicación Toxi Media TV para Android TV e iOS." />
   <link rel="icon" href="/favicon.ico" />
   <style>
     @font-face {
@@ -117,6 +117,35 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
     }
+
+    .lang-toggle {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 64px;
+    }
+    .lang-toggle button {
+      background: none;
+      border: 1px solid #333;
+      color: #666;
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .lang-toggle button.active {
+      border-color: #fff;
+      color: #fff;
+    }
+    .lang-toggle button:hover {
+      border-color: #666;
+      color: #ccc;
+    }
+
+    .lang-block { display: none; }
+    .lang-block.visible { display: block; }
   </style>
 </head>
 <body>
@@ -127,87 +156,206 @@
 
 <main>
   <p class="tag">Legal</p>
-  <h1>Política de<br>Privacidad</h1>
-  <p class="subtitle">Toxi Media TV — Última actualización: marzo 2026</p>
+  <h1>Privacy Policy /<br>Política de Privacidad</h1>
 
-  <section>
-    <h2>1. Quiénes somos</h2>
-    <p>
-      <strong>Toxi Media TV</strong> es una aplicación para Android TV desarrollada y operada por
-      <strong>TOXI Media</strong>. La app permite acceder a contenido de video streaming
-      producido por TOXI Media directamente desde dispositivos de televisión compatibles con Android TV y Google TV.
-    </p>
-  </section>
+  <div class="lang-toggle">
+    <button id="btn-en" class="active" onclick="setLang('en')">English</button>
+    <button id="btn-es" onclick="setLang('es')">Español</button>
+  </div>
 
-  <section>
-    <h2>2. Datos que recopilamos</h2>
-    <p>
-      Toxi Media TV <strong>no recopila, almacena ni comparte datos personales</strong> de sus usuarios.
-      La aplicación no requiere registro, inicio de sesión ni ningún tipo de cuenta.
-    </p>
-    <p style="margin-top:12px;">La app únicamente necesita acceso a internet para:</p>
-    <ul>
-      <li>Reproducir el contenido de video alojado en los servidores de TOXI Media.</li>
-      <li>Verificar la disponibilidad de la red del dispositivo.</li>
-    </ul>
-    <p style="margin-top:12px;">
-      No se utilizan cookies, identificadores de dispositivo, ni tecnologías de rastreo de ningún tipo.
-    </p>
-  </section>
+  <!-- ===== ENGLISH ===== -->
+  <div id="lang-en" class="lang-block visible">
+    <p class="subtitle">Toxi Media TV — Last updated: April 2026</p>
 
-  <section>
-    <h2>3. Permisos utilizados</h2>
-    <ul>
-      <li><strong>INTERNET</strong> — necesario para cargar y reproducir el contenido de video.</li>
-      <li><strong>ACCESS_NETWORK_STATE</strong> — permite verificar si el dispositivo tiene conexión disponible antes de intentar reproducir contenido.</li>
-    </ul>
-    <p style="margin-top:12px;">Ninguno de estos permisos se usa para recopilar información personal.</p>
-  </section>
+    <section>
+      <h2>1. Who We Are</h2>
+      <p>
+        <strong>Toxi Media TV</strong> is an application for Android TV and iOS developed and operated by
+        <strong>TOXI Media</strong>. The app provides access to video streaming content produced by TOXI Media
+        directly from Android TV, Google TV, and iPhone/iPad devices.
+      </p>
+    </section>
 
-  <section>
-    <h2>4. Servicios de terceros</h2>
-    <p>
-      El contenido de video es entregado a través de <strong>Mux</strong> (mux.com), una plataforma
-      de infraestructura de video. Mux puede registrar datos técnicos anónimos relacionados con la
-      reproducción (calidad de red, duración de buffering, etc.) para optimizar la entrega de video.
-      Estos datos no contienen información personal identificable.
-    </p>
-    <p style="margin-top:12px;">
-      Podés consultar la política de privacidad de Mux en
-      <a class="inline" href="https://mux.com/privacy" target="_blank" rel="noopener">mux.com/privacy</a>.
-    </p>
-  </section>
+    <section>
+      <h2>2. Data We Collect</h2>
+      <p>
+        Toxi Media TV <strong>does not collect, store, or share any personal data</strong> from its users.
+        The application does not require registration, login, or any kind of account.
+      </p>
+      <p style="margin-top:12px;">The app only needs internet access to:</p>
+      <ul>
+        <li>Play video content hosted on TOXI Media servers.</li>
+        <li>Check the device's network availability.</li>
+      </ul>
+      <p style="margin-top:12px;">
+        No cookies, device identifiers, or tracking technologies of any kind are used.
+      </p>
+    </section>
 
-  <section>
-    <h2>5. Privacidad de menores</h2>
-    <p>
-      Toxi Media TV no está dirigida a personas menores de 13 años y no recopila
-      conscientemente ningún dato de menores. Dado que la app no recopila datos personales
-      de ningún usuario, este punto no aplica en la práctica.
-    </p>
-  </section>
+    <section>
+      <h2>3. Permissions Used</h2>
+      <p><strong>Android TV:</strong></p>
+      <ul>
+        <li><strong>INTERNET</strong> — required to load and play video content.</li>
+        <li><strong>ACCESS_NETWORK_STATE</strong> — checks if the device has an available connection before attempting playback.</li>
+      </ul>
+      <p style="margin-top:12px;"><strong>iOS:</strong></p>
+      <ul>
+        <li><strong>Network access</strong> — required to load and play video content.</li>
+        <li><strong>Local Network</strong> — used only for Chromecast device discovery on the local network. No data is transmitted outside the local network for this purpose.</li>
+      </ul>
+      <p style="margin-top:12px;">None of these permissions are used to collect personal information.</p>
+    </section>
 
-  <section>
-    <h2>6. Cambios en esta política</h2>
-    <p>
-      Si en el futuro se introducen funciones que impliquen el manejo de datos personales,
-      esta política será actualizada con al menos 30 días de anticipación y la nueva versión
-      estará disponible en esta misma URL.
-    </p>
-  </section>
+    <section>
+      <h2>4. Third-Party Services</h2>
+      <p>
+        Video content is delivered through <strong>Mux</strong> (mux.com), a video infrastructure platform.
+        Mux may log anonymous technical data related to playback (network quality, buffering duration, etc.)
+        to optimize video delivery. This data does not contain personally identifiable information.
+      </p>
+      <p style="margin-top:12px;">
+        You can review Mux's privacy policy at
+        <a class="inline" href="https://mux.com/privacy" target="_blank" rel="noopener">mux.com/privacy</a>.
+      </p>
+      <p style="margin-top:12px;">
+        Chromecast functionality is provided by <strong>Google Cast SDK</strong>. When casting, the video
+        stream is sent to your Cast device on the local network. No additional personal data is collected.
+        See <a class="inline" href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.
+      </p>
+    </section>
 
-  <section>
-    <h2>7. Contacto</h2>
-    <p>
-      Ante cualquier consulta sobre privacidad podés escribirnos a
-      <a class="inline" href="mailto:hola@toxi.media">hola@toxi.media</a>
-      o visitar <a class="inline" href="https://toxi.media">toxi.media</a>.
-    </p>
-  </section>
+    <section>
+      <h2>5. Children's Privacy</h2>
+      <p>
+        Toxi Media TV is not directed at children under the age of 13 and does not knowingly collect
+        any data from minors. Since the app collects no personal data from any user, this point does
+        not apply in practice.
+      </p>
+    </section>
+
+    <section>
+      <h2>6. Changes to This Policy</h2>
+      <p>
+        If future features require handling personal data, this policy will be updated at least
+        30 days in advance and the new version will be available at this same URL.
+      </p>
+    </section>
+
+    <section>
+      <h2>7. Contact</h2>
+      <p>
+        For any privacy-related questions, contact us at
+        <a class="inline" href="mailto:hola@toxi.media">hola@toxi.media</a>
+        or visit <a class="inline" href="https://toxi.media">toxi.media</a>.
+      </p>
+    </section>
+  </div>
+
+  <!-- ===== ESPAÑOL ===== -->
+  <div id="lang-es" class="lang-block">
+    <p class="subtitle">Toxi Media TV — Última actualización: abril 2026</p>
+
+    <section>
+      <h2>1. Quiénes somos</h2>
+      <p>
+        <strong>Toxi Media TV</strong> es una aplicación para Android TV e iOS desarrollada y operada por
+        <strong>TOXI Media</strong>. La app permite acceder a contenido de video streaming
+        producido por TOXI Media directamente desde dispositivos Android TV, Google TV e iPhone/iPad.
+      </p>
+    </section>
+
+    <section>
+      <h2>2. Datos que recopilamos</h2>
+      <p>
+        Toxi Media TV <strong>no recopila, almacena ni comparte datos personales</strong> de sus usuarios.
+        La aplicación no requiere registro, inicio de sesión ni ningún tipo de cuenta.
+      </p>
+      <p style="margin-top:12px;">La app únicamente necesita acceso a internet para:</p>
+      <ul>
+        <li>Reproducir el contenido de video alojado en los servidores de TOXI Media.</li>
+        <li>Verificar la disponibilidad de la red del dispositivo.</li>
+      </ul>
+      <p style="margin-top:12px;">
+        No se utilizan cookies, identificadores de dispositivo, ni tecnologías de rastreo de ningún tipo.
+      </p>
+    </section>
+
+    <section>
+      <h2>3. Permisos utilizados</h2>
+      <p><strong>Android TV:</strong></p>
+      <ul>
+        <li><strong>INTERNET</strong> — necesario para cargar y reproducir el contenido de video.</li>
+        <li><strong>ACCESS_NETWORK_STATE</strong> — permite verificar si el dispositivo tiene conexión disponible antes de intentar reproducir contenido.</li>
+      </ul>
+      <p style="margin-top:12px;"><strong>iOS:</strong></p>
+      <ul>
+        <li><strong>Acceso a red</strong> — necesario para cargar y reproducir el contenido de video.</li>
+        <li><strong>Red local</strong> — utilizado únicamente para descubrir dispositivos Chromecast en la red local. No se transmite ningún dato fuera de la red local con este fin.</li>
+      </ul>
+      <p style="margin-top:12px;">Ninguno de estos permisos se usa para recopilar información personal.</p>
+    </section>
+
+    <section>
+      <h2>4. Servicios de terceros</h2>
+      <p>
+        El contenido de video es entregado a través de <strong>Mux</strong> (mux.com), una plataforma
+        de infraestructura de video. Mux puede registrar datos técnicos anónimos relacionados con la
+        reproducción (calidad de red, duración de buffering, etc.) para optimizar la entrega de video.
+        Estos datos no contienen información personal identificable.
+      </p>
+      <p style="margin-top:12px;">
+        Podés consultar la política de privacidad de Mux en
+        <a class="inline" href="https://mux.com/privacy" target="_blank" rel="noopener">mux.com/privacy</a>.
+      </p>
+      <p style="margin-top:12px;">
+        La funcionalidad de Chromecast es provista por el <strong>Google Cast SDK</strong>. Al emitir,
+        el stream de video se envía al dispositivo Cast en la red local. No se recopilan datos personales
+        adicionales. Ver
+        <a class="inline" href="https://policies.google.com/privacy" target="_blank" rel="noopener">política de privacidad de Google</a>.
+      </p>
+    </section>
+
+    <section>
+      <h2>5. Privacidad de menores</h2>
+      <p>
+        Toxi Media TV no está dirigida a personas menores de 13 años y no recopila
+        conscientemente ningún dato de menores. Dado que la app no recopila datos personales
+        de ningún usuario, este punto no aplica en la práctica.
+      </p>
+    </section>
+
+    <section>
+      <h2>6. Cambios en esta política</h2>
+      <p>
+        Si en el futuro se introducen funciones que impliquen el manejo de datos personales,
+        esta política será actualizada con al menos 30 días de anticipación y la nueva versión
+        estará disponible en esta misma URL.
+      </p>
+    </section>
+
+    <section>
+      <h2>7. Contacto</h2>
+      <p>
+        Ante cualquier consulta sobre privacidad podés escribirnos a
+        <a class="inline" href="mailto:hola@toxi.media">hola@toxi.media</a>
+        o visitar <a class="inline" href="https://toxi.media">toxi.media</a>.
+      </p>
+    </section>
+  </div>
 
 </main>
 
 <footer>© TOXI Media — toxi.media</footer>
+
+<script>
+  function setLang(lang) {
+    document.getElementById('lang-en').classList.toggle('visible', lang === 'en');
+    document.getElementById('lang-es').classList.toggle('visible', lang === 'es');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+  }
+</script>
 
 </body>
 </html>

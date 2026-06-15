@@ -189,196 +189,223 @@
     </div>
 
     <script type="module">
-        import { TV_PLAYLIST } from './src/content.js';
+        const EPOCH_SEC = 1767225600;
+        const PLAYLIST_URL = '/api/playlist';
+        const SCHEDULE_URL = '/api/schedule';
 
-        const PLAYLIST = TV_PLAYLIST.map(v => ({ id: v.id, duration: v.duration, title: v.title }));
+        const player      = document.getElementById('mux-player-a');
+        const standby     = document.getElementById('mux-player-b');
+        const npTitle     = document.getElementById('np-title');
+        const npFill      = document.getElementById('np-fill');
+        const nowPlaying  = document.getElementById('now-playing');
+        const clockEl     = document.getElementById('clock');
+        const ageGate     = document.getElementById('age-gate');
+        const offline     = document.getElementById('offline-screen');
 
-        // ── Double-buffer: dos players apilados para zap sin loading ──
-        const players    = [document.getElementById('mux-player-a'), document.getElementById('mux-player-b')];
-        const npTitle    = document.getElementById('np-title');
-        const npFill     = document.getElementById('np-fill');
-        const nowPlaying = document.getElementById('now-playing');
-        const clockEl    = document.getElementById('clock');
-
-        let activeSlot   = 0;          // 0 o 1 — qué player está mostrando
-        let currentIndex = -1;
-        let audioActive  = false;
+        let activePlaylist = [];
+        let weeklySchedule = [];
+        let currentSlot = null;
+        let currentPlaybackId = '';
+        let audioActive = false;
         let overlayTimer = null;
-        let zapTimeout   = null;
-        let zapState     = null;       // { video, offset, index, zapDuration, startedAt }
-        let nextZapState = null;       // próximo slot precargado
-        let seekGuard    = [false, false];
 
-        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        standby.pause();
+        standby.classList.remove('is-active');
+        player.classList.add('is-active');
 
-        function pickState(excludeIndex) {
-            let idx;
-            do { idx = Math.floor(Math.random() * PLAYLIST.length); }
-            while (PLAYLIST.length > 1 && idx === excludeIndex);
-            const video       = PLAYLIST[idx];
-            const zapDuration = randInt(5, 30);
-            const maxOffset   = Math.max(0, video.duration - zapDuration - 1);
-            const offset      = Math.random() * maxOffset;
-            return { video, offset, index: idx, zapDuration };
-        }
-
-        function preloadNext(excludeIndex) {
-            nextZapState = pickState(excludeIndex);
-            const slot = 1 - activeSlot;
-            const p    = players[slot];
-            p.muted    = true;
-            p.setAttribute('playback-id', nextZapState.video.id);
-            const onMeta = () => {
-                seekGuard[slot] = true;
-                p.currentTime   = nextZapState.offset;
-                seekGuard[slot] = false;
-                p.pause();
-                p.removeEventListener('loadedmetadata', onMeta);
-            };
-            p.addEventListener('loadedmetadata', onMeta);
-        }
-
-        function doZap() {
-            clearTimeout(zapTimeout);
-
-            const wasPreloaded = !!nextZapState;
-            const state   = nextZapState || pickState(currentIndex);
-            const newSlot = 1 - activeSlot;
-            const oldSlot = activeSlot;
-            const newP    = players[newSlot];
-            const oldP    = players[oldSlot];
-
-            // Swap visual
-            newP.classList.add('is-active');
-            oldP.classList.remove('is-active');
-            activeSlot   = newSlot;
-            currentIndex = state.index;
-            zapState     = { ...state, startedAt: Date.now() };
-            nextZapState = null;
-
-            // Audio
-            if (audioActive) { newP.muted = false; newP.volume = 1; }
-            oldP.muted = true;
-
-            if (wasPreloaded) {
-                // Ya precargado y seekeado — play instantáneo
-                newP.play().catch(() => {});
-            } else {
-                // Primera carga — esperar loadedmetadata
-                newP.setAttribute('playback-id', state.video.id);
-                const onMeta = () => {
-                    seekGuard[newSlot] = true;
-                    newP.currentTime   = state.offset;
-                    seekGuard[newSlot] = false;
-                    newP.play().catch(() => {});
-                    newP.removeEventListener('loadedmetadata', onMeta);
-                };
-                newP.addEventListener('loadedmetadata', onMeta);
-            }
-
-            showOverlay();
-            zapTimeout = setTimeout(doZap, state.zapDuration * 1000);
-            // Precargar el siguiente (pequeño delay para no competir con el play actual)
-            setTimeout(() => preloadNext(currentIndex), 1500);
-        }
-
-        // Eventos en ambos players (solo el activo importa)
-        players.forEach((p, slot) => {
-            p.addEventListener('ended', () => {
-                if (slot !== activeSlot) return;
-                clearTimeout(zapTimeout); doZap();
-            });
-            p.addEventListener('pause', () => {
-                if (slot !== activeSlot || document.hidden) return;
-                p.play().catch(() => {});
-            });
-            p.addEventListener('seeking', () => {
-                if (seekGuard[slot] || slot !== activeSlot || !zapState) return;
-                const expected = zapState.offset + (Date.now() - zapState.startedAt) / 1000;
-                if (Math.abs(p.currentTime - expected) > 2) {
-                    seekGuard[slot] = true;
-                    p.currentTime   = expected;
-                    seekGuard[slot] = false;
-                }
-            });
-        });
-
-        // Overlay de "ahora"
-        function showOverlay() {
-            if (!zapState) return;
-            npTitle.textContent = zapState.video.title;
+        function showOverlay(title) {
+            npTitle.textContent = title || '—';
             nowPlaying.classList.add('visible');
             clearTimeout(overlayTimer);
             overlayTimer = setTimeout(() => nowPlaying.classList.remove('visible'), 6000);
         }
 
-        // Barra de progreso
-        setInterval(() => {
-            if (!zapState) return;
-            const elapsed = (Date.now() - zapState.startedAt) / 1000;
-            npFill.style.width = Math.min(100, (elapsed / zapState.zapDuration) * 100) + '%';
-        }, 1000);
-
-        // Reloj — UTC-3 fijo (Argentina)
         function formatAR(date) {
             const d = new Date(date.getTime() - 3 * 60 * 60 * 1000);
             return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
         }
-        function updateClock() { clockEl.textContent = formatAR(new Date()); }
-        updateClock();
-        setInterval(updateClock, 10000);
 
-        // ── Registro de skips ─────────────────────────────────
-        function recordSkip() {
-            if (!zapState) return;
-            const elapsed = (Date.now() - zapState.startedAt) / 1000;
-            const entry = {
-                ts:        new Date().toISOString(),
-                id:        zapState.video.id,
-                title:     zapState.video.title,
-                offset:    Math.round(zapState.offset),
-                watched:   Math.round(elapsed),
-                zapBudget: zapState.zapDuration,
-            };
+        function updateClock() {
+            clockEl.textContent = formatAR(new Date());
+        }
+
+        function getArtTime() {
+            const nowMs = Date.now();
+            const artMs = nowMs - 3 * 60 * 60 * 1000;
+            const d = new Date(artMs);
+            const jsDay = d.getUTCDay();
+            const dow = (jsDay + 6) % 7;
+            const daySec = d.getUTCHours() * 3600 + d.getUTCMinutes() * 60 + d.getUTCSeconds();
+            return { dow, daySec };
+        }
+
+        function getFlatSlot(playlist) {
+            const totalDuration = playlist.reduce((acc, item) => acc + Number(item.duration || 0), 0);
+            if (!totalDuration) return null;
+            const nowSec = Date.now() / 1000;
+            const elapsed = ((nowSec - EPOCH_SEC) % totalDuration + totalDuration) % totalDuration;
+            let acc = 0;
+            for (let i = 0; i < playlist.length; i++) {
+                acc += Number(playlist[i].duration || 0);
+                if (elapsed < acc) {
+                    const offsetSec = elapsed - (acc - Number(playlist[i].duration || 0));
+                    return { index: i, offsetMs: offsetSec * 1000, item: playlist[i] };
+                }
+            }
+            return { index: 0, offsetMs: 0, item: playlist[0] };
+        }
+
+        function getScheduledSlot() {
+            const { dow, daySec } = getArtTime();
+            for (let i = 0; i < weeklySchedule.length; i++) {
+                const entry = weeklySchedule[i];
+                if (entry.dayOfWeek !== dow) continue;
+                const startSec = entry.startMin * 60;
+                const endSec = startSec + Number(entry.item.duration || 0);
+                if (daySec >= startSec && daySec < endSec) {
+                    return { index: i, offsetMs: (daySec - startSec) * 1000, item: entry.item };
+                }
+            }
+
+            const schedIds = new Set(weeklySchedule.map(entry => entry.item.id));
+            const fillerPool = activePlaylist.filter(item => !schedIds.has(item.id));
+            const fillerSlot = getFlatSlot(fillerPool.length ? fillerPool : activePlaylist);
+            if (!fillerSlot) return null;
+            return { index: 10000 + fillerSlot.index, offsetMs: fillerSlot.offsetMs, item: fillerSlot.item };
+        }
+
+        function getCurrentSlot() {
+            if (weeklySchedule.length > 0) {
+                return getScheduledSlot();
+            }
+            return getFlatSlot(activePlaylist);
+        }
+
+        function loadSlot(slot) {
+            if (!slot || !slot.item) return;
+            currentSlot = slot;
+
+            const targetId = slot.item.id;
+            const targetSeconds = Math.max(0, slot.offsetMs / 1000);
+
+            if (currentPlaybackId !== targetId) {
+                currentPlaybackId = targetId;
+                player.setAttribute('playback-id', targetId);
+                const onMeta = () => {
+                    player.currentTime = targetSeconds;
+                    player.play().catch(() => {});
+                    player.removeEventListener('loadedmetadata', onMeta);
+                };
+                player.addEventListener('loadedmetadata', onMeta);
+            } else {
+                if (Math.abs((player.currentTime || 0) - targetSeconds) > 5) {
+                    player.currentTime = targetSeconds;
+                }
+                player.play().catch(() => {});
+            }
+
+            showOverlay(slot.item.title);
+        }
+
+        async function loadRemoteData() {
+            let playlist = [];
             try {
-                const skips = JSON.parse(localStorage.getItem('tv_skips') || '[]');
-                skips.push(entry);
-                localStorage.setItem('tv_skips', JSON.stringify(skips));
-            } catch(e) {}
+                const res = await fetch(PLAYLIST_URL);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length) {
+                        playlist = data
+                            .filter(v => v && v.id && Number(v.duration) > 0)
+                            .map(v => ({ id: String(v.id), duration: Number(v.duration), title: String(v.title || '') }));
+                    }
+                }
+            } catch (e) {}
+
+            activePlaylist = playlist;
+            if (!activePlaylist.length) return;
+
+            try {
+                const res = await fetch(SCHEDULE_URL);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data) && data.length) {
+                        const byId = new Map(activePlaylist.map(item => [item.id, item]));
+                        weeklySchedule = data
+                            .filter(entry => entry && Number.isInteger(entry.dayOfWeek) && Number.isFinite(entry.startMin) && entry.itemId)
+                            .map(entry => ({
+                                dayOfWeek: Number(entry.dayOfWeek),
+                                startMin: Number(entry.startMin),
+                                item: byId.get(String(entry.itemId))
+                            }))
+                            .filter(entry => entry.item);
+                    }
+                }
+            } catch (e) {}
         }
 
-        function manualZap() {
-            if (!ageGate.classList.contains('hidden')) return; // ignorar antes del age gate
-            recordSkip();
-            doZap();
-        }
-
-        // Click en cualquier parte → skip
-        document.getElementById('player-wrap').addEventListener('click', () => manualZap());
-
-        // Cualquier tecla → skip
-        document.addEventListener('keydown', e => {
-            if (!ageGate.classList.contains('hidden')) return;
-            manualZap();
-        });
-
-        // Age gate
-        const ageGate = document.getElementById('age-gate');
         function dismissAgeGate() {
             audioActive = true;
-            const p = players[activeSlot];
-            p.muted = false; p.volume = 1;
+            player.muted = false;
+            player.volume = 1;
             ageGate.classList.add('hidden');
         }
+
         document.getElementById('age-over').addEventListener('click', dismissAgeGate);
         document.getElementById('age-under').addEventListener('click', dismissAgeGate);
 
-        // Arrancar
-        if (!PLAYLIST.length) {
-            document.getElementById('offline-screen').classList.add('visible');
-        } else {
-            doZap();
-        }
+        player.addEventListener('pause', () => {
+            if (document.hidden) return;
+            player.play().catch(() => {});
+        });
+
+        player.addEventListener('ended', () => {
+            const slot = getCurrentSlot();
+            if (slot) loadSlot(slot);
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                const slot = getCurrentSlot();
+                if (slot) loadSlot(slot);
+            }
+        });
+
+        setInterval(() => {
+            if (!currentSlot?.item?.duration) return;
+            const pct = Math.min(100, ((player.currentTime || 0) / Number(currentSlot.item.duration)) * 100);
+            npFill.style.width = pct + '%';
+        }, 1000);
+
+        setInterval(() => {
+            const slot = getCurrentSlot();
+            if (!slot) return;
+            if (!currentSlot || slot.item.id !== currentSlot.item.id) {
+                loadSlot(slot);
+                return;
+            }
+            if (Math.abs((player.currentTime || 0) * 1000 - slot.offsetMs) > 5000) {
+                player.currentTime = Math.max(0, slot.offsetMs / 1000);
+            }
+        }, 30000);
+
+        (async () => {
+            updateClock();
+            setInterval(updateClock, 10000);
+
+            await loadRemoteData();
+            if (!activePlaylist.length) {
+                offline.classList.add('visible');
+                return;
+            }
+
+            player.muted = true;
+            const slot = getCurrentSlot();
+            if (slot) loadSlot(slot);
+
+            if (!audioActive) {
+                player.muted = true;
+            }
+        })();
     </script>
 
 </body>

@@ -6,6 +6,17 @@
   },
   "redirects": [
     {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "toxi.media"
+        }
+      ],
+      "destination": "https://www.toxi.media/$1",
+      "permanent": true
+    },
+    {
       "source": "/project/:slug*",
       "destination": "/:slug*",
       "permanent": true
@@ -58,6 +69,14 @@
       "destination": "/tv.html"
     },
     {
+      "source": "/zapping",
+      "destination": "/zapping.html"
+    },
+    {
+      "source": "/radio",
+      "destination": "/radio.html"
+    },
+    {
       "source": "/turing",
       "destination": "/turing.html"
     },
@@ -66,7 +85,7 @@
       "destination": "/turing-admin.html"
     },
     {
-      "source": "/:slug([a-z0-9][a-z0-9-]*)",
+      "source": "/plantform",
       "destination": "/plantform.html"
     }
   ]
