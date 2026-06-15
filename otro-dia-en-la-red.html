@@ -107,26 +107,18 @@
 
         .dvd-header {
             margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
-        .dvd-brand {
-            font-size: 0.75rem;
-            letter-spacing: 0.4em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.45);
-            margin-bottom: 12px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .dvd-title {
-            font-family: 'Helvetica Now', sans-serif;
-            font-weight: bold;
-            font-size: clamp(2.5rem, 7vw, 5rem);
-            letter-spacing: -0.02em;
-            line-height: 1.05;
-            color: #fff;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
-            margin-bottom: 8px;
+        .dvd-logo-img {
+            max-width: 320px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.8));
+            animation: dvdPulse 4s infinite alternate ease-in-out;
         }
 
         .dvd-subtitle {
@@ -135,6 +127,7 @@
             text-transform: uppercase;
             color: #ffcc00;
             text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+            margin-top: 15px;
         }
 
         .dvd-menu-wrapper {
@@ -233,7 +226,7 @@
             color: #ffcc00;
             text-transform: uppercase;
             margin-bottom: 8px;
-            animation: dvdPulse 2s infinite alternate;
+            animation: textPulse 2s infinite alternate;
             text-shadow: 0 2px 8px rgba(0,0,0,0.9);
         }
 
@@ -246,6 +239,11 @@
         }
 
         @keyframes dvdPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+
+        @keyframes textPulse {
             0% { opacity: 0.55; transform: scale(0.98); }
             100% { opacity: 1; transform: scale(1.02); }
         }
@@ -327,6 +325,7 @@
         /* DVD logo de pie de página */
         .dvd-footer {
             margin-bottom: 10px;
+            display: none;
         }
 
         .dvd-logo-box {
@@ -574,9 +573,7 @@
         <div class="dvd-content">
             <!-- Encabezado del menú -->
             <div class="dvd-header">
-                <div class="dvd-brand">TOXI Media · DVD Video</div>
-                <h1 class="dvd-title">OTRO DÍA EN LA RED</h1>
-                <div class="dvd-subtitle">Edición Especial en DVD</div>
+                <img src="/logo%20otro%20dia%20en%20la%20red.png" alt="Otro Día en la Red" class="dvd-logo-img" />
             </div>
             
             <!-- Zona de menú y submenús -->
@@ -790,8 +787,8 @@
             // Primer clip inmediato
             playRandomBgClip();
             
-            // Intervalo de 4 segundos
-            bgIntervalTimer = setInterval(playRandomBgClip, 4000);
+            // Intervalo de 8 segundos
+            bgIntervalTimer = setInterval(playRandomBgClip, 8000);
         }
 
         function stopDvdBackground() {
