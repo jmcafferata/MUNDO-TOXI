@@ -27,11 +27,356 @@
             font-family: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
             font-weight: 300;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── DVD CONTAINER ── */
+        #dvd-container {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .bg-video-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bg-video-player {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            --media-object-fit: cover;
+            --media-background-color: transparent;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            pointer-events: none;
+        }
+
+        .bg-video-player.active {
+            opacity: 0.35;
+        }
+
+        /* Para ocultar completamente controles o botones internos de mux-player en el fondo */
+        .bg-video-player::part(control-bar),
+        .bg-video-player::part(play-button),
+        .bg-video-player::part(center-controls),
+        .bg-video-player::part(loading-indicator) {
+            display: none !important;
+        }
+
+        /* Capa overlay CRT de DVD */
+        .dvd-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle, rgba(0,0,0,0.1) 30%, rgba(0,0,0,0.85) 100%),
+                        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
+            background-size: 100% 100%, 100% 4px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .dvd-content {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 60px 40px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .dvd-header {
+            margin-top: 20px;
+        }
+
+        .dvd-brand {
+            font-size: 0.75rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 12px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .dvd-title {
+            font-family: 'Helvetica Now', sans-serif;
+            font-weight: bold;
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            letter-spacing: -0.02em;
+            line-height: 1.05;
+            color: #fff;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            margin-bottom: 8px;
+        }
+
+        .dvd-subtitle {
+            font-size: 0.85rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #ffcc00;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+        }
+
+        .dvd-menu-wrapper {
+            width: 100%;
+            max-width: 900px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: auto 0;
+        }
+
+        .dvd-menu-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        /* Elemento de menú estilo DVD */
+        .dvd-menu-item {
+            position: relative;
+            font-family: 'Helvetica Now', sans-serif;
+            font-weight: bold;
+            font-size: 1.05rem;
+            letter-spacing: 0.12em;
+            color: rgba(255, 255, 255, 0.65);
+            text-transform: uppercase;
+            padding: 10px 24px;
+            cursor: pointer;
+            transition: color 0.25s ease, text-shadow 0.25s ease;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+            user-select: none;
+        }
+
+        .dvd-menu-item::before {
+            content: '▶';
+            position: absolute;
+            left: 2px;
+            top: 50%;
+            transform: translateY(-50%) scale(0.85);
+            opacity: 0;
+            color: #ffcc00;
+            transition: opacity 0.2s ease, left 0.2s ease;
+        }
+
+        .dvd-menu-item:hover {
+            color: #ffcc00;
+            text-shadow: 0 0 12px rgba(255, 204, 0, 0.7);
+        }
+
+        .dvd-menu-item:hover::before {
+            opacity: 1;
+            left: -10px;
+        }
+
+        /* Submenús */
+        .dvd-submenu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            width: 100%;
+            animation: fadeInSubmenu 0.4s ease-out;
+        }
+
+        @keyframes fadeInSubmenu {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .submenu-title {
+            font-family: 'Helvetica Now', sans-serif;
+            font-weight: bold;
+            font-size: 1.15rem;
+            letter-spacing: 0.2em;
+            color: #ffcc00;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            border-bottom: 2px solid #ffcc00;
+            padding-bottom: 6px;
+            margin-bottom: 5px;
+        }
+
+        .features-content {
+            text-align: center;
+        }
+
+        .features-coming-soon {
+            font-family: 'Helvetica Now', sans-serif;
+            font-weight: bold;
+            font-size: 1.8rem;
+            letter-spacing: 0.15em;
+            color: #ffcc00;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            animation: dvdPulse 2s infinite alternate;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+        }
+
+        .features-desc {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.55);
+            max-width: 440px;
+            line-height: 1.6;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+
+        @keyframes dvdPulse {
+            0% { opacity: 0.55; transform: scale(0.98); }
+            100% { opacity: 1; transform: scale(1.02); }
+        }
+
+        .languages-grid {
+            display: flex;
+            gap: 60px;
+            justify-content: center;
+            width: 100%;
+            max-width: 650px;
+            flex-wrap: wrap;
+        }
+
+        .lang-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+            min-width: 220px;
+        }
+
+        .lang-header {
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            width: 100%;
+            padding-bottom: 6px;
+            text-align: left;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+
+        .lang-option {
+            font-size: 0.95rem;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.65);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            padding-left: 24px;
+            text-align: left;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            user-select: none;
+        }
+
+        .lang-option::before {
+            content: '○';
+            position: absolute;
+            left: 0;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .lang-option.active {
+            color: #ffcc00;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.55);
+        }
+
+        .lang-option.active::before {
+            content: '●';
+            color: #ffcc00;
+        }
+
+        .lang-option:hover {
+            color: #fff;
+        }
+
+        .submenu-back-btn {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-top: 10px;
+        }
+
+        /* DVD logo de pie de página */
+        .dvd-footer {
+            margin-bottom: 10px;
+        }
+
+        .dvd-logo-box {
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            padding: 4px 14px;
+            border-radius: 4px;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0.35;
+            user-select: none;
+        }
+
+        .dvd-logo-dvd {
+            font-family: 'Helvetica Now', sans-serif;
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 0.25em;
+            line-height: 1;
+            margin-bottom: 2px;
+            color: #fff;
+        }
+
+        .dvd-logo-video {
+            font-family: 'Helvetica Now', sans-serif;
+            font-size: 0.45rem;
+            letter-spacing: 0.55em;
+            line-height: 1;
+            font-weight: bold;
+            color: #fff;
+            transform: translateX(1px);
         }
 
         /* ── GRID VIEW ── */
         #grid-view {
-            display: block;
+            display: none;
+            background: #050505;
+            position: relative;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        #grid-view::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
         }
 
         .grid-header {
@@ -39,6 +384,8 @@
             display: flex;
             align-items: center;
             gap: 20px;
+            position: relative;
+            z-index: 15;
         }
         .back-link {
             font-size: 0.75rem;
@@ -52,6 +399,8 @@
 
         .series-hero {
             padding: 40px 40px 28px;
+            position: relative;
+            z-index: 15;
         }
         .series-label {
             font-size: 0.65rem;
@@ -76,6 +425,8 @@
 
         .season-block {
             padding: 0 40px 48px;
+            position: relative;
+            z-index: 15;
         }
         .season-label {
             font-size: 0.65rem;
@@ -133,6 +484,8 @@
         @media (max-width: 600px) {
             .series-hero, .season-block, .grid-header { padding-left: 20px; padding-right: 20px; }
             .episode-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+            .dvd-menu-group { flex-direction: column; gap: 10px; }
+            .languages-grid { gap: 30px; }
         }
 
         /* ── PLAYER VIEW ── */
@@ -206,10 +559,83 @@
 </head>
 <body>
 
+    <!-- DVD CONTAINER (PANTALLA DE INICIO ESTILO DVD) -->
+    <div id="dvd-container">
+        <!-- Fondos de video de DVD (Cross-fading) -->
+        <div class="bg-video-container">
+            <mux-player id="bg-player-1" class="bg-video-player" stream-type="on-demand" muted autoplay></mux-player>
+            <mux-player id="bg-player-2" class="bg-video-player" stream-type="on-demand" muted autoplay></mux-player>
+        </div>
+        
+        <!-- Filtro CRT retro y viñeta -->
+        <div class="dvd-overlay"></div>
+        
+        <!-- Contenido interactivo del DVD -->
+        <div class="dvd-content">
+            <!-- Encabezado del menú -->
+            <div class="dvd-header">
+                <div class="dvd-brand">TOXI Media · DVD Video</div>
+                <h1 class="dvd-title">OTRO DÍA EN LA RED</h1>
+                <div class="dvd-subtitle">Edición Especial en DVD</div>
+            </div>
+            
+            <!-- Zona de menú y submenús -->
+            <div class="dvd-menu-wrapper">
+                <!-- Menú Principal -->
+                <div class="dvd-menu-group" id="main-dvd-menu">
+                    <div class="dvd-menu-item" id="menu-play-all">Reproducir todo</div>
+                    <div class="dvd-menu-item" id="menu-episodes">Episodios</div>
+                    <div class="dvd-menu-item" id="menu-specials">Características Especiales</div>
+                    <div class="dvd-menu-item" id="menu-languages">Idiomas</div>
+                </div>
+                
+                <!-- Submenú Características Especiales -->
+                <div class="dvd-submenu" id="submenu-specials" style="display: none;">
+                    <div class="submenu-title">Características Especiales</div>
+                    <div class="features-content">
+                        <p class="features-coming-soon">Muy pronto</p>
+                        <p class="features-desc">Detrás de escena, entrevistas con los creadores y material inédito de la serie.</p>
+                    </div>
+                    <div class="dvd-menu-item submenu-back-btn" onclick="showMainMenu()">Volver</div>
+                </div>
+                
+                <!-- Submenú Configuración de Idiomas -->
+                <div class="dvd-submenu" id="submenu-languages" style="display: none;">
+                    <div class="submenu-title">Configuración de Idiomas</div>
+                    <div class="languages-grid">
+                        <div class="lang-column">
+                            <div class="lang-header">Audio</div>
+                            <div class="lang-option active" data-type="audio" data-value="es">Español (Original)</div>
+                            <div class="lang-option" data-type="audio" data-value="en">Inglés</div>
+                            <div class="lang-option" data-type="audio" data-value="commentary">Comentario del Actor</div>
+                        </div>
+                        <div class="lang-column">
+                            <div class="lang-header">Subtítulos</div>
+                            <div class="lang-option active" data-type="sub" data-value="off">Desactivado</div>
+                            <div class="lang-option" data-type="sub" data-value="es">Español</div>
+                            <div class="lang-option" data-type="sub" data-value="en">Inglés</div>
+                            <div class="lang-option" data-type="sub" data-value="ja">Japonés</div>
+                        </div>
+                    </div>
+                    <div class="dvd-menu-item submenu-back-btn" onclick="showMainMenu()" style="margin-top: 15px;">Volver</div>
+                </div>
+            </div>
+            
+            <!-- Logo oficial DVD de pie de página -->
+            <div class="dvd-footer">
+                <div class="dvd-logo-box">
+                    <span class="dvd-logo-dvd">DVD</span>
+                    <span class="dvd-logo-video">VIDEO</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- GRID VIEW -->
     <div id="grid-view">
         <div class="grid-header">
-            <a href="/main.html" class="back-link">&larr; Volver</a>
+            <a href="/main.html" class="back-link">&larr; Volver a TOXI</a>
+            <button class="player-ui-btn" id="btn-grid-back-to-dvd" style="margin-left: 15px;">&larr; Menú de DVD</button>
         </div>
 
         <div class="series-hero">
@@ -303,14 +729,153 @@
         buildGrid('season-1-grid', SEASONS[0].episodes, 1);
         buildGrid('season-2-grid', SEASONS[1].episodes, 2);
 
-        // ── PLAYER ──
+        // ── PLAYER & DVD CONTROLLER ──
         const gridView = document.getElementById('grid-view');
         const playerView = document.getElementById('player-view');
         const player = document.getElementById('mux-player');
         const btnBack = document.getElementById('btn-back-to-grid');
         const epTitleEl = document.getElementById('player-ep-title');
 
+        // Referencias del DVD
+        const dvdContainer = document.getElementById('dvd-container');
+        const bgPlayer1 = document.getElementById('bg-player-1');
+        const bgPlayer2 = document.getElementById('bg-player-2');
+        const mainDvdMenu = document.getElementById('main-dvd-menu');
+        const submenuSpecials = document.getElementById('submenu-specials');
+        const submenuLanguages = document.getElementById('submenu-languages');
+        const btnGridBackToDvd = document.getElementById('btn-grid-back-to-dvd');
+
+        // ── Lógica de Clips Aleatorios de Fondo del DVD ──
+        const bgPlayers = [bgPlayer1, bgPlayer2];
+        let currentBgIndex = 0;
+        let bgIntervalTimer = null;
+
+        function playRandomBgClip() {
+            const activePlayer = bgPlayers[currentBgIndex];
+            currentBgIndex = (currentBgIndex + 1) % 2;
+            const nextPlayer = bgPlayers[currentBgIndex];
+
+            // Seleccionar episodio y tiempo aleatorio
+            const ep = ALL_EPISODES[Math.floor(Math.random() * ALL_EPISODES.length)];
+            const duration = ep.duration || 120; // 120 segundos de base si no hay duración
+            // Seleccionar ubicación random evitando el inicio o el final exacto
+            const startTime = Math.floor(Math.random() * Math.max(duration - 20, 10)) + 5;
+
+            nextPlayer.setAttribute('playback-id', ep.id);
+            nextPlayer.setAttribute('start-time', startTime);
+            nextPlayer.muted = true;
+            nextPlayer.volume = 0;
+
+            nextPlayer.play().then(() => {
+                nextPlayer.classList.add('active');
+                activePlayer.classList.remove('active');
+                
+                // Pausar el anterior después del cross-fade para optimizar rendimiento
+                setTimeout(() => {
+                    if (!activePlayer.classList.contains('active')) {
+                        activePlayer.pause();
+                    }
+                }, 1500);
+            }).catch(err => {
+                console.log("Error al reproducir el fondo del DVD, reintentando...", err);
+                // Si hay un error, forzamos la transición igual para que no quede en negro
+                nextPlayer.classList.add('active');
+                activePlayer.classList.remove('active');
+            });
+        }
+
+        function startDvdBackground() {
+            if (bgIntervalTimer) clearInterval(bgIntervalTimer);
+            
+            // Primer clip inmediato
+            playRandomBgClip();
+            
+            // Intervalo de 4 segundos
+            bgIntervalTimer = setInterval(playRandomBgClip, 4000);
+        }
+
+        function stopDvdBackground() {
+            if (bgIntervalTimer) {
+                clearInterval(bgIntervalTimer);
+                bgIntervalTimer = null;
+            }
+            bgPlayer1.pause();
+            bgPlayer2.pause();
+            bgPlayer1.classList.remove('active');
+            bgPlayer2.classList.remove('active');
+        }
+
+        // ── Interacciones del Menú de DVD ──
+        document.getElementById('menu-play-all').addEventListener('click', () => {
+            stopDvdBackground();
+            playEpisode(ALL_EPISODES[0].id);
+        });
+
+        document.getElementById('menu-episodes').addEventListener('click', () => {
+            stopDvdBackground();
+            dvdContainer.style.display = 'none';
+            gridView.style.display = 'block';
+        });
+
+        document.getElementById('menu-specials').addEventListener('click', () => {
+            mainDvdMenu.style.display = 'none';
+            submenuSpecials.style.display = 'flex';
+        });
+
+        document.getElementById('menu-languages').addEventListener('click', () => {
+            mainDvdMenu.style.display = 'none';
+            submenuLanguages.style.display = 'flex';
+        });
+
+        // Botón volver para submenús
+        function showMainMenu() {
+            submenuSpecials.style.display = 'none';
+            submenuLanguages.style.display = 'none';
+            mainDvdMenu.style.display = 'flex';
+        }
+
+        // Configuración de Idiomas
+        const langOptions = document.querySelectorAll('.lang-option');
+        langOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const type = opt.dataset.type;
+                // Deseleccionar opciones hermanas de la misma columna
+                const siblingOptions = opt.parentNode.querySelectorAll('.lang-option');
+                siblingOptions.forEach(sibling => sibling.classList.remove('active'));
+                
+                // Seleccionar la actual
+                opt.classList.add('active');
+                
+                // Guardar preferencia localmente
+                localStorage.setItem(`dvd_${type}`, opt.dataset.value);
+            });
+        });
+
+        // Cargar preferencias de idioma guardadas
+        function loadSavedLanguages() {
+            const savedAudio = localStorage.getItem('dvd_audio') || 'es';
+            const savedSub = localStorage.getItem('dvd_sub') || 'off';
+
+            document.querySelectorAll('[data-type="audio"]').forEach(opt => {
+                if (opt.dataset.value === savedAudio) opt.classList.add('active');
+                else opt.classList.remove('active');
+            });
+            document.querySelectorAll('[data-type="sub"]').forEach(opt => {
+                if (opt.dataset.value === savedSub) opt.classList.add('active');
+                else opt.classList.remove('active');
+            });
+        }
+
+        // Botón de Volver de la grilla de episodios al menú del DVD
+        btnGridBackToDvd.addEventListener('click', () => {
+            gridView.style.display = 'none';
+            dvdContainer.style.display = 'flex';
+            startDvdBackground();
+        });
+
+        // ── CONTROLADOR DEL REPRODUCTOR PRINCIPAL ──
         function playEpisode(id) {
+            stopDvdBackground(); // Asegurarnos de pausar videos de fondo
             const ep = ALL_EPISODES.find(e => e.id === id);
             if (!ep) return;
             player.setAttribute('metadata-video-title', ep.title);
@@ -318,6 +883,7 @@
             player.setAttribute('playback-id', id);
             epTitleEl.textContent = `T${ep.season} · EP ${ep.num} — ${ep.title}`;
             gridView.style.display = 'none';
+            dvdContainer.style.display = 'none';
             playerView.classList.add('active');
             setupUIFade();
         }
@@ -357,6 +923,10 @@
             playerView.addEventListener('touchstart', showUI);
             playerView.addEventListener('click', showUI);
         }
+
+        // Inicialización al cargar la página
+        loadSavedLanguages();
+        startDvdBackground();
     </script>
 </body>
 </html>
