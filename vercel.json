@@ -42,6 +42,18 @@
       "destination": "/otro-dia-en-la-red.html"
     },
     {
+      "source": "/wiki",
+      "destination": "/wiki.html"
+    },
+    {
+      "source": "/onboarding",
+      "destination": "/onboarding.html"
+    },
+    {
+      "source": "/matriz",
+      "destination": "/matriz.html"
+    },
+    {
       "source": "/tv",
       "destination": "/tv.html"
     },

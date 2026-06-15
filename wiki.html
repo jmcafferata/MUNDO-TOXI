@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TOXI MEDIA — Wiki</title>
+  <style>
+    :root {
+      --bg: #080808;
+      --bg2: #111111;
+      --bg3: #1a1a1a;
+      --border: #252525;
+      --text: #c8c8c8;
+      --muted: #555;
+      --accent: #ffffff;
+      --yellow: #facc15;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --red: #f87171;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 200;
+      gap: 16px;
+    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    header h1 {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .header-badge {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+
+    /* ── Search ── */
+    .search-wrap {
+      flex: 1;
+      max-width: 400px;
+    }
+    .search-wrap input {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 12px;
+      padding: 7px 12px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-wrap input:focus { border-color: #3a3a3a; }
+    .search-wrap input::placeholder { color: var(--muted); }
+
+    /* ── Layout ── */
+    .layout {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: calc(100vh - 54px);
+    }
+
+    /* ── Sidebar ── */
+    aside {
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      position: sticky;
+      top: 54px;
+      height: calc(100vh - 54px);
+      overflow-y: auto;
+    }
+    aside::-webkit-scrollbar { width: 4px; }
+    aside::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .nav-section { margin-bottom: 28px; }
+    .nav-label {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 18px 8px;
+      display: block;
+    }
+    .nav-link {
+      display: block;
+      padding: 5px 18px;
+      font-size: 12px;
+      color: #666;
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: all 0.1s;
+      cursor: pointer;
+      line-height: 1.3;
+    }
+    .nav-link:hover { color: var(--text); border-left-color: var(--border); }
+    .nav-link.active { color: var(--accent); border-left-color: var(--accent); }
+
+    /* ── Main ── */
+    main {
+      padding: 36px 48px 80px;
+      max-width: 820px;
+    }
+
+    /* ── Section ── */
+    .section {
+      margin-bottom: 60px;
+      padding-bottom: 60px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-child { border-bottom: none; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .section-icon { font-size: 16px; line-height: 1; }
+    .section h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.03em;
+    }
+    .section-tag {
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 2px;
+      margin-left: auto;
+    }
+
+    p { margin-bottom: 12px; color: var(--text); }
+    p:last-child { margin-bottom: 0; }
+
+    h3 {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin: 22px 0 10px;
+    }
+
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 12px;
+    }
+    th {
+      text-align: left;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 12px 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 8px 12px 8px 0;
+      border-bottom: 1px solid #161616;
+      vertical-align: top;
+      color: var(--text);
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* ── Code ── */
+    pre {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      margin-bottom: 14px;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    code { font-family: 'SF Mono', 'Fira Code', monospace; }
+    pre code { color: #a8d8a8; }
+
+    p code, li code, td code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px;
+      color: var(--blue);
+      background: #0d1a2e;
+      padding: 1px 5px;
+      border-radius: 2px;
+    }
+
+    /* ── Steps ── */
+    .steps { counter-reset: step; }
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      counter-increment: step;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+    .step-num::before { content: counter(step); }
+    .step-body { flex: 1; }
+    .step-body strong { color: var(--accent); }
+
+    /* ── List ── */
+    ul, ol { padding-left: 20px; margin-bottom: 12px; }
+    li { margin-bottom: 5px; color: var(--text); }
+    li strong { color: var(--accent); }
+
+    /* ── Callout ── */
+    .callout {
+      border-left: 3px solid var(--yellow);
+      background: #1a1800;
+      padding: 10px 14px;
+      border-radius: 0 3px 3px 0;
+      margin-bottom: 14px;
+      font-size: 12px;
+    }
+    .callout.info { border-color: var(--blue); background: #0d1a2e; }
+    .callout.ok { border-color: var(--green); background: #0a1a0a; }
+    .callout p { margin: 0; }
+
+    /* ── Format tags ── */
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 2px;
+      margin: 2px 3px 2px 0;
+      border: 1px solid;
+    }
+    .tag-cine { color: #f87171; border-color: #3a1010; background: #1a0808; }
+    .tag-vr   { color: #a78bfa; border-color: #2d1a4a; background: #160d24; }
+    .tag-sw   { color: #60a5fa; border-color: #0d2a4a; background: #071424; }
+    .tag-pod  { color: #4ade80; border-color: #0a3a18; background: #051a0c; }
+    .tag-ev   { color: #facc15; border-color: #3a2a00; background: #1a1400; }
+    .tag-foto { color: #f9a8d4; border-color: #3a1428; background: #1a0a14; }
+    .tag-txt  { color: #94a3b8; border-color: #1e293b; background: #0d1424; }
+    .tag-mus  { color: #fb923c; border-color: #3a1a00; background: #1a0c00; }
+
+    /* ── Project grid ── */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .project-card {
+      background: var(--bg2);
+      padding: 12px 14px;
+      transition: background 0.1s;
+    }
+    .project-card:hover { background: var(--bg3); }
+    .project-name { font-size: 12px; color: var(--accent); margin-bottom: 4px; font-weight: 500; }
+    .project-slug { font-size: 10px; color: var(--muted); font-family: 'SF Mono', monospace; }
+
+    mark {
+      background: #facc1530;
+      color: var(--yellow);
+      border-radius: 2px;
+      padding: 0 2px;
+    }
+
+    .no-results {
+      padding: 60px 48px;
+      font-size: 13px;
+      color: var(--muted);
+      display: none;
+    }
+    .result-count {
+      font-size: 10px;
+      color: var(--muted);
+      padding: 8px 28px;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 720px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { display: none; }
+      main { padding: 24px 16px 60px; }
+      header { padding: 12px 16px; }
+      .result-count { padding-left: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>TOXI MEDIA — Wiki</h1>
+    <span class="header-badge">interno · solo lectura</span>
+  </div>
+  <div class="search-wrap">
+    <input type="text" id="search" placeholder="Buscar..." autocomplete="off" spellcheck="false" />
+  </div>
+</header>
+
+<div class="result-count" id="result-count"></div>
+
+<div class="layout">
+  <aside id="sidebar">
+    <div class="nav-section">
+      <span class="nav-label">Dev & Deploy</span>
+      <a class="nav-link" data-id="stack">Stack tecnológico</a>
+      <a class="nav-link" data-id="dev">Dev local</a>
+      <a class="nav-link" data-id="deploy">Build & Deploy</a>
+      <a class="nav-link" data-id="routing">Routing</a>
+      <a class="nav-link" data-id="envvars">Variables de entorno</a>
+    </div>
+    <div class="nav-section">
+      <span class="nav-label">Contenido</span>
+      <a class="nav-link" data-id="add-project">Agregar proyecto</a>
+      <a class="nav-link" data-id="add-talent">Agregar talento</a>
+      <a class="nav-link" data-id="add-page">Agregar página</a>
+      <a class="nav-link" data-id="projects-list">Catálogo de proyectos</a>
+    </div>
+    <div class="nav-section">
+      <span class="nav-label">Streaming & TV</span>
+      <a class="nav-link" data-id="toxi-tv">Toxi TV — web</a>
+      <a class="nav-link" data-id="android-tv">App Android TV</a>
+      <a class="nav-link" data-id="streaming-local">Streaming local (Icecast)</a>
+      <a class="nav-link" data-id="streaming-internet">Streaming a internet</a>
+    </div>
+    <div class="nav-section">
+      <span class="nav-label">Plataforma</span>
+      <a class="nav-link" data-id="estructura">Estructura de archivos</a>
+      <a class="nav-link" data-id="public-assets">Assets públicos</a>
+      <a class="nav-link" data-id="seo">SEO y meta tags</a>
+    </div>
+    <div class="nav-section">
+      <span class="nav-label">Equipo & Gear</span>
+      <a class="nav-link" data-id="team">Equipo humano</a>
+      <a class="nav-link" data-id="gear-video">Cámaras & video</a>
+      <a class="nav-link" data-id="gear-vr">VR</a>
+      <a class="nav-link" data-id="gear-audio">Audio</a>
+      <a class="nav-link" data-id="gear-infra">Infraestructura</a>
+    </div>
+  </aside>
+
+  <main id="main-content">
+
+    <div class="section" id="stack" data-search="stack tecnológico vite three.js mercadopago pwa vercel mux elevenlabs gemini bundler hosting">
+      <div class="section-header">
+        <span class="section-icon">⚙</span>
+        <h2>Stack tecnológico</h2>
+        <span class="section-tag">Dev & Deploy</span>
+      </div>
+      <table>
+        <thead><tr><th>Herramienta</th><th>Uso</th></tr></thead>
+        <tbody>
+          <tr><td><code>Vite</code></td><td>Bundler y dev server. Multi-entrada (una por cada HTML).</td></tr>
+          <tr><td><code>Three.js</code></td><td>Escena 3D en la entrada principal (<code>index.html</code>).</td></tr>
+          <tr><td><code>Mercado Pago SDK</code></td><td>Pagos de entradas. Cargado en <code>index.html</code> vía CDN.</td></tr>
+          <tr><td><code>Vite PWA</code></td><td>Service worker e instalación como app. Estrategia: <code>injectManifest</code>.</td></tr>
+          <tr><td><code>Vercel</code></td><td>Hosting, routing y funciones serverless (<code>api/</code>).</td></tr>
+          <tr><td><code>Mux</code></td><td>Video streaming y gestión de assets de video.</td></tr>
+          <tr><td><code>ElevenLabs</code></td><td>Text-to-Speech del AI voice en plantform.</td></tr>
+          <tr><td><code>Google Gemini</code></td><td>IA de voz en plantform.</td></tr>
+          <tr><td><code>Zoho</code></td><td>Email de notificaciones transaccionales.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section" id="dev" data-search="dev local desarrollo npm install run server localhost 5000 puerto">
+      <div class="section-header">
+        <span class="section-icon">💻</span>
+        <h2>Dev local</h2>
+        <span class="section-tag">Dev & Deploy</span>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Instalar dependencias</strong>
+            <pre><code>npm install</code></pre>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Correr el servidor</strong>
+            <pre><code>npm run dev</code></pre>
+            <p>Corre en <code>http://localhost:5000</code>. También accesible desde la red local.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Para abrir una página específica directamente</strong>
+            <pre><code>npx vite --port 5173 --open wiki.html</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="deploy" data-search="build deploy vercel producción dist git push npm run build generar estáticos">
+      <div class="section-header">
+        <span class="section-icon">🚀</span>
+        <h2>Build & Deploy</h2>
+        <span class="section-tag">Dev & Deploy</span>
+      </div>
+      <div class="callout ok">
+        <p>El deploy automático ocurre en cada <code>git push</code> a <code>main</code>. Vercel detecta el push y hace el build solo.</p>
+      </div>
+      <h3>Deploy manual</h3>
+      <pre><code>npm run build   # genera /dist
+vercel --prod   # deploy inmediato</code></pre>
+      <h3>Regenerar páginas estáticas (SEO)</h3>
+      <p>Después de modificar un proyecto en <code>projects.json</code>:</p>
+      <pre><code>npm run gen
+# equivale a: node generate-static.js
+# genera public/[slug]/index.html con OG tags por cada proyecto</code></pre>
+    </div>
+
+    <div class="section" id="routing" data-search="routing vercel.json rewrites slug plantform catch-all rutas páginas">
+      <div class="section-header">
+        <span class="section-icon">🗺</span>
+        <h2>Routing</h2>
+        <span class="section-tag">Dev & Deploy</span>
+      </div>
+      <p>El routing se define en <code>vercel.json</code>. Hay un catch-all al final que manda cualquier slug a <code>plantform.html</code>.</p>
+      <div class="callout">
+        <p><strong>Regla crítica:</strong> cualquier ruta nueva debe ir en <code>vercel.json</code> <em>antes</em> del catch-all <code>/:slug([a-z0-9][a-z0-9-]*)</code>. Si va después, la absorbe plantform.</p>
+      </div>
+      <table>
+        <thead><tr><th>URL</th><th>Archivo</th></tr></thead>
+        <tbody>
+          <tr><td><code>/</code></td><td><code>index.html</code> — entrada 3D + paywall</td></tr>
+          <tr><td><code>/audiont</code></td><td><code>audiont.html</code></td></tr>
+          <tr><td><code>/trabajos</code></td><td><code>trabajos.html</code></td></tr>
+          <tr><td><code>/tv</code></td><td><code>tv.html</code></td></tr>
+          <tr><td><code>/turing</code></td><td><code>turing.html</code></td></tr>
+          <tr><td><code>/nota-constante</code></td><td><code>nota-constante.html</code></td></tr>
+          <tr><td><code>/otro-dia-en-la-red</code></td><td><code>otro-dia-en-la-red.html</code></td></tr>
+          <tr><td><code>/wiki</code></td><td><code>wiki.html</code></td></tr>
+          <tr><td><code>/:slug</code></td><td><code>plantform.html</code> — proyectos y talentos dinámicos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section" id="envvars" data-search="variables entorno vercel env add GEMINI ELEVENLABS MUX MERCADOPAGO API KEY secreto newline echo">
+      <div class="section-header">
+        <span class="section-icon">🔑</span>
+        <h2>Variables de entorno</h2>
+        <span class="section-tag">Dev & Deploy</span>
+      </div>
+      <div class="callout">
+        <p><strong>Truco clave:</strong> nunca usar <code>echo</code> ni <code>Write-Output</code> para pasar el valor — agregan un newline que corrompe la clave. Siempre usar <code>node -e "process.stdout.write(...)"</code>.</p>
+      </div>
+      <pre><code># Agregar variable (sin newline al final)
+node -e "process.stdout.write('EL_VALOR')" | npx vercel env add NOMBRE_VAR production
+
+# Eliminar variable
+node -e "process.stdout.write('y')" | npx vercel env rm NOMBRE_VAR production
+
+# Listar variables actuales
+npx vercel env ls
+
+# Redesplegar después de cualquier cambio
+npx vercel --prod</code></pre>
+      <h3>Variables activas</h3>
+      <table>
+        <thead><tr><th>Variable</th><th>Descripción</th></tr></thead>
+        <tbody>
+          <tr><td><code>GEMINI_API_KEY</code></td><td>Google Gemini — IA de voz en plantform</td></tr>
+          <tr><td><code>ELEVENLABS_API_KEY</code></td><td>ElevenLabs — TTS en plantform</td></tr>
+          <tr><td><code>ELEVENLABS_VOICE_ID</code></td><td>ID de voz ElevenLabs en plantform</td></tr>
+          <tr><td><code>MP_ACCESS_TOKEN</code></td><td>MercadoPago — token de producción (backend)</td></tr>
+          <tr><td><code>VITE_MP_PUBLIC_KEY</code></td><td>MercadoPago — public key para el frontend</td></tr>
+          <tr><td><code>ENV_MP_PUBLIC_KEY</code></td><td>MercadoPago — public key para serverless</td></tr>
+          <tr><td><code>ZOHO_EMAIL</code></td><td>Email Zoho para notificaciones</td></tr>
+          <tr><td><code>ZOHO_PASSWORD</code></td><td>Contraseña Zoho</td></tr>
+          <tr><td><code>MUX_TOKEN_ID</code></td><td>Mux — token ID</td></tr>
+          <tr><td><code>MUX_TOKEN_SECRET</code></td><td>Mux — token secret</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section" id="add-project" data-search="agregar proyecto projects.json slug thumbnail poster banner formato cine vr podcast software evento foto texto música generate-static npm run gen">
+      <div class="section-header">
+        <span class="section-icon">＋</span>
+        <h2>Agregar proyecto</h2>
+        <span class="section-tag">Contenido</span>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Preparar imágenes</strong>
+            <p>Crear <code>public/[slug]/</code> y copiar:</p>
+            <ul>
+              <li><code>thumb.jpg</code> — 1280×720</li>
+              <li><code>poster.jpg</code> — 1920×1080</li>
+            </ul>
+            <p>También se puede usar URLs externas (CDN, Webflow) — poner la URL completa en el JSON.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Agregar entrada en <code>public/data/projects.json</code></strong>
+            <pre><code>{
+  "name":        "Nombre del Proyecto",
+  "slug":        "nombre-del-proyecto",
+  "description": "Descripción corta (cards + SEO).",
+  "contenido":   "&lt;p&gt;Cuerpo HTML. Puede tener iframes.&lt;/p&gt;",
+  "card":        "/nombre-del-proyecto/thumb.jpg",
+  "banner":      "/nombre-del-proyecto/poster.jpg",
+  "thumbnail":   "/nombre-del-proyecto/thumb.jpg",
+  "talentos":    ["slug-talento-1"],
+  "formato":     "1",
+  "credits":     "&lt;h4&gt;Dirección&lt;/h4&gt;&lt;p&gt;Nombre Apellido&lt;/p&gt;",
+  "web":         "https://url-externa.com"
+}</code></pre>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Regenerar meta tags SEO</strong>
+            <pre><code>npm run gen</code></pre>
+            <p>Genera <code>public/[slug]/index.html</code> con OG tags por proyecto.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Commit y push</strong>
+            <pre><code>git add public/data/projects.json public/[slug]/
+git commit -m "feat: agregar [Nombre del proyecto]"
+git push</code></pre>
+          </div>
+        </div>
+      </div>
+      <h3>IDs de formato</h3>
+      <div>
+        <span class="tag tag-cine">1 — Cine</span>
+        <span class="tag tag-pod">2 — Podcast</span>
+        <span class="tag tag-foto">3 — Foto</span>
+        <span class="tag tag-txt">4 — Texto</span>
+        <span class="tag tag-vr">5 — VR</span>
+        <span class="tag tag-ev">6 — Eventos</span>
+        <span class="tag tag-sw">7 — Software</span>
+        <span class="tag tag-mus">8 — Música</span>
+      </div>
+    </div>
+
+    <div class="section" id="add-talent" data-search="agregar talento talentos.json slug nombre foto bio rol">
+      <div class="section-header">
+        <span class="section-icon">👤</span>
+        <h2>Agregar talento</h2>
+        <span class="section-tag">Contenido</span>
+      </div>
+      <p>Los talentos se cargan desde <code>public/data/talentos.json</code>. El slug debe existir ahí antes de referenciarlo en un proyecto.</p>
+      <pre><code>{
+  "name":  "Nombre Apellido",
+  "slug":  "nombre-apellido",
+  "rol":   "Director / Editor / ...",
+  "bio":   "Bio corta.",
+  "foto":  "/nombre-apellido/foto.jpg"
+}</code></pre>
+    </div>
+
+    <div class="section" id="add-page" data-search="agregar página HTML nueva vite.config.js rollupOptions input vercel.json rewrite ruta">
+      <div class="section-header">
+        <span class="section-icon">📄</span>
+        <h2>Agregar página HTML nueva</h2>
+        <span class="section-tag">Contenido</span>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Crear el archivo en la raíz</strong>
+            <pre><code>MUNDO-TOXI/nombre-pagina.html</code></pre>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Registrar en <code>vite.config.js</code></strong>
+            <p>Sin esto, Vite no lo buildea y no existe en producción.</p>
+            <pre><code>// vite.config.js → build.rollupOptions.input
+nombrePagina: resolve(__dirname, 'nombre-pagina.html'),</code></pre>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Agregar rewrite en <code>vercel.json</code></strong>
+            <p>Tiene que ir <em>antes</em> del catch-all <code>/:slug</code>.</p>
+            <pre><code>{ "source": "/nombre-pagina", "destination": "/nombre-pagina.html" }</code></pre>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Deploy</strong>
+            <pre><code>vercel --prod</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="projects-list" data-search="catálogo proyectos pizza pagni hedonismo detective noir hotel oriente vr cine podcast software eventos kabradepata xplora escrol mauda audion't toxidesk patent quest">
+      <div class="section-header">
+        <span class="section-icon">📚</span>
+        <h2>Catálogo de proyectos</h2>
+        <span class="section-tag">Contenido</span>
+      </div>
+      <p>Todos los proyectos en <code>public/data/projects.json</code>. Accesibles en <code>toxi.media/[slug]</code>.</p>
+      <div class="project-grid">
+        <div class="project-card"><div class="project-name">Pizza &amp; Pagni</div><div class="project-slug">/pizza-y-pagni &nbsp;<span class="tag tag-ev" style="font-size:9px;padding:1px 5px">evento</span></div></div>
+        <div class="project-card"><div class="project-name">Hedonismo y Seducción</div><div class="project-slug">/hedonismo-y-seduccion &nbsp;<span class="tag tag-cine" style="font-size:9px;padding:1px 5px">cine</span></div></div>
+        <div class="project-card"><div class="project-name">El Jardín de Andarillo</div><div class="project-slug">/el-jardin-de-andarillo &nbsp;<span class="tag tag-vr" style="font-size:9px;padding:1px 5px">VR</span></div></div>
+        <div class="project-card"><div class="project-name">Las Catadoras del Führer</div><div class="project-slug">/las-catadoras-del-fuhrer &nbsp;<span class="tag tag-cine" style="font-size:9px;padding:1px 5px">cine</span></div></div>
+        <div class="project-card"><div class="project-name">Desarrollos Regenerativos</div><div class="project-slug">/desarrollos-regenerativos &nbsp;<span class="tag tag-cine" style="font-size:9px;padding:1px 5px">cine</span></div></div>
+        <div class="project-card"><div class="project-name">Audion't</div><div class="project-slug">/audiont &nbsp;<span class="tag tag-sw" style="font-size:9px;padding:1px 5px">software</span></div></div>
+        <div class="project-card"><div class="project-name">Polo IA</div><div class="project-slug">/polo-ia &nbsp;<span class="tag tag-mus" style="font-size:9px;padding:1px 5px">música</span></div></div>
+        <div class="project-card"><div class="project-name">¿Para qué sirve todo esto?</div><div class="project-slug">/para-que-sirve-todo-esto &nbsp;<span class="tag tag-cine" style="font-size:9px;padding:1px 5px">cine</span></div></div>
+        <div class="project-card"><div class="project-name">Mauda</div><div class="project-slug">/mauda &nbsp;<span class="tag tag-cine" style="font-size:9px;padding:1px 5px">cine</span></div></div>
+        <div class="project-card"><div class="project-name">Mundo PEGSA</div><div class="project-slug">/mundo-pegsa &nbsp;<span class="tag tag-vr" style="font-size:9px;padding:1px 5px">VR</span></div></div>
+        <div class="project-card"><div class="project-name">Fancy Dogs™</div><div class="project-slug">/fancydogs &nbsp;<span class="tag tag-ev" style="font-size:9px;padding:1px 5px">evento</span></div></div>
+        <div class="project-card"><div class="project-name">Patent Quest</div><div class="project-slug">/patent-quest &nbsp;<span class="tag tag-vr" style="font-size:9px;padding:1px 5px">VR</span></div></div>
+        <div class="project-card"><div class="project-name">TOXIDESK</div><div class="project-slug">/toxidesk &nbsp;<span class="tag tag-sw" style="font-size:9px;padding:1px 5px">software</span></div></div>
+        <div class="project-card"><div class="project-name">Juana la Loca</div><div class="project-slug">/juana-la-loca &nbsp;<span class="tag tag-vr" style="font-size:9px;padding:1px 5px">VR</span></div></div>
+        <div class="project-card"><div class="project-name">Las formas del laberinto</div><div class="project-slug">/las-formas-del-laberinto &nbsp;<span class="tag tag-vr" style="font-size:9px;padding:1px 5px">VR</span></div></div>
+        <div class="project-card"><div class="project-name">TOXI: Una serie para gente cansada</div><div class="project-slug">/toxi-una-serie... &nbsp;<span class="tag tag-cine" style="font-size:9px;padding:1px 5px">cine</span></div></div>
+        <div class="project-card"><div class="project-name">TOXI VR</div><div class="project-slug">/toxi-vr &nbsp;<span class="tag tag-vr" style="font-size:9px;padding:1px 5px">VR</span></div></div>
+        <div class="project-card"><div class="project-name">Otro Día en la Red</div><div class="project-slug">/otro-dia-en-la-red &nbsp;<span class="tag tag-cine" style="font-size:9px;padding:1px 5px">cine</span></div></div>
+        <div class="project-card"><div class="project-name">Escrol</div><div class="project-slug">/escrol &nbsp;<span class="tag tag-cine" style="font-size:9px;padding:1px 5px">cine</span></div></div>
+        <div class="project-card"><div class="project-name">TOXI Fest</div><div class="project-slug">/toxi-fest &nbsp;<span class="tag tag-ev" style="font-size:9px;padding:1px 5px">evento</span></div></div>
+        <div class="project-card"><div class="project-name">KABRADEPATA</div><div class="project-slug">/kabradepata &nbsp;<span class="tag tag-cine" style="font-size:9px;padding:1px 5px">cine</span></div></div>
+        <div class="project-card"><div class="project-name">Xplora</div><div class="project-slug">/xplora &nbsp;<span class="tag tag-cine" style="font-size:9px;padding:1px 5px">cine</span></div></div>
+        <div class="project-card"><div class="project-name">Mamarracho</div><div class="project-slug">/mamarracho &nbsp;<span class="tag tag-ev" style="font-size:9px;padding:1px 5px">evento</span></div></div>
+        <div class="project-card"><div class="project-name">American Anthology</div><div class="project-slug">/american-anthology &nbsp;<span class="tag tag-foto" style="font-size:9px;padding:1px 5px">foto</span></div></div>
+      </div>
+    </div>
+
+    <div class="section" id="toxi-tv" data-search="toxi tv canal en vivo sincronizado playlist api mux playback epoch slot programación content.js onTV">
+      <div class="section-header">
+        <span class="section-icon">📺</span>
+        <h2>Toxi TV — web</h2>
+        <span class="section-tag">Streaming & TV</span>
+      </div>
+      <p>El canal en vivo de <code>toxi.media/tv</code>. Todos los usuarios ven lo mismo en el mismo momento, sin señal en tiempo real.</p>
+      <h3>Cómo funciona la sincronización</h3>
+      <ul>
+        <li>El video actual se calcula usando <code>EPOCH_SEC = 2026-01-01T00:00:00Z</code> como referencia.</li>
+        <li>Se suma el tiempo desde el epoch y se divide entre la duración total de la playlist para encontrar el slot actual.</li>
+        <li>Cada cliente lo calcula de forma independiente — no hay WebSocket ni señal en tiempo real.</li>
+      </ul>
+      <h3>Actualizar la playlist</h3>
+      <p>Hay que editar <strong>dos archivos</strong> en paralelo:</p>
+      <ol>
+        <li><code>src/content.js</code> — agregar entrada con <code>onTV: true</code> (para la web).</li>
+        <li><code>api/playlist.mjs</code> — agregar el mismo item al array <code>PLAYLIST</code> (para la app Android y el AI voice).</li>
+      </ol>
+      <div class="callout info">
+        <p><code>api/ai-voice.mjs</code> importa <code>PLAYLIST</code> directamente desde <code>api/playlist.mjs</code> — no hay que tocar <code>ai-voice.mjs</code> al agregar contenido.</p>
+      </div>
+      <h3>Endpoint</h3>
+      <pre><code>GET https://toxi.media/api/playlist
+# devuelve: [{ "id": "MuxPlaybackID", "duration": 339.5, "title": "Título" }, ...]</code></pre>
+    </div>
+
+    <div class="section" id="android-tv" data-search="android tv app kotlin exoplayer google tv playlist apk android studio build signed bundle play console drift seek">
+      <div class="section-header">
+        <span class="section-icon">🤖</span>
+        <h2>App Android TV</h2>
+        <span class="section-tag">Streaming & TV</span>
+      </div>
+      <p>App para Android TV / Google TV. Reproduce el canal sincronizado, igual que la versión web.</p>
+      <h3>Estructura</h3>
+      <pre><code>toxi-tv-android/
+  app/src/main/java/media/toxi/tv/
+    MainActivity.kt   # ExoPlayer + fetch de playlist al arrancar
+    Playlist.kt       # Playlist hardcodeada + lógica de slot sincronizado
+  app/src/main/res/
+    drawable/banner.png   # Banner launcher TV (320×180)
+  app/build.gradle.kts</code></pre>
+      <h3>Cómo funciona</h3>
+      <ul>
+        <li>Al arrancar busca <code>https://toxi.media/api/playlist</code> y reemplaza la hardcodeada.</li>
+        <li>Si falla el fetch, usa <code>HARDCODED_PLAYLIST</code> en <code>Playlist.kt</code>.</li>
+        <li>Cada 30 segundos corrige el drift — si la diferencia es mayor de 5 segundos, hace seek.</li>
+        <li>Los cambios en la playlist se propagan sin actualizar el APK.</li>
+      </ul>
+      <h3>Build y distribución</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num"></div><div class="step-body">Abrir <code>toxi-tv-android/</code> en Android Studio.</div></div>
+        <div class="step"><div class="step-num"></div><div class="step-body">Build → Generate Signed Bundle / APK → Android App Bundle.</div></div>
+        <div class="step"><div class="step-num"></div><div class="step-body">Subir el <code>.aab</code> a Play Console → Toxi Media TV.</div></div>
+      </div>
+    </div>
+
+    <div class="section" id="streaming-local" data-search="streaming icecast BUTT broadcast onda visual audio micrófono stereo mix localhost 8000 source password mountpoint CORS XML">
+      <div class="section-header">
+        <span class="section-icon">📡</span>
+        <h2>Streaming local con Icecast</h2>
+        <span class="section-tag">Streaming & TV</span>
+      </div>
+      <p>Tres piezas: <strong>PC</strong> (fuente de audio) → <strong>BUTT</strong> (encoder) → <strong>Icecast</strong> (servidor).</p>
+      <h3>1 — Icecast (Windows)</h3>
+      <ul>
+        <li>Descargar de <strong>icecast.org</strong> e instalar.</li>
+        <li>Abrir <code>icecast.xml</code> y agregar CORS (necesario para la onda visual):</li>
+      </ul>
+      <pre><code>&lt;http-headers&gt;
+    &lt;header name="Access-Control-Allow-Origin" value="*" /&gt;
+&lt;/http-headers&gt;</code></pre>
+      <h3>2 — BUTT (Broadcast Using This Tool)</h3>
+      <p>Descargar de <strong>danielnoethen.de/butt</strong>. Settings → Main → Server → Add:</p>
+      <table>
+        <thead><tr><th>Campo</th><th>Valor</th></tr></thead>
+        <tbody>
+          <tr><td>Type</td><td>Icecast</td></tr>
+          <tr><td>Address</td><td><code>localhost</code></td></tr>
+          <tr><td>Port</td><td><code>8000</code></td></tr>
+          <tr><td>User</td><td><code>source</code> (no "admin")</td></tr>
+          <tr><td>Password</td><td><code>hackme</code> (default — cambiar en xml)</td></tr>
+          <tr><td>Mountpoint</td><td><code>/stream</code></td></tr>
+        </tbody>
+      </table>
+      <h3>3 — Conectar en el código</h3>
+      <pre><code>// src/line.js
+const STREAM_URL = 'http://localhost:8000/stream';</code></pre>
+      <h3>Troubleshooting</h3>
+      <table>
+        <thead><tr><th>Problema</th><th>Solución</th></tr></thead>
+        <tbody>
+          <tr><td>No entra a localhost:8000</td><td>La ventana de consola de Icecast debe estar abierta. Probar <code>127.0.0.1:8000</code>.</td></tr>
+          <tr><td>No se escucha nada</td><td>Verificar que BUTT muestre tiempo corriendo. Abrir la URL del stream directo en el browser.</td></tr>
+          <tr><td>Onda visual plana</td><td>Problema de CORS. Revisar el <code>icecast.xml</code> del paso 1.</td></tr>
+          <tr><td>Error Mixed Content</td><td>Si la web está en <code>https://</code>, el stream no puede ser <code>http://</code>. Ver la guía de streaming a internet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section" id="streaming-internet" data-search="streaming internet HTTPS zeno.fm ngrok mixed content certificado SSL relay gratis producción">
+      <div class="section-header">
+        <span class="section-icon">🌐</span>
+        <h2>Streaming a internet (HTTPS)</h2>
+        <span class="section-tag">Streaming & TV</span>
+      </div>
+      <div class="callout">
+        <p><strong>El problema:</strong> el sitio usa HTTPS (Vercel). Icecast local usa HTTP. Los browsers bloquean audio HTTP dentro de páginas HTTPS — "Mixed Content".</p>
+      </div>
+      <h3>Solución recomendada: Zeno.fm (gratis)</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Crear estación en zeno.fm/broadcasters.</strong>
+            <p>En el panel obtener: Server Address, Port, Mount Point, Password.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Configurar BUTT con los datos de Zeno.</strong>
+            <p>Reemplazar <code>localhost</code> por <code>stream.zeno.fm</code> y el resto de los datos del panel.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <strong>Actualizar <code>STREAM_URL</code> con la URL HTTPS que da Zeno:</strong>
+            <pre><code>const STREAM_URL = 'https://stream.zeno.fm/tu-codigo';</code></pre>
+          </div>
+        </div>
+      </div>
+      <h3>Alternativa temporal: Ngrok</h3>
+      <p>Para testear con alguien sin registrarse. La URL cambia en cada reinicio.</p>
+      <pre><code>ngrok http 8000
+# usar la URL https://xyz.ngrok-free.app/stream</code></pre>
+    </div>
+
+    <div class="section" id="estructura" data-search="estructura archivos src main.js paywall.js style.css public data projects.json talentos.json formatos.json api dist tools generate-static">
+      <div class="section-header">
+        <span class="section-icon">🗂</span>
+        <h2>Estructura de archivos</h2>
+        <span class="section-tag">Plataforma</span>
+      </div>
+      <pre><code>MUNDO-TOXI/
+  index.html          # Entrada principal (keypad + paywall + Three.js)
+  plantform.html      # Página dinámica de proyectos y talentos
+  tv.html             # Canal en vivo sincronizado
+  audiont.html        # Landing de Audion't
+  wiki.html           # Este wiki
+  [proyecto].html     # Páginas estáticas por proyecto especial
+
+  src/
+    main.js           # Escena Three.js
+    paywall.js        # Lógica de pagos y acceso
+    style.css         # Estilos globales
+    content.js        # Contenido de TV (items con onTV: true)
+
+  public/
+    data/
+      projects.json   # Catálogo completo de proyectos
+      talentos.json   # Catálogo de talentos
+      formatos.json   # Categorías (Cine, VR, Software, etc.)
+    [slug]/           # Imágenes y index.html SEO por proyecto
+
+  api/
+    playlist.mjs      # Playlist de TV para app Android y AI voice
+    ai-voice.mjs      # AI voice — importa playlist.mjs directo
+    transcribe.mjs    # Transcripción de audio (maxDuration: 60s)
+
+  tools/
+    upload-to-mux.js          # Subir video a Mux
+    upload-downloads-batch.js # Upload en batch
+
+  toxi-tv-android/    # App Android TV (Kotlin + ExoPlayer)
+  _archive/           # Archivos viejos preservados
+
+  vite.config.js      # Bundler: entradas HTML + PWA config
+  vercel.json         # Routing, rewrites, funciones serverless
+  generate-static.js  # Genera meta tags SEO por proyecto</code></pre>
+    </div>
+
+    <div class="section" id="public-assets" data-search="assets públicos public imágenes audio video mp3 carpeta static serve URL raíz no importar">
+      <div class="section-header">
+        <span class="section-icon">📁</span>
+        <h2>Assets públicos</h2>
+        <span class="section-tag">Plataforma</span>
+      </div>
+      <p>Todo lo que está en <code>public/</code> se sirve desde la raíz del sitio en dev y en producción. No hace falta importarlos con JS.</p>
+      <pre><code>public/hedonismo-y-seduccion/thumb.jpg
+# accesible en: /hedonismo-y-seduccion/thumb.jpg</code></pre>
+      <div class="callout info">
+        <p>Vite <strong>no procesa</strong> los archivos de <code>public/</code> — se copian tal cual al <code>dist/</code>. Ideal para imágenes grandes, audio y videos que no necesitan hashing de nombre.</p>
+      </div>
+    </div>
+
+    <div class="section" id="seo" data-search="SEO meta tags og open graph twitter card generate-static.js index.html slug Google indexación WhatsApp scraper">
+      <div class="section-header">
+        <span class="section-icon">🔍</span>
+        <h2>SEO y meta tags</h2>
+        <span class="section-tag">Plataforma</span>
+      </div>
+      <p>Las páginas de proyectos en <code>plantform.html</code> son SPA (JS renderiza el contenido). Para que Google y WhatsApp lean los meta tags correctos, se genera un <code>index.html</code> estático por proyecto.</p>
+      <h3>Generar</h3>
+      <pre><code>npm run gen
+# genera public/[slug]/index.html con:
+#   &lt;title&gt; del proyecto
+#   og:title, og:description, og:image
+#   twitter:card</code></pre>
+      <p>Vercel sirve ese HTML estático cuando Google o un scraper accede a <code>/[slug]</code>. El browser lo recibe, carga el JS de plantform y renderiza la página completa.</p>
+      <div class="callout">
+        <p>Siempre correr <code>npm run gen</code> después de modificar <code>name</code>, <code>description</code>, <code>card</code> o <code>banner</code> en <code>projects.json</code>.</p>
+      </div>
+    </div>
+
+
+    <!-- ── Equipo humano ── -->
+    <div class="section" id="team" data-search="equipo humano personas roles juan manuel cafferata fabrizio sanguinetti sofia nicola patron fermin delia julian toninello juan segundo quiroga nicolas martorell dueños marca vr series programación pasantes luis fernando guerra velarde martin pollo ximena colombres periodismo práctica profesional">
+      <div class="section-header">
+        <span class="section-icon">👥</span>
+        <h2>Equipo humano</h2>
+        <span class="section-tag">Equipo & Gear</span>
+      </div>
+
+      <h3>Core — decisiones estratégicas</h3>
+      <table>
+        <thead><tr><th>Nombre</th><th>Rol</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Juan Manuel Cafferata</strong></td><td>Co-fundador · dueño de la marca · decisiones estratégicas</td></tr>
+          <tr><td><strong>Fabrizio Sanguinetti</strong></td><td>Co-fundador · dueño de la marca · decisiones estratégicas</td></tr>
+          <tr><td><strong>Sofía Nicola Patrón</strong></td><td>Capitalista · socia</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Líderes de área</h3>
+      <table>
+        <thead><tr><th>Nombre</th><th>Área</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Fermín Delía</strong></td><td>VR — producción</td></tr>
+          <tr><td><strong>Julián Toninello</strong></td><td>VR — exhibición</td></tr>
+          <tr><td><strong>Juan Segundo Quiroga</strong></td><td>Series — líder</td></tr>
+          <tr><td><strong>Nicolás Martorell</strong></td><td>Programación — líder</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Pasantes</h3>
+      <table>
+        <thead><tr><th>Nombre</th><th>Área</th><th>Tipo</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Luis Fernando Guerra Velarde</strong></td><td>VR</td><td>Pasante</td></tr>
+          <tr><td><strong>Martín Pollo</strong></td><td>VR</td><td>Pasante</td></tr>
+          <tr><td><strong>Ximena Colombres</strong></td><td>Periodismo</td><td>Práctica profesional</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Cámaras & video ── -->
+    <div class="section" id="gear-video" data-search="cámaras video sony a7iii a7iv gimbal ronin sc steadicam reflectores LED 200w 100w 50w citroen picasso xsara transporte">
+      <div class="section-header">
+        <span class="section-icon">🎥</span>
+        <h2>Cámaras & video</h2>
+        <span class="section-tag">Equipo & Gear</span>
+      </div>
+      <table>
+        <thead><tr><th>Equipo</th><th>Detalle</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Sony A7 III</strong></td><td>Full frame mirrorless · cuerpo principal</td></tr>
+          <tr><td><strong>Sony A7 IV</strong></td><td>Full frame mirrorless · cuerpo secundario / B-cam</td></tr>
+          <tr><td><strong>DJI Ronin SC</strong></td><td>Gimbal de mano para ambas cámaras</td></tr>
+          <tr><td><strong>Reflector LED 200W</strong></td><td>Iluminación principal</td></tr>
+          <tr><td><strong>Reflector LED 100W</strong></td><td>Fill / lateral</td></tr>
+          <tr><td><strong>Reflector LED 50W</strong></td><td>Kicker / backlight</td></tr>
+          <tr><td><strong>Pantalla verde / chroma</strong></td><td>Tela backdrop en la oficina</td></tr>
+          <tr><td><strong>Citroën Picasso Xsara</strong></td><td>Transporte de equipos a locaciones</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── VR ── -->
+    <div class="section" id="gear-vr" data-search="VR realidad virtual meta quest 2 quest 3s cascos headsets exhibición">
+      <div class="section-header">
+        <span class="section-icon">🥽</span>
+        <h2>VR — headsets</h2>
+        <span class="section-tag">Equipo & Gear</span>
+      </div>
+      <table>
+        <thead><tr><th>Equipo</th><th>Cantidad</th><th>Uso</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Meta Quest 2</strong></td><td>×5</td><td>Exhibición de experiencias VR</td></tr>
+          <tr><td><strong>Meta Quest 3S</strong></td><td>×2</td><td>Desarrollo y exhibición premium</td></tr>
+        </tbody>
+      </table>
+      <div class="callout info">
+        <p>Responsables: <strong>Fermín Delía</strong> (producción) · <strong>Julián Toninello</strong> (exhibición).</p>
+      </div>
+    </div>
+
+    <!-- ── Audio ── -->
+    <div class="section" id="gear-audio" data-search="audio grabación micrófonos scarlett focusrite samson c01 rode ntg1 zoom h4n piano yamaha p90 guitarras violín clarinete trompeta instrumentos">
+      <div class="section-header">
+        <span class="section-icon">🎙</span>
+        <h2>Audio</h2>
+        <span class="section-tag">Equipo & Gear</span>
+      </div>
+      <h3>Interfaz & grabadores</h3>
+      <table>
+        <thead><tr><th>Equipo</th><th>Detalle</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Focusrite Scarlett i2</strong></td><td>Interfaz de audio 2 entradas · uso en estudio y set</td></tr>
+          <tr><td><strong>Zoom H4n</strong></td><td>Grabador de campo portátil · 4 pistas</td></tr>
+        </tbody>
+      </table>
+      <h3>Micrófonos</h3>
+      <table>
+        <thead><tr><th>Equipo</th><th>Tipo</th><th>Uso</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Samson C01</strong></td><td>Condensador de diafragma grande</td><td>Voz, instrumento en estudio</td></tr>
+          <tr><td><strong>Rode NTG1</strong></td><td>Shotgun / cardioide</td><td>Audio en cámara, entrevistas, set</td></tr>
+        </tbody>
+      </table>
+      <h3>Instrumentos</h3>
+      <table>
+        <thead><tr><th>Instrumento</th><th>Modelo / detalle</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Piano eléctrico</strong></td><td>Yamaha P90</td></tr>
+          <tr><td><strong>Guitarras</strong></td><td>×2</td></tr>
+          <tr><td><strong>Violín</strong></td><td>×1</td></tr>
+          <tr><td><strong>Clarinete</strong></td><td>×1</td></tr>
+          <tr><td><strong>Trompeta</strong></td><td>×1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Infraestructura ── -->
+    <div class="section" id="gear-infra" data-search="infraestructura oficina rodríguez peña 158 computadoras dell xps 15 pc gamer nvidia rtx 1060">
+      <div class="section-header">
+        <span class="section-icon">🏢</span>
+        <h2>Infraestructura</h2>
+        <span class="section-tag">Equipo & Gear</span>
+      </div>
+      <h3>Oficina</h3>
+      <table>
+        <thead><tr><th>Espacio</th><th>Dirección</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Sede principal</strong></td><td>Rodríguez Peña 158 · Buenos Aires</td></tr>
+        </tbody>
+      </table>
+      <h3>Computadoras</h3>
+      <table>
+        <thead><tr><th>Equipo</th><th>Cantidad</th><th>Uso</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Dell XPS 15</strong></td><td>×2</td><td>Edición, desarrollo, renders livianos</td></tr>
+          <tr><td><strong>PC Gamer — NVIDIA RTX 1060</strong></td><td>×2</td><td>Renders pesados, desarrollo VR, 3D en tiempo real</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<div class="no-results" id="no-results">Sin resultados.</div>
+
+<script>
+  const searchInput = document.getElementById('search');
+  const noResults = document.getElementById('no-results');
+  const resultCount = document.getElementById('result-count');
+  const navLinks = document.querySelectorAll('.nav-link');
+  const mainContent = document.getElementById('main-content');
+  const sections = Array.from(document.querySelectorAll('.section'));
+
+  function normalize(str) {
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function clearMarks() {
+    mainContent.querySelectorAll('mark').forEach(m => {
+      m.replaceWith(document.createTextNode(m.textContent));
+    });
+    mainContent.normalize();
+  }
+
+  function markIn(node, term) {
+    if (node.nodeType === 3) {
+      const idx = normalize(node.textContent).indexOf(term);
+      if (idx === -1) return;
+      const mark = document.createElement('mark');
+      mark.textContent = node.textContent.slice(idx, idx + term.length);
+      const frag = document.createDocumentFragment();
+      frag.appendChild(document.createTextNode(node.textContent.slice(0, idx)));
+      frag.appendChild(mark);
+      frag.appendChild(document.createTextNode(node.textContent.slice(idx + term.length)));
+      node.replaceWith(frag);
+    } else if (node.nodeType === 1 && !['SCRIPT','STYLE','PRE','CODE'].includes(node.tagName)) {
+      Array.from(node.childNodes).forEach(c => markIn(c, term));
+    }
+  }
+
+  let currentTerm = '';
+
+  function filter() {
+    const term = normalize(currentTerm.trim());
+    clearMarks();
+    let visible = 0;
+
+    sections.forEach(s => {
+      if (!term) {
+        s.style.display = '';
+        visible++;
+        return;
+      }
+      const haystack = normalize((s.dataset.search || '') + ' ' + s.textContent);
+      if (haystack.includes(term)) {
+        s.style.display = '';
+        visible++;
+        if (term.length > 1) markIn(s, term);
+      } else {
+        s.style.display = 'none';
+      }
+    });
+
+    resultCount.textContent = term
+      ? `${visible} de ${sections.length} secciones`
+      : `${sections.length} secciones`;
+    noResults.style.display = visible === 0 ? 'block' : 'none';
+    mainContent.style.display = visible === 0 ? 'none' : '';
+  }
+
+  searchInput.addEventListener('input', e => { currentTerm = e.target.value; filter(); });
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      const target = document.getElementById(link.dataset.id);
+      if (!target) return;
+      currentTerm = ''; searchInput.value = ''; filter();
+      setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 30);
+    });
+  });
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting)
+        navLinks.forEach(l => l.classList.toggle('active', l.dataset.id === e.target.id));
+    });
+  }, { rootMargin: '-20% 0px -65% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+  filter();
+</script>
+</body>
+</html>
