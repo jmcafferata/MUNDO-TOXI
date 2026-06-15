@@ -1,0 +1,385 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>TOXI Zapping</title>
+    <meta property="og:title" content="TOXI Zapping" />
+    <meta property="og:description" content="Modo zapping de TOXI Media." />
+    <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+    <link rel="icon" href="/favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <script>
+        // Inicializar Cast SDK con receiver personalizado antes de que mux-player lo use
+        window['__onGCastApiAvailable'] = function(isAvailable) {
+            if (isAvailable) {
+                cast.framework.CastContext.getInstance().setOptions({
+                    receiverApplicationId: 'B668F863',
+                    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                });
+            }
+        };
+    </script>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        header {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        .logo-link {
+            pointer-events: all;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+            text-decoration: none;
+        }
+        .logo-link:hover { opacity: 1; }
+        .logo-link img { height: 22px; }
+
+        .tv-badge {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.5);
+        }
+        .tv-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; opacity: 0.7; }
+
+        #player-wrap {
+            flex: 1;
+            position: relative;
+            background: #000;
+        }
+
+        mux-player {
+            width: 100%; height: 100%;
+            position: absolute; inset: 0;
+            z-index: 5;
+            --media-object-fit: contain;
+            --media-background-color: #000;
+            --media-primary-color: #fff;
+            --media-accent-color: #fff;
+            --media-secondary-color: #000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        mux-player.is-active { opacity: 1; z-index: 6; }
+
+        #cast-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 20;
+            width: 28px;
+            height: 28px;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            pointer-events: all;
+            transition: color 0.2s;
+        }
+        #cast-btn:hover { color: #fff; }
+        
+        #now-playing {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            z-index: 10;
+            padding: calc(72px + env(safe-area-inset-top, 0px)) 28px 32px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.88) 0%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            transform: translateY(-100%);
+            transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+        #now-playing.visible { transform: translateY(0); }
+
+        .np-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.2em; color: rgba(255,255,255,0.4); }
+        .np-title { font-size: 1.05rem; font-weight: 500; }
+        .np-next  { font-size: 0.7rem; color: rgba(255,255,255,0.38); margin-top: 2px; }
+        .np-next span { color: rgba(255,255,255,0.6); }
+
+        .np-progress { margin-top: 10px; height: 2px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden; }
+        .np-progress-fill { height: 100%; background: rgba(255,255,255,0.55); border-radius: 2px; transition: width 1s linear; width: 0%; }
+
+        #clock { font-size: 0.65rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.38); font-variant-numeric: tabular-nums; }
+        #offline-screen.visible { display: flex; }
+        .offline-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.3; }
+
+        #age-gate {
+            position: absolute; inset: 0; z-index: 30;
+            background: #000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 32px;
+        }
+        #age-gate.hidden { display: none; }
+        .age-gate-logo { height: 28px; opacity: 0.9; margin-bottom: 8px; }
+        .age-gate-title {
+            font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.25em;
+            color: rgba(255,255,255,0.35);
+        }
+        .age-gate-buttons { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+        .age-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            padding: 14px 28px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .age-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="logo-link" href="/"><img src="/toxi-logo-white.png" alt="TOXI Media" /></a>
+        <div class="tv-badge"><span class="tv-dot"></span><span id="clock">--:--</span></div>
+    </header>
+
+    <div id="player-wrap">
+        <mux-player id="mux-player-a" class="is-active" stream-type="on-demand" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+        <mux-player id="mux-player-b"                    stream-type="on-demand"         muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+        <google-cast-launcher id="cast-btn" title="Chromecast"></google-cast-launcher>
+        <div id="age-gate">
+            <img class="age-gate-logo" src="/toxi-logo-white.png" alt="TOXI Media" />
+            <div class="age-gate-title">¿Cuántos años tenés?</div>
+            <div class="age-gate-buttons">
+                <button class="age-btn" id="age-over">Soy mayor de 16 años</button>
+                <button class="age-btn" id="age-under">Soy menor de 16 años</button>
+            </div>
+        </div>
+        <div id="offline-screen"><div class="offline-title">Sin señal</div></div>
+
+        <div id="now-playing">
+            <div class="np-label">Ahora</div>
+            <div class="np-title" id="np-title">—</div>
+            <div class="np-progress"><div class="np-progress-fill" id="np-fill"></div></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { TV_PLAYLIST } from './src/content.js';
+
+        const PLAYLIST = TV_PLAYLIST.map(v => ({ id: v.id, duration: v.duration, title: v.title }));
+
+        // ── Double-buffer: dos players apilados para zap sin loading ──
+        const players    = [document.getElementById('mux-player-a'), document.getElementById('mux-player-b')];
+        const npTitle    = document.getElementById('np-title');
+        const npFill     = document.getElementById('np-fill');
+        const nowPlaying = document.getElementById('now-playing');
+        const clockEl    = document.getElementById('clock');
+
+        let activeSlot   = 0;          // 0 o 1 — qué player está mostrando
+        let currentIndex = -1;
+        let audioActive  = false;
+        let overlayTimer = null;
+        let zapTimeout   = null;
+        let zapState     = null;       // { video, offset, index, zapDuration, startedAt }
+        let nextZapState = null;       // próximo slot precargado
+        let seekGuard    = [false, false];
+
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+        function pickState(excludeIndex) {
+            let idx;
+            do { idx = Math.floor(Math.random() * PLAYLIST.length); }
+            while (PLAYLIST.length > 1 && idx === excludeIndex);
+            const video       = PLAYLIST[idx];
+            const zapDuration = randInt(5, 30);
+            const maxOffset   = Math.max(0, video.duration - zapDuration - 1);
+            const offset      = Math.random() * maxOffset;
+            return { video, offset, index: idx, zapDuration };
+        }
+
+        function preloadNext(excludeIndex) {
+            nextZapState = pickState(excludeIndex);
+            const slot = 1 - activeSlot;
+            const p    = players[slot];
+            p.muted    = true;
+            p.setAttribute('playback-id', nextZapState.video.id);
+            const onMeta = () => {
+                seekGuard[slot] = true;
+                p.currentTime   = nextZapState.offset;
+                seekGuard[slot] = false;
+                p.pause();
+                p.removeEventListener('loadedmetadata', onMeta);
+            };
+            p.addEventListener('loadedmetadata', onMeta);
+        }
+
+        function doZap() {
+            clearTimeout(zapTimeout);
+
+            const wasPreloaded = !!nextZapState;
+            const state   = nextZapState || pickState(currentIndex);
+            const newSlot = 1 - activeSlot;
+            const oldSlot = activeSlot;
+            const newP    = players[newSlot];
+            const oldP    = players[oldSlot];
+
+            // Swap visual
+            newP.classList.add('is-active');
+            oldP.classList.remove('is-active');
+            activeSlot   = newSlot;
+            currentIndex = state.index;
+            zapState     = { ...state, startedAt: Date.now() };
+            nextZapState = null;
+
+            // Audio
+            if (audioActive) { newP.muted = false; newP.volume = 1; }
+            oldP.muted = true;
+
+            if (wasPreloaded) {
+                // Ya precargado y seekeado — play instantáneo
+                newP.play().catch(() => {});
+            } else {
+                // Primera carga — esperar loadedmetadata
+                newP.setAttribute('playback-id', state.video.id);
+                const onMeta = () => {
+                    seekGuard[newSlot] = true;
+                    newP.currentTime   = state.offset;
+                    seekGuard[newSlot] = false;
+                    newP.play().catch(() => {});
+                    newP.removeEventListener('loadedmetadata', onMeta);
+                };
+                newP.addEventListener('loadedmetadata', onMeta);
+            }
+
+            showOverlay();
+            zapTimeout = setTimeout(doZap, state.zapDuration * 1000);
+            // Precargar el siguiente (pequeño delay para no competir con el play actual)
+            setTimeout(() => preloadNext(currentIndex), 1500);
+        }
+
+        // Eventos en ambos players (solo el activo importa)
+        players.forEach((p, slot) => {
+            p.addEventListener('ended', () => {
+                if (slot !== activeSlot) return;
+                clearTimeout(zapTimeout); doZap();
+            });
+            p.addEventListener('pause', () => {
+                if (slot !== activeSlot || document.hidden) return;
+                p.play().catch(() => {});
+            });
+            p.addEventListener('seeking', () => {
+                if (seekGuard[slot] || slot !== activeSlot || !zapState) return;
+                const expected = zapState.offset + (Date.now() - zapState.startedAt) / 1000;
+                if (Math.abs(p.currentTime - expected) > 2) {
+                    seekGuard[slot] = true;
+                    p.currentTime   = expected;
+                    seekGuard[slot] = false;
+                }
+            });
+        });
+
+        // Overlay de "ahora"
+        function showOverlay() {
+            if (!zapState) return;
+            npTitle.textContent = zapState.video.title;
+            nowPlaying.classList.add('visible');
+            clearTimeout(overlayTimer);
+            overlayTimer = setTimeout(() => nowPlaying.classList.remove('visible'), 6000);
+        }
+
+        // Barra de progreso
+        setInterval(() => {
+            if (!zapState) return;
+            const elapsed = (Date.now() - zapState.startedAt) / 1000;
+            npFill.style.width = Math.min(100, (elapsed / zapState.zapDuration) * 100) + '%';
+        }, 1000);
+
+        // Reloj — UTC-3 fijo (Argentina)
+        function formatAR(date) {
+            const d = new Date(date.getTime() - 3 * 60 * 60 * 1000);
+            return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+        }
+        function updateClock() { clockEl.textContent = formatAR(new Date()); }
+        updateClock();
+        setInterval(updateClock, 10000);
+
+        // ── Registro de skips ─────────────────────────────────
+        function recordSkip() {
+            if (!zapState) return;
+            const elapsed = (Date.now() - zapState.startedAt) / 1000;
+            const entry = {
+                ts:        new Date().toISOString(),
+                id:        zapState.video.id,
+                title:     zapState.video.title,
+                offset:    Math.round(zapState.offset),
+                watched:   Math.round(elapsed),
+                zapBudget: zapState.zapDuration,
+            };
+            try {
+                const skips = JSON.parse(localStorage.getItem('tv_skips') || '[]');
+                skips.push(entry);
+                localStorage.setItem('tv_skips', JSON.stringify(skips));
+            } catch(e) {}
+        }
+
+        function manualZap() {
+            if (!ageGate.classList.contains('hidden')) return; // ignorar antes del age gate
+            recordSkip();
+            doZap();
+        }
+
+        // Click en cualquier parte → skip
+        document.getElementById('player-wrap').addEventListener('click', () => manualZap());
+
+        // Cualquier tecla → skip
+        document.addEventListener('keydown', e => {
+            if (!ageGate.classList.contains('hidden')) return;
+            manualZap();
+        });
+
+        // Age gate
+        const ageGate = document.getElementById('age-gate');
+        function dismissAgeGate() {
+            audioActive = true;
+            const p = players[activeSlot];
+            p.muted = false; p.volume = 1;
+            ageGate.classList.add('hidden');
+        }
+        document.getElementById('age-over').addEventListener('click', dismissAgeGate);
+        document.getElementById('age-under').addEventListener('click', dismissAgeGate);
+
+        // Arrancar
+        if (!PLAYLIST.length) {
+            document.getElementById('offline-screen').classList.add('visible');
+        } else {
+            doZap();
+        }
+    </script>
+
+</body>
+</html>

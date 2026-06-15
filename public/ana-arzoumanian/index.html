@@ -599,8 +599,8 @@
       .ai-mic-btn { width: 48px; height: 48px; }
     }
   </style>
-  <link rel="canonical" href="https://toxi.media/ana-arzoumanian" />
-  <meta property="og:url" content="https://toxi.media/ana-arzoumanian" />
+  <link rel="canonical" href="https://www.toxi.media/ana-arzoumanian" />
+  <meta property="og:url" content="https://www.toxi.media/ana-arzoumanian" />
 </head>
 <body>
 
@@ -674,10 +674,11 @@
 
   // ── Data ──────────────────────────────────────────────
   async function loadData() {
+    const nonce = Date.now();
     const [p, t, f] = await Promise.all([
-      fetch('/data/projects.json').then(r => r.json()),
-      fetch('/data/talentos.json').then(r => r.json()),
-      fetch('/data/formatos.json').then(r => r.json()),
+      fetch(`/data/projects.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/data/talentos.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/data/formatos.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
     ]);
     projects = p;
     talentos = t;
@@ -1054,7 +1055,7 @@
   }
 
   const recognition = new SpeechRecognition();
-  recognition.lang = navigator.language || 'es-AR';
+  recognition.lang = 'es-AR';
   recognition.interimResults = true;
   recognition.maxAlternatives = 1;
   recognition.continuous = false;

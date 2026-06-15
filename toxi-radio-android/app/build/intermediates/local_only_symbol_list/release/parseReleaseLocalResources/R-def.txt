@@ -1,0 +1,18 @@
+R_DEF: Internal format may change without notice
+local
+color ic_launcher_background
+drawable banner
+drawable ic_launcher_foreground
+drawable ic_launcher_foreground_backup
+drawable overlay_gradient
+drawable toxi_logo
+id cast_button
+id next_text
+id now_text
+id overlay
+id title_text
+layout activity_main
+mipmap ic_launcher
+mipmap ic_launcher_round
+string app_name
+style Theme.ToxiRadio

@@ -599,8 +599,8 @@
       .ai-mic-btn { width: 48px; height: 48px; }
     }
   </style>
-  <link rel="canonical" href="https://toxi.media/las-formas-del-laberinto" />
-  <meta property="og:url" content="https://toxi.media/las-formas-del-laberinto" />
+  <link rel="canonical" href="https://www.toxi.media/las-formas-del-laberinto" />
+  <meta property="og:url" content="https://www.toxi.media/las-formas-del-laberinto" />
 </head>
 <body>
 
@@ -674,10 +674,11 @@
 
   // ── Data ──────────────────────────────────────────────
   async function loadData() {
+    const nonce = Date.now();
     const [p, t, f] = await Promise.all([
-      fetch('/data/projects.json').then(r => r.json()),
-      fetch('/data/talentos.json').then(r => r.json()),
-      fetch('/data/formatos.json').then(r => r.json()),
+      fetch(`/data/projects.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/data/talentos.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
+      fetch(`/data/formatos.json?v=${nonce}`, { cache: 'no-store' }).then(r => r.json()),
     ]);
     projects = p;
     talentos = t;
@@ -1054,7 +1055,7 @@
   }
 
   const recognition = new SpeechRecognition();
-  recognition.lang = navigator.language || 'es-AR';
+  recognition.lang = 'es-AR';
   recognition.interimResults = true;
   recognition.maxAlternatives = 1;
   recognition.continuous = false;
@@ -1178,5 +1179,12 @@
   });
 })();
 </script>
+
+<footer style="text-align:center; padding:40px 24px 48px; border-top:1px solid rgba(255,255,255,0.1);">
+  <div style="display:inline-flex; align-items:center; gap:18px; padding:16px 26px; background:#fff; border-radius:8px;">
+    <img src="/logo_fna.png" alt="Fondo Nacional de las Artes" style="height:42px; display:block;">
+    <span style="font-size:0.75rem; color:#111; letter-spacing:0.05em; line-height:1.55; font-family:Helvetica,'Helvetica Neue',Arial,sans-serif;">Concurso Arte y Tecnología 2026<br>Palacio Libertad</span>
+  </div>
+</footer>
 </body>
 </html>

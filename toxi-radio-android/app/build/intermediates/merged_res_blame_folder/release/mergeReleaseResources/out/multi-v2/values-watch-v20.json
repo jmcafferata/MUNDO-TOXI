@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "media.toxi.radio.app-mergeReleaseResources-31:/values-watch-v20/values-watch-v20.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\JM\\.gradle\\caches\\transforms-4\\70961a9c2caba01ab77e2b967ef87228\\transformed\\appcompat-1.7.0\\res\\values-watch-v20\\values-watch-v20.xml",
+                    "from": {
+                        "startLines": "2,5,8",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,214,385",
+                        "endLines": "4,7,10",
+                        "endColumns": "12,12,12",
+                        "endOffsets": "209,380,553"
+                    }
+                }
+            ]
+        }
+    ]
+}
