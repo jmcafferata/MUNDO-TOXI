@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xplora Night Live</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            overflow: hidden;
+        }
+        mux-player {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+            --controls: none;
+        }
+    </style>
+</head>
+<body>
+    <mux-player
+        playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
+        stream-type="live"
+        autoplay
+        muted
+        playsinline
+    ></mux-player>
+</body>
+</html>
