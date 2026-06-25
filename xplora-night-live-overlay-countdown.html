@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overlay Countdown</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: #00FF00;
+            overflow: hidden;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        #countdown-box {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 600px;
+            padding: 32px 40px;
+            box-sizing: border-box;
+            will-change: transform;
+            background:
+                radial-gradient(circle at 20% 0%, rgba(255, 120, 220, 0.45), transparent 55%),
+                radial-gradient(circle at 100% 100%, rgba(80, 0, 180, 0.7), transparent 60%),
+                linear-gradient(135deg, #2a0a4a 0%, #5b1a9c 45%, #8a2be2 100%);
+            color: #fff;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow:
+                0 20px 60px rgba(80, 0, 160, 0.55),
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+                0 1px 0 rgba(255, 255, 255, 0.2) inset;
+        }
+        #label {
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            opacity: 0.85;
+            margin-bottom: 16px;
+        }
+        #logo {
+            display: block;
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto 20px;
+            height: auto;
+            filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.4));
+        }
+        #timer {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            align-items: end;
+            justify-items: center;
+            gap: 8px;
+            font-variant-numeric: tabular-nums;
+        }
+        .unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .num {
+            font-size: 88px;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .lbl {
+            margin-top: 10px;
+            font-size: 14px;
+            letter-spacing: 3px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div id="countdown-box">
+        <img id="logo" src="xplora-night-live-logo.png" alt="Xplora Night Live">
+        <div id="label">Empieza en</div>
+        <div id="timer">
+            <div class="unit"><div class="num" id="days">--</div><div class="lbl">DÍAS</div></div>
+            <div class="unit"><div class="num" id="hrs">--</div><div class="lbl">HRS</div></div>
+            <div class="unit"><div class="num" id="mins">--</div><div class="lbl">MIN</div></div>
+            <div class="unit"><div class="num" id="secs">--</div><div class="lbl">SEG</div></div>
+        </div>
+    </div>
+    <script>
+        // Objetivo: mañana a las 20:00 hora Buenos Aires (UTC-3, sin DST)
+        // Calculamos "mañana" según la fecha actual en Buenos Aires.
+        function getTargetUTC() {
+            const nowUtcMs = Date.now();
+            // Hora actual en BA = UTC - 3
+            const baNow = new Date(nowUtcMs - 3 * 60 * 60 * 1000);
+            const y = baNow.getUTCFullYear();
+            const m = baNow.getUTCMonth();
+            const d = baNow.getUTCDate();
+            // Mañana 20:00 BA  ==  mañana 23:00 UTC
+            return Date.UTC(y, m, d + 1, 23, 0, 0);
+        }
+
+        const targetMs = getTargetUTC();
+        const elDays = document.getElementById('days');
+        const elHrs  = document.getElementById('hrs');
+        const elMins = document.getElementById('mins');
+        const elSecs = document.getElementById('secs');
+
+        function pad(n) { return String(n).padStart(2, '0'); }
+
+        function tick() {
+            let diff = Math.max(0, targetMs - Date.now());
+            const days = Math.floor(diff / 86400000); diff -= days * 86400000;
+            const hrs  = Math.floor(diff / 3600000);  diff -= hrs * 3600000;
+            const mins = Math.floor(diff / 60000);    diff -= mins * 60000;
+            const secs = Math.floor(diff / 1000);
+            elDays.textContent = pad(days);
+            elHrs.textContent  = pad(hrs);
+            elMins.textContent = pad(mins);
+            elSecs.textContent = pad(secs);
+        }
+
+        tick();
+        setInterval(tick, 1000);
+
+        // Rebote tipo DVD
+        const box = document.getElementById('countdown-box');
+        let x = 40, y = 40;
+        let vx = 60, vy = 45; // px / s (lento)
+        let lastT = performance.now();
+
+        function animate(t) {
+            const dt = Math.min(0.05, (t - lastT) / 1000);
+            lastT = t;
+
+            const w = box.offsetWidth;
+            const h = box.offsetHeight;
+            const maxX = window.innerWidth - w;
+            const maxY = window.innerHeight - h;
+
+            x += vx * dt;
+            y += vy * dt;
+
+            if (x <= 0) { x = 0; vx = Math.abs(vx); }
+            else if (x >= maxX) { x = maxX; vx = -Math.abs(vx); }
+            if (y <= 0) { y = 0; vy = Math.abs(vy); }
+            else if (y >= maxY) { y = maxY; vy = -Math.abs(vy); }
+
+            box.style.transform = `translate(${x}px, ${y}px)`;
+            requestAnimationFrame(animate);
+        }
+        requestAnimationFrame((t) => { lastT = t; animate(t); });
+    </script>
+</body>
+</html>

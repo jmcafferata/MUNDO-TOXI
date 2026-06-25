@@ -76,6 +76,8 @@ export default defineConfig({
         wiki: resolve(__dirname, 'wiki.html'),
         onboarding: resolve(__dirname, 'onboarding.html'),
         matriz: resolve(__dirname, 'matriz.html'),
+        xploraNightLive: resolve(__dirname, 'xplora-night-live.html'),
+        xploraNightLiveOverlayCountdown: resolve(__dirname, 'xplora-night-live-overlay-countdown.html'),
       },
     },
   },
