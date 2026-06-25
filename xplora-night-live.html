@@ -11,24 +11,74 @@
             padding: 0;
             width: 100%;
             height: 100%;
-            background: #000;
             overflow: hidden;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
         }
-        mux-player {
+        body {
+            background-color: #2a0a4a;
+            background-image:
+                radial-gradient(circle at 15% 20%, rgba(255, 120, 220, 0.35), transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(80, 0, 180, 0.6), transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05), transparent 70%),
+                linear-gradient(135deg, #1a0533 0%, #3d0a6e 35%, #6b1fb0 70%, #8a2be2 100%);
+            background-attachment: fixed;
+            position: relative;
+        }
+        /* Patrón sutil de puntos */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1.5px),
+                radial-gradient(circle, rgba(255, 180, 255, 0.05) 1px, transparent 1.5px);
+            background-size: 32px 32px, 64px 64px;
+            background-position: 0 0, 16px 16px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* Brillo móvil sutil */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: -20%;
+            background: radial-gradient(ellipse at center, rgba(255, 100, 220, 0.18), transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            animation: drift 18s ease-in-out infinite alternate;
+        }
+        @keyframes drift {
+            0%   { transform: translate(-8%, -6%) scale(1); }
+            100% { transform: translate(8%, 6%) scale(1.15); }
+        }
+        .stage {
+            position: relative;
+            z-index: 1;
             width: 100vw;
             height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        mux-player {
+            width: 100%;
+            height: 100%;
             display: block;
             --controls: none;
+            background: transparent;
+            --media-background-color: transparent;
         }
     </style>
 </head>
 <body>
-    <mux-player
-        playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
-        stream-type="live"
-        autoplay
-        muted
-        playsinline
-    ></mux-player>
+    <div class="stage">
+        <mux-player
+            playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
+            stream-type="live"
+            autoplay
+            muted
+            playsinline
+        ></mux-player>
+    </div>
 </body>
 </html>
