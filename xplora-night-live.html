@@ -68,11 +68,39 @@
             background: transparent;
             --media-background-color: transparent;
         }
+        #unmute {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(26, 5, 51, 0.55);
+            backdrop-filter: blur(6px);
+            color: #fff;
+            font-size: 28px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.4s ease;
+        }
+        #unmute.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #unmute .pill {
+            padding: 18px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(255, 120, 220, 0.35), rgba(80, 0, 180, 0.55));
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
     </style>
 </head>
 <body>
     <div class="stage">
         <mux-player
+            id="player"
             playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
             stream-type="live"
             autoplay
@@ -80,5 +108,21 @@
             playsinline
         ></mux-player>
     </div>
+    <div id="unmute"><div class="pill">▶ Tocar para activar audio</div></div>
+    <script>
+        const player = document.getElementById('player');
+        const overlay = document.getElementById('unmute');
+        function activate() {
+            try {
+                player.muted = false;
+                player.volume = 1;
+                const p = player.play();
+                if (p && typeof p.then === 'function') p.catch(() => {});
+            } catch (e) {}
+            overlay.classList.add('hidden');
+        }
+        overlay.addEventListener('click', activate);
+        overlay.addEventListener('touchstart', activate, { passive: true });
+    </script>
 </body>
 </html>
