@@ -53,6 +53,10 @@
       "destination": "/otro-dia-en-la-red.html"
     },
     {
+      "source": "/xplora-night-live",
+      "destination": "/xplora-night-live.html"
+    },
+    {
       "source": "/wiki",
       "destination": "/wiki.html"
     },
