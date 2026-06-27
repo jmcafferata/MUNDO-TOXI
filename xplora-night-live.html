@@ -111,6 +111,18 @@
     <script>
         const player = document.getElementById('player');
         const overlay = document.getElementById('unmute');
+
+        function checkHash() {
+            if (window.location.hash.toLowerCase() === '#solifugos') {
+                player.setAttribute('stream-type', 'on-demand');
+            } else {
+                player.setAttribute('stream-type', 'live');
+            }
+        }
+        // Comprobar al cargar el archivo y al cambiar el hashtag
+        checkHash();
+        window.addEventListener('hashchange', checkHash);
+
         function activate() {
             try {
                 player.muted = false;
@@ -119,6 +131,17 @@
                 if (p && typeof p.then === 'function') p.catch(() => {});
             } catch (e) {}
             overlay.classList.add('hidden');
+
+            // Si entra con #solifugos, reproducir en pantalla completa
+            if (window.location.hash.toLowerCase() === '#solifugos') {
+                if (player.requestFullscreen) {
+                    player.requestFullscreen();
+                } else if (player.webkitRequestFullscreen) {
+                    player.webkitRequestFullscreen();
+                } else if (player.msRequestFullscreen) {
+                    player.msRequestFullscreen();
+                }
+            }
         }
         overlay.addEventListener('click', activate);
         overlay.addEventListener('touchstart', activate, { passive: true });
