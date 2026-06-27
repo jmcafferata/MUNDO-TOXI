@@ -100,8 +100,6 @@
     <div class="stage">
         <mux-player
             id="player"
-            playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
-            stream-type="live"
             autoplay
             muted
             playsinline
@@ -115,9 +113,12 @@
         function checkHash() {
             if (window.location.hash.toLowerCase() === '#solifugos') {
                 player.setAttribute('stream-type', 'on-demand');
+                player.setAttribute('controls', 'true');
             } else {
                 player.setAttribute('stream-type', 'live');
+                player.removeAttribute('controls');
             }
+            player.setAttribute('playback-id', 'LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms');
         }
         // Comprobar al cargar el archivo y al cambiar el hashtag
         checkHash();
