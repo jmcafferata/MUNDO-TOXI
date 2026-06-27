@@ -110,15 +110,19 @@
         const player = document.getElementById('player');
         const overlay = document.getElementById('unmute');
 
+        const LIVE_PLAYBACK_ID = 'LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms';
+        const SOLIFUGOS_PLAYBACK_ID = '201g8UPZlZrwjqOv201VFUrPF7BlSHHnm02LUTEbZ009ZfA';
+
         function checkHash() {
             if (window.location.hash.toLowerCase() === '#solifugos') {
                 player.setAttribute('stream-type', 'on-demand');
                 player.setAttribute('controls', 'true');
+                player.setAttribute('playback-id', SOLIFUGOS_PLAYBACK_ID);
             } else {
                 player.setAttribute('stream-type', 'live');
                 player.removeAttribute('controls');
+                player.setAttribute('playback-id', LIVE_PLAYBACK_ID);
             }
-            player.setAttribute('playback-id', 'LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms');
         }
         // Comprobar al cargar el archivo y al cambiar el hashtag
         checkHash();
