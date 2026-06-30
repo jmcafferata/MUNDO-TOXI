@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MERS Vlog</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        .stage {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+        mux-player {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: #000;
+            --media-object-fit: cover;
+            --controls: none;
+            --media-background-color: #000;
+        }
+        #unmute {
+            position: fixed;
+            inset: auto 0 32px 0;
+            display: flex;
+            justify-content: center;
+            z-index: 10;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        #unmute.hidden {
+            opacity: 0;
+        }
+        #unmute button {
+            pointer-events: auto;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #fff;
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 16px 28px;
+            border-radius: 999px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        #unmute button:hover {
+            transform: scale(1.04);
+            background: rgba(0, 0, 0, 0.75);
+        }
+    </style>
+</head>
+<body>
+    <div class="stage">
+        <mux-player
+            id="player"
+            playback-id="KMqFFjIjC4R7FafgSiwFb8oRnDDwkyzq7YDgcMsp9zg"
+            stream-type="on-demand"
+            autoplay
+            muted
+            loop
+            playsinline
+            nohotkeys
+        ></mux-player>
+    </div>
+    <div id="unmute">
+        <button type="button" aria-label="Activar sonido">🔇 Activar sonido</button>
+    </div>
+    <script>
+        const player = document.getElementById('player');
+        const overlay = document.getElementById('unmute');
+        const button = overlay.querySelector('button');
+
+        function activate() {
+            try {
+                player.muted = false;
+                player.volume = 1;
+                const p = player.play();
+                if (p && typeof p.then === 'function') p.catch(() => {});
+            } catch (e) {}
+            overlay.classList.add('hidden');
+        }
+
+        button.addEventListener('click', activate);
+        button.addEventListener('touchstart', activate, { passive: true });
+    </script>
+</body>
+</html>

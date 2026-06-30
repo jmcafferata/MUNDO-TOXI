@@ -57,6 +57,10 @@
       "destination": "/xplora-night-live.html"
     },
     {
+      "source": "/mers-vlog",
+      "destination": "/mers-vlog.html"
+    },
+    {
       "source": "/xplora-night-live/overlay-countdown",
       "destination": "/xplora-night-live-overlay-countdown.html"
     },
