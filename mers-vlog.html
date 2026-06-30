@@ -30,19 +30,23 @@
             --controls: none;
             --media-background-color: #000;
         }
-        #unmute {
+        /* En pantalla completa mostrar el video entero, sin cropear */
+        mux-player:fullscreen,
+        mux-player:-webkit-full-screen {
+            --media-object-fit: contain;
+        }
+        .controls {
             position: fixed;
             inset: auto 0 32px 0;
             display: flex;
             justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 0 16px;
             z-index: 10;
             pointer-events: none;
-            transition: opacity 0.4s ease;
         }
-        #unmute.hidden {
-            opacity: 0;
-        }
-        #unmute button {
+        .controls button {
             pointer-events: auto;
             cursor: pointer;
             border: 1px solid rgba(255, 255, 255, 0.5);
@@ -50,17 +54,20 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             color: #fff;
-            font-size: 18px;
+            font-size: 16px;
             letter-spacing: 2px;
             text-transform: uppercase;
-            padding: 16px 28px;
+            padding: 14px 22px;
             border-radius: 999px;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-            transition: transform 0.2s ease, background 0.2s ease;
+            transition: transform 0.2s ease, background 0.2s ease, opacity 0.3s ease;
         }
-        #unmute button:hover {
+        .controls button:hover {
             transform: scale(1.04);
             background: rgba(0, 0, 0, 0.75);
+        }
+        .controls button.hidden {
+            display: none;
         }
     </style>
 </head>
@@ -77,26 +84,52 @@
             nohotkeys
         ></mux-player>
     </div>
-    <div id="unmute">
-        <button type="button" aria-label="Activar sonido">🔇 Activar sonido</button>
+    <div class="controls">
+        <button id="unmute-btn" type="button" aria-label="Activar sonido">🔇 Activar sonido</button>
+        <button id="fullscreen-btn" type="button" aria-label="Pantalla completa">⛶ Pantalla completa</button>
     </div>
     <script>
         const player = document.getElementById('player');
-        const overlay = document.getElementById('unmute');
-        const button = overlay.querySelector('button');
+        const unmuteBtn = document.getElementById('unmute-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
 
-        function activate() {
+        function activateSound() {
             try {
                 player.muted = false;
                 player.volume = 1;
                 const p = player.play();
                 if (p && typeof p.then === 'function') p.catch(() => {});
             } catch (e) {}
-            overlay.classList.add('hidden');
+            unmuteBtn.classList.add('hidden');
         }
 
-        button.addEventListener('click', activate);
-        button.addEventListener('touchstart', activate, { passive: true });
+        async function goFullscreen() {
+            try {
+                // Activar sonido también al entrar en fullscreen
+                player.muted = false;
+                player.volume = 1;
+                unmuteBtn.classList.add('hidden');
+
+                // iOS Safari usa el fullscreen nativo del <video>
+                const videoEl = player.media && player.media.nativeEl;
+                if (videoEl && typeof videoEl.webkitEnterFullscreen === 'function') {
+                    try { videoEl.webkitEnterFullscreen(); return; } catch (e) {}
+                }
+
+                if (player.requestFullscreen) {
+                    await player.requestFullscreen();
+                } else if (player.webkitRequestFullscreen) {
+                    player.webkitRequestFullscreen();
+                } else if (videoEl && videoEl.webkitEnterFullscreen) {
+                    videoEl.webkitEnterFullscreen();
+                }
+            } catch (e) {}
+        }
+
+        unmuteBtn.addEventListener('click', activateSound);
+        unmuteBtn.addEventListener('touchstart', activateSound, { passive: true });
+        fullscreenBtn.addEventListener('click', goFullscreen);
+        fullscreenBtn.addEventListener('touchstart', (e) => { e.preventDefault(); goFullscreen(); });
     </script>
 </body>
 </html>
