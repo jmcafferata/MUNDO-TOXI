@@ -26,8 +26,17 @@
             height: 100%;
             display: block;
             background: #000;
-            --media-object-fit: cover;
+            --media-object-fit: contain;
             --media-background-color: #000;
+            /* Controles más grandes para mobile */
+            --media-control-bar-height: 64px;
+            --media-button-icon-width: 32px;
+            --media-button-icon-height: 32px;
+            --media-range-thumb-height: 18px;
+            --media-range-thumb-width: 18px;
+            --media-range-track-height: 6px;
+            --media-font-size: 16px;
+            --media-text-content-height: 32px;
         }
         /* En pantalla completa mostrar el video entero, sin cropear */
         mux-player:fullscreen,
@@ -36,7 +45,7 @@
         }
         .controls {
             position: fixed;
-            inset: auto 0 32px 0;
+            inset: 24px 0 auto 0;
             display: flex;
             justify-content: center;
             gap: 12px;
@@ -53,10 +62,10 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             color: #fff;
-            font-size: 16px;
+            font-size: 20px;
             letter-spacing: 2px;
             text-transform: uppercase;
-            padding: 14px 22px;
+            padding: 20px 32px;
             border-radius: 999px;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
             transition: transform 0.2s ease, background 0.2s ease, opacity 0.3s ease;
