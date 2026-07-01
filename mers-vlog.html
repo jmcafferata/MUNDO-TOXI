@@ -88,6 +88,7 @@
             autoplay
             muted
             playsinline
+            autohide="-1"
         ></mux-player>
     </div>
     <div class="controls">
@@ -154,6 +155,18 @@
         unmuteBtn.addEventListener('touchstart', activateSound, { passive: true });
         nextBtn.addEventListener('click', goNext);
         nextBtn.addEventListener('touchstart', (e) => { e.preventDefault(); goNext(); });
+
+        // Mantener los controles siempre visibles (desactivar autohide del media-controller interno)
+        function disableAutohide() {
+            try {
+                const mc = player.shadowRoot && player.shadowRoot.querySelector('media-controller');
+                if (mc) mc.setAttribute('autohide', '-1');
+            } catch (e) {}
+        }
+        if (customElements && customElements.whenDefined) {
+            customElements.whenDefined('mux-player').then(disableAutohide);
+        }
+        disableAutohide();
 
         updateNextButton();
     </script>
