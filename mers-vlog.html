@@ -87,16 +87,48 @@
             stream-type="on-demand"
             autoplay
             muted
-            loop
             playsinline
         ></mux-player>
     </div>
     <div class="controls">
         <button id="unmute-btn" type="button" aria-label="Activar sonido">🔇 Activar sonido</button>
+        <button id="next-btn" type="button" aria-label="Siguiente episodio">Siguiente episodio ⏭</button>
     </div>
     <script>
         const player = document.getElementById('player');
         const unmuteBtn = document.getElementById('unmute-btn');
+        const nextBtn = document.getElementById('next-btn');
+
+        const EPISODES = [
+            'KMqFFjIjC4R7FafgSiwFb8oRnDDwkyzq7YDgcMsp9zg',
+            'm400b5KKa9zFXdB7pzc00X6U5mekfteej8WHQbI6UR102g'
+        ];
+        let currentIndex = 0;
+
+        function updateNextButton() {
+            if (currentIndex >= EPISODES.length - 1) {
+                nextBtn.classList.add('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+            }
+        }
+
+        function playEpisode(index, { keepSound = false } = {}) {
+            if (index < 0 || index >= EPISODES.length) return;
+            currentIndex = index;
+            player.setAttribute('playback-id', EPISODES[index]);
+            updateNextButton();
+            // Reintentar reproducción; si el sonido ya estaba activo, mantenerlo
+            try {
+                if (!keepSound) player.muted = false;
+                const p = player.play();
+                if (p && typeof p.then === 'function') p.catch(() => {});
+            } catch (e) {}
+        }
+
+        function goNext() {
+            playEpisode(currentIndex + 1, { keepSound: !player.muted });
+        }
 
         function activateSound() {
             try {
@@ -113,8 +145,17 @@
             if (!player.muted) unmuteBtn.classList.add('hidden');
         });
 
+        // Auto-avanzar al siguiente episodio cuando termina
+        player.addEventListener('ended', () => {
+            if (currentIndex < EPISODES.length - 1) goNext();
+        });
+
         unmuteBtn.addEventListener('click', activateSound);
         unmuteBtn.addEventListener('touchstart', activateSound, { passive: true });
+        nextBtn.addEventListener('click', goNext);
+        nextBtn.addEventListener('touchstart', (e) => { e.preventDefault(); goNext(); });
+
+        updateNextButton();
     </script>
 </body>
 </html>
