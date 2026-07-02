@@ -328,12 +328,19 @@
             }
         }
 
-        function playEpisode(index, { keepSound = false } = {}) {
+        function playEpisode(index, { keepSound = false, updateHash = true } = {}) {
             if (index < 0 || index >= EPISODES.length) return;
             currentIndex = index;
             video.setAttribute('playback-id', EPISODES[index].id);
             updateNextButton();
             renderEpisodeList();
+            if (updateHash) {
+                const targetHash = '#' + (index + 1);
+                if (window.location.hash !== targetHash) {
+                    // Cambio silencioso para no re-disparar hashchange
+                    history.replaceState(null, '', targetHash);
+                }
+            }
             try {
                 if (!keepSound) video.muted = false;
                 const p = video.play();
@@ -383,6 +390,29 @@
         nextBtn.addEventListener('click', goNext);
         listBtn.addEventListener('click', togglePanel);
         closeBtn.addEventListener('click', closePanel);
+
+        // Routing por hash (#1, #2, #3, …)
+        function episodeIndexFromHash() {
+            const m = /^#(\d+)$/.exec(window.location.hash || '');
+            if (!m) return null;
+            const idx = parseInt(m[1], 10) - 1;
+            if (idx < 0 || idx >= EPISODES.length) return null;
+            return idx;
+        }
+        function applyHash({ keepSound = false } = {}) {
+            const idx = episodeIndexFromHash();
+            if (idx === null) return;
+            if (idx !== currentIndex) {
+                playEpisode(idx, { keepSound, updateHash: false });
+            }
+        }
+        window.addEventListener('hashchange', () => applyHash({ keepSound: !video.muted }));
+
+        // Estado inicial: si viene con hash, empieza en ese episodio
+        const initialIdx = episodeIndexFromHash();
+        if (initialIdx !== null && initialIdx !== 0) {
+            playEpisode(initialIdx, { updateHash: false });
+        }
 
         renderEpisodeList();
         updateNextButton();
