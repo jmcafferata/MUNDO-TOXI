@@ -77,6 +77,107 @@
         .controls button.hidden {
             display: none;
         }
+        /* Botones integrados en la barra superior del mux-player (via slot) */
+        .controls .mux-slot-btn,
+        .mux-slot-btn {
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 10px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+        .controls .mux-slot-btn:hover,
+        .mux-slot-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.03);
+        }
+        .controls .mux-slot-btn.hidden,
+        .mux-slot-btn.hidden {
+            display: none;
+        }
+        /* Panel desplegable con la lista de episodios */
+        .episode-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: min(360px, 85vw);
+            background: rgba(15, 15, 20, 0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: -12px 0 40px rgba(0, 0, 0, 0.5);
+            color: #fff;
+            z-index: 20;
+            transform: translateX(100%);
+            transition: transform 0.35s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .episode-panel.open {
+            transform: translateX(0);
+        }
+        .episode-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 18px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .episode-panel-header button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .episode-list {
+            list-style: none;
+            margin: 0;
+            padding: 8px 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .episode-list li {
+            padding: 16px 24px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.15s ease;
+        }
+        .episode-list li:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .episode-list li.current {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+        .episode-list .marker {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
+        }
+        .episode-list li.current .marker {
+            background: #ff5ac0;
+            box-shadow: 0 0 12px #ff5ac0;
+        }
     </style>
 </head>
 <body>
@@ -93,18 +194,46 @@
     </div>
     <div class="controls">
         <button id="unmute-btn" type="button" aria-label="Activar sonido">🔇 Activar sonido</button>
-        <button id="next-btn" type="button" aria-label="Siguiente episodio">Siguiente episodio ⏭</button>
+        <button id="mux-next-btn" class="mux-slot-btn" type="button" aria-label="Siguiente episodio">Siguiente ⏭</button>
+        <button id="mux-list-btn" class="mux-slot-btn" type="button" aria-label="Ver lista de episodios">📋 Episodios</button>
     </div>
+
+    <aside id="episode-panel" class="episode-panel" aria-hidden="true">
+        <div class="episode-panel-header">
+            <span>Episodios</span>
+            <button id="close-panel" type="button" aria-label="Cerrar">✕</button>
+        </div>
+        <ul id="episode-list" class="episode-list"></ul>
+    </aside>
     <script>
         const player = document.getElementById('player');
         const unmuteBtn = document.getElementById('unmute-btn');
-        const nextBtn = document.getElementById('next-btn');
+        const nextBtn = document.getElementById('mux-next-btn');
+        const listBtn = document.getElementById('mux-list-btn');
+        const closeBtn = document.getElementById('close-panel');
+        const panel = document.getElementById('episode-panel');
+        const listEl = document.getElementById('episode-list');
 
         const EPISODES = [
-            'KMqFFjIjC4R7FafgSiwFb8oRnDDwkyzq7YDgcMsp9zg',
-            'm400b5KKa9zFXdB7pzc00X6U5mekfteej8WHQbI6UR102g'
+            { id: 'KMqFFjIjC4R7FafgSiwFb8oRnDDwkyzq7YDgcMsp9zg', title: 'Episodio 1' },
+            { id: 'm400b5KKa9zFXdB7pzc00X6U5mekfteej8WHQbI6UR102g', title: 'Episodio 2' },
+            { id: '7aA401UGod4t2zsaIWxH3KEwjMKcO1EuJF1gMvks9C4E', title: 'Episodio 3' }
         ];
         let currentIndex = 0;
+
+        function renderEpisodeList() {
+            listEl.innerHTML = '';
+            EPISODES.forEach((ep, idx) => {
+                const li = document.createElement('li');
+                li.className = idx === currentIndex ? 'current' : '';
+                li.innerHTML = `<span class="marker"></span><span>${ep.title}</span>`;
+                li.addEventListener('click', () => {
+                    playEpisode(idx, { keepSound: !player.muted });
+                    closePanel();
+                });
+                listEl.appendChild(li);
+            });
+        }
 
         function updateNextButton() {
             if (currentIndex >= EPISODES.length - 1) {
@@ -117,9 +246,9 @@
         function playEpisode(index, { keepSound = false } = {}) {
             if (index < 0 || index >= EPISODES.length) return;
             currentIndex = index;
-            player.setAttribute('playback-id', EPISODES[index]);
+            player.setAttribute('playback-id', EPISODES[index].id);
             updateNextButton();
-            // Reintentar reproducción; si el sonido ya estaba activo, mantenerlo
+            renderEpisodeList();
             try {
                 if (!keepSound) player.muted = false;
                 const p = player.play();
@@ -141,6 +270,19 @@
             unmuteBtn.classList.add('hidden');
         }
 
+        function openPanel() {
+            panel.classList.add('open');
+            panel.setAttribute('aria-hidden', 'false');
+        }
+        function closePanel() {
+            panel.classList.remove('open');
+            panel.setAttribute('aria-hidden', 'true');
+        }
+        function togglePanel() {
+            if (panel.classList.contains('open')) closePanel();
+            else openPanel();
+        }
+
         // Ocultar el botón si el usuario desmutea desde los controles nativos
         player.addEventListener('volumechange', () => {
             if (!player.muted) unmuteBtn.classList.add('hidden');
@@ -154,7 +296,8 @@
         unmuteBtn.addEventListener('click', activateSound);
         unmuteBtn.addEventListener('touchstart', activateSound, { passive: true });
         nextBtn.addEventListener('click', goNext);
-        nextBtn.addEventListener('touchstart', (e) => { e.preventDefault(); goNext(); });
+        listBtn.addEventListener('click', togglePanel);
+        closeBtn.addEventListener('click', closePanel);
 
         // Mantener los controles siempre visibles (desactivar autohide del media-controller interno)
         function disableAutohide() {
@@ -168,6 +311,7 @@
         }
         disableAutohide();
 
+        renderEpisodeList();
         updateNextButton();
     </script>
 </body>
