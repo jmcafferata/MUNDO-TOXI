@@ -57,6 +57,10 @@
       "destination": "/xplora-night-live.html"
     },
     {
+      "source": "/ariana-grande",
+      "destination": "/ariana-grande.html"
+    },
+    {
       "source": "/mers-vlog",
       "destination": "/mers-vlog.html"
     },

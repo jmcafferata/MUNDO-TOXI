@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ariana Grande — Ariana Rising Live</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        body {
+            background-color: #0c0813;
+            background-image: url('/ariana-grande/ariana-bg.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            position: relative;
+        }
+        /* Capa oscura superpuesta para que resalte más el video y el logo sobre el fondo */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .stage {
+            position: relative;
+            z-index: 1;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        mux-player {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: transparent;
+            --media-background-color: transparent;
+        }
+        
+        /* Logo centrado en pantalla, encima del player pero que deje pasar los clicks */
+        .logo-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none; /* Permite clicks a través del logo */
+            z-index: 2;
+        }
+        .logo-container img {
+            max-width: 80%;
+            max-height: 40%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 20px rgba(0, 0, 0, 0.7));
+            opacity: 0.9;
+        }
+
+        #unmute {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(12, 8, 19, 0.65);
+            backdrop-filter: blur(6px);
+            color: #fff;
+            font-size: 24px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: opacity 0.4s ease;
+        }
+        #unmute.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #unmute .pill {
+            padding: 16px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            background: linear-gradient(135deg, rgba(255, 120, 220, 0.25), rgba(80, 0, 180, 0.45));
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        /* Responsive optimization */
+        @media (max-width: 768px) {
+            .logo-container img {
+                max-width: 90%;
+                max-height: 30%;
+            }
+            #unmute {
+                font-size: 18px;
+                letter-spacing: 2px;
+            }
+            #unmute .pill {
+                padding: 12px 20px;
+                margin: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stage">
+        <mux-player
+            id="player"
+            playback-id="O8w7gIrfoTR2kj4RAv8NdGsuFkn19QNDej9FSDtO00q4"
+            stream-type="on-demand"
+            start-time="20"
+            autoplay
+            muted
+            playsinline
+        ></mux-player>
+    </div>
+
+    <div class="logo-container">
+        <img src="/ariana-grande/eternal sunshine tour logo.png" alt="Eternal Sunshine Tour">
+    </div>
+
+    <div id="unmute"><div class="pill">▶ Tocar para activar audio</div></div>
+    <script>
+        const player = document.getElementById('player');
+        const overlay = document.getElementById('unmute');
+
+        function activate() {
+            try {
+                player.muted = false;
+                player.volume = 1;
+                const p = player.play();
+                if (p && typeof p.then === 'function') p.catch(() => {});
+            } catch (e) {}
+            overlay.classList.add('hidden');
+        }
+
+        // Bucle manual para reiniciar desde el segundo 20
+        player.addEventListener('ended', () => {
+            try {
+                player.currentTime = 20;
+                const p = player.play();
+                if (p && typeof p.then === 'function') p.catch(() => {});
+            } catch (e) {
+                console.error("Error al reiniciar la reproducción:", e);
+            }
+        });
+
+        overlay.addEventListener('click', activate);
+        overlay.addEventListener('touchstart', activate, { passive: true });
+    </script>
+</body>
+</html>
