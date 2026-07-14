@@ -72,6 +72,10 @@
             justify-content: center;
             pointer-events: none; /* Permite clicks a través del logo */
             z-index: 2;
+            transition: opacity 1.5s ease; /* Transición suave de desvanecimiento */
+        }
+        .logo-container.fade-out {
+            opacity: 0;
         }
         .logo-container img {
             max-width: 80%;
@@ -177,6 +181,14 @@
         const player = document.getElementById('player');
         const bgPlayer = document.getElementById('bg-player');
         const overlay = document.getElementById('unmute');
+        const logoContainer = document.querySelector('.logo-container');
+
+        // Desvanecer el logo después de 5 segundos de carga de la página
+        setTimeout(() => {
+            if (logoContainer) {
+                logoContainer.classList.add('fade-out');
+            }
+        }, 5000);
 
         function activate() {
             try {
