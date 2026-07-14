@@ -16,11 +16,6 @@
         }
         body {
             background-color: #0c0813;
-            background-image: url('/ariana-grande/ariana-bg.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
             position: relative;
         }
         /* Capa oscura superpuesta para que resalte más el video y el logo sobre el fondo */
@@ -30,11 +25,29 @@
             inset: 0;
             background: rgba(0, 0, 0, 0.45);
             pointer-events: none;
+            z-index: 1; /* por encima del fondo pero por debajo del stage */
+        }
+        .bg-video-container {
+            position: fixed;
+            inset: 0;
             z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .bg-video-container mux-player {
+            width: 100%;
+            height: 100%;
+            display: block;
+            --media-object-fit: cover;
+            object-fit: cover;
+            filter: blur(24px) brightness(0.65);
+            transform: scale(1.15); /* escala para ocultar bordes blanqueados del blur */
+            --media-background-color: transparent;
+            --controls: none;
         }
         .stage {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             width: 100vw;
             height: 100vh;
             display: flex;
@@ -79,9 +92,9 @@
             width: 56px;
             height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255, 120, 220, 0.45), rgba(80, 0, 180, 0.65));
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            color: #fff;
+            background: rgba(12, 8, 19, 0.65);
+            border: 1px solid #C1BF7E;
+            color: #C1BF7E;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
@@ -125,6 +138,19 @@
     </style>
 </head>
 <body>
+    <!-- Fondo de video en loop, blur y cover, sincronizado con el reproductor principal -->
+    <div class="bg-video-container">
+        <mux-player
+            id="bg-player"
+            playback-id="O8w7gIrfoTR2kj4RAv8NdGsuFkn19QNDej9FSDtO00q4"
+            stream-type="on-demand"
+            start-time="20"
+            autoplay
+            muted
+            playsinline
+        ></mux-player>
+    </div>
+
     <div class="stage">
         <mux-player
             id="player"
@@ -149,6 +175,7 @@
     </div>
     <script>
         const player = document.getElementById('player');
+        const bgPlayer = document.getElementById('bg-player');
         const overlay = document.getElementById('unmute');
 
         function activate() {
@@ -157,6 +184,13 @@
                 player.volume = 1;
                 const p = player.play();
                 if (p && typeof p.then === 'function') p.catch(() => {});
+            } catch (e) {}
+            try {
+                if (bgPlayer) {
+                    bgPlayer.muted = true;
+                    const bp = bgPlayer.play();
+                    if (bp && typeof bp.then === 'function') bp.catch(() => {});
+                }
             } catch (e) {}
             overlay.classList.add('hidden');
         }
@@ -170,7 +204,25 @@
             } catch (e) {
                 console.error("Error al reiniciar la reproducción:", e);
             }
+            try {
+                if (bgPlayer) {
+                    bgPlayer.currentTime = 20;
+                    const bp = bgPlayer.play();
+                    if (bp && typeof bp.then === 'function') bp.catch(() => {});
+                }
+            } catch (e) {
+                console.error("Error al reiniciar el fondo:", e);
+            }
         });
+
+        if (bgPlayer) {
+            bgPlayer.addEventListener('ended', () => {
+                try {
+                    bgPlayer.currentTime = 20;
+                    bgPlayer.play().catch(() => {});
+                } catch (e) {}
+            });
+        }
 
         overlay.addEventListener('click', activate);
         overlay.addEventListener('touchstart', activate, { passive: true });
