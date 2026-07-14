@@ -47,6 +47,7 @@
             display: block;
             background: transparent;
             --media-background-color: transparent;
+            --controls: none;
         }
         
         /* Logo centrado en pantalla, encima del player pero que deje pasar los clicks */
@@ -69,31 +70,39 @@
 
         #unmute {
             position: fixed;
-            inset: 0;
+            top: 24px;
+            right: 24px;
             z-index: 10;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(12, 8, 19, 0.65);
-            backdrop-filter: blur(6px);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 120, 220, 0.45), rgba(80, 0, 180, 0.65));
+            border: 1px solid rgba(255, 255, 255, 0.35);
             color: #fff;
-            font-size: 24px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             cursor: pointer;
-            transition: opacity 0.4s ease;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+        }
+        #unmute:hover {
+            transform: scale(1.15);
+        }
+        #unmute:active {
+            transform: scale(0.95);
         }
         #unmute.hidden {
             opacity: 0;
             pointer-events: none;
+            transform: scale(0.5);
         }
-        #unmute .pill {
-            padding: 16px 28px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 999px;
-            background: linear-gradient(135deg, rgba(255, 120, 220, 0.25), rgba(80, 0, 180, 0.45));
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-            text-align: center;
+        #unmute svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
         }
 
         /* Responsive optimization */
@@ -103,12 +112,14 @@
                 max-height: 30%;
             }
             #unmute {
-                font-size: 18px;
-                letter-spacing: 2px;
+                top: 16px;
+                right: 16px;
+                width: 48px;
+                height: 48px;
             }
-            #unmute .pill {
-                padding: 12px 20px;
-                margin: 0 20px;
+            #unmute svg {
+                width: 20px;
+                height: 20px;
             }
         }
     </style>
@@ -130,7 +141,12 @@
         <img src="/ariana-grande/eternal sunshine tour logo.png" alt="Eternal Sunshine Tour">
     </div>
 
-    <div id="unmute"><div class="pill">▶ Tocar para activar audio</div></div>
+    <!-- Botón sutil de parlante flotante para activar el sonido -->
+    <div id="unmute" title="Activar audio">
+        <svg viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4zm4.5 8c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71z"/>
+        </svg>
+    </div>
     <script>
         const player = document.getElementById('player');
         const overlay = document.getElementById('unmute');
