@@ -465,6 +465,7 @@ export function initPaywall({ musicFile, onEnter }) {
   const keypadCard = document.querySelector('.keypad-card');
   const keypadBtns = document.querySelectorAll('.keypad-btn');
   const SECRET_CODES = ['2058', '1985', '1927', '8694'];
+  const ARIANA_CODE = '3435';
   let currentCode = '';
   let successUnlocked = false;
 
@@ -598,7 +599,24 @@ export function initPaywall({ musicFile, onEnter }) {
   }
 
   function checkCode() {
-    if (SECRET_CODES.includes(currentCode)) {
+    if (currentCode === ARIANA_CODE) {
+      console.log('Ariana code correct! Playing success sound');
+      const s = soundCorrect.cloneNode();
+      s.volume = 0.6;
+      s.play().catch(e => console.warn('Success sound failed', e));
+      
+      successUnlocked = true;
+      keypadCard?.classList.add('success');
+      keypadDots?.classList.add('success');
+      keypadBtns.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('success');
+      });
+      setTimeout(() => {
+        closeKeypad(true);
+        window.location.href = '/ariana-grande';
+      }, 1200);
+    } else if (SECRET_CODES.includes(currentCode)) {
       markSuccess(currentCode);
       setTimeout(() => {
         closeKeypad(true);
