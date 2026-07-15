@@ -62,6 +62,12 @@
             background: transparent;
             --media-background-color: transparent;
             --controls: none;
+            transition: opacity 0.4s ease;
+        }
+        /* Si el video principal falla al cargar, lo ocultamos para que se siga viendo el fondo */
+        .stage.player-error mux-player {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* Pantalla de bienvenida: logo + historia + episodios + switches */
@@ -381,6 +387,7 @@
     <script>
         const player = document.getElementById('player');
         const bgPlayer = document.getElementById('bg-player');
+        const stageEl = document.querySelector('.stage');
         const introOverlay = document.getElementById('intro-overlay');
         const btnStart = document.getElementById('btn-start');
         const btnEpisodesToggle = document.getElementById('btn-episodes-toggle');
@@ -609,6 +616,13 @@
 
         btnNextTrack.addEventListener('click', () => {
             loadTrack(currentTrackIndex + 1, true);
+        });
+
+        // ── Si el video principal falla al cargar (ID inválido, 412, etc.), lo ocultamos
+        //    para que se siga viendo el video de fondo (Ariana Rising Live) detrás ──
+        player.addEventListener('error', () => {
+            console.warn('[Ariana] El video principal no pudo cargarse; se oculta para mostrar el fondo.');
+            if (stageEl) stageEl.classList.add('player-error');
         });
 
         // ── Bucle del video principal ──
