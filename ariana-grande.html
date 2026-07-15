@@ -313,7 +313,7 @@
         ></mux-player>
     </div>
 
-    <div class="stage">
+    <div class="stage hidden">
         <mux-player
             id="player"
             playback-id="ydGRAJJlCvzWYGWeHy1YzekpG3wjhNMXX4ubVPqYrmk"
@@ -525,6 +525,10 @@
             const time = EPISODES[episodeIndex].time;
 
             applyCameraAudioState();
+
+            if (stageEl) {
+                stageEl.classList.remove('hidden');
+            }
 
             try {
                 player.currentTime = time;
