@@ -895,6 +895,8 @@
         // ── CONTROLADOR DEL REPRODUCTOR PRINCIPAL ──
         function playEpisode(id) {
             stopDvdBackground(); // Asegurarnos de pausar videos de fondo
+            const bgMusic = document.getElementById('bg-music');
+            if (bgMusic) { bgMusic.pause(); }
             const ep = ALL_EPISODES.find(e => e.id === id);
             if (!ep) return;
             player.setAttribute('metadata-video-title', ep.title);
