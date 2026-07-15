@@ -174,6 +174,25 @@
             max-height: 30vh;
             overflow-y: auto;
             padding: 6px 2px;
+            /* Firefox matching styles */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(193, 191, 126, 0.45) rgba(12, 8, 19, 0.3);
+        }
+        /* Chrome, Safari, Edge matching styles */
+        .episodes-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        .episodes-list::-webkit-scrollbar-track {
+            background: rgba(12, 8, 19, 0.3);
+            border-radius: 999px;
+        }
+        .episodes-list::-webkit-scrollbar-thumb {
+            background: rgba(193, 191, 126, 0.45);
+            border-radius: 999px;
+            transition: background 0.3s ease;
+        }
+        .episodes-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(193, 191, 126, 0.85);
         }
         .episode-btn {
             background: rgba(12, 8, 19, 0.45);
@@ -291,6 +310,12 @@
             height: 20px;
             fill: currentColor;
         }
+        .ctrl-btn svg[fill="none"] {
+            fill: none;
+        }
+        .ctrl-btn svg[fill="none"] text {
+            fill: currentColor;
+        }
         .volume-slider {
             -webkit-appearance: none;
             appearance: none;
@@ -352,6 +377,55 @@
                 height: 20px;
             }
         }
+        .instructions-panel {
+            background: rgba(12, 8, 19, 0.65);
+            border: 1px solid rgba(193, 191, 126, 0.4);
+            color: #f2f0e2;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            text-align: left;
+            padding: 16px 24px;
+            border-radius: 16px;
+            max-width: 320px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            margin-top: 10px;
+            line-height: 1.4;
+            max-height: 25vh;
+            overflow-y: auto;
+            /* Firefox matching styles */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(193, 191, 126, 0.45) rgba(12, 8, 19, 0.3);
+        }
+        .instructions-panel::-webkit-scrollbar {
+            width: 5px;
+        }
+        .instructions-panel::-webkit-scrollbar-track {
+            background: rgba(12, 8, 19, 0.3);
+            border-radius: 999px;
+        }
+        .instructions-panel::-webkit-scrollbar-thumb {
+            background: rgba(193, 191, 126, 0.45);
+            border-radius: 999px;
+            transition: background 0.3s ease;
+        }
+        .instructions-panel::-webkit-scrollbar-thumb:hover {
+            background: rgba(193, 191, 126, 0.85);
+        }
+        .instructions-panel p {
+            margin: 0 0 8px 0;
+            color: #C1BF7E;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: bold;
+        }
+        .instructions-panel ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+        .instructions-panel li {
+            margin-bottom: 6px;
+        }
     </style>
 </head>
 <body>
@@ -410,6 +484,15 @@
                     <span>Música</span>
                     <input type="checkbox" id="switch-music" class="switch-input">
                 </label>
+            </div>
+            <button id="btn-instructions-toggle" class="story-btn">INSTRUCCIONES</button>
+            <div id="instructions-panel" class="instructions-panel hidden">
+                <p>Instrucciones de reproducción</p>
+                <ul>
+                    <li><strong>Reproducir/Pausar:</strong> Controla la historia principal.</li>
+                    <li><strong>Retroceder/Adelantar:</strong> Salta 10 segundos atrás o adelante con los botones de la barra inferior.</li>
+                    <li><strong>Audio dual:</strong> Combina el audio directo de la cámara y la música de fondo de forma independiente con los interruptores o botones e indicadores.</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -473,6 +556,8 @@
         const episodeBtns = document.querySelectorAll('.episode-btn');
         const switchCameraAudio = document.getElementById('switch-camera-audio');
         const switchMusic = document.getElementById('switch-music');
+        const btnInstructionsToggle = document.getElementById('btn-instructions-toggle');
+        const instructionsPanel = document.getElementById('instructions-panel');
 
         const controlsBar = document.getElementById('controls-bar');
         const btnPlayPause = document.getElementById('btn-playpause');
@@ -654,6 +739,10 @@
 
         btnEpisodesToggle.addEventListener('click', () => {
             episodesList.classList.toggle('hidden');
+        });
+
+        btnInstructionsToggle.addEventListener('click', () => {
+            instructionsPanel.classList.toggle('hidden');
         });
 
         episodeBtns.forEach((btn) => {
