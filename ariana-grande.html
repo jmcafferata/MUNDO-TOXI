@@ -34,6 +34,10 @@
             z-index: 0;
             pointer-events: none;
             overflow: hidden;
+            transition: opacity 1.2s ease;
+        }
+        .bg-video-container.faded-out {
+            opacity: 0;
         }
         .bg-video-container mux-player {
             width: 100%;
@@ -52,6 +56,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: opacity 1.2s ease;
+        }
+        .stage.stage-hidden {
+            opacity: 0;
+            pointer-events: none;
         }
         mux-player {
             width: 100%;
@@ -359,7 +368,7 @@
         ></mux-player>
     </div>
 
-    <div class="stage hidden">
+    <div class="stage stage-hidden">
         <mux-player
             id="player"
             playback-id="ydGRAJJlCvzWYGWeHy1YzekpG3wjhNMXX4ubVPqYrmk"
@@ -441,6 +450,7 @@
         const player = document.getElementById('player');
         const bgPlayer = document.getElementById('bg-player');
         const stageEl = document.querySelector('.stage');
+        const bgVideoContainer = document.querySelector('.bg-video-container');
         const unmuteBtn = document.getElementById('unmute');
         const introOverlay = document.getElementById('intro-overlay');
         const btnStart = document.getElementById('btn-start');
@@ -467,7 +477,7 @@
 
         // ── Episodios: timestamps (en segundos) dentro del video "Ariana Grande Barclays Vlog" (historia principal) ──
         const EPISODES = [
-            { time: 20, label: '1 — Viaje en subte de Manhattan a Brooklyn' },
+            { time: 0, label: '1 — Viaje en subte de Manhattan a Brooklyn' },
             { time: 15 * 60 + 13, label: '2 — Pre-show en Barclays Center' },
             { time: 24 * 60 + 11, label: '3 — Empieza el show' },
             { time: 32 * 60 + 24, label: '4 — Videollamada con Ciccia' },
@@ -595,9 +605,20 @@
 
             applyCameraAudioState();
 
+            // Crossfade: se desvanece el video de fondo (Ariana Rising) y aparece el principal (Barclays Vlog)
             if (stageEl) {
-                stageEl.classList.remove('hidden');
+                stageEl.classList.remove('stage-hidden');
             }
+            if (bgVideoContainer) {
+                bgVideoContainer.classList.add('faded-out');
+            }
+            // Cortamos también el audio del fondo (Ariana Rising) al arrancar la historia
+            try {
+                if (bgPlayer) {
+                    bgPlayer.muted = true;
+                    bgPlayer.pause();
+                }
+            } catch (e) {}
 
             try {
                 player.currentTime = time;
