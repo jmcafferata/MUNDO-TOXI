@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ariana Grande — Ariana Rising Live</title>
+    <title>Ariana Grande — Barclays Vlog</title>
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
     <style>
         html, body {
@@ -18,6 +18,7 @@
             background-color: #0c0813;
             position: relative;
         }
+        .hidden { display: none !important; }
         /* Capa oscura superpuesta para que resalte más el video y el logo sobre el fondo */
         body::before {
             content: '';
@@ -62,81 +63,232 @@
             --media-background-color: transparent;
             --controls: none;
         }
-        
-        /* Logo centrado en pantalla, encima del player pero que deje pasar los clicks */
-        .logo-container {
+
+        /* Pantalla de bienvenida: logo + historia + episodios + switches */
+        .intro-overlay {
             position: absolute;
             inset: 0;
+            z-index: 3;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            pointer-events: none; /* Permite clicks a través del logo */
-            z-index: 2;
-            transition: opacity 1.5s ease; /* Transición suave de desvanecimiento */
+            text-align: center;
+            padding: 24px;
+            box-sizing: border-box;
+            transition: opacity 1s ease;
         }
-        .logo-container.fade-out {
+        .intro-overlay.fade-out {
             opacity: 0;
+            pointer-events: none;
         }
-        .logo-container img {
+        .intro-overlay .intro-logo {
             max-width: 80%;
-            max-height: 40%;
+            max-height: 30vh;
             object-fit: contain;
             filter: drop-shadow(0 2px 20px rgba(0, 0, 0, 0.7));
-            opacity: 0.9;
+            opacity: 0.95;
+            margin-bottom: 22px;
+        }
+        .intro-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .story-btn {
+            background: rgba(12, 8, 19, 0.55);
+            border: 1px solid #C1BF7E;
+            color: #C1BF7E;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.12em;
+            padding: 12px 34px;
+            border-radius: 999px;
+            cursor: pointer;
+            min-width: 250px;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+        .story-btn:hover {
+            background: rgba(193, 191, 126, 0.18);
+            transform: translateY(-2px);
+        }
+        .episodes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 30vh;
+            overflow-y: auto;
+            padding: 6px 2px;
+        }
+        .episode-btn {
+            background: rgba(12, 8, 19, 0.45);
+            border: 1px solid rgba(193, 191, 126, 0.5);
+            color: #f2f0e2;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 0.95rem;
+            padding: 9px 22px;
+            border-radius: 999px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.25s ease;
+        }
+        .episode-btn:hover {
+            background: rgba(193, 191, 126, 0.22);
+        }
+        .switches {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            color: #f2f0e2;
+            font-size: 1rem;
+            min-width: 250px;
+            cursor: pointer;
+        }
+        .switch-input {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 42px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 999px;
+            position: relative;
+            cursor: pointer;
+            outline: none;
+            border: 1px solid rgba(193, 191, 126, 0.5);
+            transition: background 0.25s ease;
+            flex-shrink: 0;
+        }
+        .switch-input::before {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #C1BF7E;
+            transition: transform 0.25s ease;
+        }
+        .switch-input:checked {
+            background: rgba(193, 191, 126, 0.45);
+        }
+        .switch-input:checked::before {
+            transform: translateX(20px);
         }
 
-        #unmute {
+        /* Barra de controles inferior durante la reproducción */
+        .controls-bar {
             position: fixed;
-            top: 24px;
-            right: 24px;
+            bottom: 26px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 10;
             display: flex;
             align-items: center;
-            justify-content: center;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: rgba(12, 8, 19, 0.65);
-            border: 1px solid #C1BF7E;
-            color: #C1BF7E;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+            gap: 16px;
+            background: rgba(12, 8, 19, 0.6);
+            border: 1px solid rgba(193, 191, 126, 0.4);
+            border-radius: 999px;
+            padding: 8px 16px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
-        #unmute:hover {
-            transform: scale(1.15);
+        .controls-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-        #unmute:active {
-            transform: scale(0.95);
-        }
-        #unmute.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.5);
-        }
-        #unmute svg {
-            width: 24px;
+        .controls-divider {
+            width: 1px;
             height: 24px;
+            background: rgba(193, 191, 126, 0.35);
+        }
+        .ctrl-btn {
+            background: transparent;
+            border: none;
+            color: #C1BF7E;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+        }
+        .ctrl-btn:hover {
+            background: rgba(193, 191, 126, 0.18);
+            transform: scale(1.08);
+        }
+        .ctrl-btn.ctrl-btn-off {
+            opacity: 0.4;
+        }
+        .ctrl-btn svg {
+            width: 20px;
+            height: 20px;
             fill: currentColor;
+        }
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 80px;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(193, 191, 126, 0.35);
+            outline: none;
+            cursor: pointer;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #C1BF7E;
+            cursor: pointer;
+        }
+        .volume-slider::-moz-range-thumb {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            background: #C1BF7E;
+            border: none;
+            cursor: pointer;
         }
 
         /* Responsive optimization */
         @media (max-width: 768px) {
-            .logo-container img {
+            .intro-overlay .intro-logo {
                 max-width: 90%;
-                max-height: 30%;
+                max-height: 22vh;
             }
-            #unmute {
-                top: 16px;
-                right: 16px;
-                width: 48px;
-                height: 48px;
+            .story-btn, .switch-row {
+                min-width: 210px;
+                font-size: 1rem;
             }
-            #unmute svg {
-                width: 20px;
-                height: 20px;
+            .controls-bar {
+                bottom: 16px;
+                gap: 10px;
+                padding: 6px 12px;
+            }
+            .volume-slider {
+                width: 56px;
+            }
+            .ctrl-btn {
+                width: 32px;
+                height: 32px;
             }
         }
     </style>
@@ -158,7 +310,7 @@
     <div class="stage">
         <mux-player
             id="player"
-            playback-id="O8w7gIrfoTR2kj4RAv8NdGsuFkn19QNDej9FSDtO00q4"
+            playback-id="ydGRAJJlCvzWYGWeHy1YzekpG3wjhNMXX4ubVPqYrmk"
             stream-type="on-demand"
             start-time="20"
             autoplay
@@ -167,47 +319,299 @@
         ></mux-player>
     </div>
 
-    <div class="logo-container">
-        <img src="/ariana-grande/eternal sunshine tour logo.png" alt="Eternal Sunshine Tour">
+    <!-- Pantalla de bienvenida: logo, inicio de historia, episodios y switches -->
+    <div class="intro-overlay" id="intro-overlay">
+        <img class="intro-logo" src="/ariana-grande/eternal sunshine tour logo.png" alt="Eternal Sunshine Tour">
+        <div class="intro-buttons">
+            <button id="btn-start" class="story-btn">INICIAR HISTORIA</button>
+            <button id="btn-episodes-toggle" class="story-btn">EPISODIOS</button>
+            <div id="episodes-list" class="episodes-list hidden">
+                <button class="episode-btn" data-index="0">1 — Viaje en subte de Manhattan a Brooklyn</button>
+                <button class="episode-btn" data-index="1">2 — Pre-show en Barclays Center</button>
+                <button class="episode-btn" data-index="2">3 — Empieza el show</button>
+                <button class="episode-btn" data-index="3">4 — Videollamada con Ciccia</button>
+                <button class="episode-btn" data-index="4">5 — Vibeando con nuestros amigos</button>
+                <button class="episode-btn" data-index="5">6 — Petal</button>
+            </div>
+            <div class="switches">
+                <label class="switch-row">
+                    <span>Audio de cámara</span>
+                    <input type="checkbox" id="switch-camera-audio" class="switch-input">
+                </label>
+                <label class="switch-row">
+                    <span>Música</span>
+                    <input type="checkbox" id="switch-music" class="switch-input">
+                </label>
+            </div>
+        </div>
     </div>
 
-    <!-- Botón sutil de parlante flotante para activar el sonido -->
-    <div id="unmute" title="Activar audio">
-        <svg viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4zm4.5 8c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71z"/>
-        </svg>
+    <!-- Barra de controles durante la reproducción -->
+    <div class="controls-bar hidden" id="controls-bar">
+        <div class="controls-group">
+            <button id="btn-playpause" class="ctrl-btn" title="Pausar / reproducir">
+                <svg id="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+                <svg id="icon-play" class="hidden" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button id="btn-next-episode" class="ctrl-btn" title="Siguiente episodio">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14l8-7zm10 0v14h2V5z"/></svg>
+            </button>
+            <button id="btn-camera-audio" class="ctrl-btn" title="Audio de cámara">
+                <svg id="icon-speaker-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                <svg id="icon-speaker-off" class="hidden" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4zm7.5 8c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71z"/></svg>
+            </button>
+            <input type="range" id="camera-volume" class="volume-slider" min="0" max="1" step="0.01" value="1">
+        </div>
+        <div class="controls-divider"></div>
+        <div class="controls-group">
+            <button id="btn-prev-track" class="ctrl-btn" title="Canción anterior">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+            </button>
+            <button id="btn-music-toggle" class="ctrl-btn" title="Música de fondo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            </button>
+            <button id="btn-next-track" class="ctrl-btn" title="Canción siguiente">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 6h2v12h-2zM6 6v12l8.5-6z"/></svg>
+            </button>
+        </div>
     </div>
+
+    <audio id="music-player" preload="auto"></audio>
+
     <script>
         const player = document.getElementById('player');
         const bgPlayer = document.getElementById('bg-player');
-        const overlay = document.getElementById('unmute');
-        const logoContainer = document.querySelector('.logo-container');
+        const introOverlay = document.getElementById('intro-overlay');
+        const btnStart = document.getElementById('btn-start');
+        const btnEpisodesToggle = document.getElementById('btn-episodes-toggle');
+        const episodesList = document.getElementById('episodes-list');
+        const episodeBtns = document.querySelectorAll('.episode-btn');
+        const switchCameraAudio = document.getElementById('switch-camera-audio');
+        const switchMusic = document.getElementById('switch-music');
 
-        // Desvanecer el logo después de 5 segundos de carga de la página
-        setTimeout(() => {
-            if (logoContainer) {
-                logoContainer.classList.add('fade-out');
-            }
-        }, 5000);
+        const controlsBar = document.getElementById('controls-bar');
+        const btnPlayPause = document.getElementById('btn-playpause');
+        const iconPlay = document.getElementById('icon-play');
+        const iconPause = document.getElementById('icon-pause');
+        const btnNextEpisode = document.getElementById('btn-next-episode');
+        const btnCameraAudio = document.getElementById('btn-camera-audio');
+        const iconSpeakerOn = document.getElementById('icon-speaker-on');
+        const iconSpeakerOff = document.getElementById('icon-speaker-off');
+        const cameraVolume = document.getElementById('camera-volume');
 
-        function activate() {
+        const btnPrevTrack = document.getElementById('btn-prev-track');
+        const btnMusicToggle = document.getElementById('btn-music-toggle');
+        const btnNextTrack = document.getElementById('btn-next-track');
+        const musicPlayer = document.getElementById('music-player');
+
+        // ── Episodios: timestamps (en segundos) dentro del video "Ariana Grande Barclays Vlog" (historia principal) ──
+        const EPISODES = [
+            { time: 20, label: '1 — Viaje en subte de Manhattan a Brooklyn' },
+            { time: 15 * 60 + 13, label: '2 — Pre-show en Barclays Center' },
+            { time: 24 * 60 + 11, label: '3 — Empieza el show' },
+            { time: 32 * 60 + 24, label: '4 — Videollamada con Ciccia' },
+            { time: 42 * 60 + 32, label: '5 — Vibeando con nuestros amigos' },
+            { time: 50 * 60 + 54, label: '6 — Petal' },
+        ];
+        let currentEpisodeIndex = 0;
+
+        // ── Álbum de música de fondo, en el orden solicitado (se omiten remixes ausentes) ──
+        const MUSIC_TRACKS = [
+            "Ariana Grande - intro (end of the world) (lyric visualizer).m4a",
+            "Ariana Grande - bye (lyric visualizer).m4a",
+            "Ariana Grande - don't wanna break up again (lyric visualizer).m4a",
+            "Ariana Grande - Saturn Returns Interlude (lyric visualizer).m4a",
+            "Ariana Grande - eternal sunshine (lyric visualizer).m4a",
+            "Ariana Grande - supernatural (lyric visualizer).m4a",
+            "Ariana Grande - true story (lyric visualizer).m4a",
+            "Ariana Grande - the boy is mine (lyric visualizer).m4a",
+            "Ariana Grande - yes, and (official lyric video).m4a",
+            "Ariana Grande - we can't be friends (wait for your love) (Official Lyric Video).m4a",
+            "Ariana Grande - i wish i hated you (lyric visualizer).m4a",
+            "Ariana Grande - imperfect for you (lyric visualizer).m4a",
+            "Ariana Grande - ordinary things (lyric visualizer) ft. Nonna.m4a",
+            "Ariana Grande - intro (end of the world) (extended) (lyric visualizer).m4a",
+            "Ariana Grande - twilight zone (lyric visualizer).m4a",
+            "Ariana Grande - warm (lyric visualizer).m4a",
+            "Ariana Grande - dandelion (lyric visualizer).m4a",
+            "Ariana Grande - past life (lyric visualizer).m4a",
+            "Ariana Grande - Hampstead (lyric visualizer).m4a",
+        ];
+        let currentTrackIndex = 0;
+
+        // ── Persistencia de preferencias en localStorage ──
+        const LS_CAMERA_AUDIO = 'ariana_camera_audio';
+        const LS_MUSIC_ENABLED = 'ariana_music_enabled';
+        const LS_CAMERA_VOLUME = 'ariana_camera_volume';
+
+        function getStoredBool(key, fallback) {
+            const raw = localStorage.getItem(key);
+            if (raw === null) return fallback;
+            return raw === 'true';
+        }
+        function getStoredNumber(key, fallback) {
+            const raw = localStorage.getItem(key);
+            if (raw === null) return fallback;
+            const n = parseFloat(raw);
+            return isNaN(n) ? fallback : n;
+        }
+
+        let cameraAudioEnabled = getStoredBool(LS_CAMERA_AUDIO, true);
+        let musicEnabled = getStoredBool(LS_MUSIC_ENABLED, false);
+        let cameraVolumeValue = getStoredNumber(LS_CAMERA_VOLUME, 1);
+
+        switchCameraAudio.checked = cameraAudioEnabled;
+        switchMusic.checked = musicEnabled;
+        cameraVolume.value = cameraVolumeValue;
+
+        function updateSpeakerIcon() {
+            iconSpeakerOn.classList.toggle('hidden', !cameraAudioEnabled);
+            iconSpeakerOff.classList.toggle('hidden', cameraAudioEnabled);
+        }
+        function updateMusicIcon() {
+            btnMusicToggle.classList.toggle('ctrl-btn-off', !musicEnabled);
+        }
+        updateSpeakerIcon();
+        updateMusicIcon();
+
+        function applyCameraAudioState() {
             try {
-                player.muted = false;
-                player.volume = 1;
+                player.muted = !cameraAudioEnabled;
+                player.volume = cameraVolumeValue;
+            } catch (e) {}
+        }
+        function applyMusicState() {
+            if (musicEnabled) {
+                const p = musicPlayer.play();
+                if (p && typeof p.then === 'function') p.catch(() => {});
+            } else {
+                musicPlayer.pause();
+            }
+        }
+
+        function loadTrack(index, autoplay) {
+            currentTrackIndex = ((index % MUSIC_TRACKS.length) + MUSIC_TRACKS.length) % MUSIC_TRACKS.length;
+            const filename = MUSIC_TRACKS[currentTrackIndex];
+            musicPlayer.src = '/ariana-grande/musica/' + encodeURIComponent(filename);
+            if (autoplay && musicEnabled) {
+                const p = musicPlayer.play();
+                if (p && typeof p.then === 'function') p.catch(() => {});
+            }
+        }
+        loadTrack(0, false);
+
+        musicPlayer.addEventListener('ended', () => {
+            loadTrack(currentTrackIndex + 1, true);
+        });
+
+        // ── El video de fondo (Ariana Rising Live, blur) es independiente: sólo decora el menú y el resto de la experiencia ──
+
+        function updatePlayPauseIcon() {
+            const isPaused = player.paused;
+            iconPlay.classList.toggle('hidden', !isPaused);
+            iconPause.classList.toggle('hidden', isPaused);
+        }
+
+        // ── Iniciar la historia desde un episodio determinado ──
+        function startStory(episodeIndex) {
+            currentEpisodeIndex = episodeIndex;
+            const time = EPISODES[episodeIndex].time;
+
+            applyCameraAudioState();
+
+            try {
+                player.currentTime = time;
                 const p = player.play();
                 if (p && typeof p.then === 'function') p.catch(() => {});
             } catch (e) {}
-            try {
-                if (bgPlayer) {
-                    bgPlayer.muted = true;
-                    const bp = bgPlayer.play();
-                    if (bp && typeof bp.then === 'function') bp.catch(() => {});
-                }
-            } catch (e) {}
-            overlay.classList.add('hidden');
+
+            applyMusicState();
+
+            introOverlay.classList.add('fade-out');
+            controlsBar.classList.remove('hidden');
+            updatePlayPauseIcon();
         }
 
-        // Bucle manual para reiniciar desde el segundo 20
+        btnStart.addEventListener('click', () => startStory(0));
+
+        btnEpisodesToggle.addEventListener('click', () => {
+            episodesList.classList.toggle('hidden');
+        });
+
+        episodeBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const index = parseInt(btn.dataset.index, 10);
+                startStory(index);
+            });
+        });
+
+        switchCameraAudio.addEventListener('change', () => {
+            cameraAudioEnabled = switchCameraAudio.checked;
+            localStorage.setItem(LS_CAMERA_AUDIO, String(cameraAudioEnabled));
+            applyCameraAudioState();
+            updateSpeakerIcon();
+        });
+
+        switchMusic.addEventListener('change', () => {
+            musicEnabled = switchMusic.checked;
+            localStorage.setItem(LS_MUSIC_ENABLED, String(musicEnabled));
+            applyMusicState();
+            updateMusicIcon();
+        });
+
+        // ── Controles de video durante la reproducción ──
+        btnPlayPause.addEventListener('click', () => {
+            if (player.paused) {
+                const p = player.play();
+                if (p && typeof p.then === 'function') p.catch(() => {});
+            } else {
+                player.pause();
+            }
+            updatePlayPauseIcon();
+        });
+
+        btnNextEpisode.addEventListener('click', () => {
+            const nextIndex = (currentEpisodeIndex + 1) % EPISODES.length;
+            startStory(nextIndex);
+        });
+
+        btnCameraAudio.addEventListener('click', () => {
+            cameraAudioEnabled = !cameraAudioEnabled;
+            localStorage.setItem(LS_CAMERA_AUDIO, String(cameraAudioEnabled));
+            switchCameraAudio.checked = cameraAudioEnabled;
+            applyCameraAudioState();
+            updateSpeakerIcon();
+        });
+
+        cameraVolume.addEventListener('input', () => {
+            cameraVolumeValue = parseFloat(cameraVolume.value);
+            localStorage.setItem(LS_CAMERA_VOLUME, String(cameraVolumeValue));
+            if (cameraVolumeValue > 0 && !cameraAudioEnabled) {
+                cameraAudioEnabled = true;
+                switchCameraAudio.checked = true;
+                updateSpeakerIcon();
+            }
+            applyCameraAudioState();
+        });
+
+        // ── Controles de música durante la reproducción ──
+        btnMusicToggle.addEventListener('click', () => {
+            musicEnabled = !musicEnabled;
+            localStorage.setItem(LS_MUSIC_ENABLED, String(musicEnabled));
+            switchMusic.checked = musicEnabled;
+            applyMusicState();
+            updateMusicIcon();
+        });
+
+        btnPrevTrack.addEventListener('click', () => {
+            loadTrack(currentTrackIndex - 1, true);
+        });
+
+        btnNextTrack.addEventListener('click', () => {
+            loadTrack(currentTrackIndex + 1, true);
+        });
+
+        // ── Bucle del video principal ──
         player.addEventListener('ended', () => {
             try {
                 player.currentTime = 20;
@@ -216,15 +620,8 @@
             } catch (e) {
                 console.error("Error al reiniciar la reproducción:", e);
             }
-            try {
-                if (bgPlayer) {
-                    bgPlayer.currentTime = 20;
-                    const bp = bgPlayer.play();
-                    if (bp && typeof bp.then === 'function') bp.catch(() => {});
-                }
-            } catch (e) {
-                console.error("Error al reiniciar el fondo:", e);
-            }
+            currentEpisodeIndex = 0;
+            updatePlayPauseIcon();
         });
 
         if (bgPlayer) {
@@ -235,9 +632,6 @@
                 } catch (e) {}
             });
         }
-
-        overlay.addEventListener('click', activate);
-        overlay.addEventListener('touchstart', activate, { passive: true });
     </script>
 </body>
 </html>
