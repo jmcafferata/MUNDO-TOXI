@@ -417,8 +417,18 @@
             }
             .controls-bar {
                 bottom: 16px;
-                gap: 10px;
-                padding: 6px 12px;
+                gap: 8px 10px;
+                padding: 8px 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+                max-width: calc(100vw - 24px);
+            }
+            .controls-bar .controls-group {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .controls-bar .controls-divider {
+                display: none;
             }
             .volume-slider {
                 width: 56px;
