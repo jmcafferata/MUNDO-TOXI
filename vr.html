@@ -151,6 +151,13 @@
             padding: 12px 24px;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            opacity: 1;
+            visibility: visible;
+        }
+        .controls-bar.faded-out:not(:hover) {
+            opacity: 0;
+            visibility: hidden;
         }
         .controls-group {
             display: flex;
@@ -331,6 +338,40 @@
         const iconSpeakerOff = document.getElementById('icon-speaker-off');
         const volumeSlider = document.getElementById('volume-slider');
 
+        let hideControlsTimeout = null;
+
+        function startControlsTimeout() {
+            clearControlsTimeout();
+            hideControlsTimeout = setTimeout(() => {
+                const isPlaying = !player.paused;
+                // Sólo ocultar si está reproduciendo el video principal y la barra es visible
+                if (isPlaying && !controlsBar.classList.contains('hidden')) {
+                    controlsBar.classList.add('faded-out');
+                }
+            }, 3000);
+        }
+
+        function clearControlsTimeout() {
+            if (hideControlsTimeout) {
+                clearTimeout(hideControlsTimeout);
+                hideControlsTimeout = null;
+            }
+        }
+
+        // Mostrar controles e iniciar timeout en cualquier interacción o movimiento del mouse sobre el body o el player
+        function showControls() {
+            controlsBar.classList.remove('faded-out');
+            startControlsTimeout();
+        }
+
+        document.body.addEventListener('mousemove', showControls);
+        document.body.addEventListener('touchstart', showControls);
+        document.body.addEventListener('click', showControls);
+
+        // Al hacer hover físico sobre la barra de controles, se cancela/limpia el temporizador para que no se oculte mientras interactuás con sus botones
+        controlsBar.addEventListener('mouseenter', clearControlsTimeout);
+        controlsBar.addEventListener('mouseleave', startControlsTimeout);
+
         const VIDEOS = {
             reel: { playbackId: 'gpyaD02TP7ooRgAxf868u0001IENHX7YPLul2ynnSchMmE', label: 'Reel' },
             trailer: { playbackId: '95Udf3e8O6tFwt7G7H5GQyvvEJ6K4iP00O4AhWOMd7mc', label: 'Trailer de Juego de Drones' },
@@ -355,6 +396,7 @@
             player.setAttribute('playback-id', video.playbackId);
             player.muted = false;
             player.volume = parseFloat(volumeSlider.value);
+            player.autoplay = true; // Activa la reproducción automática en el elemento
 
             stageEl.classList.remove('stage-hidden');
             bgVideoContainer.classList.add('faded-out');
@@ -364,21 +406,30 @@
 
             try {
                 const p = player.play();
-                if (p && typeof p.then === 'function') p.catch(() => {});
+                if (p && typeof p.then === 'function') {
+                    p.catch(() => {
+                        // En caso de que el navegador bloquee el autoplay por falta de interacción previa (aunque ya hubo clic), intentamos forzarlo
+                        player.play().catch(() => {});
+                    });
+                }
             } catch (e) {}
 
             introOverlay.classList.add('fade-out');
             controlsBar.classList.remove('hidden');
+            controlsBar.classList.remove('faded-out');
             updatePlayPauseIcon();
             updateSpeakerIcon();
+            startControlsTimeout();
         }
 
         function backToMenu() {
+            clearControlsTimeout();
             player.pause();
             stageEl.classList.add('stage-hidden');
             bgVideoContainer.classList.remove('faded-out');
             introOverlay.classList.remove('fade-out');
             controlsBar.classList.add('hidden');
+            controlsBar.classList.remove('faded-out');
             try {
                 if (bgPlayer) {
                     const p = bgPlayer.play();
