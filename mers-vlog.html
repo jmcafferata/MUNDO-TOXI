@@ -122,9 +122,6 @@
         .mc-btn .mc-btn-label {
             margin-left: 6px;
         }
-        @media (max-width: 640px) {
-            .mc-btn .mc-btn-label { display: none; }
-        }
 
         /* Botón grande flotante para activar sonido (necesario por el autoplay muteado) */
         .unmute-overlay {
@@ -159,6 +156,47 @@
         .unmute-overlay button:hover {
             transform: scale(1.04);
             background: rgba(0, 0, 0, 0.75);
+        }
+
+        /* Ajustes para móvil */
+        @media (max-width: 640px) {
+            .unmute-overlay {
+                top: 12px;
+            }
+            .unmute-overlay button {
+                font-size: 14px;
+                letter-spacing: 1px;
+                padding: 12px 20px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            }
+            media-controller {
+                --media-control-bar-height: 56px;
+                --media-button-icon-width: 24px;
+                --media-button-icon-height: 24px;
+                --media-font-size: 14px;
+            }
+            media-control-bar {
+                padding: 6px 8px 24px 8px;
+                gap: 2px;
+            }
+            .mc-btn {
+                height: 40px;
+                padding: 0 8px;
+                font-size: 13px;
+            }
+            .mc-btn svg {
+                width: 22px;
+                height: 22px;
+            }
+        }
+        
+        /* Ajuste extra para iOS (safe area) */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            @media (max-width: 640px) {
+                media-control-bar {
+                    padding-bottom: max(24px, env(safe-area-inset-bottom));
+                }
+            }
         }
 
         /* Panel lateral con la lista de episodios */
@@ -294,7 +332,7 @@
 
     <script>
         // Auto-refresh para usuarios con versión cacheada vieja
-        const VERSION = '2.0';
+        const VERSION = '2.2';
         const storedVersion = localStorage.getItem('mers-vlog-version');
         if (storedVersion !== VERSION) {
             localStorage.setItem('mers-vlog-version', VERSION);
