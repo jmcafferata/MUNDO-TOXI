@@ -293,6 +293,17 @@
     </aside>
 
     <script>
+        // Auto-refresh para usuarios con versión cacheada vieja
+        const VERSION = '2.0';
+        const storedVersion = localStorage.getItem('mers-vlog-version');
+        if (storedVersion !== VERSION) {
+            localStorage.setItem('mers-vlog-version', VERSION);
+            if (storedVersion !== null) {
+                // Ya visitó antes con versión vieja, refrescar una vez
+                location.reload(true);
+            }
+        }
+        
         const video = document.getElementById('video');
         const unmuteOverlay = document.getElementById('unmute-overlay');
         const unmuteBtn = document.getElementById('unmute-btn');
