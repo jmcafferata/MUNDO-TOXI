@@ -330,7 +330,7 @@
             }
         }
 
-        function playEpisode(index, { keepSound = false, updateHash = true } = {}) {
+        function playEpisode(index, { keepSound = false, updateHash = true, startTime = null } = {}) {
             if (index < 0 || index >= EPISODES.length) return;
             currentIndex = index;
             video.setAttribute('playback-id', EPISODES[index].id);
@@ -343,6 +343,16 @@
                     history.replaceState(null, '', targetHash);
                 }
             }
+            
+            // Si hay un tiempo de inicio específico, aplicarlo cuando el video esté listo
+            if (startTime !== null && startTime > 0) {
+                const seekToTime = () => {
+                    video.currentTime = startTime;
+                    video.removeEventListener('loadedmetadata', seekToTime);
+                };
+                video.addEventListener('loadedmetadata', seekToTime);
+            }
+            
             try {
                 if (!keepSound) video.muted = false;
                 const p = video.play();
@@ -393,27 +403,53 @@
         listBtn.addEventListener('click', togglePanel);
         closeBtn.addEventListener('click', closePanel);
 
-        // Routing por hash (#1, #2, #3, …)
-        function episodeIndexFromHash() {
-            const m = /^#(\d+)$/.exec(window.location.hash || '');
+        // Routing por hash (#1, #2, #3, …) con soporte para tiempo (#5?t=126)
+        function parseHashParams() {
+            const hash = window.location.hash || '';
+            // Formato: #5?t=126 o simplemente #5
+            const m = /^#(\d+)(\?(.*))?$/.exec(hash);
             if (!m) return null;
+            
             const idx = parseInt(m[1], 10) - 1;
             if (idx < 0 || idx >= EPISODES.length) return null;
-            return idx;
+            
+            let time = null;
+            if (m[3]) {
+                // Parsear query params
+                const params = new URLSearchParams(m[3]);
+                const tParam = params.get('t');
+                if (tParam) {
+                    const parsedTime = parseInt(tParam, 10);
+                    if (!isNaN(parsedTime) && parsedTime >= 0) {
+                        time = parsedTime;
+                    }
+                }
+            }
+            
+            return { index: idx, time };
         }
+        
+        function episodeIndexFromHash() {
+            const result = parseHashParams();
+            return result ? result.index : null;
+        }
+        
         function applyHash({ keepSound = false } = {}) {
-            const idx = episodeIndexFromHash();
-            if (idx === null) return;
-            if (idx !== currentIndex) {
-                playEpisode(idx, { keepSound, updateHash: false });
+            const params = parseHashParams();
+            if (params === null) return;
+            if (params.index !== currentIndex) {
+                playEpisode(params.index, { keepSound, updateHash: false, startTime: params.time });
+            } else if (params.time !== null) {
+                // Mismo episodio pero con tiempo diferente
+                video.currentTime = params.time;
             }
         }
         window.addEventListener('hashchange', () => applyHash({ keepSound: !video.muted }));
 
-        // Estado inicial: si viene con hash, empieza en ese episodio
-        const initialIdx = episodeIndexFromHash();
-        if (initialIdx !== null && initialIdx !== 0) {
-            playEpisode(initialIdx, { updateHash: false });
+        // Estado inicial: si viene con hash, empieza en ese episodio (y tiempo si aplica)
+        const initialParams = parseHashParams();
+        if (initialParams !== null && (initialParams.index !== 0 || initialParams.time !== null)) {
+            playEpisode(initialParams.index, { updateHash: false, startTime: initialParams.time });
         }
 
         renderEpisodeList();
