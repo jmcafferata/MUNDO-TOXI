@@ -333,6 +333,19 @@
         function playEpisode(index, { keepSound = false, updateHash = true, startTime = null } = {}) {
             if (index < 0 || index >= EPISODES.length) return;
             currentIndex = index;
+            
+            // Si hay un tiempo de inicio específico, aplicarlo cuando el video esté listo
+            if (startTime !== null && startTime >= 0) {
+                const seekToTime = () => {
+                    console.log('Seeking to', startTime);
+                    video.currentTime = startTime;
+                    video.removeEventListener('loadedmetadata', seekToTime);
+                };
+                // Limpiar listeners previos
+                video.removeEventListener('loadedmetadata', seekToTime);
+                video.addEventListener('loadedmetadata', seekToTime, { once: true });
+            }
+            
             video.setAttribute('playback-id', EPISODES[index].id);
             updateNextButton();
             renderEpisodeList();
@@ -342,15 +355,6 @@
                     // Cambio silencioso para no re-disparar hashchange
                     history.replaceState(null, '', targetHash);
                 }
-            }
-            
-            // Si hay un tiempo de inicio específico, aplicarlo cuando el video esté listo
-            if (startTime !== null && startTime > 0) {
-                const seekToTime = () => {
-                    video.currentTime = startTime;
-                    video.removeEventListener('loadedmetadata', seekToTime);
-                };
-                video.addEventListener('loadedmetadata', seekToTime);
             }
             
             try {
@@ -406,6 +410,7 @@
         // Routing por hash (#1, #2, #3, …) con soporte para tiempo (#5?t=126)
         function parseHashParams() {
             const hash = window.location.hash || '';
+            console.log('Parsing hash:', hash);
             // Formato: #5?t=126 o simplemente #5
             const m = /^#(\d+)(\?(.*))?$/.exec(hash);
             if (!m) return null;
@@ -426,6 +431,7 @@
                 }
             }
             
+            console.log('Parsed result:', { index: idx, time });
             return { index: idx, time };
         }
         
@@ -448,12 +454,17 @@
 
         // Estado inicial: si viene con hash, empieza en ese episodio (y tiempo si aplica)
         const initialParams = parseHashParams();
-        if (initialParams !== null && (initialParams.index !== 0 || initialParams.time !== null)) {
-            playEpisode(initialParams.index, { updateHash: false, startTime: initialParams.time });
+        console.log('Initial params:', initialParams);
+        if (initialParams !== null) {
+            if (initialParams.index !== 0 || initialParams.time !== null) {
+                currentIndex = initialParams.index; // Set before calling playEpisode
+                playEpisode(initialParams.index, { updateHash: false, startTime: initialParams.time });
+            }
+        } else {
+            // Sin hash válido, cargar episodio 1
+            renderEpisodeList();
+            updateNextButton();
         }
-
-        renderEpisodeList();
-        updateNextButton();
     </script>
 </body>
 </html>
