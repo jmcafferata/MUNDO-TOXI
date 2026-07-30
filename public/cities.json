@@ -26,7 +26,11 @@
     { "name": "Chacabuco", "lat": -34.6427, "lon": -60.4673 },
     { "name": "Junín", "lat": -34.5919, "lon": -60.9589 },
     { "name": "La Paternal", "lat": -34.6027, "lon": -58.4736 },
-    { "name": "Avellaneda", "lat": -34.6621, "lon": -58.3651 }
+    { "name": "Avellaneda", "lat": -34.6621, "lon": -58.3651 },
+    { "name": "Pittsburgh", "lat": 40.4406, "lon": -79.9959 },
+    { "name": "Greens Fork, IN", "lat": 39.8978, "lon": -85.0497 },
+    { "name": "Columbus, Ohio", "lat": 39.9612, "lon": -82.9988 },
+    { "name": "Washington DC", "lat": 38.9072, "lon": -77.0369 }
   ],
   "links": [
     { "from": "Santiago de Chile", "to": "Venado Tuerto" },
@@ -120,6 +124,21 @@
     { "from": "La Paternal", "to": "Buenos Aires" },
 
     { "from": "Buenos Aires", "to": "Avellaneda" },
-    { "from": "Avellaneda", "to": "Buenos Aires" }
+    { "from": "Avellaneda", "to": "Buenos Aires" },
+
+    { "from": "New York City", "to": "Columbus, Ohio" },
+    { "from": "Columbus, Ohio", "to": "New York City" },
+
+    { "from": "Columbus, Ohio", "to": "Greens Fork, IN" },
+    { "from": "Greens Fork, IN", "to": "Columbus, Ohio" },
+
+    { "from": "Greens Fork, IN", "to": "Pittsburgh" },
+    { "from": "Pittsburgh", "to": "Greens Fork, IN" },
+
+    { "from": "Pittsburgh", "to": "Washington DC" },
+    { "from": "Washington DC", "to": "Pittsburgh" },
+
+    { "from": "Washington DC", "to": "New York City" },
+    { "from": "New York City", "to": "Washington DC" }
   ]
 }
