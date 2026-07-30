@@ -495,11 +495,17 @@
             background: #000;
             z-index: 100;
         }
-        #player-view.active { display: flex; flex-direction: column; }
+        #player-view.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
         #mux-player {
             width: 100%;
-            flex: 1;
+            height: 100%;
+            aspect-ratio: 16 / 9;
+            max-width: 100vw;
+            max-height: 100vh;
+            /* En pantallas anchas, limitar el ancho para que el conjunto (video + controles) fitee en 16:9 */
+            width: min(100vw, calc(100vh * 16 / 9));
+            height: min(100vh, calc(100vw * 9 / 16));
             --media-object-fit: contain;
             --media-background-color: #000;
             --media-icon-color: #fff;
