@@ -565,18 +565,13 @@
             const audio = document.getElementById('bg-music');
             if (!audio) return;
             audio.volume = 0.6;
-            let started = false;
-            const start = () => {
-                if (started) return;
-                started = true;
-                audio.play().catch(() => { started = false; });
-                ['click', 'touchstart', 'keydown', 'pointerdown'].forEach(ev =>
-                    document.removeEventListener(ev, start, true)
-                );
-            };
-            ['click', 'touchstart', 'keydown', 'pointerdown'].forEach(ev =>
-                document.addEventListener(ev, start, true)
-            );
+            document.addEventListener('click', () => {
+                if (audio.paused) {
+                    audio.play().catch(() => {});
+                } else {
+                    audio.pause();
+                }
+            });
         })();
     </script>
 
