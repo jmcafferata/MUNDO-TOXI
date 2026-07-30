@@ -103,6 +103,10 @@
     {
       "source": "/plantform",
       "destination": "/plantform.html"
+    },
+    {
+      "source": "/vr",
+      "destination": "/vr.html"
     }
   ]
 }
