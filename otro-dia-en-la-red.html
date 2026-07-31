@@ -241,6 +241,18 @@
             text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         }
 
+        .features-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            max-width: 640px;
+            width: 100%;
+        }
+        .features-grid .ep-desc {
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.4);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
         @keyframes dvdPulse {
             0% { transform: scale(1); }
             100% { transform: scale(1.05); }
@@ -687,10 +699,7 @@
                 <!-- Submenú Características Especiales -->
                 <div class="dvd-submenu" id="submenu-specials" style="display: none;">
                     <div class="submenu-title">Características Especiales</div>
-                    <div class="features-content">
-                        <p class="features-coming-soon">Muy pronto</p>
-                        <p class="features-desc">Detrás de escena, entrevistas con los creadores y material inédito de la serie.</p>
-                    </div>
+                    <div class="episode-grid features-grid" id="specials-grid"></div>
                     <div class="dvd-menu-item submenu-back-btn" onclick="showMainMenu()">Volver</div>
                 </div>
                 
@@ -781,6 +790,9 @@
                     <svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/></svg>
                 </button>
                 <span class="time-display" id="time-display">0:00 / 0:00</span>
+                <button class="control-btn" id="prev-btn" aria-label="Episodio anterior">
+                    <svg viewBox="0 0 24 24"><path d="M18 19V5l-11 7 11 7zM6 5h2v14H6V5z"/></svg>
+                </button>
                 <button class="control-btn" id="next-btn" aria-label="Siguiente episodio">
                     <svg viewBox="0 0 24 24"><path d="M6 5v14l11-7L6 5zm12 0h2v14h-2z"/></svg>
                 </button>
@@ -821,6 +833,14 @@
             }
         ];
 
+        const SPECIALS = [
+            {
+                id: 'tKM01JEu8FIE4IZA400OQ5vp02xATnd1oqrWVH2ROqJrkQ',
+                title: 'Detrás de escena — EP7 "¿Usted qué ve?"',
+                desc: 'Pruebas, ensayos y testimonios del actor Juan Segundo Quiroga.'
+            }
+        ];
+
         // Flatten all episodes for prev/next navigation
         const ALL_EPISODES = SEASONS.flatMap(s => s.episodes.map(e => ({ ...e, season: s.id })));
 
@@ -856,6 +876,29 @@
 
         buildGrid('season-1-grid', SEASONS[0].episodes, 1);
         buildGrid('season-2-grid', SEASONS[1].episodes, 2);
+
+        function buildSpecialsGrid() {
+            const grid = document.getElementById('specials-grid');
+            grid.innerHTML = SPECIALS.map(sp => `
+                <div class="ep-card" data-id="${sp.id}" role="button" tabindex="0"
+                     aria-label="Reproducir ${sp.title}">
+                    <img class="ep-thumb"
+                         src="https://image.mux.com/${sp.id}/thumbnail.png?width=640&time=5"
+                         alt="${sp.title}"
+                         loading="lazy" />
+                    <div class="ep-info">
+                        <div class="ep-title">${sp.title}</div>
+                        ${sp.desc ? `<div class="ep-desc">${sp.desc}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+
+            grid.querySelectorAll('.ep-card').forEach(card => {
+                card.addEventListener('click', () => playEpisode(card.dataset.id));
+                card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') playEpisode(card.dataset.id); });
+            });
+        }
+        buildSpecialsGrid();
 
         // ── PLAYER & DVD CONTROLLER ──
         const gridView = document.getElementById('grid-view');
@@ -1007,6 +1050,7 @@
         const playIcon = document.getElementById('play-icon');
         const backwardBtn = document.getElementById('backward-btn');
         const forwardBtn = document.getElementById('forward-btn');
+        const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const muteBtn = document.getElementById('mute-btn');
         const volumeIcon = document.getElementById('volume-icon');
@@ -1057,6 +1101,13 @@
             const pos = (e.clientX - rect.left) / rect.width;
             if (isFinite(player.duration)) player.currentTime = pos * player.duration;
         });
+        prevBtn.addEventListener('click', () => {
+            const currentId = player.getAttribute('playback-id');
+            const idx = ALL_EPISODES.findIndex(e => e.id === currentId);
+            if (idx > 0) {
+                playEpisode(ALL_EPISODES[idx - 1].id);
+            }
+        });
         nextBtn.addEventListener('click', () => {
             const currentId = player.getAttribute('playback-id');
             const idx = ALL_EPISODES.findIndex(e => e.id === currentId);
@@ -1074,11 +1125,11 @@
             stopDvdBackground(); // Asegurarnos de pausar videos de fondo
             const bgMusic = document.getElementById('bg-music');
             if (bgMusic) { bgMusic.pause(); }
-            const ep = ALL_EPISODES.find(e => e.id === id);
+            const ep = ALL_EPISODES.find(e => e.id === id) || SPECIALS.find(e => e.id === id);
             if (!ep) return;
             player.setAttribute('metadata-video-title', ep.title);
             player.setAttribute('playback-id', id);
-            epTitleEl.textContent = `T${ep.season} · EP ${ep.num} — ${ep.title}`;
+            epTitleEl.textContent = ep.season ? `T${ep.season} · EP ${ep.num} — ${ep.title}` : ep.title;
             gridView.style.display = 'none';
             dvdContainer.style.display = 'none';
             playerView.classList.add('active');
