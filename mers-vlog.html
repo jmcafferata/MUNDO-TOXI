@@ -734,6 +734,17 @@
         listBtn.addEventListener('click', togglePanel);
         closeBtn.addEventListener('click', closePanel);
 
+        video.addEventListener('click', () => {
+            if (video.paused) {
+                activateSound();
+            }
+        });
+        video.addEventListener('touchstart', () => {
+            if (video.paused) {
+                activateSound();
+            }
+        }, { passive: true });
+
         video.addEventListener('play', () => {
             unmuteOverlay.classList.add('hidden');
         });
