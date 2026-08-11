@@ -11,6 +11,18 @@
     <!-- Media Chrome (UI) + Mux Video (motor de reproducción HLS). -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@0/+esm"></script>
+    <script>
+        // Inicializar Cast SDK con receiver personalizado antes de que el launcher se use
+        window['__onGCastApiAvailable'] = function(isAvailable) {
+            if (isAvailable) {
+                cast.framework.CastContext.getInstance().setOptions({
+                    receiverApplicationId: 'B668F863',
+                    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                });
+            }
+        };
+    </script>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 
     <style>
         :root {
@@ -126,6 +138,27 @@
         }
         .control-btn.hidden {
             display: none;
+        }
+        google-cast-launcher {
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
+            flex-shrink: 0;
+        }
+        google-cast-launcher:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+        google-cast-launcher::part(icon) {
+            width: 24px;
+            height: 24px;
         }
         
         .progress-container {
@@ -354,6 +387,7 @@
                     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
                 </svg>
             </button>
+            <google-cast-launcher id="cast-btn" title="Chromecast"></google-cast-launcher>
             <button class="control-btn" id="fullscreen-btn" aria-label="Pantalla completa">
                 <svg viewBox="0 0 24 24">
                     <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
