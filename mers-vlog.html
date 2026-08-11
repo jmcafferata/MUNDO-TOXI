@@ -12,13 +12,27 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@0/+esm"></script>
     <script>
-        // Inicializar Cast SDK con receiver personalizado antes de que el launcher se use
+        // Inicializar Cast SDK
         window['__onGCastApiAvailable'] = function(isAvailable) {
             if (isAvailable) {
-                cast.framework.CastContext.getInstance().setOptions({
-                    receiverApplicationId: 'B668F863',
+                const context = cast.framework.CastContext.getInstance();
+                context.setOptions({
+                    receiverApplicationId: 'B668F863', // O usa chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID si este falla
                     autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
                 });
+
+                // Escuchar cuando el Chromecast se conecta para enviarle el video
+                context.addEventListener(
+                    cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
+                    function(event) {
+                        if (event.sessionState === cast.framework.SessionState.SESSION_STARTED) {
+                            // Llamamos a una función global que definiremos abajo
+                            if (typeof window.loadMediaToChromecast === 'function') {
+                                window.loadMediaToChromecast();
+                            }
+                        }
+                    }
+                );
             }
         };
     </script>
@@ -249,17 +263,24 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             color: #fff;
-            font-size: 20px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 20px 32px;
-            border-radius: 999px;
+            width: 72px;
+            height: 72px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-radius: 50%;
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
             transition: transform 0.2s ease, background 0.2s ease;
         }
         .unmute-overlay button:hover {
             transform: scale(1.04);
             background: rgba(0, 0, 0, 0.75);
+        }
+        .unmute-overlay button svg {
+            width: 28px;
+            height: 28px;
+            fill: currentColor;
         }
         
         @media (max-width: 640px) {
@@ -412,7 +433,11 @@
     </div>
 
     <div id="unmute-overlay" class="unmute-overlay">
-        <button id="unmute-btn" type="button" aria-label="Reproducir">Play</button>
+        <button id="unmute-btn" type="button" aria-label="Reproducir">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+        </button>
     </div>
 
     <aside id="episode-panel" class="episode-panel" aria-hidden="true">
@@ -532,6 +557,50 @@
             } catch (e) {}
         }
 
+        // Función para enviar el stream de Mux al Chromecast
+        window.loadMediaToChromecast = function() {
+            const context = cast.framework.CastContext.getInstance();
+            const castSession = context.getCurrentSession();
+            
+            if (!castSession) return;
+
+            // Obtener el episodio actual de tu array EPISODES
+            const currentEpisode = EPISODES[currentIndex];
+            
+            // Mux entrega el HLS nativo en esta estructura de URL
+            const streamUrl = `https://stream.mux.com/${currentEpisode.id}.m3u8`;
+
+            // Crear la información del medio para el Chromecast
+            const mediaInfo = new chrome.cast.media.MediaInfo(streamUrl, 'application/x-mpegurl');
+            
+            // (Opcional) Agregar metadatos para que se vea el título y la imagen en la TV
+            const metadata = new chrome.cast.media.GenericMediaMetadata();
+            metadata.title = currentEpisode.title;
+            metadata.images = [
+                new chrome.cast.Image(getThumbnailUrl(currentEpisode.id, currentEpisode.poster || 0))
+            ];
+            mediaInfo.metadata = metadata;
+
+            const request = new chrome.cast.media.LoadRequest(mediaInfo);
+            
+            // Sincronizar el tiempo de reproducción actual con la TV
+            if (video.currentTime > 0) {
+                request.currentTime = video.currentTime;
+            }
+
+            // Cargar el video en el Chromecast
+            castSession.loadMedia(request).then(
+                function() {
+                    console.log('Video cargado exitosamente en Chromecast');
+                    // Opcional: pausar el video local para que no suenen ambos
+                    video.pause(); 
+                },
+                function(error) {
+                    console.error('Error al cargar video en Cast:', error);
+                }
+            );
+        };
+
         function goNext() {
             playEpisode(currentIndex + 1, { keepSound: !video.muted });
         }
@@ -562,6 +631,8 @@
         // Funciones de control del video
         function togglePlay() {
             if (video.paused) {
+                video.muted = false;
+                video.volume = 1;
                 video.play();
             } else {
                 video.pause();
