@@ -311,7 +311,6 @@
                 slot="media"
                 playback-id="KMqFFjIjC4R7FafgSiwFb8oRnDDwkyzq7YDgcMsp9zg"
                 stream-type="on-demand"
-                autoplay
                 muted
                 playsinline
                 crossorigin
@@ -445,37 +444,38 @@
             }
         }
 
-        function playEpisode(index, { keepSound = false, updateHash = true, startTime = null } = {}) {
+        function prepareEpisode(index, { startTime = null } = {}) {
             if (index < 0 || index >= EPISODES.length) return;
             currentIndex = index;
-            
+
             const thumbnail = getThumbnailUrl(EPISODES[index].id);
             video.setAttribute('poster', thumbnail);
             stage.style.backgroundImage = `url('${thumbnail}')`;
-            
-            // Si hay un tiempo de inicio específico, aplicarlo cuando el video esté listo
+            video.setAttribute('playback-id', EPISODES[index].id);
+
             if (startTime !== null && startTime >= 0) {
                 const seekToTime = () => {
                     console.log('Seeking to', startTime);
                     video.currentTime = startTime;
                     video.removeEventListener('loadedmetadata', seekToTime);
                 };
-                // Limpiar listeners previos
                 video.removeEventListener('loadedmetadata', seekToTime);
                 video.addEventListener('loadedmetadata', seekToTime, { once: true });
             }
-            
-            video.setAttribute('playback-id', EPISODES[index].id);
+
             updateNextButton();
             renderEpisodeList();
+        }
+
+        function playEpisode(index, { keepSound = false, updateHash = true, startTime = null } = {}) {
+            prepareEpisode(index, { startTime });
             if (updateHash) {
                 const targetHash = '#' + (index + 1);
                 if (window.location.hash !== targetHash) {
-                    // Cambio silencioso para no re-disparar hashchange
                     history.replaceState(null, '', targetHash);
                 }
             }
-            
+
             try {
                 if (!keepSound) video.muted = false;
                 const p = video.play();
@@ -614,6 +614,10 @@
         listBtn.addEventListener('click', togglePanel);
         closeBtn.addEventListener('click', closePanel);
 
+        video.addEventListener('play', () => {
+            unmuteOverlay.classList.add('hidden');
+        });
+
         // Routing por hash (#1, #2, #3, …) con soporte para tiempo (#5?t=126)
         function parseHashParams() {
             const hash = window.location.hash || '';
@@ -663,10 +667,8 @@
         const initialParams = parseHashParams();
         console.log('Initial params:', initialParams);
         if (initialParams !== null) {
-            if (initialParams.index !== 0 || initialParams.time !== null) {
-                currentIndex = initialParams.index; // Set before calling playEpisode
-                playEpisode(initialParams.index, { updateHash: false, startTime: initialParams.time });
-            }
+            currentIndex = initialParams.index;
+            prepareEpisode(initialParams.index, { startTime: initialParams.time });
         } else {
             // Sin hash válido, cargar episodio 1
             const initialThumbnail = getThumbnailUrl(EPISODES[0].id);
