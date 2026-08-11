@@ -397,8 +397,8 @@
         const listEl = document.getElementById('episode-list');
 
         const THUMBNAIL_WIDTH = 1280;
-        const getThumbnailUrl = (playbackId) =>
-            `https://image.mux.com/${playbackId}/thumbnail.jpg?time={poster}&width=${THUMBNAIL_WIDTH}&fit_mode=preserve`;
+        const getThumbnailUrl = (playbackId,poster) =>
+            `https://image.mux.com/${playbackId}/thumbnail.jpg?time=${poster}&width=${THUMBNAIL_WIDTH}&fit_mode=preserve`;
         
         // Controles custom
         const playBtn = document.getElementById('play-btn');
@@ -448,7 +448,7 @@
             if (index < 0 || index >= EPISODES.length) return;
             currentIndex = index;
 
-            const thumbnail = getThumbnailUrl(EPISODES[index].id);
+            const thumbnail = getThumbnailUrl(EPISODES[index].id, EPISODES[index].poster || 0);
             video.setAttribute('poster', thumbnail);
             stage.style.backgroundImage = `url('${thumbnail}')`;
             video.setAttribute('playback-id', EPISODES[index].id);
