@@ -34,6 +34,9 @@
             inset: 0;
             width: 100vw;
             height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         /* --- media-chrome --- */
@@ -179,9 +182,10 @@
         /* Botón grande flotante para activar sonido (necesario por el autoplay muteado) */
         .unmute-overlay {
             position: fixed;
-            top: 24px;
-            left: 50%;
-            transform: translateX(-50%);
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             z-index: 20;
             pointer-events: none;
             transition: opacity 0.35s ease;
@@ -360,7 +364,7 @@
     </div>
 
     <div id="unmute-overlay" class="unmute-overlay">
-        <button id="unmute-btn" type="button" aria-label="Activar sonido">🔇 Activar sonido</button>
+        <button id="unmute-btn" type="button" aria-label="Reproducir">Play</button>
     </div>
 
     <aside id="episode-panel" class="episode-panel" aria-hidden="true">
@@ -384,6 +388,7 @@
         }
         
         const video = document.getElementById('video');
+        const stage = document.querySelector('.stage');
         const unmuteOverlay = document.getElementById('unmute-overlay');
         const unmuteBtn = document.getElementById('unmute-btn');
         const nextBtn = document.getElementById('next-btn');
@@ -391,6 +396,10 @@
         const closeBtn = document.getElementById('close-panel');
         const panel = document.getElementById('episode-panel');
         const listEl = document.getElementById('episode-list');
+
+        const THUMBNAIL_WIDTH = 1280;
+        const getThumbnailUrl = (playbackId) =>
+            `https://image.mux.com/${playbackId}/thumbnail.jpg?time=0&width=${THUMBNAIL_WIDTH}&fit_mode=preserve`;
         
         // Controles custom
         const playBtn = document.getElementById('play-btn');
@@ -439,6 +448,10 @@
         function playEpisode(index, { keepSound = false, updateHash = true, startTime = null } = {}) {
             if (index < 0 || index >= EPISODES.length) return;
             currentIndex = index;
+            
+            const thumbnail = getThumbnailUrl(EPISODES[index].id);
+            video.setAttribute('poster', thumbnail);
+            stage.style.backgroundImage = `url('${thumbnail}')`;
             
             // Si hay un tiempo de inicio específico, aplicarlo cuando el video esté listo
             if (startTime !== null && startTime >= 0) {
@@ -536,7 +549,6 @@
         }
 
         function toggleFullscreen() {
-            const stage = document.querySelector('.stage');
             if (!document.fullscreenElement) {
                 if (stage.requestFullscreen) {
                     stage.requestFullscreen();
@@ -657,6 +669,9 @@
             }
         } else {
             // Sin hash válido, cargar episodio 1
+            const initialThumbnail = getThumbnailUrl(EPISODES[0].id);
+            video.setAttribute('poster', initialThumbnail);
+            stage.style.backgroundImage = `url('${initialThumbnail}')`;
             renderEpisodeList();
             updateNextButton();
         }
