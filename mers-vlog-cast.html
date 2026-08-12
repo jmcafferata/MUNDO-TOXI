@@ -7,20 +7,21 @@
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
     <style>
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: #000;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-        }
-        .stage {
-            position: fixed;
-            inset: 0;
-            width: 100vw;
-            height: 100vh;
-        }
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100dvh; /* Usar dvh (dinámico) en lugar de vh (estático) */
+    overflow: hidden;
+    background: #000;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+}
+
+.stage {
+    position: fixed;
+    inset: 0;
+    /* Al usar inset: 0, ya no necesitas poner width y height. 
+       El navegador lo ajustará automáticamente a los bordes visibles. */
+}
         mux-player {
             width: 100%;
             height: 100%;
