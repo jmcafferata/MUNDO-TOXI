@@ -17,11 +17,11 @@
 
 ## Main Pages
 
-| Page | File | Priority |
-|------|------|----------|
-| Home | `index.html` | High |
-| Main | `main.html` | High |
-| App | `app.html` | High |
+| Page | File | URL | Priority |
+|------|------|-----|----------|
+| Home | `index.html` | https://toxi.media/ | High |
+| Main | `main.html` | https://toxi.media/main.html | High |
+| App | `app.html` | https://toxi.media/app.html | High |
 
 ---
 
