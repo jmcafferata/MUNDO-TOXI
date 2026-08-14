@@ -1,0 +1,14 @@
+# TOXI Media Robots.txt
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /.git/
+Disallow: /node_modules/
+Disallow: /src/
+Disallow: /tools/
+
+# Crawl delay (in seconds)
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://toxi.media/sitemap.xml
