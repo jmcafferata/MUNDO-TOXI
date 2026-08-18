@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <title>Avenida Q — Detr&aacute;s de escena | TOXI Media</title>
+  <meta name="description" content="Documental detr&aacute;s de escena de Avenida Q en el Teatro Maipo. Ensayos y entrevistas filmados el 1 de agosto de 2024." />
+  <meta property="og:type" content="video.other" />
+  <meta property="og:url" content="https://toxi.media/avenida-q" />
+  <meta property="og:title" content="Avenida Q — Detr&aacute;s de escena | TOXI Media" />
+  <meta property="og:description" content="Ensayos y entrevistas de Avenida Q en el Teatro Maipo, filmados el 1 de agosto de 2024." />
+  <meta property="og:image" content="https://image.mux.com/TP8tkLMpnOLNxwMom2JdlgdJtx9uduzh2xLBKtuhX34/thumbnail.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Avenida Q — Detr&aacute;s de escena | TOXI Media" />
+  <meta name="twitter:description" content="Ensayos y entrevistas de Avenida Q en el Teatro Maipo, filmados el 1 de agosto de 2024." />
+  <meta name="twitter:image" content="https://image.mux.com/TP8tkLMpnOLNxwMom2JdlgdJtx9uduzh2xLBKtuhX34/thumbnail.jpg" />
+  <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --muted: rgba(255, 255, 255, 0.48);
+      --border: rgba(255, 255, 255, 0.16);
+      --hover-border: rgba(255, 255, 255, 0.72);
+      --font: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --gap: 1.5rem;
+    }
+
+    html { background: var(--bg); }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      overscroll-behavior: none;
+    }
+
+    a { color: inherit; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 var(--gap);
+      background: rgba(0, 0, 0, 0.92);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+
+    .brand:hover { color: var(--fg); }
+
+    .brand-mark {
+      color: var(--fg);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .header-link {
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+    }
+
+    .header-link:hover { color: var(--fg); }
+
+    main {
+      width: min(1180px, calc(100% - 3rem));
+      margin: 0 auto;
+      padding: clamp(3rem, 8vw, 7rem) 0 5rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 1.2rem;
+      color: var(--muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 900px;
+      margin: 0;
+      font-size: clamp(3.5rem, 10vw, 9rem);
+      font-weight: 500;
+      letter-spacing: -0.045em;
+      line-height: 0.88;
+      text-transform: uppercase;
+    }
+
+    .intro {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.42fr);
+      gap: 3rem;
+      align-items: end;
+      margin: 2.5rem 0 3.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .description {
+      max-width: 600px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .detail { border-top: 1px solid var(--border); padding-top: 0.65rem; }
+
+    .detail-label {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--muted);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .detail-value { font-size: 0.82rem; line-height: 1.35; }
+
+    .player-frame {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #080808;
+      aspect-ratio: 16 / 9;
+      transition: border-color 0.25s ease;
+    }
+
+    .player-frame:hover { border-color: var(--hover-border); }
+
+    mux-player {
+      display: block;
+      width: 100%;
+      height: 100%;
+      --media-background-color: #080808;
+      --media-icon-color: #fff;
+      --media-accent-color: #fff;
+      --media-object-fit: contain;
+    }
+
+    .caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 0.9rem;
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      line-height: 1.5;
+      text-transform: uppercase;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 7rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 700px) {
+      :root { --gap: 1rem; }
+
+      .site-header { height: 52px; }
+      .header-link { display: none; }
+      main { width: min(100% - 2rem, 1180px); padding-top: 3.5rem; }
+      h1 { font-size: clamp(3.25rem, 18vw, 6rem); }
+      .intro { grid-template-columns: 1fr; gap: 2rem; margin-bottom: 2.5rem; }
+      .description { font-size: 0.95rem; }
+      .player-frame { aspect-ratio: 16 / 10; }
+      .caption, footer { display: block; }
+      .caption span, footer span { display: block; margin-bottom: 0.35rem; }
+      footer { margin-top: 4rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="brand-mark">TOXI</span>
+      <span>Media</span>
+    </a>
+    <a class="header-link" href="/main.html">Ver archivo</a>
+  </header>
+
+  <main>
+    <p class="eyebrow">Documental / Teatro Maipo</p>
+    <h1>Avenida Q</h1>
+
+    <section class="intro" aria-label="Informaci&oacute;n del documental">
+      <p class="description">Ensayos, conversaciones y escenas detr&aacute;s del escenario de <em>Avenida Q</em>, registrados en el Teatro Maipo como una mirada &iacute;ntima al trabajo que sucede antes de que se enciendan las luces.</p>
+      <div class="details">
+        <div class="detail">
+          <span class="detail-label">Filmado</span>
+          <span class="detail-value">1 de agosto<br />de 2024</span>
+        </div>
+        <div class="detail">
+          <span class="detail-label">Lugar</span>
+          <span class="detail-value">Teatro<br />Maipo</span>
+        </div>
+      </div>
+    </section>
+
+    <figure style="margin: 0;">
+      <div class="player-frame">
+        <mux-player
+          playback-id="TP8tkLMpnOLNxwMom2JdlgdJtx9uduzh2xLBKtuhX34"
+          metadata-video-title="Avenida Q — Detr&aacute;s de escena"
+          metadata-video-series="TOXI Media"
+          metadata-video-artist="TOXI Media"
+          poster="https://image.mux.com/TP8tkLMpnOLNxwMom2JdlgdJtx9uduzh2xLBKtuhX34/thumbnail.jpg"
+          stream-type="on-demand"
+          accent-color="#ffffff"
+          playsinline
+        ></mux-player>
+      </div>
+      <figcaption class="caption">
+        <span>Avenida Q — Detr&aacute;s de escena</span>
+        <span>TOXI Media</span>
+      </figcaption>
+    </figure>
+
+    <footer>
+      <span>TOXI Media</span>
+      <span>toxi.media/avenida-q</span>
+    </footer>
+  </main>
+</body>
+</html>

@@ -130,6 +130,7 @@ const sitemapUrls = [
   `${BASE_URL}/`,
   `${BASE_URL}/index.html`,
   `${BASE_URL}/main.html`,
+  `${BASE_URL}/avenida-q`,
   ...Array.from(slugSet).sort().map((slug) => `${BASE_URL}/${slug}`)
 ];
 
