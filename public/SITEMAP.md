@@ -84,7 +84,9 @@
 | Toxi One Pager | `toxi-one-pager.html` | Single page summary |
 | Reporte Ximena | `reporte-ximena.html` | Report page |
 | VR | `vr.html` | Virtual reality |
-| University | `university.html` | Educational content |
+| University | `university.html` | Course index |
+| University: Historia Argentina | `university/historia-argentina.html` | Course detail |
+| University: Streaming | `university/como-streamear.html` | Course detail |
 | Wiki | `wiki.html` | Knowledge base |
 | Turing | `turing.html` | AI/Tech section |
 | Turing Admin | `turing-admin.html` | Administration panel |

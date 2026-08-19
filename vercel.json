@@ -111,6 +111,22 @@
     {
       "source": "/vr",
       "destination": "/vr.html"
+    },
+    {
+      "source": "/university/historia-argentina",
+      "destination": "/university/historia-argentina.html"
+    },
+    {
+      "source": "/university/introduccion-python",
+      "destination": "/university/introduccion-python.html"
+    },
+    {
+      "source": "/university/literatura-y-realidad-virtual",
+      "destination": "/university/literatura-y-realidad-virtual.html"
+    },
+    {
+      "source": "/university/como-streamear",
+      "destination": "/university/como-streamear.html"
     }
   ]
 }

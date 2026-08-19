@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Modelo Extensivo Regenerativo Sintrópico (MERS) | Toxi University</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+
+    <!-- Open Graph / Meta tags similar to index.html -->
+    <meta name="description" content="Modelo Extensivo Regenerativo Sintrópico (MERS) en Toxi University. Agricultura regenerativa a gran escala con Alfredo Juan Cafferata." />
+    <meta name="theme-color" content="#000000" />
+    <meta property="og:title" content="Modelo Extensivo Regenerativo Sintrópico (MERS) | Toxi University" />
+    <meta property="og:description" content="Tres masterclasses gratuitas sobre agricultura regenerativa extensiva con Alfredo Juan Cafferata." />
+    <meta property="og:type" content="website" />
+
+    <!-- Style -->
+    <link rel="stylesheet" href="../src/style.css" />
+
+    <style>
+        :root {
+            --accent-color: #6a8f3d; /* Regenerative green accent */
+            --timeline-line-color: rgba(255, 255, 255, 0.2);
+        }
+
+        @font-face {
+            font-family: 'Helvetica Now';
+            src: url('/HelveticaNowDisplay-Bold.otf') format('opentype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Helvetica Now';
+            src: url('/HelveticaNowDisplay-Light.otf') format('opentype');
+            font-weight: 300;
+            font-style: normal;
+        }
+
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Helvetica Now', 'Helvetica', 'Arial', sans-serif;
+            overflow-y: auto; /* Ensure scrolling works */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Reusing the background aesthetic from .entry-container */
+        .university-container {
+            position: relative;
+            min-height: 100vh;
+            width: 100%;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .university-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(1648px 1200px at 50% 0%, rgba(255,255,255,0.06), transparent 60%),
+                radial-gradient(900px 700px at 85% 35%, rgba(255,255,255,0.05), transparent 65%),
+                linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.6) 100%);
+            pointer-events: none;
+            z-index: 0;
+            position: fixed; /* Keep background fixed while scrolling */
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 900px;
+            padding: 1.5rem 1rem 0;
+        }
+
+        .breadcrumb a {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: #fff;
+        }
+
+        /* Header Section */
+        header {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 3rem 1rem 4rem;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .logo-container {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+
+        .logo-img {
+            height: 40px;
+            opacity: 0.9;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            font-weight: bold;
+            background: linear-gradient(180deg, #fff 0%, #ccc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            line-height: 1.5;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Instructor Card - Glassmorphism style */
+        .instructor-card {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            padding: 3rem;
+            border-radius: 20px;
+
+            /* Glassmorphism matching site style */
+            background: linear-gradient(160deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+
+            text-align: center;
+        }
+
+        .instructor-card h2 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .instructor-card p {
+            color: var(--accent-color);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .instructor-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(160deg, rgba(106,143,61,0.35), rgba(255,255,255,0.03));
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tags {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .book-blurb {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            text-align: center;
+        }
+
+        .book-blurb p {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            margin: 0 0 1.2rem;
+        }
+
+        .book-blurb .endorsement {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .free-samples {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 900px;
+            margin: 0 auto 4rem;
+        }
+
+        .free-samples-label {
+            color: var(--accent-color);
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 0.12em;
+            margin: 0 0 0.75rem;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .free-samples h2 {
+            font-size: 1.8rem;
+            margin: 0 0 1.25rem;
+            text-align: center;
+        }
+
+        .free-sample-item {
+            margin-bottom: 3rem;
+        }
+
+        .free-sample-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .free-sample-item h3 {
+            font-size: 1.2rem;
+            margin: 0 0 0.75rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: bold;
+        }
+
+        .free-sample-item mux-player {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            --media-object-fit: contain;
+            --media-background-color: #090909;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 300;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .tag:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Timeline Section */
+        .syllabus-section {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 800px;
+            padding: 0 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .syllabus-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 300;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 2rem;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Vertical Line */
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 1px;
+            background: linear-gradient(180deg, transparent 0%, var(--timeline-line-color) 10%, var(--timeline-line-color) 90%, transparent 100%);
+            top: 0;
+            bottom: 0;
+            left: 20px; /* Aligned with dots */
+        }
+
+        .timeline-item {
+            padding: 0 0 2.5rem 60px; /* Space for line and dot */
+            position: relative;
+        }
+
+        /* Dot */
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            left: 15.5px; /* Centered on the 1px line at 20px */
+            background-color: #000;
+            border: 2px solid var(--accent-color);
+            top: 5px;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 15px rgba(106, 143, 61, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover::after {
+            background-color: var(--accent-color);
+            transform: scale(1.2);
+        }
+
+        .timeline-content {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-content::before {
+             content: '';
+             position: absolute;
+             top: 0; left: 0; width: 4px; height: 100%;
+             background: var(--accent-color);
+             opacity: 0.5;
+        }
+
+        .timeline-content:hover {
+            transform: translateX(5px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .timeline-content h3 {
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .year-pill {
+            background: var(--accent-color);
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .timeline-content p {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 6rem 2rem;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .location {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 18px 48px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(106, 143, 61, 0.2);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            border: none; /* Reset button default */
+            font-family: inherit; /* Reset button default */
+        }
+
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #7fab4a;
+            box-shadow: 0 0 40px rgba(127, 171, 74, 0.4);
+            transform: scale(1.02);
+        }
+
+        .cta-button:hover::after {
+            transform: translateX(100%);
+        }
+
+        .signup-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .email-input {
+            padding: 18px 24px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1.1rem;
+            flex-grow: 1;
+            min-width: 250px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(106, 143, 61, 0.1);
+        }
+
+        .email-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        #form-message {
+            margin-top: 1rem;
+            min-height: 1.5rem;
+            font-size: 1rem;
+            font-weight: 300;
+        }
+
+        .success-msg { color: #4ade80; }
+        .error-msg { color: #f87171; }
+        .loading-msg { color: #94a3b8; }
+
+        /* Mobile Adjustments */
+        @media screen and (max-width: 600px) {
+            header h1 { font-size: 2.2rem; }
+            .instructor-card { padding: 2rem 1.5rem; }
+
+            .timeline::after { left: 15px; }
+            .timeline-item::after { left: 11px; }
+            .timeline-item { padding-left: 45px; }
+
+            .timeline-content h3 { font-size: 1.1rem; flex-direction: column; align-items: flex-start; gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="university-container">
+
+        <div class="breadcrumb">
+            <a href="/university">← Toxi University</a>
+        </div>
+
+        <header>
+            <div class="logo-container">
+                <img src="/university-logo.png" onerror="this.src='/toxi-logo-white.png'" alt="TOXI University" class="logo-img" style="height: auto; max-width: 250px; max-height: 80px;">
+            </div>
+            <h1>Modelo Extensivo<br>Regenerativo Sintrópico</h1>
+            <p>Cómo producir más alimentos y, al mismo tiempo, restaurar la salud de la Tierra, con Alfredo Juan Cafferata.</p>
+        </header>
+
+        <div class="instructor-card">
+            <div class="instructor-photo" aria-hidden="true">AJC</div>
+
+            <h2>Alfredo Juan Cafferata</h2>
+            <p>Autor de MERS · Agricultura Regenerativa Extensiva</p>
+            <div class="tags">
+                <span class="tag">Agricultura Regenerativa</span>
+                <span class="tag">Agricultura Sintrópica</span>
+                <span class="tag">Ganadería Adaptativa</span>
+            </div>
+        </div>
+
+        <section class="book-blurb">
+            <p>¿Es posible alimentar a una población mundial creciente y, al mismo tiempo, restaurar la salud de la Tierra? La respuesta es un rotundo sí. <em>Modelo Extensivo Regenerativo Sintrópico (MERS)</em> propone una revolución silenciosa pero profundamente transformadora para la agricultura contemporánea. Escrita por el especialista Alfredo Juan Cafferata y respaldada por referentes globales de la ciencia del suelo como el Dr. Rattan Lal, esta obra constituye un puente pionero entre la ecología de procesos y la agricultura extensiva mecanizada a gran escala.</p>
+            <p>A lo largo de sus páginas, el lector descubrirá cómo superar el modelo convencional hiperdependiente de insumos químicos para transitar hacia un paradigma biológico de "producir más con menos". El MERS integra de manera magistral los principios de la agricultura regenerativa, la ganadería adaptativa y la agricultura sintrópica desarrollada por Ernst Götsch, adaptándolos por primera vez a los grandes campos de cultivo y al uso de maquinaria moderna.</p>
+            <p>Lejos de ser una utopía idealista, este manual redefine el suelo no como un mero soporte inerte, sino como el activo de capital más valioso de cualquier explotación agropecuaria. Con rigurosidad científica pero con un enfoque sumamente práctico y aplicable, detalla el manejo de la arquitectura vegetal para mitigar la competencia por luz, la dinamización del ciclo del agua, la reconstrucción de las redes tróficas y el impacto estratégico de la ganadería integrada.</p>
+            <p>Lo más destacado de esta obra es su pragmatismo financiero: demuestra que la biodiversidad es el motor de la estabilidad económica de la empresa agrícola, traduciendo la regeneración de los suelos en rentabilidad ajustada por riesgo y protegiendo al productor frente a sequías extremas y fluctuaciones de precios. Una lectura obligada para productores, agrónomos, investigadores y diseñadores del paisaje rural del mañana.</p>
+        </section>
+
+        <section class="free-samples" aria-labelledby="free-samples-title">
+            <p class="free-samples-label">Muestras gratuitas</p>
+            <h2 id="free-samples-title">Tres masterclasses gratuitas — Alfredo Juan Cafferata</h2>
+
+            <div class="free-sample-item">
+                <h3>Masterclass 1</h3>
+                <mux-player
+                    playback-id="mPjmV4M6XqBRFrJ601lCbF8C6fT8fxE2GOvxbRA2rKj4"
+                    metadata-video-title="MERS — Masterclass 1 — Alfredo Juan Cafferata (TOXI University)"
+                    stream-type="on-demand"
+                    accent-color="#6a8f3d"
+                    controls
+                    playsinline>
+                </mux-player>
+            </div>
+
+            <div class="free-sample-item">
+                <h3>Masterclass 2</h3>
+                <mux-player
+                    playback-id="Zwiioqa2AnWflY2z77Bte4sw8NvhxRisvrhhD6N01liY"
+                    metadata-video-title="MERS — Masterclass 2 — Alfredo Juan Cafferata (TOXI University)"
+                    stream-type="on-demand"
+                    accent-color="#6a8f3d"
+                    controls
+                    playsinline>
+                </mux-player>
+            </div>
+
+            <div class="free-sample-item">
+                <h3>Masterclass 3</h3>
+                <mux-player
+                    playback-id="f4FM8I2o601E8lEOzmrFv19d2Dl01lItUURwcP3HxDup4"
+                    metadata-video-title="MERS — Masterclass 3 — Alfredo Juan Cafferata (TOXI University)"
+                    stream-type="on-demand"
+                    accent-color="#6a8f3d"
+                    controls
+                    playsinline>
+                </mux-player>
+            </div>
+        </section>
+
+        <div class="syllabus-section">
+            <h3 class="syllabus-title">Programa de Estudio</h3>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3><span class="year-pill">01</span> El suelo como capital</h3>
+                        <p>Por qué el suelo es el activo más valioso de la explotación agropecuaria y cómo medirlo.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3><span class="year-pill">02</span> Arquitectura vegetal y ciclo del agua</h3>
+                        <p>Manejo de la competencia por luz y dinamización del agua en sistemas extensivos.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3><span class="year-pill">03</span> Redes tróficas y ganadería integrada</h3>
+                        <p>Reconstrucción de la biología del suelo y el rol estratégico de la ganadería adaptativa.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3><span class="year-pill">04</span> Rentabilidad y biodiversidad</h3>
+                        <p>Cómo la regeneración de suelos se traduce en rentabilidad ajustada por riesgo frente a sequías y fluctuaciones de precios.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="location">
+                <span>📍</span> Rodríguez Peña 158, Buenos Aires
+            </div>
+
+            <form id="signup-form" class="signup-container" style="margin-top: 1rem;">
+                <input type="email" name="email" class="email-input" placeholder="Tu email" required>
+                <button type="submit" class="cta-button">Inscribite Ahora</button>
+            </form>
+            <div id="form-message"></div>
+
+            <div style="margin-top: 3rem; opacity: 0.3; font-size: 0.8rem;">
+                © 2026 TOXI Media
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../src/ui-scaling.js"></script>
+    <script type="module" src="../src/analytics.js"></script>
+    <script>
+        // Simple fade in effect
+        document.body.style.opacity = 0;
+        window.addEventListener('load', () => {
+            document.body.style.transition = 'opacity 1.5s ease';
+            document.body.style.opacity = 1;
+        });
+
+        const form = document.getElementById('signup-form');
+        const messageDiv = document.getElementById('form-message');
+        const submitBtn = form.querySelector('button');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const email = formData.get('email');
+
+            // UI Loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+            submitBtn.style.opacity = '0.7';
+            messageDiv.textContent = 'Procesando tu inscripción...';
+            messageDiv.className = 'loading-msg';
+
+            try {
+                const response = await fetch('/api/subscribe-university', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.textContent = '¡Gracias! Te contactaremos pronto.';
+                    messageDiv.className = 'success-msg';
+                    form.reset();
+                    submitBtn.textContent = '¡Enviado!';
+                    setTimeout(() => {
+                        submitBtn.textContent = 'Inscribite Ahora';
+                        submitBtn.disabled = false;
+                        submitBtn.style.opacity = '1';
+                    }, 3000);
+                } else {
+                    throw new Error(data.error || 'Error al enviar');
+                }
+            } catch (error) {
+                console.error(error);
+                messageDiv.textContent = 'Ocurrió un error. Por favor intentá de nuevo o escribinos por WhatsApp.';
+                messageDiv.className = 'error-msg';
+                submitBtn.textContent = 'Reintentar';
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streaming | Toxi University</title>
+    <meta name="description" content="Curso de Streaming con Juan Manuel Cafferata. Aprendé a planificar, producir y publicar tus propias transmisiones en vivo.">
+    <meta name="theme-color" content="#050505">
+    <meta property="og:title" content="Streaming | Toxi University">
+    <meta property="og:description" content="Aprendé a streamear de cero con Juan Manuel Cafferata. Incluye una masterclass gratuita.">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="../src/style.css">
+    <style>
+        :root { --accent-color: #f0442e; --ink: #f7f4ef; --muted: rgba(247,244,239,.68); --panel: rgba(255,255,255,.055); }
+        @font-face { font-family: 'Helvetica Now'; src: url('/HelveticaNowDisplay-Bold.otf') format('opentype'); font-weight: 700; }
+        @font-face { font-family: 'Helvetica Now'; src: url('/HelveticaNowDisplay-Light.otf') format('opentype'); font-weight: 300; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #050505; color: var(--ink); font-family: 'Helvetica Now', Helvetica, Arial, sans-serif; }
+        .page { min-height: 100vh; overflow: hidden; position: relative; }
+        .page::before { content: ''; position: fixed; inset: 0; pointer-events: none; background: radial-gradient(circle at 18% 12%, rgba(240,68,46,.18), transparent 31%), radial-gradient(circle at 90% 45%, rgba(255,180,76,.08), transparent 28%), linear-gradient(135deg, rgba(255,255,255,.035), transparent 35%); }
+        .wrap { width: min(1080px, calc(100% - 40px)); margin: auto; position: relative; z-index: 1; }
+        .breadcrumb { padding-top: 24px; }
+        .breadcrumb a { color: var(--muted); font-size: .9rem; text-decoration: none; }
+        .breadcrumb a:hover { color: white; }
+        header { padding: 72px 0 58px; max-width: 840px; }
+        .eyebrow, .label { color: var(--accent-color); font-size: .76rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+        h1 { font-size: clamp(3.2rem, 8vw, 7rem); line-height: .92; letter-spacing: -.035em; margin: 18px 0 26px; max-width: 850px; }
+        .lead { color: var(--muted); font-size: clamp(1.1rem, 2vw, 1.45rem); line-height: 1.5; max-width: 680px; margin: 0; }
+        .hero-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+        .chip { border: 1px solid rgba(255,255,255,.16); border-radius: 999px; color: rgba(255,255,255,.82); padding: 9px 14px; font-size: .88rem; }
+        .masterclass { margin: 8px 0 74px; padding: 26px; background: linear-gradient(145deg, rgba(240,68,46,.19), rgba(255,255,255,.045)); border: 1px solid rgba(240,68,46,.45); border-radius: 12px; box-shadow: 0 24px 80px rgba(0,0,0,.35); }
+        .masterclass h2 { font-size: clamp(1.6rem, 3vw, 2.3rem); margin: 10px 0 9px; }
+        .masterclass p { color: var(--muted); line-height: 1.5; margin: 0 0 22px; }
+        .video { aspect-ratio: 16 / 9; width: 100%; border: 0; display: block; background: #000; border-radius: 7px; }
+        .video-link { color: var(--muted); display: inline-block; font-size: .82rem; margin-top: 12px; }
+        .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; border-bottom: 1px solid rgba(255,255,255,.12); padding-bottom: 18px; }
+        .section-heading h2 { font-size: 2rem; margin: 0; }
+        .section-heading p { color: var(--muted); margin: 0; }
+        .modules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin: 24px 0 80px; }
+        .module { min-height: 168px; padding: 24px; background: var(--panel); border: 1px solid rgba(255,255,255,.09); border-radius: 8px; }
+        .module:last-child { grid-column: span 2; }
+        .number { color: var(--accent-color); font-size: .85rem; font-weight: 700; letter-spacing: .12em; }
+        .module h3 { font-size: 1.25rem; margin: 18px 0 8px; }
+        .module p { color: var(--muted); line-height: 1.5; margin: 0; }
+        .instructor { border-top: 1px solid rgba(255,255,255,.12); padding: 36px 0 78px; display: flex; align-items: center; gap: 24px; }
+        .avatar { width: 76px; height: 76px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(240,68,46,.7); }
+        .instructor h2 { margin: 0 0 5px; font-size: 1.45rem; }
+        .instructor p { margin: 0; color: var(--muted); }
+        footer { border-top: 1px solid rgba(255,255,255,.1); padding: 30px 0 54px; color: rgba(255,255,255,.42); font-size: .82rem; display: flex; justify-content: space-between; gap: 20px; }
+        @media (max-width: 650px) { .wrap { width: min(100% - 28px, 1080px); } header { padding: 54px 0 42px; } .masterclass { padding: 16px; margin-bottom: 54px; } .modules { grid-template-columns: 1fr; } .module:last-child { grid-column: auto; } .section-heading { display: block; } .section-heading p { margin-top: 10px; } .instructor { align-items: flex-start; } footer { display: block; } footer span { display: block; margin-top: 8px; } }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <div class="wrap">
+            <nav class="breadcrumb"><a href="/university">← Toxi University</a></nav>
+            <header>
+                <div class="eyebrow">Nuevo curso · Streaming</div>
+                <h1>Streaming</h1>
+                <p class="lead">Aprendé a convertir una idea en una transmisión en vivo: prepará tu equipo, armá tu puesta y salí al aire con criterio y confianza.</p>
+                <div class="hero-meta"><span class="chip">Desde cero</span><span class="chip">Producción en vivo</span><span class="chip">Clases prácticas</span></div>
+            </header>
+
+            <section class="masterclass" aria-labelledby="masterclass-title">
+                <div class="label">Masterclass gratuita</div>
+                <h2 id="masterclass-title">Tu primera transmisión empieza acá</h2>
+                <p>Una clase abierta de Juan Manuel Cafferata para entender el mapa completo del streaming y dar el primer paso.</p>
+                <iframe class="video" src="https://www.youtube.com/embed/K0k1fxVFdv0" title="Masterclass gratuita: Cómo streamear, por Juan Manuel Cafferata" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <a class="video-link" href="https://youtube.com/live/K0k1fxVFdv0" target="_blank" rel="noopener">Ver también en YouTube ↗</a>
+            </section>
+
+            <section aria-labelledby="programa-title">
+                <div class="section-heading"><h2 id="programa-title">Qué vas a aprender</h2><p>Una masterclass práctica</p></div>
+                <div class="modules">
+                    <article class="module"><div class="number">01 · OBS STUDIO</div><h3>Armá tu puesta técnica</h3><p>Creá y cambiá escenas, conectá cámaras profesionales o tu celular como cámara móvil con IP Webcam Pro, y configurá el ruteo de audio para evitar ecos y retornos.</p></article>
+                    <article class="module"><div class="number">02 · PRODUCCIÓN</div><h3>Trabajá como un estudio</h3><p>Usá el Modo Estudio para preparar escenas sin que la audiencia las vea, integrar una consola o placa externa y ordenar el set para operar con fluidez.</p></article>
+                    <article class="module"><div class="number">03 · GOOGLE MEET</div><h3>Sumá invitados remotos</h3><p>Capturá una videollamada, recortá la imagen del invitado y agregá zócalos, logos y otros elementos de identidad al stream.</p></article>
+                    <article class="module"><div class="number">04 · CONTENIDO</div><h3>Convertí un vivo en contenido</h3><p>Conocé la estrategia del “falso vivo”: grabá localmente para extraer clips de alta calidad y llevarlos después a tus redes.</p></article>
+                    <article class="module"><div class="number">05 · NEGOCIO</div><h3>Sistematizá y monetizá</h3><p>Usá diagramas y marcas en el piso para armar el set rápidamente, y definí precios para sesiones individuales, packs y servicios de consultoría.</p></article>
+                </div>
+            </section>
+
+            <section class="instructor" aria-label="Docente">
+                <img class="avatar" src="/og/juan-manuel-cafferata.jpg" alt="Juan Manuel Cafferata">
+                <div><h2>Juan Manuel Cafferata</h2><p>Streamer, productor y creador de experiencias en vivo.</p></div>
+            </section>
+            <footer><span>© 2026 TOXI Media</span><span>Streaming para curiosos y creadores</span></footer>
+        </div>
+    </main>
+</body>
+</html>
