@@ -125,8 +125,12 @@
       "destination": "/university/literatura-y-realidad-virtual.html"
     },
     {
-      "source": "/university/como-streamear",
-      "destination": "/university/como-streamear.html"
+      "source": "/university/streaming",
+      "destination": "/university/streaming.html"
+    },
+    {
+      "source": "/university/mers",
+      "destination": "/university/mers.html"
     }
   ]
 }
