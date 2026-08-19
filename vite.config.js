@@ -78,7 +78,6 @@ export default defineConfig({
         matriz: resolve(__dirname, 'matriz.html'),
         xploraNightLive: resolve(__dirname, 'xplora-night-live.html'),
         xploraNightLiveOverlayCountdown: resolve(__dirname, 'xplora-night-live-overlay-countdown.html'),
-        arianaGrande: resolve(__dirname, 'ariana-grande.html'),
         mersVlog: resolve(__dirname, 'mers-vlog.html'),
         mersVlogCast: resolve(__dirname, 'mers-vlog-cast.html'),
         vr: resolve(__dirname, 'vr.html'),

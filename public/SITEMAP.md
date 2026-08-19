@@ -52,7 +52,7 @@
 | Matriz | `matriz.html` | Interactive experience |
 | Detective Noir | `detective-noir.html` | Mystery theme |
 | Hedonismo y Seducción | `hedonismo-y-seduccion.html` | Lifestyle content |
-| Ariana Grande | `ariana-grande.html` | Music tribute |
+| Ariana Grande | `ariana-grande/index.html` | Music tribute |
 | Hotel Oriente | `hotel-oriente.html` | Hotel experience |
 | Earth | `earth.html` | 3D visualization |
 | Line | `line.html` | Abstract/geometric |
