@@ -86,7 +86,7 @@
 | VR | `vr.html` | Virtual reality |
 | University | `university.html` | Course index |
 | University: Historia Argentina | `university/historia-argentina.html` | Course detail |
-| University: Streaming | `university/como-streamear.html` | Course detail |
+| University: Streaming | `university/streaming.html` | Course detail |
 | Wiki | `wiki.html` | Knowledge base |
 | Turing | `turing.html` | AI/Tech section |
 | Turing Admin | `turing-admin.html` | Administration panel |
