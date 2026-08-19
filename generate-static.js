@@ -131,6 +131,25 @@ const sitemapUrls = [
   `${BASE_URL}/index.html`,
   `${BASE_URL}/main.html`,
   `${BASE_URL}/avenida-q`,
+  ...[
+    '/privacy-policy',
+    '/trabajos',
+    '/audiont',
+    '/venado-tuerto-el-musical',
+    '/nota-constante',
+    '/otro-dia-en-la-red',
+    '/xplora-night-live',
+    '/ariana-grande',
+    '/mers-vlog',
+    '/mers-vlog-cast',
+    '/wiki',
+    '/tv',
+    '/zapping',
+    '/radio',
+    '/turing',
+    '/plantform',
+    '/vr'
+  ].map((route) => `${BASE_URL}${route}`),
   ...Array.from(slugSet).sort().map((slug) => `${BASE_URL}/${slug}`)
 ];
 
