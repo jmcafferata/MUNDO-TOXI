@@ -27,22 +27,27 @@ function attr(s) {
     .replace(/>/g, '&gt;');
 }
 
-function generatePage(slug, title, description, image) {
-  const fullTitle = `${title} — TOXI Media`;
-  // strip any HTML tags from description (Webflow rich text)
-  const desc = (description || '')
+function socialDescription(description) {
+  const text = (description || '')
     .replace(/<[^>]+>/g, '')
     .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 160);
-  const img = image
-    ? (image.startsWith('http')
-      ? image
-      : image.startsWith('/')
-        ? `${BASE_URL}${image}`
-        : `${BASE_URL}/${image}`)
-    : `${BASE_URL}/toxi-media-og.jpg`;
+    .trim();
+  const cta = ' Explorá en TOXI Media.';
+  const maxTextLength = 125 - cta.length;
+  const summary = text.length > maxTextLength
+    ? `${text.slice(0, maxTextLength - 1).trimEnd()}…`
+    : text;
+  return `${summary}${cta}`;
+}
+
+function generatePage(slug, title, description, image, structuredData) {
+  const fullTitle = `${title} — TOXI Media`;
+  const desc = socialDescription(description);
+  const img = `${BASE_URL}/og/${slug}.jpg`;
   const url  = `${BASE_URL}/${slug}`;
+  const structuredDataTag = structuredData
+    ? `  <script type="application/ld+json">${JSON.stringify(structuredData).replace(/</g, '\\u003c')}</script>\n`
+    : '';
 
   return template
     .replace(/<title>[^<]*<\/title>/,
@@ -54,16 +59,16 @@ function generatePage(slug, title, description, image) {
     .replace(/<meta property="og:description" content="[^"]*" \/>/,
       `<meta property="og:description" content="${attr(desc)}" />`)
     .replace(/<meta property="og:image" content="[^"]*" \/>/,
-      `<meta property="og:image" content="${attr(img)}" />`)
+      `<meta property="og:image" content="${attr(img)}" />\n  <meta property="og:image:secure_url" content="${attr(img)}" />\n  <meta property="og:image:type" content="image/jpeg" />\n  <meta property="og:image:width" content="1200" />\n  <meta property="og:image:height" content="630" />\n  <meta property="og:image:alt" content="${attr(`${title} — Explorá en TOXI Media`)}" />\n  <meta property="og:site_name" content="TOXI Media" />`)
     .replace(/<meta name="twitter:title" content="[^"]*" \/>/,
       `<meta name="twitter:title" content="${attr(fullTitle)}" />`)
     .replace(/<meta name="twitter:description" content="[^"]*" \/>/,
       `<meta name="twitter:description" content="${attr(desc)}" />`)
     .replace(/<meta name="twitter:image" content="[^"]*" \/>/,
-      `<meta name="twitter:image" content="${attr(img)}" />`)
+      `<meta name="twitter:image" content="${attr(img)}" />\n  <meta name="twitter:image:alt" content="${attr(`${title} — Explorá en TOXI Media`)}" />`)
     // inject canonical + og:url just before </head>
     .replace('</head>',
-      `  <link rel="canonical" href="${attr(url)}" />\n  <meta property="og:url" content="${attr(url)}" />\n</head>`);
+      `  <link rel="canonical" href="${attr(url)}" />\n  <meta property="og:url" content="${attr(url)}" />\n${structuredDataTag}</head>`);
 }
 
 function toIsoDate(date = new Date()) {
@@ -109,7 +114,19 @@ for (const t of talentos) {
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(
     path.join(dir, 'index.html'),
-    generatePage(t.slug, t.name, t.contenido || t.description || t.quote, t.banner || t.photo),
+    generatePage(
+      t.slug,
+      t.name,
+      t.contenido || t.description || t.quote,
+      t.photo || t.banner,
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: t.name,
+        url: `${BASE_URL}/${t.slug}`,
+        image: t.photo || t.banner || `${BASE_URL}/toxi-media-og.jpg`
+      }
+    ),
     'utf8'
   );
   count++;

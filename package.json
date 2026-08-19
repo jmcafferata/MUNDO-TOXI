@@ -4,12 +4,13 @@
   "description": "Digital Ocean Three.js Scene",
   "scripts": {
     "dev": "vite --host",
-    "gen": "node generate-static.js",
-    "build": "node generate-static.js && node ./node_modules/vite/bin/vite.js build",
+    "gen": "node generate-static.js && node generate-og-images.js",
+    "build": "npm run gen && node ./node_modules/vite/bin/vite.js build",
     "preview": "vite preview",
     "mux:playlist-quality": "node tools/check-playlist-quality.js"
   },
   "devDependencies": {
+    "sharp": "^0.32.6",
     "vite": "^5.0.0",
     "vite-plugin-pwa": "^1.1.0"
   },
