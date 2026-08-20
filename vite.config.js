@@ -65,6 +65,7 @@ export default defineConfig({
         university: resolve(__dirname, 'university.html'),
         universityHistoriaArgentina: resolve(__dirname, 'university/historia-argentina.html'),
         universityIntroduccionPython: resolve(__dirname, 'university/introduccion-python.html'),
+        universityComediaMusical: resolve(__dirname, 'university/comedia-musical.html'),
         universityLiteraturaYRealidadVirtual: resolve(__dirname, 'university/literatura-y-realidad-virtual.html'),
         universityStreaming: resolve(__dirname, 'university/streaming.html'),
         plantform: resolve(__dirname, 'plantform.html'),
