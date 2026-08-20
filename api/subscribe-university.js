@@ -6,7 +6,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { email } = req.body || {};
+  const { email, course = 'Clases de Historia' } = req.body || {};
+  const courseName = String(course).trim() || 'Clases de Historia';
 
   if (!email || !email.includes('@')) {
     return res.status(400).json({ error: 'Dirección de email inválida' });
@@ -40,11 +41,12 @@ export default async function handler(req, res) {
     await transporter.sendMail({
       from: `"Toxi University Bot" <${ZOHO_EMAIL}>`, // must be the authenticated user
       to: ZOHO_EMAIL, // Send to yourself to know someone subscribed. Or a different admin email.
-      subject: `Nueva Inscripción: ${email}`,
-      text: `Hola,\n\nUna nueva persona se ha interesado en las Clases de Historia:\n\nEmail: ${email}\n\nFecha: ${new Date().toLocaleString()}`,
+      subject: `Nueva Inscripción - ${courseName}: ${email}`,
+      text: `Hola,\n\nUna nueva persona se ha interesado en el curso "${courseName}":\n\nEmail: ${email}\n\nFecha: ${new Date().toLocaleString()}`,
       html: `
         <div style="font-family: sans-serif; color: #333;">
             <h2>Nueva Inscripción Recibida</h2>
+        <p><strong>Curso:</strong> ${courseName}</p>
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>Fecha:</strong> ${new Date().toLocaleString()}</p>
             <hr>
