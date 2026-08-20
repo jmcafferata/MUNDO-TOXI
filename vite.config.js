@@ -1,6 +1,17 @@
 import { defineConfig } from 'vite';
+import { readdirSync } from 'fs';
 import { resolve } from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
+
+const universityDir = resolve(__dirname, 'university');
+const universityInputs = Object.fromEntries(
+  readdirSync(universityDir)
+    .filter((fileName) => fileName.endsWith('.html'))
+    .map((fileName) => [
+      `university_${fileName.replace(/\.html$/, '')}`,
+      resolve(universityDir, fileName),
+    ])
+);
 
 export default defineConfig({
   base: './',
@@ -63,11 +74,7 @@ export default defineConfig({
         detectiveNoir: resolve(__dirname, 'detective-noir.html'),
         hedonismoYSeduccion: resolve(__dirname, 'hedonismo-y-seduccion.html'),
         university: resolve(__dirname, 'university.html'),
-        universityHistoriaArgentina: resolve(__dirname, 'university/historia-argentina.html'),
-        universityIntroduccionPython: resolve(__dirname, 'university/introduccion-python.html'),
-        universityComediaMusical: resolve(__dirname, 'university/comedia-musical.html'),
-        universityLiteraturaYRealidadVirtual: resolve(__dirname, 'university/literatura-y-realidad-virtual.html'),
-        universityStreaming: resolve(__dirname, 'university/streaming.html'),
+        ...universityInputs,
         plantform: resolve(__dirname, 'plantform.html'),
         tv: resolve(__dirname, 'tv.html'),
         zapping: resolve(__dirname, 'zapping.html'),
