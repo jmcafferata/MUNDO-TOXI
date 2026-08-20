@@ -25,7 +25,7 @@ function buildSchedule() {
   let pos = 0;
   let currentTitle = '';
   const lines = [];
-  for (const item of SCHEDULE_PLAYLIST) {
+  for (const item of PLAYLIST) {
     const startSec = cycleStart + pos;
     const endSec = startSec + item.duration;
     const isCurrent = nowSec >= startSec && nowSec < endSec;
