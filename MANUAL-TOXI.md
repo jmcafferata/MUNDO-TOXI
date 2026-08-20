@@ -65,7 +65,7 @@ Además del catálogo, el pie de la entrada enlaza a distintas experiencias de T
 
 - **TOXI UNIVERSITY:** contenidos educativos.
 - **TV:** transmisión y contenidos audiovisuales.
-- **ZAPPING:** selección de contenidos.
+- **ZAPPING:** selección aleatoria de contenidos.
 - **OTRO DÍA EN LA RED:** propuesta editorial o audiovisual.
 - **VR:** experiencias de realidad virtual.
 - **MERS VLOG:** contenidos de vlog.
