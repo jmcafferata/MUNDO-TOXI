@@ -9,7 +9,7 @@ When adding a static HTML page:
 
 1. Put the source file in the appropriate project directory.
 2. Confirm that `vite.config.js` discovers the file or add it to the Rollup input when it is outside the auto-discovered directories.
-3. Add a clean route in `vercel.json` when the public URL omits `.html`. For University pages, use the existing `/university/<slug>` to `/university/<slug>.html` pattern.
+3. Use the general rewrites in `vercel.json`: `/university/<slug>` maps to `/university/<slug>.html`, and a root-level `/<slug>` maps to `/<slug>.html`. Add an individual rewrite only for a special route that does not follow one of these patterns.
 4. Run `npm run build` and verify that the expected HTML file exists in `dist`.
 5. Check the clean URL with the local preview or deployment preview, and confirm it does not fall back to the root `index.html`.
 

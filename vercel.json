@@ -129,8 +129,20 @@
       "destination": "/university/streaming.html"
     },
     {
+      "source": "/university/comedia-musical",
+      "destination": "/university/comedia-musical.html"
+    },
+    {
       "source": "/university/mers",
       "destination": "/university/mers.html"
+    },
+    {
+      "source": "/university/:slug([a-z0-9-]+)",
+      "destination": "/university/:slug.html"
+    },
+    {
+      "source": "/:slug((?!api$)[a-z0-9-]+)",
+      "destination": "/:slug.html"
     }
   ]
 }
