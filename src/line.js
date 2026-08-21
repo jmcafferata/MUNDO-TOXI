@@ -497,6 +497,13 @@ descBody.style.fontSize = '15px';
 descBody.style.lineHeight = '1.5';
 descBody.style.color = '#e6e6e6';
 
+const descVideo = document.createElement('mux-player');
+descVideo.style.width = '100%';
+descVideo.style.aspectRatio = '16 / 9';
+descVideo.style.borderRadius = '8px';
+descVideo.style.display = 'none';
+descVideo.setAttribute('stream-type', 'on-demand');
+
 const descActions = document.createElement('div');
 descActions.style.display = 'flex';
 descActions.style.gap = '10px';
@@ -527,6 +534,7 @@ descActions.appendChild(descLinkBtn);
 
 descCard.appendChild(descTitle);
 descCard.appendChild(descMeta);
+descCard.appendChild(descVideo);
 descCard.appendChild(descBody);
 descCard.appendChild(descActions);
 descOverlay.appendChild(descCard);
@@ -536,6 +544,9 @@ let currentDescEvent = null;
 
 function hideDescriptionModal() {
     descOverlay.style.display = 'none';
+    descVideo.pause?.();
+    descVideo.removeAttribute('playback-id');
+    descVideo.style.display = 'none';
     currentDescEvent = null;
 }
 
@@ -555,6 +566,14 @@ function showDescriptionModal(event) {
     if (event.start || event.startDate) parts.push(formatRange(event));
     descMeta.textContent = parts.join(' · ');
     descBody.textContent = event.description || 'Sin descripción';
+
+    if (event.video) {
+        descVideo.setAttribute('playback-id', event.video);
+        descVideo.style.display = 'block';
+    } else {
+        descVideo.removeAttribute('playback-id');
+        descVideo.style.display = 'none';
+    }
 
     if (event.link) {
         descLinkBtn.style.display = 'inline-block';
