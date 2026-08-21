@@ -6,6 +6,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { CSS2DRenderer, CSS2DObject } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import { CONTENT } from './content.js';
 // --- 3D TOXI Logo ---
 let logoModel;
 
@@ -851,7 +852,16 @@ const eventLabels = [];
 fetch('events.json?t=' + Date.now())
     .then(response => response.json())
     .then(data => {
-        eventsData = data.map(e => {
+        // Releases from the content catalog also belong on the timeline
+        const releaseEvents = CONTENT.filter(v => v.release).map(v => ({
+            title: v.title,
+            location: '',
+            start: v.release,
+            end: new Date(new Date(v.release).getTime() + (v.duration || 0) * 1000).toISOString(),
+            color: '#00ff00'
+        }));
+
+        eventsData = data.concat(releaseEvents).map(e => {
             const startDate = new Date(e.start);
             const colorHex = e.color || '#ffffff';
             return {
