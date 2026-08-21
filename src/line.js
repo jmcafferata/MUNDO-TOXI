@@ -858,7 +858,8 @@ fetch('events.json?t=' + Date.now())
             location: '',
             start: v.release,
             end: new Date(new Date(v.release).getTime() + (v.duration || 0) * 1000).toISOString(),
-            color: '#00ff00'
+            color: '#00ff00',
+            video: v.id
         }));
 
         eventsData = data.concat(releaseEvents).map(e => {
