@@ -13,7 +13,7 @@
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="../src/style.css">
     <style>
-        :root { --accent-color: #c8102e; --timeline-line-color: rgba(255,255,255,.2); }
+        :root { --accent-color: #fff; --timeline-line-color: rgba(255,255,255,.2); }
         @font-face { font-family: 'Helvetica Now'; src: url('/HelveticaNowDisplay-Bold.otf') format('opentype'); font-weight: bold; }
         @font-face { font-family: 'Helvetica Now'; src: url('/HelveticaNowDisplay-Light.otf') format('opentype'); font-weight: 300; }
         * { box-sizing: border-box; }
@@ -30,7 +30,7 @@
         header h1 { font-size:3.5rem; line-height:1.1; margin:0 0 1.5rem; text-transform:uppercase; letter-spacing:-.02em; background:linear-gradient(180deg,#fff,#ccc); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
         header h1 span { display:block; margin-top:10px; font-size:.6em; font-weight:300; text-transform:none; }
         header p { font-size:1.3rem; color:rgba(255,255,255,.7); font-weight:300; line-height:1.5; max-width:700px; margin:0 auto; }
-        .class-announcement { margin:2rem auto 0; max-width:620px; padding:1rem 1.25rem; border:1px solid rgba(200,16,46,.55); background:rgba(200,16,46,.12); color:#fff; font-size:1.05rem; line-height:1.5; }
+        .class-announcement { margin:2rem auto 0; max-width:620px; padding:1rem 1.25rem; border:1px solid rgba(255,255,255,.4); background:rgba(255,255,255,.08); color:#fff; font-size:1.05rem; line-height:1.5; }
         .class-announcement strong { color:#fff; text-transform:uppercase; letter-spacing:.08em; font-size:.85rem; }
         .class-announcement span { color:rgba(255,255,255,.75); font-weight:300; }
         .instructor-card { width:90%; max-width:760px; margin:0 auto 4rem; padding:3rem; border-radius:20px; background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02)); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.08); box-shadow:0 20px 60px rgba(0,0,0,.45); text-align:center; }
@@ -42,6 +42,15 @@
         .free-sample-label { color:var(--accent-color); font-size:.85rem; font-weight:bold; letter-spacing:.12em; margin:0 0 .75rem; text-transform:uppercase; }
         .free-sample h2 { font-size:1.8rem; margin:0 0 1.25rem; }
         .free-sample mux-player { display:block; width:100%; aspect-ratio:16/9; --media-object-fit:contain; --media-background-color:#090909; border:1px solid rgba(255,255,255,.12); border-radius:8px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.45); }
+        .live-stage { position:relative; width:100%; aspect-ratio:16/9; border:1px solid rgba(255,255,255,.12); border-radius:8px; overflow:hidden; background:#050505; box-shadow:0 20px 60px rgba(0,0,0,.45); }
+        .live-stage mux-player { border:0; box-shadow:none; }
+        .live-countdown { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:2rem; background:radial-gradient(circle at center,rgba(255,255,255,.12),transparent 60%),#050505; }
+        .live-countdown .logo-img { width:min(50%,250px); margin-bottom:2rem; }
+        .live-countdown-label { color:var(--accent-color); font-size:.85rem; font-weight:bold; letter-spacing:.15em; text-transform:uppercase; }
+        .countdown-time { display:flex; gap:clamp(.6rem,3vw,2rem); margin:1rem 0; }
+        .countdown-unit strong { display:block; font-size:clamp(1.8rem,5vw,3.5rem); line-height:1; }
+        .countdown-unit span { display:block; margin-top:.5rem; color:rgba(255,255,255,.55); font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; }
+        .live-status { margin:1rem 0 0; color:rgba(255,255,255,.65); font-size:.9rem; }
         .course-material { position:relative; z-index:1; width:90%; max-width:900px; margin:0 auto 4rem; text-align:center; }
         .course-books { display:flex; justify-content:center; align-items:flex-end; gap:1.5rem; }
         .course-books img { display:block; width:min(42%, 250px); height:300px; object-fit:cover; border:1px solid rgba(255,255,255,.14); box-shadow:0 20px 50px rgba(0,0,0,.5); }
@@ -52,7 +61,7 @@
         .timeline { position:relative; max-width:800px; margin:0 auto; }
         .timeline::after { content:''; position:absolute; width:1px; background:linear-gradient(180deg,transparent,var(--timeline-line-color) 10%,var(--timeline-line-color) 90%,transparent); top:0; bottom:0; left:20px; }
         .timeline-item { padding:0 0 2.5rem 60px; position:relative; }
-        .timeline-item::after { content:''; position:absolute; width:10px; height:10px; left:15.5px; background:#000; border:2px solid var(--accent-color); top:5px; border-radius:50%; z-index:2; box-shadow:0 0 15px rgba(200,16,46,.4); }
+        .timeline-item::after { content:''; position:absolute; width:10px; height:10px; left:15.5px; background:#000; border:2px solid var(--accent-color); top:5px; border-radius:50%; z-index:2; box-shadow:0 0 15px rgba(255,255,255,.25); }
         .timeline-content { background:rgba(255,255,255,.03); padding:1.5rem 2rem; border-radius:12px; border:1px solid rgba(255,255,255,.05); position:relative; overflow:hidden; }
         .timeline-content::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--accent-color); opacity:.5; }
         .timeline-content h3 { color:#fff; font-size:1.3rem; margin:0 0 1rem; font-weight:bold; }
@@ -61,7 +70,7 @@
         .syllabus-part > summary { cursor:pointer; list-style:none; padding:1.25rem 1.5rem; color:#fff; font-size:1.1rem; font-weight:bold; text-transform:uppercase; letter-spacing:.06em; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); border-radius:8px; transition:background .25s ease, border-color .25s ease; }
         .syllabus-part > summary::-webkit-details-marker { display:none; }
         .syllabus-part > summary::before { content:'+'; display:inline-block; width:1.2em; color:var(--accent-color); font-size:1.3em; font-weight:300; }
-        .syllabus-part[open] > summary { background:rgba(200,16,46,.12); border-color:rgba(200,16,46,.55); }
+        .syllabus-part[open] > summary { background:rgba(255,255,255,.12); border-color:rgba(255,255,255,.45); }
         .syllabus-part[open] > summary::before { content:'−'; }
         .syllabus-part > summary:focus-visible { outline:2px solid #fff; outline-offset:3px; }
         .syllabus-part .timeline { padding-top:1.5rem; }
@@ -98,9 +107,22 @@
             </div>
         </div>
         <section class="free-sample" aria-labelledby="free-sample-title">
-            <p class="free-sample-label">Muestra gratuita</p>
-            <h2 id="free-sample-title">Diseño de Entornos Virtuales — Introducción</h2>
-            <mux-player playback-id="qM33QmuwmXJsibPHXJMbFh02V9gT2s7HDEO00v9VB7mHY" metadata-video-title="Diseño de Entornos Virtuales (TOXI VR)" stream-type="on-demand" accent-color="#c8102e" controls playsinline></mux-player>
+            <p class="free-sample-label">Clase en vivo</p>
+            <h2 id="free-sample-title">Diseño de Entornos Virtuales — Primera clase</h2>
+            <div class="live-stage">
+                <div class="live-countdown" id="live-countdown" aria-live="polite">
+                    <img src="/university-logo.png" onerror="this.src='/toxi-logo-white.png'" alt="TOXI University" class="logo-img">
+                    <div class="live-countdown-label">Comienza en</div>
+                    <div class="countdown-time" aria-label="Cuenta regresiva">
+                        <div class="countdown-unit"><strong id="countdown-days">00</strong><span>días</span></div>
+                        <div class="countdown-unit"><strong id="countdown-hours">00</strong><span>horas</span></div>
+                        <div class="countdown-unit"><strong id="countdown-minutes">00</strong><span>minutos</span></div>
+                        <div class="countdown-unit"><strong id="countdown-seconds">00</strong><span>segundos</span></div>
+                    </div>
+                    <p class="live-status" id="live-status">Martes 1 de septiembre · 18:00 h</p>
+                </div>
+                    <mux-player id="live-player" playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms" metadata-video-title="Diseño de Entornos Virtuales — Primera clase (TOXI VR)" stream-type="live" accent-color="#ffffff" controls playsinline hidden></mux-player>
+            </div>
         </section>
         <div class="course-material">
             <div class="course-books" aria-label="Material del curso">
@@ -153,6 +175,46 @@
         const form = document.getElementById('signup-form');
         const messageDiv = document.getElementById('form-message');
         const submitBtn = form.querySelector('button');
+        const livePlayer = document.getElementById('live-player');
+        const liveCountdown = document.getElementById('live-countdown');
+        const liveStatus = document.getElementById('live-status');
+        const classDate = new Date('2026-09-01T18:00:00-03:00');
+        const countdownElements = {
+            days: document.getElementById('countdown-days'),
+            hours: document.getElementById('countdown-hours'),
+            minutes: document.getElementById('countdown-minutes'),
+            seconds: document.getElementById('countdown-seconds')
+        };
+        function updateCountdown() {
+            const remaining = Math.max(0, classDate.getTime() - Date.now());
+            const totalSeconds = Math.floor(remaining / 1000);
+            countdownElements.days.textContent = String(Math.floor(totalSeconds / 86400)).padStart(2, '0');
+            countdownElements.hours.textContent = String(Math.floor((totalSeconds % 86400) / 3600)).padStart(2, '0');
+            countdownElements.minutes.textContent = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+            countdownElements.seconds.textContent = String(totalSeconds % 60).padStart(2, '0');
+        }
+        function showLive() {
+            liveCountdown.hidden = true;
+            livePlayer.hidden = false;
+        }
+        async function checkLiveStatus() {
+            try {
+                const response = await fetch('/api/mux-live-status');
+                const data = await response.json();
+                if (response.ok && data.status === 'active') {
+                    showLive();
+                    liveStatus.textContent = 'En vivo ahora';
+                    return;
+                }
+                liveStatus.textContent = 'La clase comienza el martes 1 de septiembre a las 18:00 h';
+            } catch (error) {
+                console.error('No se pudo consultar el estado del live:', error);
+            }
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+        checkLiveStatus();
+        setInterval(checkLiveStatus, 30000);
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = new FormData(form).get('email');
