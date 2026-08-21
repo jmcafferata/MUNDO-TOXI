@@ -11,6 +11,7 @@
     <meta property="og:title" content="Diseño de Entornos Virtuales | Toxi University">
     <meta property="og:description" content="Un recorrido integral por el diseño de entornos virtuales, dictado por el equipo TOXI VR.">
     <meta property="og:type" content="website">
+    <link rel="manifest" href="/manifest.webmanifest">
     <link rel="stylesheet" href="../src/style.css">
     <style>
         :root { --accent-color: #fff; --timeline-line-color: rgba(255,255,255,.2); }
@@ -44,7 +45,9 @@
         .free-sample mux-player { display:block; width:100%; aspect-ratio:16/9; --media-object-fit:contain; --media-background-color:#090909; border:1px solid rgba(255,255,255,.12); border-radius:8px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.45); }
         .live-stage { position:relative; width:100%; aspect-ratio:16/9; border:1px solid rgba(255,255,255,.12); border-radius:8px; overflow:hidden; background:#050505; box-shadow:0 20px 60px rgba(0,0,0,.45); }
         .live-stage mux-player { border:0; box-shadow:none; }
+        .live-stage mux-player[hidden] { display:none !important; }
         .live-countdown { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:2rem; background:radial-gradient(circle at center,rgba(255,255,255,.12),transparent 60%),#050505; }
+        .live-countdown[hidden] { display:none !important; }
         .live-countdown .logo-img { width:min(50%,250px); margin-bottom:2rem; }
         .live-countdown-label { color:var(--accent-color); font-size:.85rem; font-weight:bold; letter-spacing:.15em; text-transform:uppercase; }
         .countdown-time { display:flex; gap:clamp(.6rem,3vw,2rem); margin:1rem 0; }
