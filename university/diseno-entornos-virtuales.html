@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Diseño de Entornos Virtuales | Toxi University</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <meta name="description" content="Diseño de Entornos Virtuales, un curso del equipo TOXI VR sobre percepción, tecnología, interacción y evaluación de experiencias inmersivas.">
+    <meta name="theme-color" content="#000000">
+    <meta property="og:title" content="Diseño de Entornos Virtuales | Toxi University">
+    <meta property="og:description" content="Un recorrido integral por el diseño de entornos virtuales, dictado por el equipo TOXI VR.">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="../src/style.css">
+    <style>
+        :root { --accent-color: #c8102e; --timeline-line-color: rgba(255,255,255,.2); }
+        @font-face { font-family: 'Helvetica Now'; src: url('/HelveticaNowDisplay-Bold.otf') format('opentype'); font-weight: bold; }
+        @font-face { font-family: 'Helvetica Now'; src: url('/HelveticaNowDisplay-Light.otf') format('opentype'); font-weight: 300; }
+        * { box-sizing: border-box; }
+        body { background:#000; color:#fff; font-family:'Helvetica Now','Helvetica','Arial',sans-serif; overflow-y:auto; margin:0; }
+        .university-container { position:relative; min-height:100vh; width:100%; overflow-x:hidden; display:flex; flex-direction:column; align-items:center; padding-bottom:140px; }
+        .university-container::before { content:''; position:fixed; inset:0; background:radial-gradient(1648px 1200px at 50% 0%,rgba(255,255,255,.06),transparent 60%),radial-gradient(900px 700px at 85% 35%,rgba(255,255,255,.05),transparent 65%),linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.2) 60%,rgba(0,0,0,.6)); pointer-events:none; z-index:0; }
+        .breadcrumb, header, .instructor-card, .free-sample, .syllabus-section, footer { position:relative; z-index:1; }
+        .breadcrumb { width:100%; max-width:900px; padding:1.5rem 1rem 0; }
+        .breadcrumb a { color:rgba(255,255,255,.5); text-decoration:none; font-size:.9rem; }
+        .breadcrumb a:hover { color:#fff; }
+        header { text-align:center; padding:3rem 1rem 4rem; max-width:980px; width:100%; }
+        .logo-container { margin-bottom:2rem; display:flex; justify-content:center; }
+        .logo-img { opacity:.9; height:auto; max-width:250px; max-height:80px; }
+        header h1 { font-size:3.5rem; line-height:1.1; margin:0 0 1.5rem; text-transform:uppercase; letter-spacing:-.02em; background:linear-gradient(180deg,#fff,#ccc); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        header h1 span { display:block; margin-top:10px; font-size:.6em; font-weight:300; text-transform:none; }
+        header p { font-size:1.3rem; color:rgba(255,255,255,.7); font-weight:300; line-height:1.5; max-width:700px; margin:0 auto; }
+        .class-announcement { margin:2rem auto 0; max-width:620px; padding:1rem 1.25rem; border:1px solid rgba(200,16,46,.55); background:rgba(200,16,46,.12); color:#fff; font-size:1.05rem; line-height:1.5; }
+        .class-announcement strong { color:#fff; text-transform:uppercase; letter-spacing:.08em; font-size:.85rem; }
+        .class-announcement span { color:rgba(255,255,255,.75); font-weight:300; }
+        .instructor-card { width:90%; max-width:760px; margin:0 auto 4rem; padding:3rem; border-radius:20px; background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02)); backdrop-filter:blur(10px); border:1px solid rgba(255,255,255,.08); box-shadow:0 20px 60px rgba(0,0,0,.45); text-align:center; }
+        .instructor-card h2 { font-size:2.2rem; margin:0 0 .5rem; text-transform:uppercase; }
+        .instructor-card p { color:var(--accent-color); font-weight:bold; text-transform:uppercase; letter-spacing:.1em; font-size:1rem; margin:0 0 2rem; }
+        .team { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+        .tag { background:rgba(255,255,255,.05); padding:10px 16px; border-radius:100px; font-size:.9rem; font-weight:300; border:1px solid rgba(255,255,255,.1); color:rgba(255,255,255,.9); }
+        .free-sample { width:90%; max-width:900px; margin:0 auto 4rem; }
+        .free-sample-label { color:var(--accent-color); font-size:.85rem; font-weight:bold; letter-spacing:.12em; margin:0 0 .75rem; text-transform:uppercase; }
+        .free-sample h2 { font-size:1.8rem; margin:0 0 1.25rem; }
+        .free-sample mux-player { display:block; width:100%; aspect-ratio:16/9; --media-object-fit:contain; --media-background-color:#090909; border:1px solid rgba(255,255,255,.12); border-radius:8px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,.45); }
+        .course-material { position:relative; z-index:1; width:90%; max-width:900px; margin:0 auto 4rem; text-align:center; }
+        .course-books { display:flex; justify-content:center; align-items:flex-end; gap:1.5rem; }
+        .course-books img { display:block; width:min(42%, 250px); height:300px; object-fit:cover; border:1px solid rgba(255,255,255,.14); box-shadow:0 20px 50px rgba(0,0,0,.5); }
+        .course-books img:first-child { height:340px; }
+        .course-material-caption { color:rgba(255,255,255,.6); font-size:.85rem; font-weight:300; margin:1rem 0 0; }
+        .syllabus-section { width:100%; max-width:900px; padding:0 2rem; margin-bottom:4rem; }
+        .syllabus-title { text-align:center; margin:0 0 3rem; font-size:1.8rem; text-transform:uppercase; letter-spacing:.1em; color:rgba(255,255,255,.6); font-weight:300; border-bottom:1px solid rgba(255,255,255,.1); padding-bottom:2rem; display:block; }
+        .timeline { position:relative; max-width:800px; margin:0 auto; }
+        .timeline::after { content:''; position:absolute; width:1px; background:linear-gradient(180deg,transparent,var(--timeline-line-color) 10%,var(--timeline-line-color) 90%,transparent); top:0; bottom:0; left:20px; }
+        .timeline-item { padding:0 0 2.5rem 60px; position:relative; }
+        .timeline-item::after { content:''; position:absolute; width:10px; height:10px; left:15.5px; background:#000; border:2px solid var(--accent-color); top:5px; border-radius:50%; z-index:2; box-shadow:0 0 15px rgba(200,16,46,.4); }
+        .timeline-content { background:rgba(255,255,255,.03); padding:1.5rem 2rem; border-radius:12px; border:1px solid rgba(255,255,255,.05); position:relative; overflow:hidden; }
+        .timeline-content::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--accent-color); opacity:.5; }
+        .timeline-content h3 { color:#fff; font-size:1.3rem; margin:0 0 1rem; font-weight:bold; }
+        .chapter { color:var(--accent-color); font-size:.8rem; letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:.4rem; }
+        .syllabus-part { margin-bottom:1rem; }
+        .syllabus-part > summary { cursor:pointer; list-style:none; padding:1.25rem 1.5rem; color:#fff; font-size:1.1rem; font-weight:bold; text-transform:uppercase; letter-spacing:.06em; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); border-radius:8px; transition:background .25s ease, border-color .25s ease; }
+        .syllabus-part > summary::-webkit-details-marker { display:none; }
+        .syllabus-part > summary::before { content:'+'; display:inline-block; width:1.2em; color:var(--accent-color); font-size:1.3em; font-weight:300; }
+        .syllabus-part[open] > summary { background:rgba(200,16,46,.12); border-color:rgba(200,16,46,.55); }
+        .syllabus-part[open] > summary::before { content:'−'; }
+        .syllabus-part > summary:focus-visible { outline:2px solid #fff; outline-offset:3px; }
+        .syllabus-part .timeline { padding-top:1.5rem; }
+        .topics { list-style:none; padding:0; margin:0; columns:2; column-gap:2rem; }
+        .topics li { color:rgba(255,255,255,.7); font-weight:300; font-size:1rem; line-height:1.45; margin:.35rem 0; break-inside:avoid; }
+        .topics li::before { content:'+'; color:var(--accent-color); margin-right:.55rem; }
+        footer { text-align:center; padding:3rem 2rem 6rem; width:100%; }
+        .location { font-size:1rem; color:rgba(255,255,255,.6); display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.05); padding:10px 20px; border-radius:50px; }
+        .signup-fixed-bar { position:fixed; left:0; bottom:12px; width:100%; z-index:20; background:rgba(10,10,10,.85); backdrop-filter:blur(12px); border-top:1px solid rgba(255,255,255,.1); padding:1rem 1rem 1.25rem; display:flex; flex-direction:column; align-items:center; }
+        .signup-container { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; width:100%; max-width:600px; }
+        .email-input { padding:18px 24px; border-radius:4px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05); color:#fff; font-size:1.1rem; flex-grow:1; min-width:250px; font-family:inherit; }
+        .email-input:focus { outline:none; border-color:var(--accent-color); }
+        .cta-button { display:inline-block; background:var(--accent-color); color:#fff; padding:16px 24px; text-decoration:none; border-radius:4px; font-size:1rem; font-weight:bold; text-transform:uppercase; letter-spacing:.05em; border:0; cursor:pointer; font-family:inherit; }
+        #form-message { margin-top:.5rem; min-height:1.5rem; font-size:1rem; font-weight:300; }
+        .success-msg { color:#4ade80; } .error-msg { color:#f87171; } .loading-msg { color:#94a3b8; }
+        @media screen and (min-width:700px) { .signup-fixed-bar { flex-direction:row; justify-content:center; gap:1.5rem; } .signup-fixed-bar #form-message { margin-top:0; } }
+        @media screen and (max-width:600px) { header h1{font-size:2.2rem;} .instructor-card{padding:2rem 1.5rem;} .course-books{gap:.75rem;} .course-books img{width:46%;height:220px;} .course-books img:first-child{height:250px;} .syllabus-section{padding:0 1rem;} .syllabus-part > summary{padding:1rem;font-size:.95rem;} .timeline::after{left:15px;} .timeline-item::after{left:10px;} .timeline-item{padding-left:45px;} .timeline-content{padding:1.25rem;} .topics{columns:1;} .university-container{padding-bottom:170px;} .email-input{min-width:0;} }
+    </style>
+</head>
+<body>
+    <div class="university-container">
+        <div class="breadcrumb"><a href="/university">← Toxi University</a></div>
+        <header>
+            <div class="logo-container"><img src="/university-logo.png" onerror="this.src='/toxi-logo-white.png'" alt="TOXI University" class="logo-img"></div>
+            <h1>Diseño de Entornos Virtuales<span>TOXI VR</span></h1>
+            <p>Una exploración integral de la percepción, la tecnología y el diseño de experiencias inmersivas.</p>
+            <p class="class-announcement"><strong>Primera clase</strong><br>Martes 1 de septiembre · 18:00 h<br><span>Dejá tu mail si querés venir presencial.</span></p>
+        </header>
+        <div class="instructor-card">
+            <h2>Equipo TOXI VR</h2>
+            <p>Curso dictado por</p>
+            <div class="team">
+                <span class="tag">Dolores Casares</span><span class="tag">Nacho Michalowicz</span><span class="tag">Fermín Delía</span><span class="tag">Juan Manuel Cafferata</span><span class="tag">Julián Toninello</span>
+            </div>
+        </div>
+        <section class="free-sample" aria-labelledby="free-sample-title">
+            <p class="free-sample-label">Muestra gratuita</p>
+            <h2 id="free-sample-title">Diseño de Entornos Virtuales — Introducción</h2>
+            <mux-player playback-id="qM33QmuwmXJsibPHXJMbFh02V9gT2s7HDEO00v9VB7mHY" metadata-video-title="Diseño de Entornos Virtuales (TOXI VR)" stream-type="on-demand" accent-color="#c8102e" controls playsinline></mux-player>
+        </section>
+        <div class="course-material">
+            <div class="course-books" aria-label="Material del curso">
+                <img src="/images/tapa diseño de entornos virtuales.jpeg" alt="Tapa del libro Diseño de Entornos Virtuales">
+                <img src="/images/libro diseño de entornos virtuales.jpeg" alt="Libro Diseño de Entornos Virtuales">
+            </div>
+            <p class="course-material-caption">Diseño de Entornos Virtuales · Rory Smith · 1996</p>
+        </div>
+        <section class="syllabus-section" aria-labelledby="syllabus-title">
+            <h2 id="syllabus-title" class="syllabus-title">Plan de estudios</h2>
+            <div class="timeline">
+                <details class="syllabus-part">
+                    <summary>Parte 1 · Definición de los requisitos</summary>
+                    <div class="timeline">
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 1 · Capítulo 1</span><h3>Definición de los requisitos</h3><ul class="topics"><li>El usuario: perfiles, aptitudes y discapacidades</li><li>Usuarios únicos, múltiples, remotos y cercanos</li><li>Definición de la tarea</li><li>Categorías de aplicaciones de EV</li><li>El entorno físico, laboral y social</li><li>Preguntas</li></ul></div></div>
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 1 · Capítulo 2</span><h3>Capacidades y rendimiento humano</h3><ul class="topics"><li>Percepción visual, profundidad, campo de visión y resolución</li><li>Color, brillo, contraste y rendimiento visual</li><li>Percepción auditiva y localización espacial</li><li>Percepción háptica, fuerza y cinestesia</li><li>Percepción olfativa y sentido vestibular</li><li>Capacidades motoras e interacciones sensoriales</li><li>Adaptación sensorial, cognición y afecto</li><li>Rendimiento recomendado de visualización y control</li><li>Preguntas</li></ul></div></div>
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 1 · Capítulo 3</span><h3>Requisitos para las aplicaciones de EV</h3><ul class="topics"><li>Sociabilidad, conectividad y veracidad</li><li>Inmersión, compromiso, presencia y realidad mixta</li><li>Resolución, reconfigurabilidad y capacidad de respuesta</li><li>Estabilidad, robustez y punto de vista</li><li>Representación del usuario y registro</li><li>Ancho de banda e integración multisensorial</li><li>Interactividad, navegación y física virtual</li><li>Autonomía, locus de control y personalización</li><li>Seguridad, salud, higiene y conciencia del entorno</li><li>Costo, tamaño, peso y requisitos específicos</li><li>Preguntas</li></ul></div></div>
+                    </div>
+                </details>
+                <details class="syllabus-part">
+                    <summary>Parte 2 · Diseño del sistema</summary>
+                    <div class="timeline">
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 2 · Capítulo 4</span><h3>Tecnologías de entrada</h3><ul class="topics"><li>Seguimiento de posición: activo, pasivo, inside-out y outside-in</li><li>Guantes y trajes instrumentados</li><li>Entrada de locomoción y VACTORs</li><li>Seguimiento ocular y bioseñales</li><li>Dispositivos hápticos</li><li>Reconocimiento de gestos y seguimiento predictivo</li><li>Reconocimiento de voz e integración de tecnologías</li><li>Preguntas</li></ul></div></div>
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 2 · Capítulo 5</span><h3>Tecnologías de salida</h3><ul class="topics"><li>Pantallas visuales y generación de imágenes</li><li>Fuentes de imágenes y sistemas ópticos</li><li>Dispositivos acústicos y localización auditiva</li><li>Superlocalización y tecnologías de audio</li><li>Retroalimentación de fuerza y táctil</li><li>Temperatura, olfato, locomoción e inercia</li><li>Preguntas</li></ul></div></div>
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 2 · Capítulo 6</span><h3>Tecnologías computacionales y de apoyo</h3><ul class="topics"><li>Arquitectura, tiempo real y latencia</li><li>Sistemas monoprocesador y multiprocesador</li><li>Hardware, procesamiento, memoria, costo y durabilidad</li><li>Sistemas operativos e interrupciones</li><li>Base de datos del mundo virtual</li><li>Toolkits, controladores y simulación</li><li>Modelado, multiplataforma y redes</li><li>Sistemas expertos</li><li>Preguntas</li></ul></div></div>
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 2 · Capítulo 7</span><h3>Objetos, comportamientos e interacciones</h3><ul class="topics"><li>Objetos y comportamientos</li><li>Movimiento, selección y manipulación</li><li>Escalado</li><li>Menús y widgets virtuales</li><li>Propiedades del objeto y del mundo</li><li>Creación de objetos</li><li>Preguntas</li></ul></div></div>
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 2 · Capítulo 8</span><h3>Compensaciones de diseño</h3><ul class="topics"><li>EV de propósito general y específico</li><li>Incomodidad y elección de sabores</li><li>Personalización individual</li><li>Respuesta, imagen y complejidad del mundo</li><li>Recursos compartidos y ancho de banda</li><li>Optimización y compatibilidad multiplataforma</li><li>Visores, seguimiento y dispositivos acústicos</li><li>Dispositivos físicos y virtuales</li><li>Preguntas</li></ul></div></div>
+                    </div>
+                </details>
+                <details class="syllabus-part">
+                    <summary>Parte 3 · Evaluación del sistema</summary>
+                    <div class="timeline">
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 3 · Capítulo 9</span><h3>Rendimiento del sistema</h3><ul class="topics"><li>Latencia total y tasa de actualización</li><li>Sincronización espacial y temporal</li><li>Robustez y tolerancia a fallos</li><li>Registro y volumen de trabajo</li><li>Preguntas</li></ul></div></div>
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 3 · Capítulo 10</span><h3>Usabilidad</h3><ul class="topics"><li>Procesos de evaluación y análisis de video</li><li>Recopilación automática de datos</li><li>Pensamiento en voz alta, cuestionarios y entrevistas</li><li>Monitoreo fisiológico</li><li>Finalización, errores y tiempo de tarea</li><li>Aprendizaje, carga de trabajo y experiencia</li><li>Novatos, expertos, cibermareo y secuelas</li><li>Preguntas</li></ul></div></div>
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 3 · Capítulo 11</span><h3>Valor para la tarea y la aplicación</h3><ul class="topics"><li>Rendimiento en línea</li><li>Entrenamiento y ensayo fuera de línea</li><li>Comprensión, aprendizaje y conocimientos</li><li>Diseño en línea</li><li>Entretenimiento y comunicación</li><li>Investigación de capacidades perceptivo-motoras</li><li>Preguntas</li></ul></div></div>
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 3 · Capítulo 12</span><h3>Uso de los resultados de la evaluación</h3><ul class="topics"><li>Rendimiento del sistema</li><li>Usabilidad</li><li>Valor para la tarea y la aplicación</li><li>Preguntas</li></ul></div></div>
+                <div class="timeline-item"><div class="timeline-content"><span class="chapter">Parte 3 · Capítulo 13</span><h3>Conclusión</h3><ul class="topics"><li>El proceso de diseño</li><li>El equipo de diseño</li><li>Herramientas y tecnología de implementación</li><li>Futura investigación y desarrollo</li></ul></div></div>
+                    </div>
+                </details>
+            </div>
+        </section>
+        <footer><div class="location"><span>📍</span> Rodríguez Peña 158, Buenos Aires</div><div style="margin-top:3rem;opacity:.3;font-size:.8rem;">© 2026 TOXI Media</div></footer>
+    </div>
+    <div class="signup-fixed-bar"><form id="signup-form" class="signup-container"><input type="email" name="email" class="email-input" placeholder="Tu email para venir presencial" aria-label="Tu email para venir presencial" required><button type="submit" class="cta-button">QUIERO VENIR PRESENCIAL</button></form><div id="form-message"></div></div>
+    <script type="module" src="../src/ui-scaling.js"></script>
+    <script type="module" src="../src/analytics.js"></script>
+    <script>
+        document.body.style.opacity = 0;
+        window.addEventListener('load', () => { document.body.style.transition = 'opacity 1.5s ease'; document.body.style.opacity = 1; });
+        const form = document.getElementById('signup-form');
+        const messageDiv = document.getElementById('form-message');
+        const submitBtn = form.querySelector('button');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = new FormData(form).get('email');
+            submitBtn.disabled = true; submitBtn.textContent = 'Enviando...'; submitBtn.style.opacity = '.7';
+            messageDiv.textContent = 'Procesando tu inscripción...'; messageDiv.className = 'loading-msg';
+            try {
+                const response = await fetch('/api/subscribe-university', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ email, course:'Diseño de Entornos Virtuales' }) });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || 'Error al enviar');
+                messageDiv.textContent = '¡Gracias! Te contactaremos pronto.'; messageDiv.className = 'success-msg'; form.reset(); submitBtn.textContent = '¡Enviado!';
+                setTimeout(() => { submitBtn.textContent = 'Inscribite Ahora'; submitBtn.disabled = false; submitBtn.style.opacity = '1'; }, 3000);
+            } catch (error) { console.error(error); messageDiv.textContent = 'Ocurrió un error. Por favor intentá de nuevo o escribinos por WhatsApp.'; messageDiv.className = 'error-msg'; submitBtn.textContent = 'Reintentar'; submitBtn.disabled = false; submitBtn.style.opacity = '1'; }
+        });
+    </script>
+</body>
+</html>

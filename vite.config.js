@@ -74,6 +74,7 @@ export default defineConfig({
         detectiveNoir: resolve(__dirname, 'detective-noir.html'),
         hedonismoYSeduccion: resolve(__dirname, 'hedonismo-y-seduccion.html'),
         university: resolve(__dirname, 'university.html'),
+        disenoEntornosVirtuales: resolve(__dirname, 'university/diseno-entornos-virtuales.html'),
         ...universityInputs,
         plantform: resolve(__dirname, 'plantform.html'),
         tv: resolve(__dirname, 'tv.html'),

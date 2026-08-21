@@ -165,7 +165,8 @@ const sitemapUrls = [
     '/radio',
     '/turing',
     '/plantform',
-    '/vr'
+    '/vr',
+    '/university/diseno-entornos-virtuales'
   ].map((route) => `${BASE_URL}${route}`),
   ...Array.from(slugSet).sort().map((slug) => `${BASE_URL}/${slug}`)
 ];

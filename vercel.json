@@ -137,6 +137,10 @@
       "destination": "/university/mers.html"
     },
     {
+      "source": "/university/diseno-de-entornos-virtuales",
+      "destination": "/university/diseno-entornos-virtuales.html"
+    },
+    {
       "source": "/university/:slug([a-z0-9-]+)",
       "destination": "/university/:slug.html"
     },
