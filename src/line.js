@@ -566,7 +566,8 @@ function showDescriptionModal(event) {
     if (event.location) parts.push(event.location);
     if (event.start || event.startDate) parts.push(formatRange(event));
     descMeta.textContent = parts.join(' · ');
-    descBody.textContent = event.description || 'Sin descripción';
+    descBody.textContent = event.description || '';
+    descBody.style.display = event.description ? 'block' : 'none';
 
     if (event.video) {
         descVideo.setAttribute('playback-id', event.video);
