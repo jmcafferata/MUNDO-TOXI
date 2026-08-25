@@ -69,7 +69,7 @@ export const PLAYLIST = [
   { id: '00VG6EL1oC4eI96PVQXeobbdZ6GBNwrmUAexIDdiMpTc', duration: 160.326833, title: 'Hipo Hip Hop', slug: '', type: 'other', year: 2025, onTV: true },
   { id: 'QUElHo8r5HtNqfh02XfGKm85jUJ01iTGbkyn2D4BeYNZI', duration: 189.148256, title: 'Otro Día en la Red 0', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true },
   { id: 'K6p6zWxcLOtRXb02eWcic00RYQG8SwDxE014o9007ZTBwm8', duration: 588.629711, title: 'Otro Día en la Red III', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true },
-  { id: 'HRr2KXg2X800YNuos9Aj2LmZe8XIqHvTMgFrGKc7v7wQ', duration: null, title: 'Volvé a ODELAR — Otro Día en la Red', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true },
+  { id: 'HRr2KXg2X800YNuos9Aj2LmZe8XIqHvTMgFrGKc7v7wQ', duration: 189.898042, title: 'Volvé a ODELAR — Otro Día en la Red', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true },
   { id: '2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE', duration: 230.480256, title: 'Viaje a la Luna', slug: '', type: 'other', year: 2025, onTV: true },
   { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY', duration: 80.830756, title: '¿Qué es Mamarracho?', slug: '', type: 'other', year: 2023, onTV: true },
   { id: 'ascCA5hMxmuLlSRnYiRtuXj7P5hOJdC9ImyfKqaQsQo', duration: 2815, title: 'Pizza y Pagni — Piloto LN', slug: '', type: 'other', year: 2026, onTV: true },
