@@ -106,6 +106,11 @@ export const CONTENT = [
   { id: 'MLqVMQ4VqD79zGTUP1PQhdq9nmtPndTZPhNp01Q79Yuc', duration: 776, title: 'Duro de ODELaR - ODELaR 2-3', slug: '', type: 'other', year: 2026, onTV: true },
   { id: '3qY2CPrEaeMkGsiL9BjhXOwalP4FMYNjDWTNdZq6Xuc', duration: 229, title: 'ODELaR sentado - ODELaR 2-4', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'SAnTuoo6QI1fPRWpXvUEkr6rdEo1IAeB1H22NmbngtY', duration: 6762, title: 'Tomátelo con Ciencia — Piloto', slug: '', type: 'other', year: 2025, onTV: true },
+    { id: '022GZXZ00X4P3r9yuXZnJUqQ7T60201oSo2dSYcaL9i01l600', duration: 202, title: 'Testamentos — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
+    { id: 'CJkZYXm1THV5yLckWGpGgZFak8Prj1eUxhQtBG7d1GA', duration: 315, title: 'Desalojo — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
+    { id: 'OiVirqXnCrUjCVFOZ5hJ7PpcTRQIGBncd9A00B5AOs7c', duration: 281, title: 'Usucapión — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
+    { id: 'UvorQn02OzsZ00vNjPz1cJbEvkGen7hdrEhL3C00t011iGo', duration: 514, title: 'Sociedades — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
+    { id: 'eWYrpbcEC1UNJ4R01lvG1O727cw3RcH19Brf3G00cUhqQ', duration: 331, title: 'Accidentes — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
 ];
 
 
