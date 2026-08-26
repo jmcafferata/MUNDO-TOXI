@@ -111,6 +111,7 @@ export const CONTENT = [
     { id: 'OiVirqXnCrUjCVFOZ5hJ7PpcTRQIGBncd9A00B5AOs7c', duration: 281, title: 'Usucapión — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
     { id: 'UvorQn02OzsZ00vNjPz1cJbEvkGen7hdrEhL3C00t011iGo', duration: 514, title: 'Sociedades — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
     { id: 'eWYrpbcEC1UNJ4R01lvG1O727cw3RcH19Brf3G00cUhqQ', duration: 331, title: 'Accidentes — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
+    { id: '3BVE8OnOdAC02iUpm00HshLkRWnR4cQ7kFSaUEQoXR1IM', duration: 2156, title: 'Diseño de entornos virtuales — Paradigma de modelado modular con Nacho Michalowicz', slug: '', type: 'other', year: 2026, onTV: true },
 ];
 
 
