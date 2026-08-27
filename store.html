@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STORE – TOXI Media</title>
+  <meta name="description" content="Colección Demi Roch — piezas únicas a la venta." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="STORE – TOXI Media" />
+  <meta property="og:description" content="Colección Demi Roch — piezas únicas a la venta." />
+  <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="STORE – TOXI Media" />
+  <meta name="twitter:description" content="Colección Demi Roch — piezas únicas a la venta." />
+  <meta name="twitter:image" content="https://toxi.media/toxi-media-og.jpg" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #000;
+      --fg: #fff;
+      --muted: rgba(255,255,255,0.45);
+      --border: rgba(255,255,255,0.15);
+      --hover-border: rgba(255,255,255,0.7);
+      --font: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --gap: 1.5rem;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      min-height: 100vh;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--gap);
+      height: 56px;
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .logo-link { display: flex; align-items: center; opacity: 0.7; transition: opacity 0.2s; text-decoration: none; }
+    .logo-link:hover { opacity: 1; }
+    .logo-link img { height: 22px; }
+    .header-divider { width: 1px; height: 20px; background: var(--border); }
+    .header-title { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); }
+
+    main { max-width: 1400px; margin: 0 auto; padding: 3rem var(--gap) 6rem; }
+
+    .store-hero { margin-bottom: 2.5rem; }
+    .store-hero h1 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .store-hero p { color: var(--muted); font-size: 0.95rem; max-width: 560px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: var(--gap);
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: var(--hover-border); }
+
+    .card-thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #0a0a0a;
+      cursor: zoom-in;
+    }
+    .card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .card:hover .card-thumb img { transform: scale(1.04); }
+
+    .card-body { padding: 1rem 1.1rem 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+    .card-name { font-size: 0.95rem; letter-spacing: 0.01em; line-height: 1.3; }
+    .card-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.4; flex: 1; }
+    .card-price { font-size: 1.05rem; font-weight: 600; letter-spacing: 0.02em; }
+
+    .card-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.4rem;
+      padding: 10px 14px;
+      border: 1px solid var(--fg);
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      transition: background 0.2s, color 0.2s;
+    }
+    .card-cta:hover { background: var(--fg); color: #000; }
+
+    .empty-state, .loading-state {
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 4rem 0;
+      text-align: center;
+    }
+
+    /* ─── LIGHTBOX ─── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: var(--gap);
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 90vw; max-height: 88vh; object-fit: contain; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem var(--gap);
+      color: var(--muted);
+      font-size: 0.7rem;
+      text-align: center;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <a href="/" class="logo-link"><img src="/toxi-logomark-transparent-lg.png" alt="TOXI" /></a>
+      <div class="header-divider"></div>
+      <span class="header-title">Store</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="store-hero">
+      <h1>Colección Demi Roch</h1>
+      <p>Piezas únicas, cada una con su historia. Consultá disponibilidad por WhatsApp.</p>
+    </div>
+    <div id="grid" class="grid">
+      <div class="loading-state">Cargando catálogo…</div>
+    </div>
+  </main>
+
+  <footer>TOXI Media</footer>
+
+  <div class="lightbox" id="lightbox">
+    <img id="lightbox-img" src="" alt="" />
+  </div>
+
+  <script>
+    const WHATSAPP_NUMBER = '5491132576432';
+
+    function formatPrice(price, currency) {
+      const symbol = currency === 'USD' ? 'US$' : '$';
+      return `${symbol} ${Number(price).toLocaleString('es-AR')}`;
+    }
+
+    function whatsappUrl(productName) {
+      const text = encodeURIComponent(`Hola! Me interesa "${productName}" de la Colección Demi Roch en TOXI Store.`);
+      return `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+    }
+
+    function renderCard(product) {
+      const thumb = product.images?.[0]?.thumb || '';
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-thumb" data-full="${product.images?.[0]?.full || thumb}">
+          <img src="${thumb}" alt="${product.name}" loading="lazy" />
+        </div>
+        <div class="card-body">
+          <div class="card-name">${product.name}</div>
+          <div class="card-desc">${product.description || ''}</div>
+          <div class="card-price">${formatPrice(product.price, product.currency)}</div>
+          <a class="card-cta" href="${whatsappUrl(product.name)}" target="_blank" rel="noopener">Consultar</a>
+        </div>
+      `;
+      card.querySelector('.card-thumb').addEventListener('click', () => openLightbox(card.querySelector('.card-thumb').dataset.full, product.name));
+      return card;
+    }
+
+    function openLightbox(src, alt) {
+      const lightbox = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      img.src = src;
+      img.alt = alt;
+      lightbox.classList.add('open');
+    }
+
+    document.getElementById('lightbox').addEventListener('click', () => {
+      document.getElementById('lightbox').classList.remove('open');
+    });
+
+    async function loadStore() {
+      const grid = document.getElementById('grid');
+      try {
+        const res = await fetch('/data/store.json');
+        const products = await res.json();
+        const visible = products.filter((p) => !p.hidden);
+
+        if (visible.length === 0) {
+          grid.innerHTML = '<div class="empty-state">Todavía no hay productos publicados.</div>';
+          return;
+        }
+
+        grid.innerHTML = '';
+        visible.forEach((product) => grid.appendChild(renderCard(product)));
+      } catch (err) {
+        console.error(err);
+        grid.innerHTML = '<div class="empty-state">No se pudo cargar el catálogo.</div>';
+      }
+    }
+
+    loadStore();
+  </script>
+</body>
+</html>

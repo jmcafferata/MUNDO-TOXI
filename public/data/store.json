@@ -1,0 +1,696 @@
+[
+  {
+    "slug": "agua-de-florida-murray-lanman",
+    "name": "Agua de Florida Murray y Lanman",
+    "price": 4500,
+    "currency": "USD",
+    "description": "Botella de Agua de Florida, marca Murray y Lanman. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/agua-de-florida-murray-lanman/1.webp",
+        "thumb": "/store/agua-de-florida-murray-lanman/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "almohadon-personaje-ilustrado",
+    "name": "Almohón con ilustración de Marco Díaz",
+    "price": 54000,
+    "currency": "USD",
+    "description": "Almohón/peluche con ilustración de personaje de Marco Díaz, interpretado por Demi Roch en la versión latina de Star vs. las Fuerzas del Mal (Disney). Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/almohadon-personaje-ilustrado/1.webp",
+        "thumb": "/store/almohadon-personaje-ilustrado/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "antifaz-groucho-disfraz",
+    "name": "Antifaz Groucho de disfraz",
+    "price": 3750,
+    "currency": "USD",
+    "description": "Antifaz de disfraz con nariz, bigote y anteojos falsos (estilo Groucho Marx). Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/antifaz-groucho-disfraz/1.webp",
+        "thumb": "/store/antifaz-groucho-disfraz/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "bandeja-organizadora-amarilla",
+    "name": "Bandeja organizadora amarilla",
+    "price": 2250,
+    "currency": "USD",
+    "description": "Bandeja/organizador plástico amarillo. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/bandeja-organizadora-amarilla/1.webp",
+        "thumb": "/store/bandeja-organizadora-amarilla/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "batidor-de-mano",
+    "name": "Tabla de snowboard",
+    "price": 8250,
+    "currency": "USD",
+    "description": "Tabla de snowboard. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/batidor-de-mano/1.webp",
+        "thumb": "/store/batidor-de-mano/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "botella-mezcal-contraluz-cristalino",
+    "name": "Botella de Mezcal Contraluz Cristalino",
+    "price": 5250,
+    "currency": "USD",
+    "description": "Botella de Mezcal Artesanal \"Contraluz Cristalino\" (vacía, decorativa) junto a un frasquito chico. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/botella-mezcal-contraluz-cristalino/1.webp",
+        "thumb": "/store/botella-mezcal-contraluz-cristalino/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "bufanda-oscura-grande",
+    "name": "Bufanda oscura grande",
+    "price": 6000,
+    "currency": "USD",
+    "description": "Bufanda grande de tono oscuro. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/bufanda-oscura-grande/1.webp",
+        "thumb": "/store/bufanda-oscura-grande/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "caja-mudanza-libros-agus",
+    "name": "Caja de mudanza \"LIBROS AGUS\" (Demi Roch)",
+    "price": 12000,
+    "currency": "USD",
+    "description": "Caja de mudanza de Demi Roch, rotulada \"LIBROS AGUS\". Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/caja-mudanza-libros-agus/1.webp",
+        "thumb": "/store/caja-mudanza-libros-agus/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "camara-nikon-coolpix-5900",
+    "name": "Cámara Nikon Coolpix 5900 con funda",
+    "price": 7500,
+    "currency": "USD",
+    "description": "Cámara digital Nikon Coolpix 5900 (5.1MP) con su funda original. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/camara-nikon-coolpix-5900/1.webp",
+        "thumb": "/store/camara-nikon-coolpix-5900/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "campera-cuero-negro",
+    "name": "Bolsa Dia",
+    "price": 10500,
+    "currency": "USD",
+    "description": "Bolsa utilizada en la mudanza de Demi Roch. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/campera-cuero-negro/1.webp",
+        "thumb": "/store/campera-cuero-negro/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "cincha-textil-verde-azulada",
+    "name": "Cinturón verde de karate",
+    "price": 3000,
+    "currency": "USD",
+    "description": "Cinturón del uniforme de karate de Demi Roch. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/cincha-textil-verde-azulada/1.webp",
+        "thumb": "/store/cincha-textil-verde-azulada/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "cinturones-cuero-negro-y-blanco",
+    "name": "Cinturones de cuero (negro y blanco)",
+    "price": 5250,
+    "currency": "USD",
+    "description": "Lote de 2 cinturones: uno negro liso y otro blanco con estampado tipo teclado. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/cinturones-cuero-negro-y-blanco/1.webp",
+        "thumb": "/store/cinturones-cuero-negro-y-blanco/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "collar-plastico-amarillo-hebilla",
+    "name": "Collar/brazalete plástico amarillo con hebilla",
+    "price": 2250,
+    "currency": "USD",
+    "description": "Collar o brazalete plástico amarillo ajustable con hebilla, tipo identificación o pulsera de festival. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/collar-plastico-amarillo-hebilla/1.webp",
+        "thumb": "/store/collar-plastico-amarillo-hebilla/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "data-detox-kit-mozilla",
+    "name": "Data Detox Kit (Mozilla)",
+    "price": 3750,
+    "currency": "USD",
+    "description": "Caja \"Data Detox Kit\" de Mozilla / Tactical Technology Collective. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/data-detox-kit-mozilla/1.webp",
+        "thumb": "/store/data-detox-kit-mozilla/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "disco-rigido-hitachi",
+    "name": "Disco rígido Hitachi",
+    "price": 3000,
+    "currency": "USD",
+    "description": "Disco rígido Hitachi en blister. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/disco-rigido-hitachi/1.webp",
+        "thumb": "/store/disco-rigido-hitachi/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "fernet-branca-750ml",
+    "name": "Antifaz de nieve",
+    "price": 4500,
+    "currency": "USD",
+    "description": "Antifaz de nieve. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/fernet-branca-750ml/1.webp",
+        "thumb": "/store/fernet-branca-750ml/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "figura-batman-100th-edition",
+    "name": "Figura Batman \"100th Edition\"",
+    "price": 13500,
+    "currency": "USD",
+    "description": "Figura de colección Batman, edición conmemorativa \"100th Edition\". Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/figura-batman-100th-edition/1.webp",
+        "thumb": "/store/figura-batman-100th-edition/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "guantes-cuero-negro",
+    "name": "Guantes de cuero negro",
+    "price": 6000,
+    "currency": "USD",
+    "description": "Par de guantes de cuero negro. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/guantes-cuero-negro/1.webp",
+        "thumb": "/store/guantes-cuero-negro/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "guantes-nieve-montagne",
+    "name": "Guantes de nieve Montagne",
+    "price": 4500,
+    "currency": "USD",
+    "description": "Guantes de nieve/esquí marca Montagne, negro y gris. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/guantes-nieve-montagne/1.webp",
+        "thumb": "/store/guantes-nieve-montagne/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "guantes-trabajo-verde-amarillo",
+    "name": "Guantes de trabajo verde/amarillo",
+    "price": 2250,
+    "currency": "USD",
+    "description": "Par de guantes de trabajo tejidos, verde y amarillo flúor. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/guantes-trabajo-verde-amarillo/1.webp",
+        "thumb": "/store/guantes-trabajo-verde-amarillo/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "kit-maquillaje-fx-discovery",
+    "name": "Kit de maquillaje FX (Discovery Channel)",
+    "price": 6750,
+    "currency": "USD",
+    "description": "Maletín \"FX Movie Make-Up and Disguise Kit\" de Discovery Channel Stores. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/kit-maquillaje-fx-discovery/1.webp",
+        "thumb": "/store/kit-maquillaje-fx-discovery/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "lata-rever-pass-anteojos-deportivos",
+    "name": "Lata Rever Pass con anteojos deportivos",
+    "price": 3750,
+    "currency": "USD",
+    "description": "Lote: lata metálica roja Rever Pass con anteojos deportivos amarillos y un accesorio chico adentro. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/lata-rever-pass-anteojos-deportivos/1.webp",
+        "thumb": "/store/lata-rever-pass-anteojos-deportivos/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "lote-discos-vinilo",
+    "name": "Buzo polar gris oscuro",
+    "price": 18000,
+    "currency": "USD",
+    "description": "Buzo polar gris oscuro. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/lote-discos-vinilo/1.webp",
+        "thumb": "/store/lote-discos-vinilo/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "lote-dvds-juegos-varios",
+    "name": "Lote de DVDs y juegos varios",
+    "price": 22500,
+    "currency": "USD",
+    "description": "Lote: colección Family Guy (Vol. 1 a 10 + 2da temporada), Peter Capusotto y sus Videos (2 discos), y juegos de GameCube: X-Men Legends, Final Fantasy Crystal Chronicles, 007 Everything or Nothing, WarCraft, más Freakazoid! y Family Guy Blue Harvest en DVD. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/lote-dvds-juegos-varios/1.webp",
+        "thumb": "/store/lote-dvds-juegos-varios/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "lote-medias-accesorios-variados",
+    "name": "Lote de medias y accesorios variados",
+    "price": 4500,
+    "currency": "USD",
+    "description": "Lote de medias sueltas (gris rombos, azul con llama, gris liso, blancas tobilleras) y un parche ajedrezado con pica. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/lote-medias-accesorios-variados/1.webp",
+        "thumb": "/store/lote-medias-accesorios-variados/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "meta-quest-3s-128gb",
+    "name": "Meta Quest 3S 128GB (solo la caja)",
+    "price": 30000,
+    "currency": "USD",
+    "description": "Casco de realidad virtual Meta Quest 3S 128GB, solo la caja, utilizado para visualizar Las aventuras del Metaverso, de What? Show! con Demi Roch y Nahuel Ivorra (hellolatam). Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/meta-quest-3s-128gb/1.webp",
+        "thumb": "/store/meta-quest-3s-128gb/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "mini-botella-coca-cola-coleccion",
+    "name": "Mini botella de colección Coca-Cola",
+    "price": 4500,
+    "currency": "USD",
+    "description": "Mini botella de vidrio de colección Coca-Cola. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/mini-botella-coca-cola-coleccion/1.webp",
+        "thumb": "/store/mini-botella-coca-cola-coleccion/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "o-ring-goma-grande",
+    "name": "Covertor de cara para Meta Quest 3S",
+    "price": 1500,
+    "currency": "USD",
+    "description": "Covertor de cara para Meta Quest 3S. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/o-ring-goma-grande/1.webp",
+        "thumb": "/store/o-ring-goma-grande/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "panuelo-bandana-estampada",
+    "name": "Revistas Science",
+    "price": 3750,
+    "currency": "USD",
+    "description": "Pila de revistas Science. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/panuelo-bandana-estampada/1.webp",
+        "thumb": "/store/panuelo-bandana-estampada/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "pashmina-colorida",
+    "name": "Pashmina colorida",
+    "price": 5250,
+    "currency": "USD",
+    "description": "Pashmina/chal colorido. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/pashmina-colorida/1.webp",
+        "thumb": "/store/pashmina-colorida/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "peluca-morena-rizada-telgopor",
+    "name": "Peluca morena rizada con cabeza de telgopor",
+    "price": 6000,
+    "currency": "USD",
+    "description": "Peluca morena rizada montada sobre cabeza de telgopor (maniquí). Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/peluca-morena-rizada-telgopor/1.webp",
+        "thumb": "/store/peluca-morena-rizada-telgopor/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "polainas-rojas-arcoiris",
+    "name": "Polainas rojas y arcoíris",
+    "price": 5250,
+    "currency": "USD",
+    "description": "Polainas rojas con detalle arcoíris. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/polainas-rojas-arcoiris/1.webp",
+        "thumb": "/store/polainas-rojas-arcoiris/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "pote-plastico-violeta",
+    "name": "Pote plástico violeta",
+    "price": 2250,
+    "currency": "USD",
+    "description": "Pote/frasco plástico violeta con tapa plateada. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/pote-plastico-violeta/1.webp",
+        "thumb": "/store/pote-plastico-violeta/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "pulsera-negra-tachas-doradas",
+    "name": "Pulsera negra con tachas doradas",
+    "price": 6000,
+    "currency": "USD",
+    "description": "Pulsera/brazalete rígido negro con esferas tipo tachas doradas. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/pulsera-negra-tachas-doradas/1.webp",
+        "thumb": "/store/pulsera-negra-tachas-doradas/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "ram-corsair-hynix-2gb-1333mhz",
+    "name": "Kit memorias RAM 4GB (2x2GB) 1333MHz",
+    "price": 3000,
+    "currency": "USD",
+    "description": "Par de módulos SODIMM Corsair/Hynix 2GB c/u, 1333MHz. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/ram-corsair-hynix-2gb-1333mhz/1.webp",
+        "thumb": "/store/ram-corsair-hynix-2gb-1333mhz/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "reloj-pared-decorativo",
+    "name": "Campera violeta",
+    "price": 9000,
+    "currency": "USD",
+    "description": "Campera violeta. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/reloj-pared-decorativo/1.webp",
+        "thumb": "/store/reloj-pared-decorativo/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "remera-el-mamut",
+    "name": "Remera \"El Mamut\"",
+    "price": 7500,
+    "currency": "USD",
+    "description": "Remera blanca con ilustración de mamut en línea azul, texto \"EL MAMUT - POESÍA PARRILLA PERREO\". Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/remera-el-mamut/1.webp",
+        "thumb": "/store/remera-el-mamut/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "remera-orfeo-jean-cocteau",
+    "name": "Remera Orfeo (Jean Cocteau)",
+    "price": 8250,
+    "currency": "USD",
+    "description": "Remera con dibujo de Orfeo, referencia a la película de Jean Cocteau. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/remera-orfeo-jean-cocteau/1.webp",
+        "thumb": "/store/remera-orfeo-jean-cocteau/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "sombrero-paja-cinta-negra",
+    "name": "Sombrero de paja con cinta negra",
+    "price": 6750,
+    "currency": "USD",
+    "description": "Sombrero de paja tipo trilby/fedora con cinta negra. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/sombrero-paja-cinta-negra/1.webp",
+        "thumb": "/store/sombrero-paja-cinta-negra/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "soplador-de-aire-fotografico",
+    "name": "Soplador de aire fotográfico",
+    "price": 2250,
+    "currency": "USD",
+    "description": "Pera/soplador de aire (bulb blower) para limpieza de equipos fotográficos. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/soplador-de-aire-fotografico/1.webp",
+        "thumb": "/store/soplador-de-aire-fotografico/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "test-producto",
+    "name": "Mono de peluche",
+    "price": 2250,
+    "currency": "USD",
+    "description": "Perteneció a Demi Roch. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/test-producto/1.webp",
+        "thumb": "/store/test-producto/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "tester-de-baterias-powerex",
+    "name": "Tester de baterías Powerex",
+    "price": 3000,
+    "currency": "USD",
+    "description": "Probador de pilas/baterías marca Powerex. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/tester-de-baterias-powerex/1.webp",
+        "thumb": "/store/tester-de-baterias-powerex/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "torre-de-aros-apilables",
+    "name": "Torre de aros apilables",
+    "price": 3750,
+    "currency": "USD",
+    "description": "Juguete de aros de colores apilables. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/torre-de-aros-apilables/1.webp",
+        "thumb": "/store/torre-de-aros-apilables/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "vara-cetro-alas-murcielago",
+    "name": "Varita mágica de Star vs. las fuerzas del mal con alas de murciélago y emblema",
+    "price": 10500,
+    "currency": "USD",
+    "description": "Cetro/vara de utilería tipo cosplay con alas de murciélago y emblema. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/vara-cetro-alas-murcielago/1.webp",
+        "thumb": "/store/vara-cetro-alas-murcielago/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "vaso-tiki-ceramica-negro-dorado",
+    "name": "Vaso tiki de cerámica negro y dorado",
+    "price": 7500,
+    "currency": "USD",
+    "description": "Vaso/taza de cerámica estilo tiki con cara tallada, esmalte negro y dorado. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/vaso-tiki-ceramica-negro-dorado/1.webp",
+        "thumb": "/store/vaso-tiki-ceramica-negro-dorado/1-thumb.webp"
+      }
+    ]
+  },
+  {
+    "slug": "zapatos-giordano-negros",
+    "name": "Zapatos de tap Giordano negros",
+    "price": 9000,
+    "currency": "USD",
+    "description": "Zapatos de cuero negro marca Giordano con chapas de tap. Pieza de colección de Demi Roch.",
+    "stock": 1,
+    "hidden": false,
+    "images": [
+      {
+        "full": "/store/zapatos-giordano-negros/1.webp",
+        "thumb": "/store/zapatos-giordano-negros/1-thumb.webp"
+      },
+      {
+        "full": "/store/zapatos-giordano-negros/2.webp",
+        "thumb": "/store/zapatos-giordano-negros/2-thumb.webp"
+      }
+    ]
+  }
+]

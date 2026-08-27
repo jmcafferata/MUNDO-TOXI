@@ -70,6 +70,7 @@ export default defineConfig({
         line: resolve(__dirname, 'line.html'),
         point: resolve(__dirname, 'point.html'),
         app: resolve(__dirname, 'app.html'),
+        store: resolve(__dirname, 'store.html'),
         hotelOriente: resolve(__dirname, 'hotel-oriente.html'),
         detectiveNoir: resolve(__dirname, 'detective-noir.html'),
         hedonismoYSeduccion: resolve(__dirname, 'hedonismo-y-seduccion.html'),
