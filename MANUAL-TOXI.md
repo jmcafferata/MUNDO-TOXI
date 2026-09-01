@@ -217,7 +217,61 @@ Editar `public/data/talentos.json` con una estructura como esta:
 
 Los slugs incluidos en `proyectos` deben existir en `projects.json`. Luego de modificar el archivo, ejecutar `npm run gen` y `npm run build`.
 
-## 6. Contenido y buenas prácticas
+## 6. Toximonedas NFC (`/moneda/:id`)
+
+Sistema de verificación centralizada para las etiquetas NFC ("toximonedas"). Cada moneda física se graba con una URL del tipo:
+
+- `https://toxi.media/moneda/a1b2c3d4e5` (o `https://toxi.media/moneda/?id=a1b2c3d4e5`)
+
+El `id` es una cadena alfanumérica aleatoria (10 caracteres hex) que **no** revela ni el número de serie ni permite adivinar otras monedas.
+
+### Flujo del servidor
+
+1. `vercel.json` reescribe `/moneda/:id` y `/moneda` hacia `api/moneda.js`, y `/m/:id` hacia `api/m.js`.
+2. `api/moneda.js` toma el `id`, lo busca en el ledger (`lib/moneda-store.mjs`) y decide:
+   - **No existe / inactiva:** responde `200` con una página de diseño TOXI MEDIA ("Moneda no reconocida" / "Moneda desactivada"). No usa `404` a propósito, para no dar pistas de qué IDs son válidos.
+   - **Activa:** registra la lectura (fecha, IP, user-agent, lote) y responde `302` hacia `destino_url` (o `accion`).
+
+### Moneda dinámica: landing page propia (`/m/:id`)
+
+En vez de apuntar `destino_url` directo a un link externo (WhatsApp, red social, etc.), conviene apuntarlo a una landing propia dentro de `toxi.media`, por ejemplo `https://toxi.media/m/a1b2c3d4e5`. Así la moneda física queda "fija" (nunca hay que volver a grabar el NFC) y el contenido que muestra se controla después, cambiando el código del lado del servidor.
+
+`api/m.js` sirve esa landing: vuelve a validar el `id` contra el ledger (sin registrar lectura, eso ya lo hizo `api/moneda.js` antes de redirigir) y muestra una página "Moneda TOXI #`<id>` — Verificada" con el lote de emisión. Es el punto para más adelante diferenciar contenido por moneda (tarjeta de contactos, opt-in a un chatbot, menú secreto de un evento, etc.), leyendo campos adicionales del registro en el ledger.
+
+### El ledger
+
+`lib/moneda-store.mjs` usa **Vercel KV (Upstash Redis)** como base de datos si están definidas `KV_REST_API_URL` y `KV_REST_API_TOKEN` (se agregan solas al conectar el addon de KV en el dashboard de Vercel). Sin esas variables, cae a `data/monedas.json` como ledger de solo lectura (útil en dev/preview), sin poder registrar lecturas.
+
+Cada registro:
+
+```json
+{
+  "id_moneda": "a1b2c3d4e5",
+  "estado": "activa",
+  "lote_emision": "L2026-01",
+  "destino_url": "https://toxi.media/m/a1b2c3d4e5",
+  "accion": null,
+  "created_at": "2026-01-01T00:00:00.000Z"
+}
+```
+
+`estado` puede ser `activa`, `inactiva` o `pendiente` (solo `activa` redirige).
+
+### Administrar toximonedas
+
+Con `KV_REST_API_URL` / `KV_REST_API_TOKEN` configuradas en el entorno local (o directamente a mano desde el panel de Upstash):
+
+```bash
+node tools/moneda-admin.mjs crear --destino "https://toxi.media/m/<id>" --lote L2026-01
+node tools/moneda-admin.mjs estado a1b2c3d4e5 inactiva
+node tools/moneda-admin.mjs actualizar a1b2c3d4e5 --destino "https://toxi.media/m/a1b2c3d4e5"
+node tools/moneda-admin.mjs ver a1b2c3d4e5
+```
+
+`crear` genera el `id` aleatorio automáticamente si no se pasa `--id`.
+
+
+## 7. Contenido y buenas prácticas
 
 - Validar que los archivos JSON tengan comas, comillas y corchetes correctos.
 - Mantener nombres y slugs consistentes para evitar fichas rotas.
@@ -228,7 +282,7 @@ Los slugs incluidos en `proyectos` deben existir en `projects.json`. Luego de mo
 - Evitar guardar claves, tokens o contraseñas en archivos versionados.
 - Verificar las fichas en móvil y escritorio después de cada cambio.
 
-## 7. Variables de entorno y servicios
+## 8. Variables de entorno y servicios
 
 Las credenciales se configuran en Vercel y, para el desarrollo local, en un archivo `.env` que no debe subirse al repositorio.
 
@@ -246,6 +300,8 @@ Entre las variables utilizadas por el proyecto se encuentran:
 | `ZOHO_PASSWORD` | Autenticación de Zoho |
 | `MUX_TOKEN_ID` | Acceso a Mux |
 | `MUX_TOKEN_SECRET` | Secreto de Mux |
+| `KV_REST_API_URL` | Ledger de toximonedas (Vercel KV / Upstash Redis) |
+| `KV_REST_API_TOKEN` | Ledger de toximonedas (Vercel KV / Upstash Redis) |
 
 Nunca colocar los valores reales en este manual, en `README.md`, en el frontend ni en un commit.
 
@@ -255,7 +311,7 @@ Después de cambiar variables en producción, realizar un redeploy:
 npx vercel --prod
 ```
 
-## 8. Diagnóstico rápido
+## 9. Diagnóstico rápido
 
 ### La ficha no aparece
 
@@ -289,7 +345,7 @@ npm run build
 
 Corregir primero los errores de JSON, generación o build. Luego revisar los logs del proyecto en Vercel.
 
-## 9. Publicación y mantenimiento
+## 10. Publicación y mantenimiento
 
 Flujo recomendado:
 
@@ -302,7 +358,7 @@ Flujo recomendado:
 7. Revisar el despliegue y las rutas públicas.
 8. Confirmar que la ficha, las imágenes, los videos y los metadatos sociales funcionen en producción.
 
-## 10. Referencias
+## 11. Referencias
 
 - Sitio: https://www.toxi.media/
 - Catálogo: https://www.toxi.media/plantform
