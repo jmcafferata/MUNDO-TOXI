@@ -37,6 +37,10 @@
       "destination": "/trabajos.html"
     },
     {
+      "source": "/store",
+      "destination": "/store.html"
+    },
+    {
       "source": "/audiont",
       "destination": "/audiont.html"
     },
