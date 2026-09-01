@@ -76,6 +76,7 @@ export const PLAYLIST = [
   { id: 'N5ISPSMoo502IHjTdvQt02GeR7xgJUiCFTlxrBLLIhpcg',       duration: 2580.9,      title: 'Literatura y Realidad Virtual — Ana Arzoumanian (TOXI University)' },
   { id: 'irasB01gOUsUd4E4Iy6yVvp7CYMwYMVB00nr4BKU8tn38',       duration: 539.566667,  title: 'Ana Arzoumanian en TV Pública — Inteligencia Artificial Hoy' },
   { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00',      duration: 5803.5,      title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)' },
+  { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug',      duration: 400,      title: 'ELO' },
 ];
 
 export default function handler(req, res) {

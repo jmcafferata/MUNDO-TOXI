@@ -106,6 +106,7 @@ export const CONTENT = [
   { id: 'MLqVMQ4VqD79zGTUP1PQhdq9nmtPndTZPhNp01Q79Yuc', duration: 776, title: 'Duro de ODELaR - ODELaR 2-3', slug: '', type: 'other', year: 2026, onTV: true },
   { id: '3qY2CPrEaeMkGsiL9BjhXOwalP4FMYNjDWTNdZq6Xuc', duration: 229, title: 'ODELaR sentado - ODELaR 2-4', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'SAnTuoo6QI1fPRWpXvUEkr6rdEo1IAeB1H22NmbngtY', duration: 6762, title: 'Tomátelo con Ciencia — Piloto', slug: '', type: 'other', year: 2025, onTV: true },
+  { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug', duration: 400, title: 'ELO', slug: '', type: 'other', year: 2026, onTV: true },
 ];
 
 
