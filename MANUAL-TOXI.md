@@ -227,16 +227,18 @@ El `id` es una cadena alfanumérica aleatoria (10 caracteres hex) que **no** rev
 
 ### Flujo del servidor
 
-1. `vercel.json` reescribe `/moneda/:id` y `/moneda` hacia `api/moneda.js`, y `/m/:id` hacia `api/m.js`.
+1. `vercel.json` reescribe `/moneda/:id` y `/moneda` hacia `api/moneda.js`.
 2. `api/moneda.js` toma el `id`, lo busca en el ledger (`lib/moneda-store.mjs`) y decide:
    - **No existe / inactiva:** responde `200` con una página de diseño TOXI MEDIA ("Moneda no reconocida" / "Moneda desactivada"). No usa `404` a propósito, para no dar pistas de qué IDs son válidos.
    - **Activa:** registra la lectura (fecha, IP, user-agent, lote) y responde `302` hacia `destino_url` (o `accion`).
 
 ### Moneda dinámica: landing page propia (`/m/:id`)
 
-En vez de apuntar `destino_url` directo a un link externo (WhatsApp, red social, etc.), conviene apuntarlo a una landing propia dentro de `toxi.media`, por ejemplo `https://toxi.media/m/a1b2c3d4e5`. Así la moneda física queda "fija" (nunca hay que volver a grabar el NFC) y el contenido que muestra se controla después, cambiando el código del lado del servidor.
+En vez de apuntar `destino_url` directo a un link externo (WhatsApp, red social, etc.), conviene apuntarlo a una landing propia dentro de `toxi.media`, por ejemplo `https://toxi.media/m/a1b2c3d4e5`. Así la moneda física queda "fija" (nunca hay que volver a grabar el NFC) y el contenido que muestra se controla después, sin tocar el redirector.
 
-`api/m.js` sirve esa landing: vuelve a validar el `id` contra el ledger (sin registrar lectura, eso ya lo hizo `api/moneda.js` antes de redirigir) y muestra una página "Moneda TOXI #`<id>` — Verificada" con el lote de emisión. Es el punto para más adelante diferenciar contenido por moneda (tarjeta de contactos, opt-in a un chatbot, menú secreto de un evento, etc.), leyendo campos adicionales del registro en el ledger.
+Esa landing es una **página estática**, no una función serverless (se probó con `api/m.js` y crasheaba en producción — `FUNCTION_INVOCATION_FAILED`). Cada moneda tiene su propia carpeta en `public/m/<id>/index.html`, servida directamente por Vercel como cualquier otro archivo estático del sitio (mismo patrón que `public/[slug]/index.html` para proyectos y talentos). Para cambiar el contenido de una moneda ya emitida, se edita ese HTML y se hace redeploy; no hace falta volver a acercar el teléfono a la moneda física.
+
+Ejemplo: `public/m/313ae48f10/index.html` muestra "Moneda TOXI #313ae48f10 — Verificada", el lote de emisión y el último dueño conocido (con link a su ficha de talento si existe, p. ej. `/nacho-michalowicz`).
 
 ### El ledger
 
