@@ -17,3 +17,7 @@ notes/
 
 toxitv-credentials.json
 
+# Fotos originales de productos (se commitean solo las optimizadas en public/store/)
+store-source/*
+!store-source/README.md
+

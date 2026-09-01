@@ -8,7 +8,8 @@
     "build": "npm run gen && node ./node_modules/vite/bin/vite.js build",
     "preview": "vite preview",
     "og:generate": "node tools/generate-og-images.js",
-    "mux:playlist-quality": "node tools/check-playlist-quality.js"
+    "mux:playlist-quality": "node tools/check-playlist-quality.js",
+    "store:sync": "node tools/upload-store-images.js"
   },
   "devDependencies": {
     "sharp": "^0.32.6",
