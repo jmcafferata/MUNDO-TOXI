@@ -699,7 +699,25 @@
 <body>
     <div class="university-container">
         <section class="free-sample" aria-labelledby="free-sample-title">
-
+            <div class="live-stage">
+                <div class="live-countdown" id="live-countdown" aria-live="polite">
+                    <img src="/university-logo.png" onerror="this.src='/toxi-logo-white.png'" alt="TOXI University"
+                        class="logo-img">
+                    <div class="live-countdown-label">Comienza en</div>
+                    <div class="countdown-time" aria-label="Cuenta regresiva">
+                        <div class="countdown-unit"><strong id="countdown-days">00</strong><span>días</span></div>
+                        <div class="countdown-unit"><strong id="countdown-hours">00</strong><span>horas</span></div>
+                        <div class="countdown-unit"><strong id="countdown-minutes">00</strong><span>minutos</span></div>
+                        <div class="countdown-unit"><strong id="countdown-seconds">00</strong><span>segundos</span></div>
+                    </div>
+                    <p class="live-status" id="live-status">Martes 1 de septiembre · 18:00 h</p>
+                </div>
+                <mux-player id="live-player" playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
+                    metadata-video-title="Diseño de Entornos Virtuales — Primera clase (TOXI VR)" stream-type="live"
+                    accent-color="#ffffff" controls playsinline hidden></mux-player>
+            </div>
+            <p class="free-sample-label">Clase en vivo</p>
+            <h2 id="free-sample-title">Diseño de Entornos Virtuales — Primera clase</h2>
         </section>
         <div class="breadcrumb"><a href="/university">← Toxi University</a></div>
         <header>
@@ -709,31 +727,6 @@
             <p>Una exploración integral de la percepción, la tecnología y el diseño de experiencias inmersivas.</p>
 
         </header>
-
-
-        <div class="live-stage">
-            <div class="live-countdown" id="live-countdown" aria-live="polite">
-                <img src="/university-logo.png" onerror="this.src='/toxi-logo-white.png'" alt="TOXI University"
-                    class="logo-img">
-                <div class="live-countdown-label">Comienza en</div>
-                <div class="countdown-time" aria-label="Cuenta regresiva">
-                    <div class="countdown-unit"><strong id="countdown-days">00</strong><span>días</span></div>
-                    <div class="countdown-unit"><strong id="countdown-hours">00</strong><span>horas</span></div>
-                    <div class="countdown-unit"><strong id="countdown-minutes">00</strong><span>minutos</span></div>
-                    <div class="countdown-unit"><strong id="countdown-seconds">00</strong><span>segundos</span>
-                    </div>
-                </div>
-                <p class="live-status" id="live-status">Martes 1 de septiembre · 18:00 h</p>
-            </div>
-            <mux-player id="live-player" playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
-                metadata-video-title="Diseño de Entornos Virtuales — Primera clase (TOXI VR)" stream-type="live"
-                accent-color="#ffffff" controls playsinline hidden></mux-player>
-        </div>
-
-        <p class="free-sample-label">Clase en vivo</p>
-        <h2 id="free-sample-title">Diseño de Entornos Virtuales — Primera clase</h2>
-
-
         <p class="class-announcement"><strong>Segunda clase</strong><br>Martes 8 de septiembre ·
             18:00h<br><span>Dejá tu mail si querés venir presencial.</span></p>
         <div class="instructor-card">
