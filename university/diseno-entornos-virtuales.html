@@ -714,13 +714,13 @@
                         <div class="countdown-unit"><strong id="countdown-minutes">00</strong><span>minutos</span></div>
                         <div class="countdown-unit"><strong id="countdown-seconds">00</strong><span>segundos</span></div>
                     </div>
-                    <p class="live-status" id="live-status">Martes 1 de septiembre · 18:00 h</p>
+                    <p class="live-status" id="live-status">Martes 8 de septiembre · 18:00 h</p>
                 </div>
                 <mux-player id="live-player" playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
-                    metadata-video-title="Diseño de Entornos Virtuales — Primera clase (TOXI VR)" stream-type="live"
-                    accent-color="#ffffff" controls playsinline hidden></mux-player>
+                    metadata-video-title="Diseño de Entornos Virtuales — Segunda clase práctica con Nacho Michalowicz (TOXI VR)"
+                    stream-type="live" accent-color="#ffffff" controls playsinline hidden></mux-player>
             </div>
-            <h2 id="free-sample-title">Diseño de Entornos Virtuales — Primera clase</h2>
+            <h2 id="free-sample-title">Diseño de Entornos Virtuales — Segunda clase práctica con Nacho Michalowicz</h2>
         </section>
         <div class="breadcrumb"><a href="/university">← Toxi University</a></div>
         <header>
@@ -730,8 +730,8 @@
             <p>Una exploración integral de la percepción, la tecnología y el diseño de experiencias inmersivas.</p>
 
         </header>
-        <p class="class-announcement"><strong>Segunda clase</strong><br>Martes 8 de septiembre ·
-            18:00h<br><span>Dejá tu mail si querés venir presencial.</span></p>
+        <p class="class-announcement"><strong>Segunda clase práctica con Nacho Michalowicz</strong><br>Martes 8 de
+            septiembre · 18:00h<br><span>Dejá tu mail si querés venir presencial.</span></p>
         <div class="instructor-card">
             <h2>Equipo TOXI VR</h2>
             <p>Curso dictado por</p>
@@ -967,6 +967,17 @@
                 controls playsinline></mux-player>
         </section>
 
+        <section class="free-sample" aria-labelledby="practical-class-title">
+            <p class="free-sample-label">Clase práctica en vivo · Parte <span id="practical-part-num">1</span> de 3
+            </p>
+            <h2 id="practical-class-title">Introducción al modelado — Nacho Michalowicz</h2>
+            <p style="color:rgba(255,255,255,.65);font-weight:300;line-height:1.5;margin:0 0 1.25rem;">Primera clase
+                práctica en vivo: introducción al modelado con Blender y Unity, a cargo de Nacho Michalowicz.</p>
+            <mux-player id="practical-player" playback-id="e9kTmIKu4eAQkWbw7Y00MhMWAesefg9b7XuQPfHdGwYc"
+                thumbnail-time="800" metadata-video-title="Introducción al modelado — Parte 1 (TOXI VR)"
+                accent-color="#ffffff" controls playsinline></mux-player>
+        </section>
+
 
         <footer>
             <div class="location"><span>📍</span> Rodríguez Peña 158, Buenos Aires</div>
@@ -991,7 +1002,7 @@
         const livePlayer = document.getElementById('live-player');
         const liveCountdown = document.getElementById('live-countdown');
         const liveStatus = document.getElementById('live-status');
-        const classDate = new Date('2026-09-01T18:00:00-03:00');
+        const classDate = new Date('2026-09-08T18:00:00-03:00');
         const countdownElements = {
             days: document.getElementById('countdown-days'),
             hours: document.getElementById('countdown-hours'),
@@ -1019,7 +1030,7 @@
                     liveStatus.textContent = 'En vivo ahora';
                     return;
                 }
-                liveStatus.textContent = 'La clase comienza el martes 1 de septiembre a las 18:00 h';
+                liveStatus.textContent = 'La clase comienza el martes 8 de septiembre a las 18:00 h';
             } catch (error) {
                 console.error('No se pudo consultar el estado del live:', error);
             }
@@ -1028,6 +1039,22 @@
         setInterval(updateCountdown, 1000);
         checkLiveStatus();
         setInterval(checkLiveStatus, 30000);
+
+        const practicalPlaylist = [
+            'e9kTmIKu4eAQkWbw7Y00MhMWAesefg9b7XuQPfHdGwYc',
+            'pa500VHh00eyZ00A8iNqhx7HRoi02zjNjFhkdttSzeeJWbs',
+            'JgQ4jJgRFCl6H029viZJxKYum6wa3uHWfCZ4FIxSkCNg'
+        ];
+        let practicalIndex = 0;
+        const practicalPlayer = document.getElementById('practical-player');
+        const practicalPartNum = document.getElementById('practical-part-num');
+        practicalPlayer.addEventListener('ended', () => {
+            practicalIndex = (practicalIndex + 1) % practicalPlaylist.length;
+            practicalPartNum.textContent = practicalIndex + 1;
+            practicalPlayer.setAttribute('playback-id', practicalPlaylist[practicalIndex]);
+            practicalPlayer.setAttribute('metadata-video-title', `Introducción al modelado — Parte ${practicalIndex + 1} (TOXI VR)`);
+            practicalPlayer.play();
+        });
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = new FormData(form).get('email');
