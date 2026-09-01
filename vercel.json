@@ -37,10 +37,6 @@
       "destination": "/api/moneda"
     },
     {
-      "source": "/m/:id",
-      "destination": "/api/m?id=:id"
-    },
-    {
       "source": "/privacy-policy",
       "destination": "/privacy-policy.html"
     },
