@@ -72,6 +72,7 @@ export default defineConfig({
         app: resolve(__dirname, 'app.html'),
         store: resolve(__dirname, 'store.html'),
         hotelOriente: resolve(__dirname, 'hotel-oriente.html'),
+        elo: resolve(__dirname, 'elo.html'),
         detectiveNoir: resolve(__dirname, 'detective-noir.html'),
         hedonismoYSeduccion: resolve(__dirname, 'hedonismo-y-seduccion.html'),
         university: resolve(__dirname, 'university.html'),

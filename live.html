@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>TOXI LIVE</title>
+    <meta property="og:title" content="TOXI LIVE" />
+    <meta property="og:description" content="Transmisión en vivo de TOXI Media." />
+    <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+    <link rel="icon" href="/favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <script>
+        // Inicializar Cast SDK con receiver personalizado antes de que mux-player lo use
+        window['__onGCastApiAvailable'] = function(isAvailable) {
+            if (isAvailable) {
+                cast.framework.CastContext.getInstance().setOptions({
+                    receiverApplicationId: 'B668F863',
+                    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                });
+            }
+        };
+    </script>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        header {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        .logo-link {
+            pointer-events: all;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+            text-decoration: none;
+        }
+        .logo-link:hover { opacity: 1; }
+        .logo-link img { height: 22px; }
+
+        .tv-badge {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.5);
+        }
+        .tv-dot { width: 7px; height: 7px; border-radius: 50%; background: #f33; opacity: 0.9; }
+        .tv-badge.is-offline .tv-dot { background: #fff; opacity: 0.5; }
+
+        #player-wrap {
+            flex: 1;
+            position: relative;
+            background: #000;
+        }
+
+        mux-player {
+            width: 100%; height: 100%;
+            position: absolute; inset: 0;
+            z-index: 5;
+            --media-object-fit: contain;
+            --media-background-color: #000;
+            --media-primary-color: #fff;
+            --media-accent-color: #fff;
+            --media-secondary-color: #000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        mux-player.is-active { opacity: 1; }
+
+        #cast-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 20;
+            width: 28px;
+            height: 28px;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            pointer-events: all;
+            transition: color 0.2s;
+        }
+        #cast-btn:hover { color: #fff; }
+
+        #offline-screen {
+            position: absolute; inset: 0;
+            z-index: 8;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #000;
+        }
+        #offline-screen.visible { display: flex; }
+        .offline-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.3; }
+        .offline-sub { font-size: 0.65rem; letter-spacing: 0.1em; opacity: 0.22; }
+
+        #clock { font-size: 0.65rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.38); font-variant-numeric: tabular-nums; }
+
+        #age-gate {
+            position: absolute; inset: 0; z-index: 30;
+            background: #000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 32px;
+        }
+        #age-gate.hidden { display: none; }
+        .age-gate-logo { height: 28px; opacity: 0.9; margin-bottom: 8px; }
+        .age-gate-title {
+            font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.25em;
+            color: rgba(255,255,255,0.35);
+        }
+        .age-gate-buttons { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+        .age-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #fff;
+            padding: 14px 28px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .age-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="logo-link" href="/"><img src="/toxi-logo-white.png" alt="TOXI Media" /></a>
+        <div class="tv-badge" id="tv-badge"><span class="tv-dot"></span><span id="clock">--:--</span></div>
+    </header>
+
+    <div id="player-wrap">
+        <mux-player id="mux-player" stream-type="live" playback-id="k47kNyBhDHg00ih301gk600Z4dJQndLAQHIOgg003oWqeJg" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+        <google-cast-launcher id="cast-btn" title="Chromecast"></google-cast-launcher>
+        <div id="age-gate">
+            <img class="age-gate-logo" src="/toxi-logo-white.png" alt="TOXI Media" />
+            <div class="age-gate-title">¿Cuántos años tenés?</div>
+            <div class="age-gate-buttons">
+                <button class="age-btn" id="age-over">Soy mayor de 16 años</button>
+                <button class="age-btn" id="age-under">Soy menor de 16 años</button>
+            </div>
+        </div>
+        <div id="offline-screen">
+            <div class="offline-title">Sin señal</div>
+            <div class="offline-sub">La transmisión en vivo no está disponible en este momento</div>
+        </div>
+    </div>
+
+    <script type="module" src="./src/analytics.js"></script>
+    <script type="module">
+        const player   = document.getElementById('mux-player');
+        const clockEl  = document.getElementById('clock');
+        const badgeEl  = document.getElementById('tv-badge');
+        const ageGate  = document.getElementById('age-gate');
+        const offline  = document.getElementById('offline-screen');
+
+        let audioActive = false;
+
+        function formatAR(date) {
+            const d = new Date(date.getTime() - 3 * 60 * 60 * 1000);
+            return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+        }
+
+        function updateClock() {
+            clockEl.textContent = formatAR(new Date());
+        }
+
+        function setOffline(isOffline) {
+            offline.classList.toggle('visible', isOffline);
+            player.classList.toggle('is-active', !isOffline);
+            badgeEl.classList.toggle('is-offline', isOffline);
+        }
+
+        function dismissAgeGate() {
+            audioActive = true;
+            player.muted = false;
+            player.volume = 1;
+            ageGate.classList.add('hidden');
+        }
+
+        document.getElementById('age-over').addEventListener('click', dismissAgeGate);
+        document.getElementById('age-under').addEventListener('click', dismissAgeGate);
+
+        player.addEventListener('playing', () => setOffline(false));
+        player.addEventListener('error', () => setOffline(true));
+        player.addEventListener('stalled', () => setOffline(true));
+
+        player.addEventListener('pause', () => {
+            if (document.hidden) return;
+            player.play().catch(() => {});
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                player.play().catch(() => {});
+            }
+        });
+
+        // Reintenta la conexión periódicamente cuando el stream está offline
+        setInterval(() => {
+            if (offline.classList.contains('visible')) {
+                player.load();
+                player.play().catch(() => {});
+            }
+        }, 15000);
+
+        updateClock();
+        setInterval(updateClock, 10000);
+
+        player.muted = true;
+        player.play().catch(() => setOffline(true));
+    </script>
+
+</body>
+</html>
