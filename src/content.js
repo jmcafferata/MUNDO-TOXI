@@ -91,6 +91,7 @@ export const CONTENT = [
   { id: '2pvsoB4YE81IJwB3miI9hD7p02VAInuLagXPx01S2f02ao', duration: 1037, title: 'MERS VLOG 6', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'fuggP4bFLjVKYTlZiwyjRBGcVyemYJl9EgJ1hYRUj8c', duration: 269, title: 'Salga. — ODELaR 2-8', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'tKM01JEu8FIE4IZA400OQ5vp02xATnd1oqrWVH2ROqJrkQ', duration: 343, title: 'Usted qué ve — ODELaR BTS', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'MMUOpgCFyh7aC7nfNz57oXKCJSZqgvHZqWLIdMxhSw00', duration: 324, title: 'Hágalo por su tía - ODELAR 2-10', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'r8Mu01Bwe7IFDFe5im464bYCKArGXTM1oLa5EhNEpcOI', duration: 235, title: 'Haga algo con las manos - ODELaR 2-6', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'rb7X8CjJduGfO00JKX9I3WJRWs01AJLWXvq4ihJoRwPzc', duration: 224, title: 'Usted qué ve - ODELaR 2-8', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'VdEEcI601TJyUEz535TNYWDpWDU3I02xjdXWbW6Pozt7Y', duration: 1293, title: 'MERS VLOG 5', slug: '', type: 'other', year: 2026, onTV: true },
@@ -112,6 +113,7 @@ export const CONTENT = [
     { id: 'UvorQn02OzsZ00vNjPz1cJbEvkGen7hdrEhL3C00t011iGo', duration: 514, title: 'Sociedades — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
     { id: 'eWYrpbcEC1UNJ4R01lvG1O727cw3RcH19Brf3G00cUhqQ', duration: 331, title: 'Accidentes — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
   { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug', duration: 400, title: 'ELO', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'pgnh8KYHVuAi8LP2aqe02furPECSSxx6w4YzqELBA3Vw', duration: 1951, title: 'Aguatierra — Centro de demostración', slug: '', type: 'other', year: 2024, onTV: true },
 ];
 
 

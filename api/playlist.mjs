@@ -178,6 +178,8 @@ export const PLAYLIST = [
 //   { id: 'irasB01gOUsUd4E4Iy6yVvp7CYMwYMVB00nr4BKU8tn38',       duration: 539.566667,  title: 'Ana Arzoumanian en TV Pública — Inteligencia Artificial Hoy' },
 //   { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00',      duration: 5803.5,      title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)' },
   { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug',      duration: 400,      title: 'ELO' },
+  { id: 'pgnh8KYHVuAi8LP2aqe02furPECSSxx6w4YzqELBA3Vw',      duration: 1951,     title: 'Aguatierra — Centro de demostración' },
+  { id: 'MMUOpgCFyh7aC7nfNz57oXKCJSZqgvHZqWLIdMxhSw00',      duration: 324,      title: 'Hágalo por su tía - ODELAR 2-10' },
 ];
 
 export default function handler(req, res) {
