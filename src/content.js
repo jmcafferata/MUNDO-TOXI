@@ -8,8 +8,9 @@
 //   type     → film | short | series | live | event | other
 //   year     → Año de producción
 //   onTV     → true = incluido en la playlist del canal
+//   collections → Colecciones a las que pertenece el contenido
 
-export const CONTENT = [
+const CONTENT_SOURCE = [
 
   // ── CURADOS: en el canal ───────────────────────────────────
   { id: 'iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU', duration: 339.548, title: 'Hotel Oriente', slug: 'hotel-oriente', type: 'film', year: 2026, onTV: true,release:"2026-01-22T20:00:00" },
@@ -114,6 +115,8 @@ export const CONTENT = [
     { id: 'eWYrpbcEC1UNJ4R01lvG1O727cw3RcH19Brf3G00cUhqQ', duration: 331, title: 'Accidentes — Consultas virtuales con Joaquín Santos', slug: '', type: 'other', year: 2026, onTV: true },
   { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug', duration: 400, title: 'ELO', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'pgnh8KYHVuAi8LP2aqe02furPECSSxx6w4YzqELBA3Vw', duration: 1951, title: 'Aguatierra — Centro de demostración', slug: '', type: 'other', year: 2024, onTV: true },
+  { id: 'J3XiOpt01f3wl2U003K9CMFhfkegXaa1fE6ksTn01sI4Nc', duration: 942, title: 'Aguatierra — Recorrido Tren Tren', slug: '', type: 'other', year: 2024, onTV: true },
+  
 
   // ── SINCRONIZADO DESDE MUX (2026-09-03) ────────────────────
   { id: 'JgQ4jJgRFCl6H029viZJxKYum6wa3uHWfCZ4FIxSkCNg', duration: 1078.6416666666667, title: 'Introducción al modelado I con Nacho Michalowicz 03 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
@@ -166,6 +169,26 @@ export const CONTENT = [
   { id: 'yuhrH9kKyhAFks02wADp5s6ilPBdNTOCR8DPCWZf1Dfg', duration: 261.0569222222222, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true },
 ];
 
+const getCollections = (video) => [
+  video.onTV ? 'tv' : null,
+  video.onRadio ? 'radio' : null,
+  video.type,
+  video.slug || null,
+].filter(Boolean);
+
+export const CONTENT = CONTENT_SOURCE.map(video => ({
+  ...video,
+  collections: getCollections(video),
+}));
+
+/** Índice de contenido agrupado por colección. Un video puede aparecer en varias. */
+export const COLLECTIONS = CONTENT.reduce((collections, video) => {
+  video.collections.forEach(collection => {
+    if (!collections[collection]) collections[collection] = [];
+    collections[collection].push(video);
+  });
+  return collections;
+}, {});
 
 /** Solo los videos marcados onTV: true, en orden para la playlist del canal */
 export const TV_PLAYLIST = CONTENT.filter(v => v.onTV && v.title);
