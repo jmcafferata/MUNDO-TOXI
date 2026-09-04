@@ -180,6 +180,7 @@ export const PLAYLIST = [
   { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug',      duration: 400,      title: 'ELO' },
   { id: 'pgnh8KYHVuAi8LP2aqe02furPECSSxx6w4YzqELBA3Vw',      duration: 1951,     title: 'Aguatierra — Centro de demostración' },
   { id: 'MMUOpgCFyh7aC7nfNz57oXKCJSZqgvHZqWLIdMxhSw00',      duration: 324,      title: 'Hágalo por su tía - ODELAR 2-10' },
+  { id: 'J3XiOpt01f3wl2U003K9CMFhfkegXaa1fE6ksTn01sI4Nc',      duration: 942,      title: 'Aguatierra — Recorrido Tren Tren' },
 ];
 
 export default function handler(req, res) {
