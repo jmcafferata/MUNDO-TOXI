@@ -167,6 +167,7 @@ const CONTENT_SOURCE = [
   { id: '2yiwT02f7uhnx6yX01qo4b52iffRv8CSVqyMBsYNR02zLY', duration: 1333.457133, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: null, onTV: true },
   { id: '00Q01vS01Gq6AVeh8BpZtr01drAKZeyRM9lXOZ7qt7t5hSI', duration: 527.6194888888889, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'yuhrH9kKyhAFks02wADp5s6ilPBdNTOCR8DPCWZf1Dfg', duration: 261.0569222222222, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'M00TY2CGCrZwW2KJu012sRVVRLyng00qIPB7018VA5zZm00M', duration: 11014, title: 'Masterclass de Streaming — Juan Manuel Cafferata (TOXI University)', slug: '', type: 'other', year: 2024, onTV: true },
 ];
 
 const getCollections = (video) => [
