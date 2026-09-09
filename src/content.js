@@ -118,6 +118,14 @@ const CONTENT_SOURCE = [
   { id: 'J3XiOpt01f3wl2U003K9CMFhfkegXaa1fE6ksTn01sI4Nc', duration: 942, title: 'Aguatierra — Recorrido Tren Tren', slug: '', type: 'other', year: 2024, onTV: true },
   
 
+  // ── SINCRONIZADO DESDE MUX (2026-09-08) ────────────────────
+  { id: 'MBLpySzVnCNiQ701A53UNEvw2T12LmDxK00yeHfCFcfVE', duration: 2598, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 01 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'GMKwIO6JSZrspQvXnhuZNqVrP01TR00PL4aMWNMRoAHFg', duration: 5287, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 02 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'ZnTUHNdUe200Q4KcIetZCrPesk027de2f3du4RPujKsRA', duration: 213, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 03 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'ufCsKQFjiAD5mhZjfH3SUWcQDkJ5f1UhooHqQxpsnoY', duration: 411, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 04 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'x00HD0278JuHcceYeoa3ABjqT4Uq01zse02KteFCDUiMkJs', duration: 167, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 05 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'rfi2WhC6kcBOmLbSEajKBQ4nv39JM01J3uOelihD6sWM', duration: 2769, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 06 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+
   // ── SINCRONIZADO DESDE MUX (2026-09-03) ────────────────────
   { id: 'JgQ4jJgRFCl6H029viZJxKYum6wa3uHWfCZ4FIxSkCNg', duration: 1078.6416666666667, title: 'Introducción al modelado I con Nacho Michalowicz 03 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'pa500VHh00eyZ00A8iNqhx7HRoi02zjNjFhkdttSzeeJWbs', duration: 4309.008333333333, title: 'Introducción al modelado I con Nacho Michalowicz 02 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
