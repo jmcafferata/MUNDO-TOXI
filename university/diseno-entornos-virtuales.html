@@ -105,6 +105,14 @@
             color: #fff;
         }
 
+        .reference-links a {
+            color: #fff;
+        }
+
+        .reference-links a:hover {
+            color: rgba(255, 255, 255, .7);
+        }
+
         header {
             text-align: center;
             padding: 3rem 1rem 4rem;
@@ -714,7 +722,7 @@
                         <div class="countdown-unit"><strong id="countdown-minutes">00</strong><span>minutos</span></div>
                         <div class="countdown-unit"><strong id="countdown-seconds">00</strong><span>segundos</span></div>
                     </div>
-                    <p class="live-status" id="live-status">Martes 8 de septiembre · 18:00 h</p>
+                    <p class="live-status" id="live-status">Martes 15 de septiembre · 18:30 h</p>
                 </div>
                 <mux-player id="live-player" playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
                     metadata-video-title="Diseño de Entornos Virtuales — Segunda clase práctica con Nacho Michalowicz (TOXI VR)"
@@ -730,8 +738,8 @@
             <p>Una exploración integral de la percepción, la tecnología y el diseño de experiencias inmersivas.</p>
 
         </header>
-        <p class="class-announcement"><strong>Segunda clase práctica con Nacho Michalowicz</strong><br>Martes 8 de
-            septiembre · 18:00h<br><span>Dejá tu mail si querés venir presencial.</span></p>
+        <p class="class-announcement"><strong>Segunda clase práctica con Nacho Michalowicz</strong><br>Martes 15 de
+            septiembre · 18:30h<br><span>Dejá tu mail si querés venir presencial.</span></p>
         <div class="instructor-card">
             <h2>Equipo TOXI VR</h2>
             <p>Curso dictado por</p>
@@ -979,14 +987,14 @@
         </section>
 
         <section class="free-sample" aria-labelledby="texturing-class-title">
-            <p class="free-sample-label">Clase práctica en vivo · Parte <span id="texturing-part-num">1</span> de 6
+            <p class="free-sample-label">Clase práctica en vivo · Parte <span id="texturing-part-num">1</span> de 5
             </p>
             <h2 id="texturing-class-title">Introducción al texturizado y ensamblado — Nacho Michalowicz</h2>
             <p style="color:rgba(255,255,255,.65);font-weight:300;line-height:1.5;margin:0 0 1.25rem;">Segunda clase
                 práctica en vivo: introducción al texturizado y ensamblado de modelos en Blender, a cargo de Nacho
                 Michalowicz.</p>
-            <mux-player id="texturing-player" playback-id="MBLpySzVnCNiQ701A53UNEvw2T12LmDxK00yeHfCFcfVE"
-                metadata-video-title="Introducción al texturizado y ensamblado — Parte 1 (TOXI VR)"
+            <mux-player id="texturing-player" playback-id="GMKwIO6JSZrspQvXnhuZNqVrP01TR00PL4aMWNMRoAHFg"
+                start-time="256" metadata-video-title="Introducción al texturizado y ensamblado — Parte 1 (TOXI VR)"
                 accent-color="#ffffff" controls playsinline></mux-player>
             <div class="reference-links" style="margin-top:1.5rem;">
                 <h3 style="font-weight:bold;font-size:1rem;margin:0 0 .5rem;">Links de referencia usados en la clase</h3>
@@ -1036,7 +1044,7 @@
         const livePlayer = document.getElementById('live-player');
         const liveCountdown = document.getElementById('live-countdown');
         const liveStatus = document.getElementById('live-status');
-        const classDate = new Date('2026-09-08T18:00:00-03:00');
+        const classDate = new Date('2026-09-15T18:30:00-03:00');
         const countdownElements = {
             days: document.getElementById('countdown-days'),
             hours: document.getElementById('countdown-hours'),
@@ -1064,7 +1072,7 @@
                     liveStatus.textContent = 'En vivo ahora';
                     return;
                 }
-                liveStatus.textContent = 'La clase comienza el martes 8 de septiembre a las 18:00 h';
+                liveStatus.textContent = 'La clase comienza el martes 15 de septiembre a las 18:30 h';
             } catch (error) {
                 console.error('No se pudo consultar el estado del live:', error);
             }
@@ -1091,7 +1099,6 @@
         });
 
         const texturingPlaylist = [
-            'MBLpySzVnCNiQ701A53UNEvw2T12LmDxK00yeHfCFcfVE',
             'GMKwIO6JSZrspQvXnhuZNqVrP01TR00PL4aMWNMRoAHFg',
             'ZnTUHNdUe200Q4KcIetZCrPesk027de2f3du4RPujKsRA',
             'ufCsKQFjiAD5mhZjfH3SUWcQDkJ5f1UhooHqQxpsnoY',
