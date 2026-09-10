@@ -116,6 +116,7 @@ const CONTENT_SOURCE = [
   { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug', duration: 400, title: 'ELO', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'pgnh8KYHVuAi8LP2aqe02furPECSSxx6w4YzqELBA3Vw', duration: 1951, title: 'Aguatierra — Centro de demostración', slug: '', type: 'other', year: 2024, onTV: true },
   { id: 'J3XiOpt01f3wl2U003K9CMFhfkegXaa1fE6ksTn01sI4Nc', duration: 942, title: 'Aguatierra — Recorrido Tren Tren', slug: '', type: 'other', year: 2024, onTV: true },
+  { id: 'YAuxwlUEKPg2PZ4UTXmJh6fl21nmd6mZYt7fsp02vQS4', duration: 239, title: 'ARTE - ODELaR 2-11', slug: '', type: 'other', year: 2026, onTV: true },
   
 
   // ── SINCRONIZADO DESDE MUX (2026-09-03) ────────────────────
