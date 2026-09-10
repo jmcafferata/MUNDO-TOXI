@@ -181,6 +181,7 @@ export const PLAYLIST = [
   { id: 'pgnh8KYHVuAi8LP2aqe02furPECSSxx6w4YzqELBA3Vw',      duration: 1951,     title: 'Aguatierra — Centro de demostración' },
   { id: 'MMUOpgCFyh7aC7nfNz57oXKCJSZqgvHZqWLIdMxhSw00',      duration: 324,      title: 'Hágalo por su tía - ODELAR 2-10' },
   { id: 'J3XiOpt01f3wl2U003K9CMFhfkegXaa1fE6ksTn01sI4Nc',      duration: 942,      title: 'Aguatierra — Recorrido Tren Tren' },
+  { id: 'YAuxwlUEKPg2PZ4UTXmJh6fl21nmd6mZYt7fsp02vQS4',      duration: 239,      title: 'ARTE - ODELaR 2-11' },
 ];
 
 export default function handler(req, res) {
