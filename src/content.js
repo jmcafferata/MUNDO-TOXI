@@ -119,6 +119,14 @@ const CONTENT_SOURCE = [
   { id: 'YAuxwlUEKPg2PZ4UTXmJh6fl21nmd6mZYt7fsp02vQS4', duration: 239, title: 'ARTE - ODELaR 2-11', slug: '', type: 'other', year: 2026, onTV: true },
   
 
+  // ── SINCRONIZADO DESDE MUX (2026-09-08) ────────────────────
+  { id: 'MBLpySzVnCNiQ701A53UNEvw2T12LmDxK00yeHfCFcfVE', duration: 2598, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 01 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'GMKwIO6JSZrspQvXnhuZNqVrP01TR00PL4aMWNMRoAHFg', duration: 5287, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 02 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'ZnTUHNdUe200Q4KcIetZCrPesk027de2f3du4RPujKsRA', duration: 213, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 03 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'ufCsKQFjiAD5mhZjfH3SUWcQDkJ5f1UhooHqQxpsnoY', duration: 411, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 04 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'x00HD0278JuHcceYeoa3ABjqT4Uq01zse02KteFCDUiMkJs', duration: 167, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 05 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'rfi2WhC6kcBOmLbSEajKBQ4nv39JM01J3uOelihD6sWM', duration: 2769, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 06 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
+
   // ── SINCRONIZADO DESDE MUX (2026-09-03) ────────────────────
   { id: 'JgQ4jJgRFCl6H029viZJxKYum6wa3uHWfCZ4FIxSkCNg', duration: 1078.6416666666667, title: 'Introducción al modelado I con Nacho Michalowicz 03 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'pa500VHh00eyZ00A8iNqhx7HRoi02zjNjFhkdttSzeeJWbs', duration: 4309.008333333333, title: 'Introducción al modelado I con Nacho Michalowicz 02 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true },
@@ -168,6 +176,7 @@ const CONTENT_SOURCE = [
   { id: '2yiwT02f7uhnx6yX01qo4b52iffRv8CSVqyMBsYNR02zLY', duration: 1333.457133, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: null, onTV: true },
   { id: '00Q01vS01Gq6AVeh8BpZtr01drAKZeyRM9lXOZ7qt7t5hSI', duration: 527.6194888888889, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'yuhrH9kKyhAFks02wADp5s6ilPBdNTOCR8DPCWZf1Dfg', duration: 261.0569222222222, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true },
+  { id: 'M00TY2CGCrZwW2KJu012sRVVRLyng00qIPB7018VA5zZm00M', duration: 11014, title: 'Masterclass de Streaming — Juan Manuel Cafferata (TOXI University)', slug: '', type: 'other', year: 2024, onTV: true },
 ];
 
 const getCollections = (video) => [
