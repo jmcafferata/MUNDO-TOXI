@@ -79,6 +79,8 @@ const CONTENT_SOURCE = [
   { id: 'QUElHo8r5HtNqfh02XfGKm85jUJ01iTGbkyn2D4BeYNZI', duration: 189.148256, title: 'Otro Día en la Red 0', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true },
   { id: 'K6p6zWxcLOtRXb02eWcic00RYQG8SwDxE014o9007ZTBwm8', duration: 588.629711, title: 'Otro Día en la Red III', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true },
   { id: 'HRr2KXg2X800YNuos9Aj2LmZe8XIqHvTMgFrGKc7v7wQ', duration: null, title: 'Volvé a ODELAR — Otro Día en la Red', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true },
+  { id: 'YAuxwlUEKPg2PZ4UTXmJh6fl21nmd6mZYt7fsp02vQS4', duration: 239, title: 'Enfréntese — Otro Día en la Red', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true },
+  { id: 'QeD01l6eM5kdxSsYOdZQlcTjevR00AEwbDsD1CU4OxN8U', duration: 276, title: 'Cartas para Usted — Otro Día en la Red', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true },
   { id: '2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE', duration: 230.480256, title: 'Viaje a la Luna', slug: '', type: 'other', year: 2025, onTV: true },
   { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY', duration: 80.830756, title: '¿Qué es Mamarracho?', slug: '', type: 'other', year: 2023, onTV: true },
   { id: 'ascCA5hMxmuLlSRnYiRtuXj7P5hOJdC9ImyfKqaQsQo', duration: 2815, title: 'Pizza y Pagni — Piloto LN', slug: '', type: 'other', year: 2026, onTV: true },
@@ -116,7 +118,6 @@ const CONTENT_SOURCE = [
   { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug', duration: 400, title: 'ELO', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'pgnh8KYHVuAi8LP2aqe02furPECSSxx6w4YzqELBA3Vw', duration: 1951, title: 'Aguatierra — Centro de demostración', slug: '', type: 'other', year: 2024, onTV: true },
   { id: 'J3XiOpt01f3wl2U003K9CMFhfkegXaa1fE6ksTn01sI4Nc', duration: 942, title: 'Aguatierra — Recorrido Tren Tren', slug: '', type: 'other', year: 2024, onTV: true },
-  { id: 'YAuxwlUEKPg2PZ4UTXmJh6fl21nmd6mZYt7fsp02vQS4', duration: 239, title: 'ARTE - ODELaR 2-11', slug: '', type: 'other', year: 2026, onTV: true },
   
 
   // ── SINCRONIZADO DESDE MUX (2026-09-08) ────────────────────
@@ -177,6 +178,7 @@ const CONTENT_SOURCE = [
   { id: '00Q01vS01Gq6AVeh8BpZtr01drAKZeyRM9lXOZ7qt7t5hSI', duration: 527.6194888888889, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'yuhrH9kKyhAFks02wADp5s6ilPBdNTOCR8DPCWZf1Dfg', duration: 261.0569222222222, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true },
   { id: 'M00TY2CGCrZwW2KJu012sRVVRLyng00qIPB7018VA5zZm00M', duration: 11014, title: 'Masterclass de Streaming — Juan Manuel Cafferata (TOXI University)', slug: '', type: 'other', year: 2024, onTV: true },
+
 ];
 
 const getCollections = (video) => [
