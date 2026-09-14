@@ -101,6 +101,7 @@ export default defineConfig({
         turingAdmin: resolve(__dirname, 'turing-admin.html'),
         turing: resolve(__dirname, 'turing.html'),
         weWillRockYou: resolve(__dirname, 'we-will-rock-you.html'),
+        print: resolve(__dirname, 'print.html'),
       },
     },
   },
