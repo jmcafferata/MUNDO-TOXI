@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>TOXI PRINT</title>
+    <meta property="og:title" content="TOXI PRINT" />
+    <meta property="og:description" content="Transmisión en vivo de la impresora 3D en TOXI Media." />
+    <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+    <link rel="icon" href="/favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <script>
+        // Inicializar Cast SDK con receiver personalizado antes de que mux-player lo use
+        window['__onGCastApiAvailable'] = function(isAvailable) {
+            if (isAvailable) {
+                cast.framework.CastContext.getInstance().setOptions({
+                    receiverApplicationId: 'B668F863',
+                    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                });
+            }
+        };
+    </script>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        header {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        .logo-link {
+            pointer-events: all;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+            text-decoration: none;
+        }
+        .logo-link:hover { opacity: 1; }
+        .logo-link img { height: 22px; }
+
+        .tv-badge {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.5);
+        }
+        .tv-dot { width: 7px; height: 7px; border-radius: 50%; background: #f33; opacity: 0.9; }
+        .tv-badge.is-offline .tv-dot { background: #fff; opacity: 0.5; }
+
+        #player-wrap {
+            flex: 1;
+            position: relative;
+            background: #000;
+        }
+
+        mux-player {
+            width: 100%; height: 100%;
+            position: absolute; inset: 0;
+            z-index: 5;
+            --media-object-fit: contain;
+            --media-background-color: #000;
+            --media-primary-color: #fff;
+            --media-accent-color: #fff;
+            --media-secondary-color: #000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        mux-player.is-active { opacity: 1; }
+
+        /* Oculta el flash del ícono central de play/pausa que muestra mux-player al cambiar de estado */
+        mux-player::part(center-controls),
+        mux-player::part(centered-layer),
+        mux-player::part(play-button) { display: none !important; }
+
+        #cast-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 20;
+            width: 28px;
+            height: 28px;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            pointer-events: all;
+            transition: color 0.2s;
+        }
+        #cast-btn:hover { color: #fff; }
+
+        #pip-wrap {
+            position: absolute;
+            z-index: 15;
+            width: 200px;
+            height: 112.5px;
+            min-width: 120px;
+            min-height: 67.5px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.15);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            cursor: move;
+            touch-action: none;
+        }
+        #pip-wrap.visible { opacity: 1; }
+        #pip-wrap.dragging, #pip-wrap.resizing { transition: none; }
+        #pip-wrap mux-player {
+            width: 100%; height: 100%;
+            position: absolute; inset: 0;
+            z-index: 5;
+            --media-object-fit: cover;
+            --media-background-color: #000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #pip-wrap mux-player.is-active { opacity: 1; z-index: 6; }
+
+        #pip-resize-handle {
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 16px; height: 16px;
+            z-index: 20;
+            cursor: nwse-resize;
+            touch-action: none;
+        }
+        #pip-resize-handle::after {
+            content: '';
+            position: absolute;
+            bottom: 3px; right: 3px;
+            width: 7px; height: 7px;
+            border-right: 2px solid rgba(255,255,255,0.5);
+            border-bottom: 2px solid rgba(255,255,255,0.5);
+        }
+
+        #offline-screen {
+            position: absolute; inset: 0;
+            z-index: 8;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #000;
+        }
+        #offline-screen.visible { display: flex; }
+        .offline-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.2em; opacity: 0.3; }
+        .offline-sub { font-size: 0.65rem; letter-spacing: 0.1em; opacity: 0.22; }
+
+        #clock { font-size: 0.65rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.38); font-variant-numeric: tabular-nums; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="logo-link" href="/"><img src="/toxi-logo-white.png" alt="TOXI Media" /></a>
+        <div class="tv-badge" id="tv-badge"><span class="tv-dot"></span><span id="clock">--:--</span></div>
+    </header>
+
+    <div id="player-wrap">
+        <mux-player id="mux-player" stream-type="live" playback-id="88Q4rrjSC02i9XhjZvsYW8on7AAwlv8E6U5cZWTrO5Es" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+        <google-cast-launcher id="cast-btn" title="Chromecast"></google-cast-launcher>
+        <div id="pip-wrap">
+            <mux-player id="pip-player-a" class="is-active" stream-type="on-demand" preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+            <mux-player id="pip-player-b" stream-type="on-demand" preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+            <div id="pip-resize-handle"></div>
+        </div>
+        <div id="offline-screen">
+            <div class="offline-title">Sin señal</div>
+            <div class="offline-sub">La transmisión en vivo no está disponible en este momento</div>
+        </div>
+    </div>
+
+    <script type="module" src="./src/analytics.js"></script>
+    <script type="module">
+        import { TV_PLAYLIST } from './src/content.js';
+
+        const PIP_PLAYLIST     = TV_PLAYLIST.map(v => ({ id: v.id, duration: v.duration, title: v.title }));
+        const PIP_SWITCH_SECS  = 8;
+        const pipWrap          = document.getElementById('pip-wrap');
+        const pipPlayers       = [document.getElementById('pip-player-a'), document.getElementById('pip-player-b')];
+        let pipActiveSlot      = 0;
+        let pipCurrentIndex    = -1;
+        let pipNextState       = null;
+        let pipSwitchTimeout   = null;
+        let pipSeekGuard       = [false, false];
+
+        function pipPickState(excludeIndex) {
+            let idx;
+            do { idx = Math.floor(Math.random() * PIP_PLAYLIST.length); }
+            while (PIP_PLAYLIST.length > 1 && idx === excludeIndex);
+            const video     = PIP_PLAYLIST[idx];
+            const maxOffset = Math.max(0, video.duration - PIP_SWITCH_SECS - 1);
+            const offset    = Math.random() * maxOffset;
+            return { video, offset, index: idx };
+        }
+
+        // Precarga el siguiente clip en el slot oculto y lo deja pausado en su offset (silenciado porque aún no se ve/oye)
+        function pipPreloadNext(excludeIndex) {
+            pipNextState = pipPickState(excludeIndex);
+            const slot = 1 - pipActiveSlot;
+            const p    = pipPlayers[slot];
+            p.muted    = true;
+            p.setAttribute('playback-id', pipNextState.video.id);
+            const onMeta = () => {
+                pipSeekGuard[slot] = true;
+                p.currentTime      = pipNextState.offset;
+                pipSeekGuard[slot] = false;
+                p.pause();
+                p.removeEventListener('loadedmetadata', onMeta);
+            };
+            p.addEventListener('loadedmetadata', onMeta);
+        }
+
+        // Reintenta con audio ante el primer gesto del usuario si el navegador bloqueó el autoplay sonoro
+        function pipPlayWithAudio(p) {
+            p.muted  = false;
+            p.volume = 1;
+            p.play().catch(() => {
+                p.muted = true;
+                p.play().catch(() => {});
+                const unmuteOnGesture = () => {
+                    p.muted = false;
+                    p.play().catch(() => {});
+                    document.removeEventListener('click', unmuteOnGesture);
+                    document.removeEventListener('keydown', unmuteOnGesture);
+                };
+                document.addEventListener('click', unmuteOnGesture, { once: true });
+                document.addEventListener('keydown', unmuteOnGesture, { once: true });
+            });
+        }
+
+        function pipZap() {
+            clearTimeout(pipSwitchTimeout);
+
+            const wasPreloaded = !!pipNextState;
+            const state    = pipNextState || pipPickState(pipCurrentIndex);
+            const newSlot  = 1 - pipActiveSlot;
+            const oldSlot  = pipActiveSlot;
+            const newP     = pipPlayers[newSlot];
+            const oldP     = pipPlayers[oldSlot];
+
+            newP.classList.add('is-active');
+            oldP.classList.remove('is-active');
+            pipActiveSlot   = newSlot;
+            pipCurrentIndex = state.index;
+            pipNextState    = null;
+            oldP.muted      = true;
+
+            if (wasPreloaded) {
+                pipPlayWithAudio(newP);
+            } else {
+                newP.setAttribute('playback-id', state.video.id);
+                const onMeta = () => {
+                    pipSeekGuard[newSlot] = true;
+                    newP.currentTime      = state.offset;
+                    pipSeekGuard[newSlot] = false;
+                    pipPlayWithAudio(newP);
+                    newP.removeEventListener('loadedmetadata', onMeta);
+                };
+                newP.addEventListener('loadedmetadata', onMeta);
+            }
+
+            pipSwitchTimeout = setTimeout(pipZap, PIP_SWITCH_SECS * 1000);
+            // Dar tiempo a que el swap actual termine antes de precargar el próximo
+            setTimeout(() => pipPreloadNext(pipCurrentIndex), 1500);
+        }
+
+        pipPlayers.forEach((p, slot) => {
+            p.addEventListener('ended', () => {
+                if (slot !== pipActiveSlot) return;
+                clearTimeout(pipSwitchTimeout); pipZap();
+            });
+            p.addEventListener('playing', () => {
+                if (slot !== pipActiveSlot) return;
+                pipWrap.classList.add('visible');
+            });
+        });
+
+        if (PIP_PLAYLIST.length) {
+            pipZap();
+        }
+
+        // ── Drag & resize del PiP ─────────────────────────────
+        (function setupPipDragResize() {
+            const MARGIN = 16;
+            const rect0  = pipWrap.getBoundingClientRect();
+            pipWrap.style.left = (window.innerWidth  - rect0.width  - 20) + 'px';
+            pipWrap.style.top  = (window.innerHeight - rect0.height - 64) + 'px';
+
+            function clampPosition() {
+                const r = pipWrap.getBoundingClientRect();
+                const maxLeft = window.innerWidth  - r.width  - MARGIN;
+                const maxTop  = window.innerHeight - r.height - MARGIN;
+                const left = Math.min(Math.max(MARGIN, parseFloat(pipWrap.style.left)), Math.max(MARGIN, maxLeft));
+                const top  = Math.min(Math.max(MARGIN, parseFloat(pipWrap.style.top)),  Math.max(MARGIN, maxTop));
+                pipWrap.style.left = left + 'px';
+                pipWrap.style.top  = top + 'px';
+            }
+            clampPosition();
+            window.addEventListener('resize', clampPosition);
+
+            let dragging = false, dragStartX = 0, dragStartY = 0, startLeft = 0, startTop = 0;
+
+            pipWrap.addEventListener('pointerdown', (e) => {
+                if (e.target.id === 'pip-resize-handle') return;
+                dragging   = true;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                startLeft  = pipWrap.offsetLeft;
+                startTop   = pipWrap.offsetTop;
+                pipWrap.classList.add('dragging');
+                pipWrap.setPointerCapture(e.pointerId);
+            });
+            pipWrap.addEventListener('pointermove', (e) => {
+                if (!dragging) return;
+                pipWrap.style.left = (startLeft + (e.clientX - dragStartX)) + 'px';
+                pipWrap.style.top  = (startTop  + (e.clientY - dragStartY)) + 'px';
+            });
+            pipWrap.addEventListener('pointerup', (e) => {
+                if (!dragging) return;
+                dragging = false;
+                pipWrap.classList.remove('dragging');
+                pipWrap.releasePointerCapture(e.pointerId);
+                clampPosition();
+            });
+
+            const handle = document.getElementById('pip-resize-handle');
+            let resizing = false, resizeStartX = 0, startWidth = 0;
+
+            handle.addEventListener('pointerdown', (e) => {
+                e.stopPropagation();
+                resizing     = true;
+                resizeStartX = e.clientX;
+                startWidth   = pipWrap.offsetWidth;
+                pipWrap.classList.add('resizing');
+                handle.setPointerCapture(e.pointerId);
+            });
+            handle.addEventListener('pointermove', (e) => {
+                if (!resizing) return;
+                const newWidth = Math.max(120, Math.min(window.innerWidth - 40, startWidth + (e.clientX - resizeStartX)));
+                pipWrap.style.width  = newWidth + 'px';
+                pipWrap.style.height = (newWidth * 9 / 16) + 'px';
+            });
+            handle.addEventListener('pointerup', (e) => {
+                if (!resizing) return;
+                resizing = false;
+                pipWrap.classList.remove('resizing');
+                handle.releasePointerCapture(e.pointerId);
+                clampPosition();
+            });
+        })();
+
+        const player   = document.getElementById('mux-player');
+        const clockEl  = document.getElementById('clock');
+        const badgeEl  = document.getElementById('tv-badge');
+        const offline  = document.getElementById('offline-screen');
+
+        function formatAR(date) {
+            const d = new Date(date.getTime() - 3 * 60 * 60 * 1000);
+            return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+        }
+
+        function updateClock() {
+            clockEl.textContent = formatAR(new Date());
+        }
+
+        function setOffline(isOffline) {
+            offline.classList.toggle('visible', isOffline);
+            player.classList.toggle('is-active', !isOffline);
+            badgeEl.classList.toggle('is-offline', isOffline);
+        }
+
+        player.addEventListener('playing', () => setOffline(false));
+        player.addEventListener('error', () => setOffline(true));
+        player.addEventListener('stalled', () => setOffline(true));
+
+        player.addEventListener('pause', () => {
+            if (document.hidden) return;
+            player.play().catch(() => {});
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                player.play().catch(() => {});
+            }
+        });
+
+        // Reintenta la conexión periódicamente cuando el stream está offline
+        setInterval(() => {
+            if (offline.classList.contains('visible')) {
+                player.load();
+                player.play().catch(() => {});
+            }
+        }, 15000);
+
+        updateClock();
+        setInterval(updateClock, 10000);
+
+        player.muted = true;
+        player.play().catch(() => setOffline(true));
+    </script>
+
+</body>
+</html>
