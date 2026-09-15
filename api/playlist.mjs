@@ -241,6 +241,7 @@ const PLAYLIST_SOURCE = [
   { id: 'J3XiOpt01f3wl2U003K9CMFhfkegXaa1fE6ksTn01sI4Nc',      duration: 942,      title: 'Aguatierra — Recorrido Tren Tren' },
   { id: 'YAuxwlUEKPg2PZ4UTXmJh6fl21nmd6mZYt7fsp02vQS4',      duration: 239,      title: 'ARTE - ODELaR 2-11' },
   { id: 'QeD01l6eM5kdxSsYOdZQlcTjevR00AEwbDsD1CU4OxN8U',     duration: 276,      title: 'Cartas para Usted — Odelar 2-12' },
+  { id: 'g2eZPBH3NFC0200PPn6G300KXzwEsAxO00dsjCwpoYNpOpg',   duration: 330,      title: 'TOXI MEDIA NOTICIAS — Ley de financiamiento universitario con Renato Brandán' },
 ];
 
 // Fusiona las versiones técnica y editorial sin repetir contenidos por playback ID.
