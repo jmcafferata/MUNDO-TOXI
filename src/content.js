@@ -178,6 +178,7 @@ const CONTENT_SOURCE = [
   { id: '00Q01vS01Gq6AVeh8BpZtr01drAKZeyRM9lXOZ7qt7t5hSI', duration: 527.6194888888889, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true, collections: [] },
   { id: 'yuhrH9kKyhAFks02wADp5s6ilPBdNTOCR8DPCWZf1Dfg', duration: 261.0569222222222, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true, collections: [] },
   { id: 'M00TY2CGCrZwW2KJu012sRVVRLyng00qIPB7018VA5zZm00M', duration: 11014, title: 'Masterclass de Streaming — Juan Manuel Cafferata (TOXI University)', slug: '', type: 'other', year: 2024, onTV: true, collections: ['toxi-streaming', 'toxi-university'] },
+  { id: 'g2eZPBH3NFC0200PPn6G300KXzwEsAxO00dsjCwpoYNpOpg', duration: 330, title: 'TOXI MEDIA NOTICIAS — Ley de financiamiento universitario con Renato Brandán', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-noticias'] },
 
 ];
 
