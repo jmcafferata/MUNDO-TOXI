@@ -87,6 +87,11 @@
         }
         mux-player.is-active { opacity: 1; }
 
+        /* Oculta el flash del ícono central de play/pausa que muestra mux-player al cambiar de estado */
+        mux-player::part(center-controls),
+        mux-player::part(centered-layer),
+        mux-player::part(play-button) { display: none !important; }
+
         #cast-btn {
             position: absolute;
             bottom: 20px;
@@ -193,7 +198,7 @@
         import { TV_PLAYLIST } from './src/content.js';
 
         const PIP_PLAYLIST     = TV_PLAYLIST.map(v => ({ id: v.id, duration: v.duration, title: v.title }));
-        const PIP_SWITCH_SECS  = 6;
+        const PIP_SWITCH_SECS  = 8;
         const pipWrap          = document.getElementById('pip-wrap');
         const pipPlayers       = [document.getElementById('pip-player-a'), document.getElementById('pip-player-b')];
         let pipActiveSlot      = 0;
