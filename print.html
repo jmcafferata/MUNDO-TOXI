@@ -103,11 +103,11 @@
 
         #pip-wrap {
             position: absolute;
-            bottom: 64px;
-            right: 20px;
             z-index: 15;
             width: 200px;
-            aspect-ratio: 16 / 9;
+            height: 112.5px;
+            min-width: 120px;
+            min-height: 67.5px;
             border-radius: 6px;
             overflow: hidden;
             background: #000;
@@ -115,8 +115,11 @@
             border: 1px solid rgba(255,255,255,0.15);
             opacity: 0;
             transition: opacity 0.4s ease;
+            cursor: move;
+            touch-action: none;
         }
         #pip-wrap.visible { opacity: 1; }
+        #pip-wrap.dragging, #pip-wrap.resizing { transition: none; }
         #pip-wrap mux-player {
             width: 100%; height: 100%;
             position: absolute; inset: 0;
@@ -128,6 +131,23 @@
             transition: opacity 0.3s ease;
         }
         #pip-wrap mux-player.is-active { opacity: 1; z-index: 6; }
+
+        #pip-resize-handle {
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 16px; height: 16px;
+            z-index: 20;
+            cursor: nwse-resize;
+            touch-action: none;
+        }
+        #pip-resize-handle::after {
+            content: '';
+            position: absolute;
+            bottom: 3px; right: 3px;
+            width: 7px; height: 7px;
+            border-right: 2px solid rgba(255,255,255,0.5);
+            border-bottom: 2px solid rgba(255,255,255,0.5);
+        }
 
         #offline-screen {
             position: absolute; inset: 0;
@@ -158,8 +178,9 @@
         <mux-player id="mux-player" stream-type="live" playback-id="88Q4rrjSC02i9XhjZvsYW8on7AAwlv8E6U5cZWTrO5Es" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
         <google-cast-launcher id="cast-btn" title="Chromecast"></google-cast-launcher>
         <div id="pip-wrap">
-            <mux-player id="pip-player-a" class="is-active" stream-type="on-demand" muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
-            <mux-player id="pip-player-b" stream-type="on-demand" muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+            <mux-player id="pip-player-a" class="is-active" stream-type="on-demand" preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+            <mux-player id="pip-player-b" stream-type="on-demand" preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+            <div id="pip-resize-handle"></div>
         </div>
         <div id="offline-screen">
             <div class="offline-title">Sin señal</div>
@@ -191,7 +212,7 @@
             return { video, offset, index: idx };
         }
 
-        // Precarga el siguiente clip en el slot oculto y lo deja pausado en su offset
+        // Precarga el siguiente clip en el slot oculto y lo deja pausado en su offset (silenciado porque aún no se ve/oye)
         function pipPreloadNext(excludeIndex) {
             pipNextState = pipPickState(excludeIndex);
             const slot = 1 - pipActiveSlot;
@@ -206,6 +227,24 @@
                 p.removeEventListener('loadedmetadata', onMeta);
             };
             p.addEventListener('loadedmetadata', onMeta);
+        }
+
+        // Reintenta con audio ante el primer gesto del usuario si el navegador bloqueó el autoplay sonoro
+        function pipPlayWithAudio(p) {
+            p.muted  = false;
+            p.volume = 1;
+            p.play().catch(() => {
+                p.muted = true;
+                p.play().catch(() => {});
+                const unmuteOnGesture = () => {
+                    p.muted = false;
+                    p.play().catch(() => {});
+                    document.removeEventListener('click', unmuteOnGesture);
+                    document.removeEventListener('keydown', unmuteOnGesture);
+                };
+                document.addEventListener('click', unmuteOnGesture, { once: true });
+                document.addEventListener('keydown', unmuteOnGesture, { once: true });
+            });
         }
 
         function pipZap() {
@@ -223,16 +262,17 @@
             pipActiveSlot   = newSlot;
             pipCurrentIndex = state.index;
             pipNextState    = null;
+            oldP.muted      = true;
 
             if (wasPreloaded) {
-                newP.play().catch(() => {});
+                pipPlayWithAudio(newP);
             } else {
                 newP.setAttribute('playback-id', state.video.id);
                 const onMeta = () => {
                     pipSeekGuard[newSlot] = true;
                     newP.currentTime      = state.offset;
                     pipSeekGuard[newSlot] = false;
-                    newP.play().catch(() => {});
+                    pipPlayWithAudio(newP);
                     newP.removeEventListener('loadedmetadata', onMeta);
                 };
                 newP.addEventListener('loadedmetadata', onMeta);
@@ -257,6 +297,76 @@
         if (PIP_PLAYLIST.length) {
             pipZap();
         }
+
+        // ── Drag & resize del PiP ─────────────────────────────
+        (function setupPipDragResize() {
+            const MARGIN = 16;
+            const rect0  = pipWrap.getBoundingClientRect();
+            pipWrap.style.left = (window.innerWidth  - rect0.width  - 20) + 'px';
+            pipWrap.style.top  = (window.innerHeight - rect0.height - 64) + 'px';
+
+            function clampPosition() {
+                const r = pipWrap.getBoundingClientRect();
+                const maxLeft = window.innerWidth  - r.width  - MARGIN;
+                const maxTop  = window.innerHeight - r.height - MARGIN;
+                const left = Math.min(Math.max(MARGIN, parseFloat(pipWrap.style.left)), Math.max(MARGIN, maxLeft));
+                const top  = Math.min(Math.max(MARGIN, parseFloat(pipWrap.style.top)),  Math.max(MARGIN, maxTop));
+                pipWrap.style.left = left + 'px';
+                pipWrap.style.top  = top + 'px';
+            }
+            clampPosition();
+            window.addEventListener('resize', clampPosition);
+
+            let dragging = false, dragStartX = 0, dragStartY = 0, startLeft = 0, startTop = 0;
+
+            pipWrap.addEventListener('pointerdown', (e) => {
+                if (e.target.id === 'pip-resize-handle') return;
+                dragging   = true;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                startLeft  = pipWrap.offsetLeft;
+                startTop   = pipWrap.offsetTop;
+                pipWrap.classList.add('dragging');
+                pipWrap.setPointerCapture(e.pointerId);
+            });
+            pipWrap.addEventListener('pointermove', (e) => {
+                if (!dragging) return;
+                pipWrap.style.left = (startLeft + (e.clientX - dragStartX)) + 'px';
+                pipWrap.style.top  = (startTop  + (e.clientY - dragStartY)) + 'px';
+            });
+            pipWrap.addEventListener('pointerup', (e) => {
+                if (!dragging) return;
+                dragging = false;
+                pipWrap.classList.remove('dragging');
+                pipWrap.releasePointerCapture(e.pointerId);
+                clampPosition();
+            });
+
+            const handle = document.getElementById('pip-resize-handle');
+            let resizing = false, resizeStartX = 0, startWidth = 0;
+
+            handle.addEventListener('pointerdown', (e) => {
+                e.stopPropagation();
+                resizing     = true;
+                resizeStartX = e.clientX;
+                startWidth   = pipWrap.offsetWidth;
+                pipWrap.classList.add('resizing');
+                handle.setPointerCapture(e.pointerId);
+            });
+            handle.addEventListener('pointermove', (e) => {
+                if (!resizing) return;
+                const newWidth = Math.max(120, Math.min(window.innerWidth - 40, startWidth + (e.clientX - resizeStartX)));
+                pipWrap.style.width  = newWidth + 'px';
+                pipWrap.style.height = (newWidth * 9 / 16) + 'px';
+            });
+            handle.addEventListener('pointerup', (e) => {
+                if (!resizing) return;
+                resizing = false;
+                pipWrap.classList.remove('resizing');
+                handle.releasePointerCapture(e.pointerId);
+                clampPosition();
+            });
+        })();
 
         const player   = document.getElementById('mux-player');
         const clockEl  = document.getElementById('clock');
