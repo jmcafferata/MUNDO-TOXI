@@ -986,6 +986,17 @@
                 accent-color="#ffffff" controls playsinline></mux-player>
         </section>
 
+        <section class="free-sample" aria-labelledby="props-class-title">
+            <p class="free-sample-label">Clase práctica · Props I · Parte <span id="props-part-num">1</span> de 2
+            </p>
+            <h2 id="props-class-title">Introducción al modelado de props I — Nacho Michalowicz</h2>
+            <p style="color:rgba(255,255,255,.65);font-weight:300;line-height:1.5;margin:0 0 1.25rem;">Clase práctica
+                sobre introducción al modelado de props, a cargo de Nacho Michalowicz.</p>
+            <mux-player id="props-player" playback-id="fKc8AjRvu4tkLDpQJnDgl00wGInHCZfPI7xKKSmLv7fI"
+                metadata-video-title="Introducción al modelado de props I con Nacho Michalowicz 01 (TOXI VR)"
+                accent-color="#ffffff" controls playsinline></mux-player>
+        </section>
+
         <section class="free-sample" aria-labelledby="texturing-class-title">
             <p class="free-sample-label">Clase práctica en vivo · Parte <span id="texturing-part-num">1</span> de 5
             </p>
@@ -1096,6 +1107,21 @@
             practicalPlayer.setAttribute('playback-id', practicalPlaylist[practicalIndex]);
             practicalPlayer.setAttribute('metadata-video-title', `Introducción al modelado — Parte ${practicalIndex + 1} (TOXI VR)`);
             practicalPlayer.play();
+        });
+
+        const propsPlaylist = [
+            'fKc8AjRvu4tkLDpQJnDgl00wGInHCZfPI7xKKSmLv7fI',
+            'ZnAhLHegHRllw8eEvvAcgMBuAh5dRjP8UOgAC6u02GBo'
+        ];
+        let propsIndex = 0;
+        const propsPlayer = document.getElementById('props-player');
+        const propsPartNum = document.getElementById('props-part-num');
+        propsPlayer.addEventListener('ended', () => {
+            propsIndex = (propsIndex + 1) % propsPlaylist.length;
+            propsPartNum.textContent = propsIndex + 1;
+            propsPlayer.setAttribute('playback-id', propsPlaylist[propsIndex]);
+            propsPlayer.setAttribute('metadata-video-title', `Introducción al modelado de props I con Nacho Michalowicz ${String(propsIndex + 1).padStart(2, '0')} (TOXI VR)`);
+            propsPlayer.play();
         });
 
         const texturingPlaylist = [
