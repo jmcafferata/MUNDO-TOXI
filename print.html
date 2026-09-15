@@ -101,6 +101,34 @@
         }
         #cast-btn:hover { color: #fff; }
 
+        #pip-wrap {
+            position: absolute;
+            bottom: 64px;
+            right: 20px;
+            z-index: 15;
+            width: 200px;
+            aspect-ratio: 16 / 9;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.15);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #pip-wrap.visible { opacity: 1; }
+        #pip-wrap mux-player {
+            width: 100%; height: 100%;
+            position: absolute; inset: 0;
+            z-index: 5;
+            --media-object-fit: cover;
+            --media-background-color: #000;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        #pip-wrap mux-player.is-active { opacity: 1; z-index: 6; }
+
         #offline-screen {
             position: absolute; inset: 0;
             z-index: 8;
@@ -129,6 +157,10 @@
     <div id="player-wrap">
         <mux-player id="mux-player" stream-type="live" playback-id="88Q4rrjSC02i9XhjZvsYW8on7AAwlv8E6U5cZWTrO5Es" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
         <google-cast-launcher id="cast-btn" title="Chromecast"></google-cast-launcher>
+        <div id="pip-wrap">
+            <mux-player id="pip-player-a" class="is-active" stream-type="on-demand" muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+            <mux-player id="pip-player-b" stream-type="on-demand" muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+        </div>
         <div id="offline-screen">
             <div class="offline-title">Sin señal</div>
             <div class="offline-sub">La transmisión en vivo no está disponible en este momento</div>
@@ -137,6 +169,95 @@
 
     <script type="module" src="./src/analytics.js"></script>
     <script type="module">
+        import { TV_PLAYLIST } from './src/content.js';
+
+        const PIP_PLAYLIST     = TV_PLAYLIST.map(v => ({ id: v.id, duration: v.duration, title: v.title }));
+        const PIP_SWITCH_SECS  = 6;
+        const pipWrap          = document.getElementById('pip-wrap');
+        const pipPlayers       = [document.getElementById('pip-player-a'), document.getElementById('pip-player-b')];
+        let pipActiveSlot      = 0;
+        let pipCurrentIndex    = -1;
+        let pipNextState       = null;
+        let pipSwitchTimeout   = null;
+        let pipSeekGuard       = [false, false];
+
+        function pipPickState(excludeIndex) {
+            let idx;
+            do { idx = Math.floor(Math.random() * PIP_PLAYLIST.length); }
+            while (PIP_PLAYLIST.length > 1 && idx === excludeIndex);
+            const video     = PIP_PLAYLIST[idx];
+            const maxOffset = Math.max(0, video.duration - PIP_SWITCH_SECS - 1);
+            const offset    = Math.random() * maxOffset;
+            return { video, offset, index: idx };
+        }
+
+        // Precarga el siguiente clip en el slot oculto y lo deja pausado en su offset
+        function pipPreloadNext(excludeIndex) {
+            pipNextState = pipPickState(excludeIndex);
+            const slot = 1 - pipActiveSlot;
+            const p    = pipPlayers[slot];
+            p.muted    = true;
+            p.setAttribute('playback-id', pipNextState.video.id);
+            const onMeta = () => {
+                pipSeekGuard[slot] = true;
+                p.currentTime      = pipNextState.offset;
+                pipSeekGuard[slot] = false;
+                p.pause();
+                p.removeEventListener('loadedmetadata', onMeta);
+            };
+            p.addEventListener('loadedmetadata', onMeta);
+        }
+
+        function pipZap() {
+            clearTimeout(pipSwitchTimeout);
+
+            const wasPreloaded = !!pipNextState;
+            const state    = pipNextState || pipPickState(pipCurrentIndex);
+            const newSlot  = 1 - pipActiveSlot;
+            const oldSlot  = pipActiveSlot;
+            const newP     = pipPlayers[newSlot];
+            const oldP     = pipPlayers[oldSlot];
+
+            newP.classList.add('is-active');
+            oldP.classList.remove('is-active');
+            pipActiveSlot   = newSlot;
+            pipCurrentIndex = state.index;
+            pipNextState    = null;
+
+            if (wasPreloaded) {
+                newP.play().catch(() => {});
+            } else {
+                newP.setAttribute('playback-id', state.video.id);
+                const onMeta = () => {
+                    pipSeekGuard[newSlot] = true;
+                    newP.currentTime      = state.offset;
+                    pipSeekGuard[newSlot] = false;
+                    newP.play().catch(() => {});
+                    newP.removeEventListener('loadedmetadata', onMeta);
+                };
+                newP.addEventListener('loadedmetadata', onMeta);
+            }
+
+            pipSwitchTimeout = setTimeout(pipZap, PIP_SWITCH_SECS * 1000);
+            // Dar tiempo a que el swap actual termine antes de precargar el próximo
+            setTimeout(() => pipPreloadNext(pipCurrentIndex), 1500);
+        }
+
+        pipPlayers.forEach((p, slot) => {
+            p.addEventListener('ended', () => {
+                if (slot !== pipActiveSlot) return;
+                clearTimeout(pipSwitchTimeout); pipZap();
+            });
+            p.addEventListener('playing', () => {
+                if (slot !== pipActiveSlot) return;
+                pipWrap.classList.add('visible');
+            });
+        });
+
+        if (PIP_PLAYLIST.length) {
+            pipZap();
+        }
+
         const player   = document.getElementById('mux-player');
         const clockEl  = document.getElementById('clock');
         const badgeEl  = document.getElementById('tv-badge');
