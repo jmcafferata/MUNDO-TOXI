@@ -9,18 +9,6 @@
     <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
     <link rel="icon" href="/favicon.ico" />
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
-    <script>
-        // Inicializar Cast SDK con receiver personalizado antes de que mux-player lo use
-        window['__onGCastApiAvailable'] = function(isAvailable) {
-            if (isAvailable) {
-                cast.framework.CastContext.getInstance().setOptions({
-                    receiverApplicationId: 'B668F863',
-                    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
-                });
-            }
-        };
-    </script>
-    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -73,38 +61,11 @@
             background: #000;
         }
 
-        mux-player {
+        #live-player {
             width: 100%; height: 100%;
             position: absolute; inset: 0;
             z-index: 5;
-            --media-object-fit: contain;
-            --media-background-color: #000;
-            --media-primary-color: #fff;
-            --media-accent-color: #fff;
-            --media-secondary-color: #000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
-        mux-player.is-active { opacity: 1; }
-
-        /* Oculta el flash del ícono central de play/pausa que muestra mux-player al cambiar de estado */
-        mux-player::part(center-controls),
-        mux-player::part(centered-layer),
-        mux-player::part(play-button) { display: none !important; }
-
-        #cast-btn {
-            position: absolute;
-            bottom: 20px;
-            right: 24px;
-            z-index: 20;
-            width: 28px;
-            height: 28px;
-            color: rgba(255,255,255,0.55);
-            cursor: pointer;
-            pointer-events: all;
-            transition: color 0.2s;
-        }
-        #cast-btn:hover { color: #fff; }
 
         #pip-wrap {
             position: absolute;
@@ -180,8 +141,7 @@
     </header>
 
     <div id="player-wrap">
-        <mux-player id="mux-player" stream-type="live" playback-id="88Q4rrjSC02i9XhjZvsYW8on7AAwlv8E6U5cZWTrO5Es" autoplay muted preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
-        <google-cast-launcher id="cast-btn" title="Chromecast"></google-cast-launcher>
+        <iframe id="live-player" src="https://www.youtube.com/embed/hhy9XCpPjEY?autoplay=1&mute=1&playsinline=1" title="TOXI PRINT en vivo" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
         <div id="pip-wrap">
             <mux-player id="pip-player-a" class="is-active" stream-type="on-demand" preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
             <mux-player id="pip-player-b" stream-type="on-demand" preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
@@ -373,10 +333,7 @@
             });
         })();
 
-        const player   = document.getElementById('mux-player');
         const clockEl  = document.getElementById('clock');
-        const badgeEl  = document.getElementById('tv-badge');
-        const offline  = document.getElementById('offline-screen');
 
         function formatAR(date) {
             const d = new Date(date.getTime() - 3 * 60 * 60 * 1000);
@@ -387,40 +344,8 @@
             clockEl.textContent = formatAR(new Date());
         }
 
-        function setOffline(isOffline) {
-            offline.classList.toggle('visible', isOffline);
-            player.classList.toggle('is-active', !isOffline);
-            badgeEl.classList.toggle('is-offline', isOffline);
-        }
-
-        player.addEventListener('playing', () => setOffline(false));
-        player.addEventListener('error', () => setOffline(true));
-        player.addEventListener('stalled', () => setOffline(true));
-
-        player.addEventListener('pause', () => {
-            if (document.hidden) return;
-            player.play().catch(() => {});
-        });
-
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-                player.play().catch(() => {});
-            }
-        });
-
-        // Reintenta la conexión periódicamente cuando el stream está offline
-        setInterval(() => {
-            if (offline.classList.contains('visible')) {
-                player.load();
-                player.play().catch(() => {});
-            }
-        }, 15000);
-
         updateClock();
         setInterval(updateClock, 10000);
-
-        player.muted = true;
-        player.play().catch(() => setOffline(true));
     </script>
 
 </body>
