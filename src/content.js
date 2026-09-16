@@ -132,6 +132,8 @@ const CONTENT_SOURCE = [
   { id: 'JgQ4jJgRFCl6H029viZJxKYum6wa3uHWfCZ4FIxSkCNg', duration: 1078.6416666666667, title: 'Introducción al modelado I con Nacho Michalowicz 03 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
   { id: 'pa500VHh00eyZ00A8iNqhx7HRoi02zjNjFhkdttSzeeJWbs', duration: 4309.008333333333, title: 'Introducción al modelado I con Nacho Michalowicz 02 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
   { id: 'e9kTmIKu4eAQkWbw7Y00MhMWAesefg9b7XuQPfHdGwYc', duration: 1240.3083333333334, title: 'Introducción al modelado I con Nacho Michalowicz 01 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
+  { id: 'fKc8AjRvu4tkLDpQJnDgl00wGInHCZfPI7xKKSmLv7fI', duration: 5098, title: 'Introducción al modelado de props I con Nacho Michalowicz 01', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
+  { id: 'ZnAhLHegHRllw8eEvvAcgMBuAh5dRjP8UOgAC6u02GBo', duration: 2241, title: 'Introducción al modelado de props I con Nacho Michalowicz 02', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
   { id: 'pqQQnjfdYl5p9cuBFMr59vsX00JIfJvw9Bo5Q02QBP02ls', duration: 7.716044, title: 'intro_todo_lo_que_pueda_decir', slug: '', type: 'other', year: 2026, onTV: false, collections: [] },
   { id: '3BVE8OnOdAC02iUpm00HshLkRWnR4cQ7kFSaUEQoXR1IM', duration: 2156.154967, title: 'DISEÑO DE ENTORNOS VIRTUALES 00', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
   { id: 'rQxbY62mGq2UQJ00zWRDXiRwBzP2vPZI9LkRLnMg8c5I', duration: 868.785544, title: 'MONIYISUS Navidad 2024', slug: '', type: 'other', year: 2024, onTV: true, collections: ['moniyisus'] },
@@ -178,6 +180,7 @@ const CONTENT_SOURCE = [
   { id: '00Q01vS01Gq6AVeh8BpZtr01drAKZeyRM9lXOZ7qt7t5hSI', duration: 527.6194888888889, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true, collections: [] },
   { id: 'yuhrH9kKyhAFks02wADp5s6ilPBdNTOCR8DPCWZf1Dfg', duration: 261.0569222222222, title: 'Sin título... si lo sabe, escriba a admin@toxi.media', slug: '', type: 'other', year: 2026, onTV: true, collections: [] },
   { id: 'M00TY2CGCrZwW2KJu012sRVVRLyng00qIPB7018VA5zZm00M', duration: 11014, title: 'Masterclass de Streaming — Juan Manuel Cafferata (TOXI University)', slug: '', type: 'other', year: 2024, onTV: true, collections: ['toxi-streaming', 'toxi-university'] },
+  { id: 'g2eZPBH3NFC0200PPn6G300KXzwEsAxO00dsjCwpoYNpOpg', duration: 330, title: 'TOXI MEDIA NOTICIAS — Ley de financiamiento universitario con Renato Brandán', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-noticias'] },
 
 ];
 

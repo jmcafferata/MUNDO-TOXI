@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>TOXI Noticias</title>
+    <meta property="og:title" content="TOXI Noticias" />
+    <meta property="og:description" content="Canal de noticias de TOXI Media." />
+    <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+    <link rel="icon" href="/favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <script>
+        // Inicializar Cast SDK con receiver personalizado antes de que mux-player lo use
+        window['__onGCastApiAvailable'] = function(isAvailable) {
+            if (isAvailable) {
+                cast.framework.CastContext.getInstance().setOptions({
+                    receiverApplicationId: 'B668F863',
+                    autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+                });
+            }
+        };
+    </script>
+    <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            height: 100dvh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        header {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 28px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+            pointer-events: none;
+        }
+        .logo-link {
+            pointer-events: all;
+            opacity: 0.85;
+            transition: opacity 0.2s;
+            text-decoration: none;
+        }
+        .logo-link:hover { opacity: 1; }
+        .logo-link img { height: 22px; }
+
+        .tv-badge {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.5);
+        }
+        .tv-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; opacity: 0.7; }
+
+        #player-wrap {
+            flex: 1;
+            position: relative;
+            background: #000;
+        }
+
+        mux-player {
+            width: 100%; height: 100%;
+            position: absolute; inset: 0;
+            z-index: 5;
+            --media-object-fit: contain;
+            --media-background-color: #000;
+            --media-primary-color: #fff;
+            --media-accent-color: #fff;
+            --media-secondary-color: #000;
+        }
+
+        #cast-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            z-index: 20;
+            width: 28px;
+            height: 28px;
+            color: rgba(255,255,255,0.55);
+            cursor: pointer;
+            pointer-events: all;
+            transition: color 0.2s;
+        }
+        #cast-btn:hover { color: #fff; }
+
+        #clock { font-size: 0.65rem; letter-spacing: 0.1em; color: rgba(255,255,255,0.38); font-variant-numeric: tabular-nums; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="logo-link" href="/"><img src="/toxi-logo-white.png" alt="TOXI Media" /></a>
+        <div class="tv-badge"><span class="tv-dot"></span><span id="clock">--:--</span></div>
+    </header>
+
+    <div id="player-wrap">
+        <mux-player id="mux-player" playback-id="g2eZPBH3NFC0200PPn6G300KXzwEsAxO00dsjCwpoYNpOpg" stream-type="on-demand" autoplay muted loop preload="auto" nohotkeys nopip nocontrols default-hidden-captions></mux-player>
+        <google-cast-launcher id="cast-btn" title="Chromecast"></google-cast-launcher>
+    </div>
+
+    <script type="module" src="./src/analytics.js"></script>
+    <script type="module">
+        const player  = document.getElementById('mux-player');
+        const clockEl = document.getElementById('clock');
+
+        function formatAR(date) {
+            const d = new Date(date.getTime() - 3 * 60 * 60 * 1000);
+            return String(d.getUTCHours()).padStart(2, '0') + ':' + String(d.getUTCMinutes()).padStart(2, '0');
+        }
+
+        function updateClock() {
+            clockEl.textContent = formatAR(new Date());
+        }
+
+        player.addEventListener('pause', () => {
+            if (document.hidden) return;
+            player.play().catch(() => {});
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                player.play().catch(() => {});
+            }
+        });
+
+        updateClock();
+        setInterval(updateClock, 10000);
+        player.play().catch(() => {});
+    </script>
+
+</body>
+</html>
