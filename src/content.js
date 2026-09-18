@@ -92,7 +92,8 @@ export const CONTENT_SOURCE = [
   { id: 'I437DoyKLu84rtSHU6hUBjvJp67Uq00z8fX02qOZERKHc', duration: 421, title: 'Confesiones de Invierno — Otro Día en la Red 2x09', slug: '', type: 'other', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: 'MMUOpgCFyh7aC7nfNz57oXKCJSZqgvHZqWLIdMxhSw00', duration: 324, title: 'Hágalo por su tía - Otro Día en la Red 2x10', slug: '', type: 'other', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: 'YAuxwlUEKPg2PZ4UTXmJh6fl21nmd6mZYt7fsp02vQS4', duration: 239, title: 'Enfréntese — Otro Día en la Red 2x11', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
-  { id: 'QeD01l6eM5kdxSsYOdZQlcTjevR00AEwbDsD1CU4OxN8U', duration: 276, title: 'Cartas para Usted — Otro Día en la Red 2x12', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: 'QeD01l6eM5kdxSsYOdZQlcTjevR00AEwbDsD1CU4OxN8U', duration: 236, title: 'Cartas para Usted — Otro Día en la Red 2x12', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: 'llA8A1EJ02j3ikArgeN9Rp1IFQz2zyN2NVXZZYksYhIo', duration: 276, title: 'Cartas para Usted — Otro Día en la Red 2x13', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   
   // AGRO TOXI
   { id: 'pgnh8KYHVuAi8LP2aqe02furPECSSxx6w4YzqELBA3Vw', duration: 1951, title: 'Aguatierra — Centro de demostración', slug: '', type: 'other', year: 2024, onTV: true, collections: ['agro-toxi'] },
