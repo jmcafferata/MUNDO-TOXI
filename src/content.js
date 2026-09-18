@@ -214,6 +214,8 @@ const CONTENT_SOURCE = [
   { id: 'FctiBhZGGkWzbqihZVSuz6sk17K4zQx8Wx9ptvBPtng', duration: 51.801756, title: 'Trusting Tuan — Ads', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-ads"] },
   { id: 'A7C00eMvcLCbJZDxtz5ehnk8ZoX9D2fuR6DS02fh23rag', duration: 94.127456, title: 'What Show Extreme Baby', slug: '', type: 'other', year: 2026, onTV: true, collections: ["what-show"] },
   { id: '4Wmg5Okb64m926o01t2Ntx1YiaEyfl3Bl7XTgV00p4cos', duration: 85.168422, title: 'What Show El niño salvaje', slug: '', type: 'other', year: 2026, onTV: true, collections: ["what-show"] },
+  { id: 'llA8A1EJ02j3ikArgeN9Rp1IFQz2zyN2NVXZZYksYhIo', duration: 236, title: 'ODELaR 213', slug: '', type: 'other', year: 2026, onTV: true, collections: ["otro-dia-en-la-red"] },
+
 ];
 
 const getCollections = (video) => [
