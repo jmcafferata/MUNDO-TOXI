@@ -652,23 +652,6 @@
 </head>
 <body>
 
-    <!-- Audio de fondo -->
-    <audio id="bg-music" src="/Otro%20d%C3%ADa%20en%20la%20red.mp3" loop preload="auto"></audio>
-    <script>
-        (function () {
-            const audio = document.getElementById('bg-music');
-            if (!audio) return;
-            audio.volume = 0.6;
-            document.addEventListener('click', () => {
-                if (audio.paused) {
-                    audio.play().catch(() => {});
-                } else {
-                    audio.pause();
-                }
-            }, true);
-        })();
-    </script>
-
     <!-- DVD CONTAINER (PANTALLA DE INICIO ESTILO DVD) -->
     <div id="dvd-container">
         <!-- Fondos de video de DVD (Cross-fading) -->
@@ -1137,8 +1120,6 @@
 
         function playEpisode(id) {
             stopDvdBackground(); // Asegurarnos de pausar videos de fondo
-            const bgMusic = document.getElementById('bg-music');
-            if (bgMusic) { bgMusic.pause(); }
             const ep = ALL_EPISODES.find(e => e.id === id) || SPECIALS.find(e => e.id === id);
             if (!ep) return;
             player.setAttribute('metadata-video-title', ep.title);
