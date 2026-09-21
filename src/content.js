@@ -242,8 +242,16 @@ const getCollections = (video) => [
   ...(video.collections || []),
 ].filter(Boolean);
 
+const thumbnailTime = (video) => {
+  if (!video.duration || video.duration <= 2) return 1;
+  const hash = [...video.id].reduce((value, character) => ((value * 31) + character.charCodeAt(0)) >>> 0, 7);
+  const safeDuration = Math.max(1, video.duration - 2);
+  return Math.max(1, Math.min(video.duration - 1, Math.round(1 + (hash % Math.floor(safeDuration)))));
+};
+
 export const CONTENT = CONTENT_SOURCE.map(video => ({
   ...video,
+  thumbnailTime: video.thumbnailTime ?? thumbnailTime(video),
   collections: getCollections(video),
 }));
 

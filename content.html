@@ -249,8 +249,8 @@
             live: 'En vivo', event: 'Evento', other: 'Video',
         };
 
-        function thumbUrl(id) {
-            return `https://image.mux.com/${id}/thumbnail.jpg?width=640&height=360&fit_mode=smartcrop&time=1`;
+        function thumbUrl(video) {
+            return `https://image.mux.com/${video.id}/thumbnail.jpg?width=640&height=360&fit_mode=smartcrop&time=${video.thumbnailTime}`;
         }
 
         function formatDuration(sec) {
@@ -308,7 +308,7 @@
             wrap.className = 'card';
             wrap.innerHTML = `
                 <div class="${thumbClass}">
-                    <img loading="lazy" src="${thumbUrl(video.id)}" alt="${video.title}" />
+                    <img loading="lazy" src="${thumbUrl(video)}" alt="${video.title}" />
                     <span class="duration-badge">${formatDuration(video.duration)}</span>
                 </div>
                 <div class="${titleClass === 'card-title' ? 'card-meta' : 'side-info'}">
@@ -358,7 +358,7 @@
                 side.className = 'side-card';
                 side.innerHTML = `
                     <div class="side-thumb">
-                        <img loading="lazy" src="${thumbUrl(v.id)}" alt="${v.title}" />
+                        <img loading="lazy" src="${thumbUrl(v)}" alt="${v.title}" />
                         <span class="duration-badge">${formatDuration(v.duration)}</span>
                     </div>
                     <div class="side-info">
