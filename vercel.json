@@ -101,6 +101,10 @@
       "destination": "/tv.html"
     },
     {
+      "source": "/content",
+      "destination": "/content.html"
+    },
+    {
       "source": "/noticias",
       "destination": "/noticias.html"
     },
