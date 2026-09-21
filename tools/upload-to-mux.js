@@ -6,9 +6,10 @@
 const fs    = require('fs');
 const path  = require('path');
 const https = require('https');
+const { execFileSync } = require('child_process');
 
 const ROOT          = path.join(__dirname, '..');
-const UPLOAD_FOLDER = path.join(ROOT, '..', 'para subir a mux');
+const UPLOAD_FOLDER = path.join(ROOT, '..', 'subir a mux');
 const ENV_FILE      = path.join(ROOT, '.env.local');
 const RESULTS_FILE  = path.join(ROOT, 'mux-upload-results.json');
 const CONTENT_FILE  = path.join(ROOT, 'src', 'content.js');
@@ -20,6 +21,7 @@ function metadataFor(filename) {
     let collections = [];
 
     if (lower.includes('what show')) collections = ['what-show'];
+    else if (lower.includes('toxi vr') || lower.includes('recorrido completo')) collections = ['toxi-vr'];
     else if (lower.includes('xplora')) collections = ['xplora-ciencia'];
     else if (lower.includes('ads') || lower.includes('toxi ads') || lower.includes('bigbox')) collections = ['toxi-ads'];
     else if (lower.includes('música') || lower.includes('fede vaquero') || lower.includes('big band') || lower.includes('tonto mike') || lower.includes('manu roca')) collections = ['toxi-music'];
@@ -52,7 +54,7 @@ function appendEntries(filePath, beforePattern, entries) {
 function synchronizeCatalogs(entries) {
     if (!entries.length) return;
     appendEntries(CONTENT_FILE, /\r?\n\];\r?\n\r?\nconst getCollections/, entries);
-    appendEntries(PLAYLIST_FILE, /\r?\n\];\r?\n\r?\n\/\/ Fusiona las versiones técnica/, entries);
+    execFileSync(process.execPath, [path.join(ROOT, 'tools', 'sync-playlist-from-content.mjs')], { stdio: 'inherit', cwd: ROOT });
     console.log('\nCatálogos actualizados: src/content.js y api/playlist.mjs');
 }
 

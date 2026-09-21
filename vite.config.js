@@ -103,6 +103,7 @@ export default defineConfig({
         turing: resolve(__dirname, 'turing.html'),
         weWillRockYou: resolve(__dirname, 'we-will-rock-you.html'),
         print: resolve(__dirname, 'print.html'),
+        content: resolve(__dirname, 'content.html'),
       },
     },
   },

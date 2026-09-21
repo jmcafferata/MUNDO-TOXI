@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contenidos — TOXI Media</title>
+    <meta property="og:title" content="Contenidos — TOXI Media" />
+    <meta property="og:description" content="Todo el catálogo de TOXI Media en un solo lugar." />
+    <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+    <link rel="icon" href="/favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0f0f0f;
+            --surface: #181818;
+            --border: #303030;
+            --text: #f1f1f1;
+            --muted: #aaaaaa;
+            --muted-dim: #717171;
+            --accent: #fff;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            min-height: 100dvh;
+        }
+
+        /* ── Header ── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 10px 24px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+        .logo-link { display: flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+        .logo-link img { height: 20px; }
+
+        .search-wrap {
+            flex: 1;
+            max-width: 640px;
+            margin: 0 auto;
+            display: flex;
+        }
+        #search {
+            flex: 1;
+            background: #121212;
+            border: 1px solid var(--border);
+            border-right: none;
+            border-radius: 20px 0 0 20px;
+            padding: 8px 16px;
+            color: var(--text);
+            font-size: 0.9rem;
+            outline: none;
+        }
+        #search:focus { border-color: #3ea6ff; }
+        .search-btn {
+            width: 44px;
+            border: 1px solid var(--border);
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            background: #222;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* ── Filtros (chips) ── */
+        #chips {
+            display: flex;
+            gap: 8px;
+            padding: 12px 24px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            position: sticky;
+            top: 49px;
+            z-index: 25;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+        }
+        #chips::-webkit-scrollbar { display: none; }
+        .chip {
+            flex-shrink: 0;
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--text);
+            font-size: 0.82rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            user-select: none;
+        }
+        .chip:hover { background: #2a2a2a; }
+        .chip.active { background: var(--accent); color: #0f0f0f; }
+
+        /* ── Grid ── */
+        #grid-view { padding: 24px; }
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px 16px;
+        }
+        .card { cursor: pointer; }
+        .thumb-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #202020;
+        }
+        .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.2s ease; }
+        .card:hover .thumb-wrap img { transform: scale(1.02); }
+        .duration-badge {
+            position: absolute;
+            right: 6px; bottom: 6px;
+            background: rgba(0,0,0,0.8);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 500;
+            padding: 1px 5px;
+            border-radius: 4px;
+        }
+        .card-meta { display: flex; gap: 10px; margin-top: 10px; }
+        .card-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: #222 url('/toxi-app-logo.jpg') center/cover;
+        }
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-sub { color: var(--muted); font-size: 0.82rem; margin-top: 3px; }
+        .card-sub span:not(:last-child)::after { content: '•'; margin: 0 4px; }
+
+        #empty { display: none; color: var(--muted); text-align: center; padding: 60px 0; }
+
+        /* ── Watch view ── */
+        #watch-view { display: none; padding: 24px; max-width: 1400px; margin: 0 auto; }
+        .watch-layout { display: flex; gap: 24px; align-items: flex-start; }
+        .watch-main { flex: 1; min-width: 0; }
+        #player-box {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        mux-player { width: 100%; height: 100%; --media-object-fit: contain; }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--muted);
+            background: none;
+            border: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-bottom: 14px;
+            padding: 6px 0;
+        }
+        .back-btn:hover { color: var(--text); }
+        #watch-title { font-size: 1.25rem; font-weight: 600; margin-top: 16px; }
+        #watch-sub { color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
+
+        .watch-side { width: 380px; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+        .side-card { display: flex; gap: 8px; cursor: pointer; }
+        .side-thumb { position: relative; width: 168px; flex-shrink: 0; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; background: #202020; }
+        .side-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .side-thumb .duration-badge { font-size: 0.66rem; }
+        .side-info { min-width: 0; }
+        .side-title { font-size: 0.86rem; font-weight: 500; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .side-sub { color: var(--muted); font-size: 0.76rem; margin-top: 4px; }
+
+        @media (max-width: 980px) {
+            .watch-layout { flex-direction: column; }
+            .watch-side { width: 100%; flex-direction: column; }
+        }
+        @media (max-width: 640px) {
+            header { gap: 10px; padding: 8px 14px; }
+            #grid-view, #watch-view { padding: 14px; }
+            #grid { grid-template-columns: 1fr 1fr; gap: 18px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a class="logo-link" href="/"><img src="/toxi-logo-white.png" alt="TOXI Media" /></a>
+        <div class="search-wrap">
+            <input id="search" type="text" placeholder="Buscar contenido…" autocomplete="off" />
+            <div class="search-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+        </div>
+    </header>
+
+    <div id="chips"></div>
+
+    <div id="grid-view">
+        <div id="grid"></div>
+        <div id="empty">No se encontraron resultados.</div>
+    </div>
+
+    <div id="watch-view">
+        <div class="watch-layout">
+            <div class="watch-main">
+                <button class="back-btn" id="back-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                    Volver
+                </button>
+                <div id="player-box">
+                    <mux-player id="player" stream-type="on-demand" autoplay preload="auto" default-hidden-captions></mux-player>
+                </div>
+                <h1 id="watch-title"></h1>
+                <div id="watch-sub"></div>
+            </div>
+            <div class="watch-side" id="watch-side"></div>
+        </div>
+    </div>
+
+    <script type="module" src="./src/analytics.js"></script>
+    <script type="module">
+        import { CONTENT } from './src/content.js';
+
+        const videos = CONTENT.filter(v => v.title && v.id);
+
+        const TYPE_LABEL = {
+            film: 'Película', short: 'Corto', series: 'Serie',
+            live: 'En vivo', event: 'Evento', other: 'Video',
+        };
+
+        function thumbUrl(id) {
+            return `https://image.mux.com/${id}/thumbnail.jpg?width=640&height=360&fit_mode=smartcrop&time=1`;
+        }
+
+        function formatDuration(sec) {
+            sec = Math.round(sec || 0);
+            const h = Math.floor(sec / 3600);
+            const m = Math.floor((sec % 3600) / 60);
+            const s = sec % 60;
+            const pad = n => String(n).padStart(2, '0');
+            return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+        }
+
+        function metaLine(video) {
+            const parts = [];
+            if (video.year) parts.push(video.year);
+            parts.push(TYPE_LABEL[video.type] || 'Video');
+            return parts.join(' • ');
+        }
+
+        // ── Chips de colecciones ──
+        const collectionCounts = {};
+        videos.forEach(v => (v.collections || []).forEach(c => {
+            collectionCounts[c] = (collectionCounts[c] || 0) + 1;
+        }));
+        const topCollections = Object.entries(collectionCounts)
+            .filter(([c]) => !['tv', 'radio'].includes(c))
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 14)
+            .map(([c]) => c);
+
+        const chipsEl = document.getElementById('chips');
+        let activeChip = 'todos';
+        function renderChips() {
+            chipsEl.innerHTML = '';
+            const all = document.createElement('div');
+            all.className = 'chip' + (activeChip === 'todos' ? ' active' : '');
+            all.textContent = 'Todos';
+            all.onclick = () => { activeChip = 'todos'; renderChips(); renderGrid(); };
+            chipsEl.appendChild(all);
+            topCollections.forEach(c => {
+                const chip = document.createElement('div');
+                chip.className = 'chip' + (activeChip === c ? ' active' : '');
+                chip.textContent = c;
+                chip.onclick = () => { activeChip = c; renderChips(); renderGrid(); };
+                chipsEl.appendChild(chip);
+            });
+        }
+
+        // ── Grid ──
+        const gridEl = document.getElementById('grid');
+        const emptyEl = document.getElementById('empty');
+        const searchEl = document.getElementById('search');
+
+        function makeCard(video, thumbClass, titleClass, subClass) {
+            const wrap = document.createElement('div');
+            wrap.className = 'card';
+            wrap.innerHTML = `
+                <div class="${thumbClass}">
+                    <img loading="lazy" src="${thumbUrl(video.id)}" alt="${video.title}" />
+                    <span class="duration-badge">${formatDuration(video.duration)}</span>
+                </div>
+                <div class="${titleClass === 'card-title' ? 'card-meta' : 'side-info'}">
+                    ${titleClass === 'card-title' ? '<div class="card-avatar"></div>' : ''}
+                    <div>
+                        <div class="${titleClass}">${video.title}</div>
+                        <div class="${subClass}">${metaLine(video)}</div>
+                    </div>
+                </div>
+            `;
+            wrap.onclick = () => openWatch(video);
+            return wrap;
+        }
+
+        function renderGrid() {
+            const q = searchEl.value.trim().toLowerCase();
+            const filtered = videos.filter(v => {
+                const matchesQuery = !q || v.title.toLowerCase().includes(q);
+                const matchesChip = activeChip === 'todos' || (v.collections || []).includes(activeChip);
+                return matchesQuery && matchesChip;
+            });
+            gridEl.innerHTML = '';
+            filtered.forEach(v => gridEl.appendChild(makeCard(v, 'thumb-wrap', 'card-title', 'card-sub')));
+            emptyEl.style.display = filtered.length ? 'none' : 'block';
+        }
+
+        searchEl.addEventListener('input', renderGrid);
+
+        // ── Watch view ──
+        const gridView = document.getElementById('grid-view');
+        const watchView = document.getElementById('watch-view');
+        const player = document.getElementById('player');
+        const watchTitle = document.getElementById('watch-title');
+        const watchSub = document.getElementById('watch-sub');
+        const watchSide = document.getElementById('watch-side');
+        const backBtn = document.getElementById('back-btn');
+
+        function openWatch(video, pushState = true) {
+            player.setAttribute('playback-id', video.id);
+            player.setAttribute('metadata-video-title', video.title);
+            watchTitle.textContent = video.title;
+            watchSub.textContent = metaLine(video);
+
+            watchSide.innerHTML = '';
+            videos.filter(v => v.id !== video.id).slice(0, 30).forEach(v => {
+                const side = document.createElement('div');
+                side.className = 'side-card';
+                side.innerHTML = `
+                    <div class="side-thumb">
+                        <img loading="lazy" src="${thumbUrl(v.id)}" alt="${v.title}" />
+                        <span class="duration-badge">${formatDuration(v.duration)}</span>
+                    </div>
+                    <div class="side-info">
+                        <div class="side-title">${v.title}</div>
+                        <div class="side-sub">${metaLine(v)}</div>
+                    </div>
+                `;
+                side.onclick = () => openWatch(v);
+                watchSide.appendChild(side);
+            });
+
+            gridView.style.display = 'none';
+            watchView.style.display = 'block';
+            chipsEl.style.display = 'none';
+            window.scrollTo({ top: 0 });
+            if (pushState) history.pushState({ v: video.id }, '', `#v=${video.id}`);
+        }
+
+        function closeWatch(pushState = true) {
+            player.removeAttribute('playback-id');
+            watchView.style.display = 'none';
+            gridView.style.display = 'block';
+            chipsEl.style.display = 'flex';
+            if (pushState) history.pushState({}, '', location.pathname);
+        }
+
+        backBtn.addEventListener('click', () => closeWatch());
+        window.addEventListener('popstate', () => {
+            const id = new URLSearchParams(location.hash.slice(1)).get('v');
+            const video = id && videos.find(v => v.id === id);
+            if (video) openWatch(video, false); else closeWatch(false);
+        });
+
+        // ── Init ──
+        renderChips();
+        renderGrid();
+        const initialId = new URLSearchParams(location.hash.slice(1)).get('v');
+        const initialVideo = initialId && videos.find(v => v.id === initialId);
+        if (initialVideo) openWatch(initialVideo, false);
+    </script>
+</body>
+</html>
