@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  PanResponder,
   StyleSheet,
   Text,
   TouchableWithoutFeedback,
@@ -9,16 +10,26 @@ import { useVideoPlayer, VideoView } from 'expo-video';
 import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { CastButton, MediaStreamType, useRemoteMediaClient } from 'react-native-google-cast';
-import { getCurrentSlot, setRemotePlaylist, TvItem, TvSlot } from './src/playlist';
+import {
+  getCollectionItems,
+  getCollectionNames,
+  getCurrentSlot,
+  setRemotePlaylist,
+  TvItem,
+  TvSlot,
+} from './src/playlist';
 
 const PLAYLIST_URL = 'https://toxi.media/api/playlist';
 
 export default function App() {
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [currentTitle, setCurrentTitle]     = useState('');
+  const [currentChannel, setCurrentChannel] = useState<string | null>(null);
 
   const currentIndexRef  = useRef<number>(-1);
   const currentSlotRef   = useRef<TvSlot | null>(null);
+  const currentChannelRef = useRef<string | null>(null);
+  const channelItemIndexRef = useRef(0);
   const wasCastingRef    = useRef(false);
   const pendingSeekRef   = useRef<number | null>(null);
   const overlayTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -30,6 +41,10 @@ export default function App() {
   });
 
   // ── Overlay ───────────────────────────────────────────────────────────────
+
+  const channelLabel = currentChannel
+    ? currentChannel.replace(/-/g, ' ').toLocaleUpperCase()
+    : 'TOXI TV';
 
   const showOverlay = useCallback((title: string) => {
     setCurrentTitle(title);
@@ -43,7 +58,11 @@ export default function App() {
       if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
       setOverlayVisible(false);
     } else {
-      showOverlay(getCurrentSlot().item.title);
+      const collection = currentChannelRef.current;
+      const title = collection
+        ? getCollectionItems(collection)[channelItemIndexRef.current]?.title
+        : getCurrentSlot().item.title;
+      showOverlay(title || getCurrentSlot().item.title);
     }
   }, [overlayVisible, showOverlay]);
 
@@ -63,7 +82,9 @@ export default function App() {
           metadata: {
             type: 'movie',
             title: slot.item.title,
-            subtitle: 'TOXI TV',
+            subtitle: currentChannelRef.current
+              ? currentChannelRef.current.replace(/-/g, ' ').toLocaleUpperCase()
+              : 'TOXI TV',
           },
         },
       });
@@ -87,6 +108,64 @@ export default function App() {
     showOverlay(slot.item.title);
   }, [castClient, loadSlotOnCast, player, showOverlay]);
 
+  const loadCollectionItem = useCallback(() => {
+    const collection = currentChannelRef.current;
+    if (!collection) return;
+    const items = getCollectionItems(collection);
+    if (items.length === 0) return;
+    channelItemIndexRef.current = channelItemIndexRef.current % items.length;
+    const item = items[channelItemIndexRef.current];
+    const slot: TvSlot = { index: channelItemIndexRef.current, offsetMs: 0, item };
+    currentIndexRef.current = slot.index;
+    currentSlotRef.current = slot;
+    if (castClient) {
+      loadSlotOnCast(slot);
+      player.pause();
+    } else {
+      pendingSeekRef.current = 0;
+      player.replace({ uri: `https://stream.mux.com/${item.id}.m3u8` });
+    }
+    showOverlay(item.title);
+  }, [castClient, loadSlotOnCast, player, showOverlay]);
+
+  const stepCollectionItem = useCallback((direction: number) => {
+    const collection = currentChannelRef.current;
+    if (!collection) return;
+    const items = getCollectionItems(collection);
+    if (items.length === 0) return;
+    channelItemIndexRef.current = (channelItemIndexRef.current + direction + items.length) % items.length;
+    loadCollectionItem();
+  }, [loadCollectionItem]);
+
+  const switchChannel = useCallback((direction: number) => {
+    const channels: Array<string | null> = [null, ...getCollectionNames()];
+    if (channels.length <= 1) return;
+    const current = channels.indexOf(currentChannelRef.current);
+    const next = (current + direction + channels.length) % channels.length;
+    const channel = channels[next];
+    currentChannelRef.current = channel;
+    setCurrentChannel(channel);
+    channelItemIndexRef.current = 0;
+    if (channel) loadCollectionItem();
+    else loadSlot(getCurrentSlot());
+  }, [loadCollectionItem, loadSlot]);
+
+  const gestureActionsRef = useRef({ switchChannel, stepCollectionItem });
+  gestureActionsRef.current = { switchChannel, stepCollectionItem };
+  const shouldHandleSwipe = (_event: unknown, gesture: { dx: number; dy: number }) =>
+    Math.abs(gesture.dx) > 12 || Math.abs(gesture.dy) > 12;
+  const panResponderRef = useRef(PanResponder.create({
+    onMoveShouldSetPanResponder: shouldHandleSwipe,
+    onMoveShouldSetPanResponderCapture: shouldHandleSwipe,
+    onPanResponderRelease: (_event, gesture) => {
+      if (Math.abs(gesture.dy) > 45 && Math.abs(gesture.dy) > Math.abs(gesture.dx)) {
+        gestureActionsRef.current.switchChannel(gesture.dy < 0 ? 1 : -1);
+      } else if (Math.abs(gesture.dx) > 45 && Math.abs(gesture.dx) > Math.abs(gesture.dy)) {
+        gestureActionsRef.current.stepCollectionItem(gesture.dx < 0 ? 1 : -1);
+      }
+    },
+  }));
+
   // Seek al punto correcto una vez que el video está listo
   useEffect(() => {
     const sub = player.addListener('statusChange', ({ status }: { status: string }) => {
@@ -103,25 +182,35 @@ export default function App() {
   useEffect(() => {
     const sub = player.addListener('playToEnd', () => {
       if (castClient) return;
-      loadSlot(getCurrentSlot());
+      if (currentChannelRef.current) stepCollectionItem(1);
+      else loadSlot(getCurrentSlot());
     });
     return () => sub.remove();
-  }, [castClient, player, loadSlot]);
+  }, [castClient, player, loadSlot, stepCollectionItem]);
+
+  useEffect(() => {
+    if (!castClient) return;
+    const subscription = castClient.onMediaPlaybackEnded(() => {
+      if (currentChannelRef.current) stepCollectionItem(1);
+    });
+    return () => subscription.remove();
+  }, [castClient, stepCollectionItem]);
 
   // Si se conecta/desconecta Cast, cambia la salida entre TV remota y reproductor local.
   useEffect(() => {
     if (castClient) {
       wasCastingRef.current = true;
-      const slot = currentSlotRef.current ?? getCurrentSlot();
-      loadSlot(slot);
+      if (currentChannelRef.current) loadCollectionItem();
+      else loadSlot(currentSlotRef.current ?? getCurrentSlot());
       return;
     }
 
     if (wasCastingRef.current) {
       wasCastingRef.current = false;
-      loadSlot(getCurrentSlot());
+      if (currentChannelRef.current) loadCollectionItem();
+      else loadSlot(getCurrentSlot());
     }
-  }, [castClient, loadSlot]);
+  }, [castClient, loadCollectionItem, loadSlot]);
 
   // ── Inicio ────────────────────────────────────────────────────────────────
 
@@ -140,6 +229,7 @@ export default function App() {
 
         // Corrección de drift cada 30 s (igual que la app Android y tv.html)
         driftTimerRef.current = setInterval(() => {
+          if (currentChannelRef.current) return;
           const slot = getCurrentSlot();
           if (slot.index !== currentIndexRef.current) {
             loadSlot(slot);
@@ -163,7 +253,7 @@ export default function App() {
 
   return (
     <TouchableWithoutFeedback onPress={toggleOverlay}>
-      <View style={styles.container}>
+      <View style={styles.container} {...panResponderRef.current.panHandlers}>
         <VideoView
           player={player}
           style={styles.video}
@@ -174,7 +264,7 @@ export default function App() {
         <CastButton style={styles.castButton} />
         {overlayVisible && (
           <View style={styles.overlay}>
-            <Text style={styles.nowLabel}>AHORA</Text>
+            <Text style={styles.nowLabel}>{channelLabel}</Text>
             <Text style={styles.title} numberOfLines={2}>{currentTitle}</Text>
           </View>
         )}

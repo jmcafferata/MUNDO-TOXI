@@ -140,7 +140,8 @@ export const CONTENT_SOURCE = [
   { id: 'YAuxwlUEKPg2PZ4UTXmJh6fl21nmd6mZYt7fsp02vQS4', duration: 239, title: 'Enfréntese — Otro Día en la Red 2x11', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: 'QeD01l6eM5kdxSsYOdZQlcTjevR00AEwbDsD1CU4OxN8U', duration: 236, title: 'Cartas para Usted — Otro Día en la Red 2x12', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: 'llA8A1EJ02j3ikArgeN9Rp1IFQz2zyN2NVXZZYksYhIo', duration: 276, title: 'Búsquese — Otro Día en la Red 2x13', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
-  
+    { id: 'aPZpe01oZ9XaLOplOK6GIbDgGxknK6r18wEPOmrNQTRc', duration: 225, title: 'Esfuércese — Otro Día en la Red 2x14', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
+
   // AGRO TOXI
   { id: 'pgnh8KYHVuAi8LP2aqe02furPECSSxx6w4YzqELBA3Vw', duration: 1951, title: 'Aguatierra — Centro de demostración', slug: '', type: 'other', year: 2024, onTV: true, collections: ['agro-toxi'] },
   { id: 'J3XiOpt01f3wl2U003K9CMFhfkegXaa1fE6ksTn01sI4Nc', duration: 942, title: 'Aguatierra — Recorrido Tren Tren', slug: '', type: 'other', year: 2024, onTV: true, collections: ['agro-toxi'] },

@@ -5,6 +5,7 @@ export interface TvItem {
   id: string;
   duration: number;
   title: string;
+  collections?: string[];
 }
 
 export interface TvSlot {
@@ -253,4 +254,16 @@ export function getCurrentSlot(): TvSlot {
     return getScheduledSlot();
   }
   return getFlatSlot(activePlaylist);
+}
+
+export function getCollectionNames(): string[] {
+  const names = new Set<string>();
+  for (const item of activePlaylist) {
+    for (const collection of item.collections || []) names.add(collection);
+  }
+  return [...names];
+}
+
+export function getCollectionItems(name: string): TvItem[] {
+  return activePlaylist.filter(item => (item.collections || []).includes(name));
 }
