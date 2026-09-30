@@ -104,6 +104,7 @@ export default defineConfig({
         weWillRockYou: resolve(__dirname, 'we-will-rock-you.html'),
         print: resolve(__dirname, 'print.html'),
         content: resolve(__dirname, 'content.html'),
+        laberintoNatal: resolve(__dirname, 'laberinto-natal.html'),
       },
     },
   },
