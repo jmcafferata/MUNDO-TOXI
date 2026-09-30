@@ -133,6 +133,10 @@
       "destination": "/vr.html"
     },
     {
+      "source": "/laberinto-natal",
+      "destination": "/laberinto-natal.html"
+    },
+    {
       "source": "/university/historia-argentina",
       "destination": "/university/historia-argentina.html"
     },
