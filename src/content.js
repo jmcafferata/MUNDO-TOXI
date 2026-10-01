@@ -156,6 +156,8 @@ export const CONTENT_SOURCE = [
   { id: 'mPjmV4M6XqBRFrJ601lCbF8C6fT8fxE2GOvxbRA2rKj4', duration: 7173.24, title: 'Primera Masterclass de Alfredo Cafferata — MERS', slug: '', type: 'other', year: 2026, onTV: true, collections: ['agro-toxi', 'toxi-university'] },
   { id: 'Zwiioqa2AnWflY2z77Bte4sw8NvhxRisvrhhD6N01liY', duration: 6196.722667, title: 'Segunda Masterclass de Alfredo Cafferata — MERS', slug: '', type: 'other', year: 2026, onTV: true, collections: ['agro-toxi', 'toxi-university'] },
   { id: 'f4FM8I2o601E8lEOzmrFv19d2Dl01lItUURwcP3HxDup4', duration: 5158.922667, title: 'Tercera Masterclass de Alfredo Cafferata — MERS', slug: '', type: 'other', year: 2026, onTV: true, collections: ['agro-toxi', 'toxi-university'] },
+  
+  // DOCUMENTALES
   { id: 'jRBL9g01D6l9rIIL419200N4ZOQyA0202n9P02lI02eBof02IY', duration: 80.830756, title: '¿Qué es Mamarracho?', slug: '', type: 'other', year: 2023, onTV: true, collections: ['toxi-kids'] },
   { id: '2M1OrsTy02LXxW9WxTqMgUxyCiKPzsjjPkor7ZCL9CfE', duration: 230.480256, title: 'Viaje a la Luna', slug: '', type: 'other', year: 2025, onTV: true, collections: ['toxi-kids'] },
   { id: 'ascCA5hMxmuLlSRnYiRtuXj7P5hOJdC9ImyfKqaQsQo', duration: 2815, title: 'Pizza y Pagni — Piloto LN', slug: '', type: 'other', year: 2026, onTV: true, collections: ['pizza-y-pagni'] },
@@ -234,6 +236,9 @@ export const CONTENT_SOURCE = [
   { id: 'CvSP9gnFh00YLNrAyXDH2FNTe7KF75t7QHPwvk01s7sqg', duration: 115.698922, title: 'Regenera LATAM — Ads', slug: '', type: 'other', year: 2024, onTV: true, collections: ["toxi-ads"] },
   { id: 'R02yTBasV7nJrO2LdKfjvldZtTZ3tKBvBiMsIA026jsQU', duration: 57.307256, title: 'Regenera Latam - Juan Magnoni — Ads', slug: '', type: 'other', year: 2024, onTV: true, collections: ["toxi-ads"] },
   { id: 'phKB01Iy5QUGrJYY6UPf3fdZ4Es1xRh6Al4cqDwnd31s', duration: 116.6, title: 'Sedal LookIAte  — Ads', slug: '', type: 'other', year: 2025, onTV: true, collections: ["toxi-ads"] },
+
+    { id: 'jqlJGJ4J9C44U3fYMLmxPw39eo5d21Pxoseaxz00iCfM', duration: 150, title: 'Ensayo para una ciudad — Dolores Casares', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-ads"] },
+
 ];
 
 const getCollections = (video) => [
