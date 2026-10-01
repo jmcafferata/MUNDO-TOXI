@@ -53,6 +53,10 @@
       "destination": "/audiont.html"
     },
     {
+      "source": "/creditos",
+      "destination": "/creditos.html"
+    },
+    {
       "source": "/venado-tuerto-el-musical",
       "destination": "/venado-tuerto-el-musical.html"
     },

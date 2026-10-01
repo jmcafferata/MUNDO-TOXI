@@ -88,6 +88,7 @@ export default defineConfig({
         notaConstante: resolve(__dirname, 'nota-constante.html'),
         otroDiaEnLaRed: resolve(__dirname, 'otro-dia-en-la-red.html'),
         audiont: resolve(__dirname, 'audiont.html'),
+        creditos: resolve(__dirname, 'creditos.html'),
         radio: resolve(__dirname, 'radio.html'),
         wiki: resolve(__dirname, 'wiki.html'),
         onboarding: resolve(__dirname, 'onboarding.html'),
