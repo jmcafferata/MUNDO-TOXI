@@ -40,6 +40,7 @@ export const CONTENT_SOURCE = [
   { id: 'xlS0101HJvz00G702MnnAqU4KtmtX3K01pz025g00NgjXoTUBg', duration: 23.815467, title: 'This is SaaStock — Ads', slug: '', type: 'other', year: 2023, onTV: true, collections: ['toxi-ads'] },
   { id: 'FctiBhZGGkWzbqihZVSuz6sk17K4zQx8Wx9ptvBPtng', duration: 51.801756, title: 'Trusting Tuan — Ads', slug: '', type: 'other', year: 2023, onTV: true, collections: ['toxi-ads'] },
   // ── WHAT SHOW ────────────────────────────────────────
+  { id: 'KVMD7UdnrUtTmLukVOdQ9GZBtgvTYK02h9VyfP02dstfs', duration: 73, title: 'Borges para niños (Emma Zunz) — What Show', slug: '', type: 'other', year: 2023, onTV: true, collections: ['what-show'] },
   { id: 'z02O01aMd02YkbeUb01syS400owVLRZ4oOJ6m463hcQ7FseQ', duration: 956.08, title: 'BAFICI Nights con Fabrizio Sanguinetti — What Show', slug: '', type: 'other', year: 2023, onTV: true, collections: ['what-show'] },
   { id: 'Q6ZMfDNCyJ9ysZCnEjxaH5S7AyU02c8kS8GBqyCYj02vQ', duration: 65.106711, title: 'Avengers — What Show', slug: '', type: 'other', year: 2023, onTV: true, collections: ['what-show'] },
   { id: 'oV2KNfiwH7mQrOlReJYJg5sDWRrYSuA8ywWMjk7RrD4', duration: 315.6, title: 'Aventuras en el Metaverso — What Show', slug: '', type: 'other', year: 2023, onTV: true, collections: ['what-show'] },
