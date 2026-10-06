@@ -722,13 +722,13 @@
                         <div class="countdown-unit"><strong id="countdown-minutes">00</strong><span>minutos</span></div>
                         <div class="countdown-unit"><strong id="countdown-seconds">00</strong><span>segundos</span></div>
                     </div>
-                    <p class="live-status" id="live-status">Martes 22 de septiembre · 18:30 h</p>
+                        <p class="live-status" id="live-status">Hoy, martes 6 de octubre · 18:30 h</p>
                 </div>
                 <mux-player id="live-player" playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
-                    metadata-video-title="Diseño de Entornos Virtuales — Tercera clase práctica con Nacho Michalowicz (TOXI VR)"
+                        metadata-video-title="Diseño de Entornos Virtuales — Iluminación en Unity (TOXI VR)"
                     stream-type="live" accent-color="#ffffff" controls playsinline hidden></mux-player>
             </div>
-            <h2 id="free-sample-title">Diseño de Entornos Virtuales — Tercera clase práctica con Nacho Michalowicz</h2>
+                    <h2 id="free-sample-title">Diseño de Entornos Virtuales — Iluminación en Unity</h2>
         </section>
         <div class="breadcrumb"><a href="/university">← Toxi University</a></div>
         <header>
@@ -738,8 +738,8 @@
             <p>Una exploración integral de la percepción, la tecnología y el diseño de experiencias inmersivas.</p>
 
         </header>
-        <p class="class-announcement"><strong>Tercera clase práctica con Nacho Michalowicz</strong><br>Martes 22 de
-            septiembre · 18:30h<br><span>Dejá tu mail si querés venir presencial.</span></p>
+        <p class="class-announcement"><strong>Clase en vivo · Iluminación en Unity</strong><br>Hoy, martes 6 de
+            octubre · 18:30 h<br><span>La clase pasada vimos iluminación precalculada y bakeo de materiales en objetos. Su grabación todavía no está publicada en Mux.</span></p>
         <div class="instructor-card">
             <h2>Equipo TOXI VR</h2>
             <p>Curso dictado por</p>
@@ -1055,7 +1055,7 @@
         const livePlayer = document.getElementById('live-player');
         const liveCountdown = document.getElementById('live-countdown');
         const liveStatus = document.getElementById('live-status');
-        const classDate = new Date('2026-09-22T18:30:00-03:00');
+        const classDate = new Date('2026-10-06T18:30:00-03:00');
         const countdownElements = {
             days: document.getElementById('countdown-days'),
             hours: document.getElementById('countdown-hours'),
@@ -1083,7 +1083,7 @@
                     liveStatus.textContent = 'En vivo ahora';
                     return;
                 }
-                liveStatus.textContent = 'La clase comienza el martes 22 de septiembre a las 18:30 h';
+                liveStatus.textContent = 'La clase comienza hoy, martes 6 de octubre a las 18:30 h';
             } catch (error) {
                 console.error('No se pudo consultar el estado del live:', error);
             }
