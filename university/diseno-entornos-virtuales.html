@@ -184,10 +184,17 @@
             font-weight: 300;
         }
 
-        .class-announcement a {
-            color: #fff;
-            text-decoration: underline;
-            text-underline-offset: .15em;
+        .class-recording {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            margin-top: 1rem;
+        }
+
+        .class-recording iframe {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
 
         .instructor-card {
@@ -744,8 +751,14 @@
             <p>Una exploración integral de la percepción, la tecnología y el diseño de experiencias inmersivas.</p>
 
         </header>
-        <p class="class-announcement"><strong>Clase en vivo · Iluminación en Unity</strong><br>Hoy, martes 6 de
-            octubre · 18:30 h<br><span>La clase pasada vimos iluminación precalculada y bakeo de materiales en objetos. <a href="https://youtube.com/live/Qpf_GX6FqHk" target="_blank" rel="noopener noreferrer">Ver la grabación en YouTube</a> mientras la subimos a Mux.</span></p>
+        <div class="class-announcement"><strong>Clase en vivo · Iluminación en Unity</strong><br>Hoy, martes 6 de
+            octubre · 18:30 h<br><span>La clase pasada vimos iluminación precalculada y bakeo de materiales en objetos. La grabación está disponible mientras la subimos a Mux.</span>
+            <div class="class-recording">
+                <iframe src="https://www.youtube-nocookie.com/embed/Qpf_GX6FqHk"
+                    title="Clase anterior: iluminación precalculada y bakeo de materiales en Unity"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
         <div class="instructor-card">
             <h2>Equipo TOXI VR</h2>
             <p>Curso dictado por</p>
