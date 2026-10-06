@@ -240,6 +240,10 @@ export const CONTENT_SOURCE = [
 
     { id: 'jqlJGJ4J9C44U3fYMLmxPw39eo5d21Pxoseaxz00iCfM', duration: 150, title: 'Ensayo para una ciudad — Dolores Casares', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-ads"] },
 
+    { id: 'hE01Gd4qiaOQv9U029sfRefnM7zstvKsM024FVtTghN9ME', duration: 22816, title: 'TOXI Print I — TOXI Print', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-print"] },
+    { id: 'a8UbsWCXgBPAnyBEiQV9MsRt6UG8A6nPv02eMehtjF8g', duration: 43164, title: 'TOXI Print II — TOXI Print', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-print"] },
+    { id: 'uv75NaE027202qu2ebSpg3AVtCzmGUgEqFPiKgRDya7q00', duration: 26578, title: 'TOXI Print III — TOXI Print', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-print"] },
+
 ];
 
 const getCollections = (video) => [
