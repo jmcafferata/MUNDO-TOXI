@@ -10,28 +10,43 @@ export default async function handler(req, res) {
   }
 
   const credentials = Buffer.from(`${MUX_TOKEN_ID}:${MUX_TOKEN_SECRET}`).toString('base64');
-  const params = new URLSearchParams({
-    'group_by': 'playback_id',
-    'timeframe[]': '30:days',
-    limit: '10',
-    order_by: 'views',
-    order_direction: 'desc',
-  });
+  const rows = [];
+  const limit = 100;
 
   try {
-    const response = await fetch(`https://api.mux.com/data/v1/metrics/views/breakdown?${params}`, {
-      headers: { Authorization: `Basic ${credentials}` },
-    });
-    const result = await response.json();
+    let totalRows = Infinity;
+    for (let page = 1; rows.length < totalRows; page += 1) {
+      const params = new URLSearchParams({
+        group_by: 'playback_id',
+        'timeframe[]': '30:days',
+        limit: String(limit),
+        page: String(page),
+        order_by: 'views',
+        order_direction: 'desc',
+      });
+      const response = await fetch(`https://api.mux.com/data/v1/metrics/views/breakdown?${params}`, {
+        headers: { Authorization: `Basic ${credentials}` },
+      });
+      const result = await response.json();
 
-    if (!response.ok) {
-      console.error('Mux most-viewed request failed:', response.status, result);
-      return res.status(response.status).json({ error: 'No se pudo consultar el ranking de videos' });
+      if (!response.ok) {
+        console.error('Mux most-viewed request failed:', response.status, result);
+        return res.status(response.status).json({ error: 'No se pudo consultar el ranking de videos' });
+      }
+
+      const pageRows = result.data || [];
+      rows.push(...pageRows);
+      totalRows = Number(result.total_row_count);
+      if (!pageRows.length || pageRows.length < limit || !Number.isFinite(totalRows)) break;
     }
 
     res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
-    return res.status(200).json((result.data || [])
-      .map(row => ({ playbackId: row.field, views: row.views ?? row.value ?? 0 }))
+    return res.status(200).json(rows
+      .map(row => ({
+        playbackId: row.field,
+        views: Number(row.views ?? row.value ?? 0),
+        totalPlayingTime: Number(row.total_playing_time ?? 0),
+      }))
       .filter(row => row.playbackId && row.views > 0));
   } catch (error) {
     console.error('Error consulting Mux most-viewed videos:', error);
