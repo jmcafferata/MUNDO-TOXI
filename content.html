@@ -106,6 +106,15 @@
         .chip.active { background: var(--accent); color: #0f0f0f; }
 
         /* ── Grid ── */
+        #popular-section { padding: 24px 24px 0; }
+        .section-heading { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+        .section-heading h2 { font-size: 1.15rem; font-weight: 600; }
+        .section-heading span { color: var(--muted); font-size: 0.8rem; }
+        #popular-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px 16px;
+        }
         #grid-view { padding: 24px; }
         #grid {
             display: grid;
@@ -197,8 +206,10 @@
         }
         @media (max-width: 640px) {
             header { gap: 10px; padding: 8px 14px; }
+            #popular-section { padding: 18px 14px 0; }
             #grid-view, #watch-view { padding: 14px; }
             #grid { grid-template-columns: 1fr 1fr; gap: 18px 10px; }
+            #popular-grid { grid-template-columns: 1fr 1fr; gap: 18px 10px; }
         }
     </style>
 </head>
@@ -215,6 +226,14 @@
     </header>
 
     <div id="chips"></div>
+
+    <section id="popular-section" aria-labelledby="popular-title" hidden>
+        <div class="section-heading">
+            <h2 id="popular-title">Más vistos</h2>
+            <span>Últimos 30 días</span>
+        </div>
+        <div id="popular-grid"></div>
+    </section>
 
     <div id="grid-view">
         <div id="grid"></div>
@@ -300,6 +319,8 @@
 
         // ── Grid ──
         const gridEl = document.getElementById('grid');
+        const popularSection = document.getElementById('popular-section');
+        const popularGrid = document.getElementById('popular-grid');
         const emptyEl = document.getElementById('empty');
         const searchEl = document.getElementById('search');
 
@@ -325,6 +346,7 @@
 
         function renderGrid() {
             const q = searchEl.value.trim().toLowerCase();
+            popularSection.hidden = Boolean(q) || activeChip !== 'todos';
             const filtered = videos.filter(v => {
                 const matchesQuery = !q || v.title.toLowerCase().includes(q);
                 const matchesChip = activeChip === 'todos' || (v.collections || []).includes(activeChip);
@@ -333,6 +355,26 @@
             gridEl.innerHTML = '';
             filtered.forEach(v => gridEl.appendChild(makeCard(v, 'thumb-wrap', 'card-title', 'card-sub')));
             emptyEl.style.display = filtered.length ? 'none' : 'block';
+        }
+
+        async function renderPopular() {
+            try {
+                const response = await fetch('/api/most-viewed');
+                if (!response.ok) throw new Error(`Mux API returned ${response.status}`);
+                const ranking = await response.json();
+                const rankedVideos = ranking
+                    .map(item => videos.find(video => video.id === item.playbackId))
+                    .filter(Boolean)
+                    .slice(0, 6);
+                if (!rankedVideos.length) return;
+
+                rankedVideos.forEach(video => {
+                    popularGrid.appendChild(makeCard(video, 'thumb-wrap', 'card-title', 'card-sub'));
+                });
+                popularSection.hidden = Boolean(searchEl.value.trim()) || activeChip !== 'todos';
+            } catch (error) {
+                console.warn('No se pudo cargar la sección Más vistos:', error);
+            }
         }
 
         searchEl.addEventListener('input', renderGrid);
@@ -373,6 +415,7 @@
             gridView.style.display = 'none';
             watchView.style.display = 'block';
             chipsEl.style.display = 'none';
+            popularSection.hidden = true;
             window.scrollTo({ top: 0 });
             if (pushState) history.pushState({ v: video.id }, '', `#v=${video.id}`);
         }
@@ -382,6 +425,7 @@
             watchView.style.display = 'none';
             gridView.style.display = 'block';
             chipsEl.style.display = 'flex';
+            popularSection.hidden = Boolean(searchEl.value.trim()) || activeChip !== 'todos' || !popularGrid.childElementCount;
             if (pushState) history.pushState({}, '', location.pathname);
         }
 
@@ -395,6 +439,7 @@
         // ── Init ──
         renderChips();
         renderGrid();
+        renderPopular();
         const initialId = new URLSearchParams(location.hash.slice(1)).get('v');
         const initialVideo = initialId && videos.find(v => v.id === initialId);
         if (initialVideo) openWatch(initialVideo, false);
