@@ -7,8 +7,20 @@
     <link rel="icon" href="/favicon.ico" />
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
     <style>
+        @font-face {
+            font-family: 'Helvetica Now';
+            src: url('/HelveticaNowDisplay-Bold.otf') format('opentype');
+            font-weight: bold;
+        }
+        @font-face {
+            font-family: 'Helvetica Now';
+            src: url('/HelveticaNowDisplay-Light.otf') format('opentype');
+            font-weight: 300;
+        }
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        html, body { height: 100%; background: #000; color: #f1f1f1; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        html, body { height: 100%; background: #000; color: #f1f1f1; font-family: 'Helvetica Now', Helvetica, Arial, sans-serif; font-weight: 300; }
+        mux-player { --mux-font-family: 'Helvetica Now', Helvetica, Arial, sans-serif; font-family: 'Helvetica Now', Helvetica, Arial, sans-serif; }
+        button { font-family: inherit; }
         .shell { display: flex; flex-direction: column; height: 100dvh; }
         .stage { flex: 1; min-height: 0; background: #14141b; position: relative; }
         mux-player { width: 100%; height: 100%; --media-object-fit: contain; }
@@ -16,17 +28,17 @@
             position: absolute; inset: 0; display: none; flex-direction: column;
             align-items: center; justify-content: center; gap: 6px; text-align: center; font-size: 13px;
         }
-        .error strong { font-size: 14px; }
+        .error strong { font-size: 14px; font-weight: bold; }
         .error span { color: #ccc; font-size: 12px; }
         .bar { display: flex; border-top: 1px solid #1f1f1f; background: #000; height: 68px; flex-shrink: 0; }
         .bar > * { flex: 1; display: flex; align-items: center; justify-content: center; }
         .copy {
             background: none; border: none; border-right: 1px solid #1f1f1f; cursor: pointer;
-            color: #8a94a6; font: 11px 'Courier New', monospace; letter-spacing: .1em; text-transform: uppercase; gap: 8px;
+            color: #8a94a6; font: 300 11px 'Helvetica Now', Helvetica, Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; gap: 8px;
         }
         .copy:hover { color: #fff; }
         .powered {
-            gap: 10px; color: #8a94a6; font: 11px 'Courier New', monospace; letter-spacing: .1em;
+            gap: 10px; color: #8a94a6; font: 300 11px 'Helvetica Now', Helvetica, Arial, sans-serif; letter-spacing: .1em;
             text-transform: uppercase; text-decoration: none;
         }
         .powered img { height: 22px; }
