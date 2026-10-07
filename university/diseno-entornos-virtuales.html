@@ -735,7 +735,7 @@
                         <div class="countdown-unit"><strong id="countdown-minutes">00</strong><span>minutos</span></div>
                         <div class="countdown-unit"><strong id="countdown-seconds">00</strong><span>segundos</span></div>
                     </div>
-                        <p class="live-status" id="live-status">Hoy, martes 6 de octubre · 18:30 h</p>
+                    <p class="live-status" id="live-status">Martes 13 de octubre · 18:30 h</p>
                 </div>
                 <mux-player id="live-player" playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
                         metadata-video-title="Diseño de Entornos Virtuales — Iluminación en Unity (TOXI VR)"
@@ -751,7 +751,7 @@
             <p>Una exploración integral de la percepción, la tecnología y el diseño de experiencias inmersivas.</p>
 
         </header>
-        <div class="class-announcement"><strong>Clase en vivo · Iluminación en Unity</strong><br>Hoy, martes 6 de
+        <div class="class-announcement"><strong>Clase en vivo · Iluminación en Unity</strong><br>Martes 13 de
             octubre · 18:30 h<br><span>La clase pasada vimos iluminación precalculada y bakeo de materiales en objetos. La grabación está disponible mientras la subimos a Mux.</span>
             <div class="class-recording">
                 <iframe src="https://www.youtube-nocookie.com/embed/Qpf_GX6FqHk"
@@ -1085,7 +1085,7 @@
         const livePlayer = document.getElementById('live-player');
         const liveCountdown = document.getElementById('live-countdown');
         const liveStatus = document.getElementById('live-status');
-        const classDate = new Date('2026-10-06T18:30:00-03:00');
+        const classDate = new Date('2026-10-13T18:30:00-03:00');
         const countdownElements = {
             days: document.getElementById('countdown-days'),
             hours: document.getElementById('countdown-hours'),
@@ -1113,7 +1113,7 @@
                     liveStatus.textContent = 'En vivo ahora';
                     return;
                 }
-                liveStatus.textContent = 'La clase comienza hoy, martes 6 de octubre a las 18:30 h';
+                liveStatus.textContent = 'La clase comienza el martes 13 de octubre a las 18:30 h';
             } catch (error) {
                 console.error('No se pudo consultar el estado del live:', error);
             }
