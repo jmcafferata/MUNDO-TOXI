@@ -176,6 +176,10 @@ export const CONTENT_SOURCE = [
   { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug', duration: 400, title: 'ELO', slug: '', type: 'other', year: 2026, onTV: true, collections: ['moniyisus'] },
   
   
+  // ── SINCRONIZADO DESDE MUX (2026-10-06) ────────────────────
+  { id: 'QqLyTeWoopNADlwAYMezmMa02x991J0101JpseHs02WNwGA', duration: 3609, title: 'Iluminación en Unity I con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
+  { id: 'jE00IywasZxwgoBKGP102m3a7TiIZ25fog68VCNhf00Uzg', duration: 1743, title: 'Iluminación en Unity II con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
+
   // ── SINCRONIZADO DESDE MUX (2026-09-08) ────────────────────
   { id: 'MBLpySzVnCNiQ701A53UNEvw2T12LmDxK00yeHfCFcfVE', duration: 2598, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 01 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
   { id: 'GMKwIO6JSZrspQvXnhuZNqVrP01TR00PL4aMWNMRoAHFg', duration: 5287, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 02 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
