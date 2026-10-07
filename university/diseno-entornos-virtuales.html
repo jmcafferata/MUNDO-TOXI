@@ -1050,6 +1050,17 @@
             </div>
         </section>
 
+        <section class="free-sample" aria-labelledby="lighting-class-title">
+            <p class="free-sample-label">Clase práctica en vivo · Parte <span id="lighting-part-num">1</span> de 2
+            </p>
+            <h2 id="lighting-class-title">Iluminación en Unity — Nacho Michalowicz</h2>
+            <p style="color:rgba(255,255,255,.65);font-weight:300;line-height:1.5;margin:0 0 1.25rem;">Clases prácticas
+                sobre iluminación en Unity, con Nacho Michalowicz.</p>
+            <mux-player id="lighting-player" playback-id="QqLyTeWoopNADlwAYMezmMa02x991J0101JpseHs02WNwGA"
+                metadata-video-title="Iluminación en Unity I con Nacho Michalowicz (TOXI VR)"
+                accent-color="#ffffff" controls playsinline></mux-player>
+        </section>
+
 
         <footer>
             <div class="location"><span>📍</span> Rodríguez Peña 158, Buenos Aires</div>
@@ -1159,6 +1170,21 @@
             texturingPlayer.setAttribute('playback-id', texturingPlaylist[texturingIndex]);
             texturingPlayer.setAttribute('metadata-video-title', `Introducción al texturizado y ensamblado — Parte ${texturingIndex + 1} (TOXI VR)`);
             texturingPlayer.play();
+        });
+
+        const lightingPlaylist = [
+            'QqLyTeWoopNADlwAYMezmMa02x991J0101JpseHs02WNwGA',
+            'jE00IywasZxwgoBKGP102m3a7TiIZ25fog68VCNhf00Uzg'
+        ];
+        let lightingIndex = 0;
+        const lightingPlayer = document.getElementById('lighting-player');
+        const lightingPartNum = document.getElementById('lighting-part-num');
+        lightingPlayer.addEventListener('ended', () => {
+            lightingIndex = (lightingIndex + 1) % lightingPlaylist.length;
+            lightingPartNum.textContent = lightingIndex + 1;
+            lightingPlayer.setAttribute('playback-id', lightingPlaylist[lightingIndex]);
+            lightingPlayer.setAttribute('metadata-video-title', `Iluminación en Unity ${lightingIndex + 1 === 1 ? 'I' : 'II'} con Nacho Michalowicz (TOXI VR)`);
+            lightingPlayer.play();
         });
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
