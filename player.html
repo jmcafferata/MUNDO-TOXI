@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Player — TOXI Media</title>
+    <link rel="icon" href="/favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; background: #000; color: #f1f1f1; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+        .shell { display: flex; flex-direction: column; height: 100dvh; }
+        .stage { flex: 1; min-height: 0; background: #14141b; position: relative; }
+        mux-player { width: 100%; height: 100%; --media-object-fit: contain; }
+        .error {
+            position: absolute; inset: 0; display: none; flex-direction: column;
+            align-items: center; justify-content: center; gap: 6px; text-align: center; font-size: 13px;
+        }
+        .error strong { font-size: 14px; }
+        .error span { color: #ccc; font-size: 12px; }
+        .bar { display: flex; border-top: 1px solid #1f1f1f; background: #000; height: 68px; flex-shrink: 0; }
+        .bar > * { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .copy {
+            background: none; border: none; border-right: 1px solid #1f1f1f; cursor: pointer;
+            color: #8a94a6; font: 11px 'Courier New', monospace; letter-spacing: .1em; text-transform: uppercase; gap: 8px;
+        }
+        .copy:hover { color: #fff; }
+        .powered {
+            gap: 10px; color: #8a94a6; font: 11px 'Courier New', monospace; letter-spacing: .1em;
+            text-transform: uppercase; text-decoration: none;
+        }
+        .powered img { height: 22px; }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="stage">
+            <mux-player id="player" stream-type="on-demand" accent-color="#ffffff" playsinline></mux-player>
+            <div class="error" id="error">
+                <strong>Video no disponible</strong>
+                <span>Falta el playback ID: usá toxi.media/player#PLAYBACK_ID</span>
+            </div>
+        </div>
+        <div class="bar">
+            <button class="copy" id="copy" type="button">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="1"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>
+                <span id="copy-label">Copiar link</span>
+            </button>
+            <a class="powered" href="https://toxi.media" target="_blank" rel="noopener">
+                Powered by <img src="/toxi-logo-white.png" alt="TOXI Media" />
+            </a>
+        </div>
+    </div>
+    <script>
+        const player = document.getElementById('player');
+        const errorBox = document.getElementById('error');
+
+        function load() {
+            const id = decodeURIComponent(location.hash.slice(1)).trim();
+            if (!/^[A-Za-z0-9_-]+$/.test(id)) {
+                player.style.display = 'none';
+                errorBox.style.display = 'flex';
+                return;
+            }
+            player.style.display = '';
+            errorBox.style.display = 'none';
+            player.setAttribute('playback-id', id);
+        }
+        window.addEventListener('hashchange', load);
+        load();
+
+        document.getElementById('copy').addEventListener('click', async () => {
+            const label = document.getElementById('copy-label');
+            try {
+                await navigator.clipboard.writeText(location.href);
+                label.textContent = 'Copiado';
+            } catch {
+                label.textContent = 'Error';
+            }
+            setTimeout(() => { label.textContent = 'Copiar link'; }, 1500);
+        });
+    </script>
+</body>
+</html>
