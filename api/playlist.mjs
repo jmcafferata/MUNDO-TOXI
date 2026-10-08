@@ -1,6 +1,7 @@
 // GENERATED FILE. Edit src/content.js and run npm run playlist:sync.
 
 const PLAYLIST_SOURCE = [
+  { id: 'Zt024bfBG5LGLnsYHY9VrMe2LbvRlInCPZBlGnhTrEWU', duration: 1701.366, title: 'TOXI: Detrás de las risas', slug: 'detras-de-las-risas', type: 'film', year: 2026, onTV: true, release: '2026-10-11T18:00:00', collections: ['toxi-films'] },
   { id: 'iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU', duration: 339.548, title: 'Hotel Oriente', slug: 'hotel-oriente', type: 'film', year: 2026, onTV: true,release:"2026-01-22T20:00:00", collections: ['toxi-films'] },
   { id: 'iVB2ZU00L1WZDQJpqXrIAMg02Cmq4l6C2kKnP02sNP01CQM', duration: 687.228, title: 'Hotel Oriente — Detrás de Escena', slug: 'hotel-oriente-bts', type: 'short', year: 2026, onTV: true, collections: ['toxi-films'] },
   { id: 'IHikcrMnpK00Dxsyb7xKpi1qpju01I00JmCpNXXrhg1WZg', duration: 163.081, title: 'Detective Noir', slug: 'detective-noir', type: 'short', year: 2025, onTV: true, collections: ['toxi-films'] },
@@ -94,13 +95,13 @@ const PLAYLIST_SOURCE = [
   { id: 'yyJADkna02dmJtNdyUoHDOYQMcjsxKcjf63O00w01mm1ZI', duration: 149.6495, title: 'fiesta en la cocina_final v2', slug: '', type: 'other', year: 2025, onTV: true, collections: ['toxi-kids'] },
   { id: '6w0200TT00NA02Q1V9E1LgVNIIXb4WgclmjYjPEo02ye8Gcs', duration: 63.146422, title: 'SF Neo Futurists — Ad', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-ads'] },
   { id: '00VG6EL1oC4eI96PVQXeobbdZ6GBNwrmUAexIDdiMpTc', duration: 160.326833, title: 'hipo hip hop final', slug: '', type: 'other', year: 2025, onTV: true, collections: ['toxi-kids'] },
-  { id: 'QUElHo8r5HtNqfh02XfGKm85jUJ01iTGbkyn2D4BeYNZI', duration: 189.148256, title: 'juanse y los pibes', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
-  { id: 'UiK7a7RjMI2LkEnxUEthecrAk4chE00OPr7ic1Tn9lG4', duration: 376.250878, title: 'Otro día en la red _ Capítulo 1', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
-  { id: 'K6p6zWxcLOtRXb02eWcic00RYQG8SwDxE014o9007ZTBwm8', duration: 588.629711, title: 'nota afuera', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: 'QUElHo8r5HtNqfh02XfGKm85jUJ01iTGbkyn2D4BeYNZI', duration: 189.148256, title: '0 — Otro Día en la Red 1x01', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: 'UiK7a7RjMI2LkEnxUEthecrAk4chE00OPr7ic1Tn9lG4', duration: 376.250878, title: 'Una serie para gente cansada — Otro Día en la Red 1x02', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: 'K6p6zWxcLOtRXb02eWcic00RYQG8SwDxE014o9007ZTBwm8', duration: 588.629711, title: 'III — Otro Día en la Red 1x03', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: '9pXQ7MUiVlTklMCQdQVdbxoMn85YIC3jObLtzBFN801o', duration: 137.220422, title: 'Muerte y Miedo en las Calles — Otro Día en la Red 1x04', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
-  { id: 'Q3kMlL901ouKhER0101Nzija5Y1025jWBV4ORBXTruuFEyM', duration: 455.538422, title: 'ODELaR _ Otro día en la red IV', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
-  { id: 'd1Mu65Kcey02gQtRDtcV00U01U01JYwn9dZettLfFmErz3E', duration: 587.0448, title: 'Misión_ ODELAR', slug: '', type: 'other', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
-  { id: 'oT00wnOnz00iFEzyaOmue00bXx2HOnyX01dII6t4UlGRM7A', duration: 181.764922, title: 'Ni Jorges y Borges_ Odelar 6!', slug: '', type: 'other', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: 'Q3kMlL901ouKhER0101Nzija5Y1025jWBV4ORBXTruuFEyM', duration: 455.538422, title: 'ODELaR — Otro Día en la Red 1x05', slug: 'otro-dia-en-la-red', type: 'series', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: 'd1Mu65Kcey02gQtRDtcV00U01U01JYwn9dZettLfFmErz3E', duration: 587.0448, title: 'Misión: ODELaR — Otro Día en la Red 1x06', slug: '', type: 'other', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: 'oT00wnOnz00iFEzyaOmue00bXx2HOnyX01dII6t4UlGRM7A', duration: 181.764922, title: 'Ni Jorges ni Borges — Otro Día en la Red 1x07', slug: '', type: 'other', year: 2025, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: 'HRr2KXg2X800YNuos9Aj2LmZe8XIqHvTMgFrGKc7v7wQ', duration: 189, title: 'Volvé a ODELaR — Otro Día en la Red 2x01', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: '3GyRcAnmXvKxvNVOLwctczd025sw3gYssdSP7X01miwRE', duration: 418, title: 'ODELaR El Musical - Otro Día en la Red 2x02', slug: '', type: 'other', year: 2026, onTV: true, collections: ['otro-dia-en-la-red', 'toxi-teatro'] },
   { id: 'MLqVMQ4VqD79zGTUP1PQhdq9nmtPndTZPhNp01Q79Yuc', duration: 776, title: 'Duro de ODELaR - Otro Día en la Red 2x03', slug: '', type: 'other', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
@@ -115,7 +116,8 @@ const PLAYLIST_SOURCE = [
   { id: 'MMUOpgCFyh7aC7nfNz57oXKCJSZqgvHZqWLIdMxhSw00', duration: 324, title: 'Hágalo por su tía - Otro Día en la Red 2x10', slug: '', type: 'other', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: 'YAuxwlUEKPg2PZ4UTXmJh6fl21nmd6mZYt7fsp02vQS4', duration: 239, title: 'Enfréntese — Otro Día en la Red 2x11', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: 'QeD01l6eM5kdxSsYOdZQlcTjevR00AEwbDsD1CU4OxN8U', duration: 236, title: 'Cartas para Usted — Otro Día en la Red 2x12', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
-  { id: 'llA8A1EJ02j3ikArgeN9Rp1IFQz2zyN2NVXZZYksYhIo', duration: 276, title: 'Cartas para Usted — Otro Día en la Red 2x13', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: 'llA8A1EJ02j3ikArgeN9Rp1IFQz2zyN2NVXZZYksYhIo', duration: 276, title: 'Búsquese — Otro Día en la Red 2x13', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: 'aPZpe01oZ9XaLOplOK6GIbDgGxknK6r18wEPOmrNQTRc', duration: 225, title: 'Esfuércese — Otro Día en la Red 2x14', slug: 'otro-dia-en-la-red', type: 'series', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: 'pgnh8KYHVuAi8LP2aqe02furPECSSxx6w4YzqELBA3Vw', duration: 1951, title: 'Aguatierra — Centro de demostración', slug: '', type: 'other', year: 2024, onTV: true, collections: ['agro-toxi'] },
   { id: 'J3XiOpt01f3wl2U003K9CMFhfkegXaa1fE6ksTn01sI4Nc', duration: 942, title: 'Aguatierra — Recorrido Tren Tren', slug: '', type: 'other', year: 2024, onTV: true, collections: ['agro-toxi'] },
   { id: 'KMqFFjIjC4R7FafgSiwFb8oRnDDwkyzq7YDgcMsp9zg', duration: 1070, title: 'MERS VLOG 1', slug: '', type: 'other', year: 2026, onTV: true, collections: ['agro-toxi'] },
@@ -192,6 +194,7 @@ const PLAYLIST_SOURCE = [
   { id: 'CvSP9gnFh00YLNrAyXDH2FNTe7KF75t7QHPwvk01s7sqg', duration: 115.698922, title: 'Regenera LATAM — Ads', slug: '', type: 'other', year: 2024, onTV: true, collections: ["toxi-ads"] },
   { id: 'R02yTBasV7nJrO2LdKfjvldZtTZ3tKBvBiMsIA026jsQU', duration: 57.307256, title: 'Regenera Latam - Juan Magnoni — Ads', slug: '', type: 'other', year: 2024, onTV: true, collections: ["toxi-ads"] },
   { id: 'phKB01Iy5QUGrJYY6UPf3fdZ4Es1xRh6Al4cqDwnd31s', duration: 116.6, title: 'Sedal LookIAte  — Ads', slug: '', type: 'other', year: 2025, onTV: true, collections: ["toxi-ads"] },
+  { id: 'jqlJGJ4J9C44U3fYMLmxPw39eo5d21Pxoseaxz00iCfM', duration: 150, title: 'Ensayo para una ciudad — Dolores Casares', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-ads"] },
 ];
 
 export const PLAYLIST = [...PLAYLIST_SOURCE.reduce((playlist, video) => {
