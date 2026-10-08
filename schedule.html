@@ -648,6 +648,7 @@ async function fetchScheduleTemplate() {
     const remoteSchedule = await response.json();
     scheduleTemplate = remoteSchedule
       .map(entry => {
+        if (entry.date) return null;
         const itemIdx = PLAYLIST_INDEX_BY_ID.get(entry.itemId);
         if (itemIdx === undefined) return null;
         return {

@@ -1,8 +1,14 @@
 // GET /api/schedule
 // Horario semanal — dayOfWeek: 0=Lun, 1=Mar, 2=Mié, 3=Jue, 4=Vie, 5=Sáb, 6=Dom (hora ART)
 // startMin: minutos desde medianoche
+// date (opcional, YYYY-MM-DD ART): si está, la entrada solo aplica ese día y tiene prioridad.
 
 export const SCHEDULE = [
+  // ── ESTRENO: TOXI: Detrás de las risas (todos los domingos 18:00 y 20:00) ──
+  // Van primero para ganarle a las entradas que se solapan (gana la primera que coincide).
+  { dayOfWeek: 6, startMin: 18*60, itemId: 'Zt024bfBG5LGLnsYHY9VrMe2LbvRlInCPZBlGnhTrEWU' },
+  { dayOfWeek: 6, startMin: 20*60, itemId: 'Zt024bfBG5LGLnsYHY9VrMe2LbvRlInCPZBlGnhTrEWU' },
+
   // ── LUNES (dow=0) ─────────────────────────────────────────────────────
   { dayOfWeek: 0, startMin: 8*60,       itemId: 'yyJADkna02dmJtNdyUoHDOYQMcjsxKcjf63O00w01mm1ZI' },
   { dayOfWeek: 0, startMin: 8*60+15,    itemId: '00VG6EL1oC4eI96PVQXeobbdZ6GBNwrmUAexIDdiMpTc' },

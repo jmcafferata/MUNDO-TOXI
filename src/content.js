@@ -12,6 +12,7 @@
 export const CONTENT_SOURCE = [
 
   // ── CURADOS: en el canal ───────────────────────────────────
+  { id: 'Zt024bfBG5LGLnsYHY9VrMe2LbvRlInCPZBlGnhTrEWU', duration: 1701.366, title: 'TOXI: Detrás de las risas', slug: 'detras-de-las-risas', type: 'film', year: 2026, onTV: true, release: '2026-10-11T18:00:00', collections: ['toxi-films'] },
   { id: 'iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU', duration: 339.548, title: 'Hotel Oriente', slug: 'hotel-oriente', type: 'film', year: 2026, onTV: true,release:"2026-01-22T20:00:00", collections: ['toxi-films'] },
   { id: 'iVB2ZU00L1WZDQJpqXrIAMg02Cmq4l6C2kKnP02sNP01CQM', duration: 687.228, title: 'Hotel Oriente — Detrás de Escena', slug: 'hotel-oriente-bts', type: 'short', year: 2026, onTV: true, collections: ['toxi-films'] },
   { id: 'IHikcrMnpK00Dxsyb7xKpi1qpju01I00JmCpNXXrhg1WZg', duration: 163.081, title: 'Detective Noir', slug: 'detective-noir', type: 'short', year: 2025, onTV: true, collections: ['toxi-films'] },

@@ -101,6 +101,28 @@
         }
         #cast-btn:hover { color: #fff; }
         
+        #promo {
+            position: absolute;
+            bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+            right: 24px;
+            z-index: 15;
+            max-width: min(320px, calc(100% - 48px));
+            padding: 14px 18px;
+            text-align: right;
+            background: rgba(0,0,0,0.72);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 3px;
+            backdrop-filter: blur(6px);
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .promo-tag { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.25em; color: rgba(255,255,255,0.6); }
+        .promo-title { font-size: 1.05rem; font-weight: 700; text-transform: uppercase; line-height: 1.2; }
+        .promo-when { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.85); }
+        .promo-cta { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; margin-top: 4px; }
+
         #now-playing {
             position: absolute;
             top: 0; left: 0; right: 0;
@@ -179,6 +201,12 @@
                 <button class="age-btn" id="age-under">Soy menor de 16 años</button>
             </div>
         </div>
+        <div id="promo">
+            <div class="promo-tag">Estreno absoluto</div>
+            <div class="promo-title">TOXI: Detrás de las risas</div>
+            <div class="promo-when">Este domingo a las 18 y a las 20</div>
+            <div class="promo-cta">No te lo pierdas</div>
+        </div>
         <div id="offline-screen"><div class="offline-title">Sin señal</div></div>
 
         <div id="now-playing">
@@ -193,6 +221,16 @@
         const EPOCH_SEC = 1767225600;
         const PLAYLIST_URL = '/api/playlist';
         const SCHEDULE_URL = '/api/schedule';
+
+        // El overlay del estreno se elimina solo al terminar la última función (ART = UTC-3).
+        const PROMO_END_MS = Date.parse('2026-10-11T20:29:00-03:00');
+        const promoEl = document.getElementById('promo');
+
+        function updatePromo() {
+            if (Date.now() >= PROMO_END_MS) promoEl.remove();
+        }
+        updatePromo();
+        setInterval(updatePromo, 30000);
 
         const player      = document.getElementById('mux-player-a');
         const standby     = document.getElementById('mux-player-b');
@@ -237,7 +275,7 @@
             const jsDay = d.getUTCDay();
             const dow = (jsDay + 6) % 7;
             const daySec = d.getUTCHours() * 3600 + d.getUTCMinutes() * 60 + d.getUTCSeconds();
-            return { dow, daySec };
+            return { dow, daySec, date: d.toISOString().slice(0, 10) };
         }
 
         function getFlatSlot(playlist) {
@@ -257,9 +295,13 @@
         }
 
         function getScheduledSlot() {
-            const { dow, daySec } = getArtTime();
-            for (let i = 0; i < weeklySchedule.length; i++) {
-                const entry = weeklySchedule[i];
+            const { dow, daySec, date } = getArtTime();
+            // Las entradas con fecha puntual tienen prioridad sobre la grilla semanal.
+            const candidates = weeklySchedule
+                .map((entry, index) => ({ entry, index }))
+                .filter(({ entry }) => !entry.date || entry.date === date)
+                .sort((a, b) => (b.entry.date ? 1 : 0) - (a.entry.date ? 1 : 0));
+            for (const { entry, index: i } of candidates) {
                 if (entry.dayOfWeek !== dow) continue;
                 const startSec = entry.startMin * 60;
                 const endSec = startSec + Number(entry.item.duration || 0);
@@ -336,6 +378,7 @@
                             .map(entry => ({
                                 dayOfWeek: Number(entry.dayOfWeek),
                                 startMin: Number(entry.startMin),
+                                date: typeof entry.date === 'string' ? entry.date : null,
                                 item: byId.get(String(entry.itemId))
                             }))
                             .filter(entry => entry.item);
