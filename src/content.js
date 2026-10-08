@@ -41,6 +41,7 @@ export const CONTENT_SOURCE = [
   { id: 'xlS0101HJvz00G702MnnAqU4KtmtX3K01pz025g00NgjXoTUBg', duration: 23.815467, title: 'This is SaaStock — Ads', slug: '', type: 'other', year: 2023, onTV: true, collections: ['toxi-ads'] },
   { id: 'FctiBhZGGkWzbqihZVSuz6sk17K4zQx8Wx9ptvBPtng', duration: 51.801756, title: 'Trusting Tuan — Ads', slug: '', type: 'other', year: 2023, onTV: true, collections: ['toxi-ads'] },
   // ── WHAT SHOW ────────────────────────────────────────
+  { id: 'KVMD7UdnrUtTmLukVOdQ9GZBtgvTYK02h9VyfP02dstfs', duration: 73, title: 'Borges para niños (Emma Zunz) — What Show', slug: '', type: 'other', year: 2023, onTV: true, collections: ['what-show'] },
   { id: 'z02O01aMd02YkbeUb01syS400owVLRZ4oOJ6m463hcQ7FseQ', duration: 956.08, title: 'BAFICI Nights con Fabrizio Sanguinetti — What Show', slug: '', type: 'other', year: 2023, onTV: true, collections: ['what-show'] },
   { id: 'Q6ZMfDNCyJ9ysZCnEjxaH5S7AyU02c8kS8GBqyCYj02vQ', duration: 65.106711, title: 'Avengers — What Show', slug: '', type: 'other', year: 2023, onTV: true, collections: ['what-show'] },
   { id: 'oV2KNfiwH7mQrOlReJYJg5sDWRrYSuA8ywWMjk7RrD4', duration: 315.6, title: 'Aventuras en el Metaverso — What Show', slug: '', type: 'other', year: 2023, onTV: true, collections: ['what-show'] },
@@ -176,6 +177,10 @@ export const CONTENT_SOURCE = [
   { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug', duration: 400, title: 'ELO', slug: '', type: 'other', year: 2026, onTV: true, collections: ['moniyisus'] },
   
   
+  // ── SINCRONIZADO DESDE MUX (2026-10-06) ────────────────────
+  { id: 'QqLyTeWoopNADlwAYMezmMa02x991J0101JpseHs02WNwGA', duration: 3609, title: 'Iluminación en Unity I con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
+  { id: 'jE00IywasZxwgoBKGP102m3a7TiIZ25fog68VCNhf00Uzg', duration: 1743, title: 'Iluminación en Unity II con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
+
   // ── SINCRONIZADO DESDE MUX (2026-09-08) ────────────────────
   { id: 'MBLpySzVnCNiQ701A53UNEvw2T12LmDxK00yeHfCFcfVE', duration: 2598, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 01 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
   { id: 'GMKwIO6JSZrspQvXnhuZNqVrP01TR00PL4aMWNMRoAHFg', duration: 5287, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 02 — Diseño de entornos virtuales', slug: '', type: 'other', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
@@ -239,6 +244,10 @@ export const CONTENT_SOURCE = [
   { id: 'phKB01Iy5QUGrJYY6UPf3fdZ4Es1xRh6Al4cqDwnd31s', duration: 116.6, title: 'Sedal LookIAte  — Ads', slug: '', type: 'other', year: 2025, onTV: true, collections: ["toxi-ads"] },
 
     { id: 'jqlJGJ4J9C44U3fYMLmxPw39eo5d21Pxoseaxz00iCfM', duration: 150, title: 'Ensayo para una ciudad — Dolores Casares', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-ads"] },
+
+    { id: 'hE01Gd4qiaOQv9U029sfRefnM7zstvKsM024FVtTghN9ME', duration: 22816, title: 'TOXI Print I — TOXI Print', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-print"] },
+    { id: 'a8UbsWCXgBPAnyBEiQV9MsRt6UG8A6nPv02eMehtjF8g', duration: 43164, title: 'TOXI Print II — TOXI Print', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-print"] },
+    { id: 'uv75NaE027202qu2ebSpg3AVtCzmGUgEqFPiKgRDya7q00', duration: 26578, title: 'TOXI Print III — TOXI Print', slug: '', type: 'other', year: 2026, onTV: true, collections: ["toxi-print"] },
 
 ];
 

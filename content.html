@@ -106,6 +106,15 @@
         .chip.active { background: var(--accent); color: #0f0f0f; }
 
         /* ── Grid ── */
+        #popular-section, #engaging-section, #least-section { padding: 24px 24px 0; }
+        .section-heading { display: flex; align-items: baseline; gap: 10px; margin-bottom: 16px; }
+        .section-heading h2 { font-size: 1.15rem; font-weight: 600; }
+        .section-heading span { color: var(--muted); font-size: 0.8rem; }
+        #popular-grid, #engaging-grid, #least-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px 16px;
+        }
         #grid-view { padding: 24px; }
         #grid {
             display: grid;
@@ -197,8 +206,10 @@
         }
         @media (max-width: 640px) {
             header { gap: 10px; padding: 8px 14px; }
+            #popular-section, #engaging-section, #least-section { padding: 18px 14px 0; }
             #grid-view, #watch-view { padding: 14px; }
             #grid { grid-template-columns: 1fr 1fr; gap: 18px 10px; }
+            #popular-grid, #engaging-grid, #least-grid { grid-template-columns: 1fr 1fr; gap: 18px 10px; }
         }
     </style>
 </head>
@@ -215,6 +226,28 @@
     </header>
 
     <div id="chips"></div>
+
+    <section id="popular-section" aria-labelledby="popular-title" hidden>
+        <div class="section-heading">
+            <h2 id="popular-title">Más vistos</h2>
+            <span>Últimos 30 días</span>
+        </div>
+        <div id="popular-grid"></div>
+    </section>
+    <section id="engaging-section" aria-labelledby="engaging-title" hidden>
+        <div class="section-heading">
+            <h2 id="engaging-title">Más atrapantes</h2>
+            <span>Mayor porcentaje promedio visto</span>
+        </div>
+        <div id="engaging-grid"></div>
+    </section>
+    <section id="least-section" aria-labelledby="least-title" hidden>
+        <div class="section-heading">
+            <h2 id="least-title">Menos vistos</h2>
+            <span>Últimos 30 días</span>
+        </div>
+        <div id="least-grid"></div>
+    </section>
 
     <div id="grid-view">
         <div id="grid"></div>
@@ -300,10 +333,21 @@
 
         // ── Grid ──
         const gridEl = document.getElementById('grid');
+        const leaderboardSections = [
+            { section: document.getElementById('popular-section'), grid: document.getElementById('popular-grid') },
+            { section: document.getElementById('engaging-section'), grid: document.getElementById('engaging-grid') },
+            { section: document.getElementById('least-section'), grid: document.getElementById('least-grid') },
+        ];
         const emptyEl = document.getElementById('empty');
         const searchEl = document.getElementById('search');
 
-        function makeCard(video, thumbClass, titleClass, subClass) {
+        function setLeaderboardsVisible(visible) {
+            leaderboardSections.forEach(({ section, grid }) => {
+                section.hidden = !visible || !grid.childElementCount;
+            });
+        }
+
+        function makeCard(video, thumbClass, titleClass, subClass, detail = '') {
             const wrap = document.createElement('div');
             wrap.className = 'card';
             wrap.innerHTML = `
@@ -316,6 +360,7 @@
                     <div>
                         <div class="${titleClass}">${video.title}</div>
                         <div class="${subClass}">${metaLine(video)}</div>
+                        ${detail ? `<div class="${subClass}">${detail}</div>` : ''}
                     </div>
                 </div>
             `;
@@ -325,6 +370,7 @@
 
         function renderGrid() {
             const q = searchEl.value.trim().toLowerCase();
+            setLeaderboardsVisible(!q && activeChip === 'todos');
             const filtered = videos.filter(v => {
                 const matchesQuery = !q || v.title.toLowerCase().includes(q);
                 const matchesChip = activeChip === 'todos' || (v.collections || []).includes(activeChip);
@@ -333,6 +379,51 @@
             gridEl.innerHTML = '';
             filtered.forEach(v => gridEl.appendChild(makeCard(v, 'thumb-wrap', 'card-title', 'card-sub')));
             emptyEl.style.display = filtered.length ? 'none' : 'block';
+        }
+
+        async function renderLeaderboards() {
+            try {
+                const response = await fetch('/api/most-viewed');
+                if (!response.ok) throw new Error(`Mux API returned ${response.status}`);
+                const ranking = await response.json();
+                const metricsById = new Map(ranking.map(item => [item.playbackId, item]));
+                const measuredVideos = videos.map(video => {
+                    const metrics = metricsById.get(video.id);
+                    const views = metrics?.views || 0;
+                    const averageWatchedPercent = views && video.duration
+                        ? Math.min(100, (metrics.totalPlayingTime / 1000 / views / video.duration) * 100)
+                        : null;
+                    return { video, views, averageWatchedPercent };
+                });
+
+                const [popular, engaging, least] = leaderboardSections;
+                measuredVideos
+                    .filter(item => item.views > 0)
+                    .sort((a, b) => b.views - a.views)
+                    .slice(0, 6)
+                    .forEach(item => popular.grid.appendChild(makeCard(item.video, 'thumb-wrap', 'card-title', 'card-sub')));
+
+                measuredVideos
+                    .filter(item => item.views >= 3 && item.averageWatchedPercent !== null)
+                    .sort((a, b) => b.averageWatchedPercent - a.averageWatchedPercent || b.views - a.views)
+                    .slice(0, 6)
+                    .forEach(item => engaging.grid.appendChild(makeCard(
+                        item.video, 'thumb-wrap', 'card-title', 'card-sub',
+                        `${Math.round(item.averageWatchedPercent)}% promedio visto`,
+                    )));
+
+                measuredVideos
+                    .sort((a, b) => a.views - b.views || a.video.title.localeCompare(b.video.title))
+                    .slice(0, 6)
+                    .forEach(item => least.grid.appendChild(makeCard(
+                        item.video, 'thumb-wrap', 'card-title', 'card-sub',
+                        `${item.views.toLocaleString('es-AR')} ${item.views === 1 ? 'vista' : 'vistas'}`,
+                    )));
+
+                setLeaderboardsVisible(!searchEl.value.trim() && activeChip === 'todos');
+            } catch (error) {
+                console.warn('No se pudieron cargar las secciones de popularidad:', error);
+            }
         }
 
         searchEl.addEventListener('input', renderGrid);
@@ -373,6 +464,7 @@
             gridView.style.display = 'none';
             watchView.style.display = 'block';
             chipsEl.style.display = 'none';
+            setLeaderboardsVisible(false);
             window.scrollTo({ top: 0 });
             if (pushState) history.pushState({ v: video.id }, '', `#v=${video.id}`);
         }
@@ -382,6 +474,7 @@
             watchView.style.display = 'none';
             gridView.style.display = 'block';
             chipsEl.style.display = 'flex';
+            setLeaderboardsVisible(!searchEl.value.trim() && activeChip === 'todos');
             if (pushState) history.pushState({}, '', location.pathname);
         }
 
@@ -395,6 +488,7 @@
         // ── Init ──
         renderChips();
         renderGrid();
+        renderLeaderboards();
         const initialId = new URLSearchParams(location.hash.slice(1)).get('v');
         const initialVideo = initialId && videos.find(v => v.id === initialId);
         if (initialVideo) openWatch(initialVideo, false);
