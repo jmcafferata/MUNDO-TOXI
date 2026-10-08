@@ -106,7 +106,7 @@
             bottom: calc(60px + env(safe-area-inset-bottom, 0px));
             right: 24px;
             z-index: 15;
-            max-width: min(320px, calc(100% - 48px));
+            width: min(320px, calc(100% - 48px));
             padding: 14px 18px;
             text-align: right;
             background: rgba(0,0,0,0.72);
@@ -118,6 +118,7 @@
             flex-direction: column;
             gap: 4px;
         }
+        .promo-img { width: 100%; height: auto; display: block; border-radius: 2px; margin-bottom: 6px; }
         .promo-tag { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.25em; color: rgba(255,255,255,0.6); }
         .promo-title { font-size: 1.05rem; font-weight: 700; text-transform: uppercase; line-height: 1.2; }
         .promo-when { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.85); }
@@ -202,6 +203,7 @@
             </div>
         </div>
         <div id="promo">
+            <img class="promo-img" src="/detras%20de%20las%20risas%20pop%20art%20rectangulo.jpg" alt="TOXI: Detrás de las risas" />
             <div class="promo-tag">Estreno absoluto</div>
             <div class="promo-title">TOXI: Detrás de las risas</div>
             <div class="promo-when">Este domingo a las 18 y a las 20</div>
