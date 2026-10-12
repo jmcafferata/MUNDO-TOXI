@@ -9,6 +9,7 @@
     <meta property="og:description" content="Detrás de las Risas — película de TOXI Media." />
     <meta property="og:image" content="/detras%20de%20las%20risas%20pop%20art%20rectangulo.jpg" />
     <link rel="icon" href="/favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@0/+esm"></script>
     <style>
@@ -58,6 +59,33 @@
         @keyframes bgDrift {
             0%   { transform: scale(1) translate(0, 0); }
             100% { transform: scale(1.08) translate(-1.5%, 1%); }
+        }
+
+        .bg-video-container {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .bg-video-player {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            --media-object-fit: cover;
+            --media-background-color: transparent;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            pointer-events: none;
+        }
+        .bg-video-player.active { opacity: 0.4; }
+        .bg-video-player::part(control-bar),
+        .bg-video-player::part(play-button),
+        .bg-video-player::part(center-controls),
+        .bg-video-player::part(loading-indicator) {
+            display: none !important;
         }
 
         .dvd-overlay {
@@ -413,6 +441,10 @@
     <!-- MENÚ DVD -->
     <div id="dvd-container">
         <div class="dvd-bg"></div>
+        <div class="bg-video-container">
+            <mux-player id="bg-player-1" class="bg-video-player" stream-type="on-demand" muted autoplay></mux-player>
+            <mux-player id="bg-player-2" class="bg-video-player" stream-type="on-demand" muted autoplay></mux-player>
+        </div>
         <div class="dvd-overlay"></div>
         <a href="/main.html" class="back-link">&larr; Volver a TOXI</a>
 
@@ -528,6 +560,43 @@
         };
         let lastSubmenu = null;
 
+        // ── Cortes aleatorios de fondo ──
+        const bgPlayers = [document.getElementById('bg-player-1'), document.getElementById('bg-player-2')];
+        const BG_MAX_START = 1440; // la película dura más que el inicio de "Cierre"
+        let bgIndex = 0;
+        let bgTimer = null;
+
+        function playRandomBgClip() {
+            const prev = bgPlayers[bgIndex];
+            bgIndex = (bgIndex + 1) % 2;
+            const next = bgPlayers[bgIndex];
+            const startTime = Math.floor(Math.random() * (BG_MAX_START - 5)) + 5;
+
+            if (next.getAttribute('playback-id') !== PLAYBACK_ID) next.setAttribute('playback-id', PLAYBACK_ID);
+            next.setAttribute('start-time', startTime);
+            next.muted = true;
+            next.volume = 0;
+
+            const swap = () => {
+                next.classList.add('active');
+                prev.classList.remove('active');
+                setTimeout(() => { if (!prev.classList.contains('active')) prev.pause(); }, 1500);
+            };
+            const p = next.play();
+            if (p && typeof p.then === 'function') p.then(swap).catch(swap);
+            else swap();
+        }
+        function startBackground() {
+            clearInterval(bgTimer);
+            playRandomBgClip();
+            bgTimer = setInterval(playRandomBgClip, 8000);
+        }
+        function stopBackground() {
+            clearInterval(bgTimer);
+            bgTimer = null;
+            bgPlayers.forEach(p => { p.pause(); p.classList.remove('active'); });
+        }
+
         // ── Menú ──
         function activate(el, fn) {
             el.addEventListener('click', fn);
@@ -637,6 +706,7 @@
         }
 
         function playMovie(startAt = 0) {
+            stopBackground();
             dvdContainer.style.display = 'none';
             playerView.classList.add('active');
             if (player.getAttribute('playback-id') !== PLAYBACK_ID) {
@@ -656,6 +726,7 @@
             clearTimeout(uiTimer);
             if (document.fullscreenElement) document.exitFullscreen?.();
             dvdContainer.style.display = 'flex';
+            startBackground();
         }
 
         function jumpScene(dir) {
@@ -717,6 +788,8 @@
             }, 3000);
         }
         ['mousemove', 'touchstart', 'click'].forEach(ev => playerView.addEventListener(ev, showUI));
+
+        startBackground();
     </script>
 </body>
 </html>
