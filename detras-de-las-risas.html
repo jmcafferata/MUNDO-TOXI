@@ -625,12 +625,14 @@
         // ── Escenas ──
         const sceneGrid = document.getElementById('scene-grid');
         sceneGrid.innerHTML = SCENES.map((s, i) => {
-            const thumb = s.start == null
-                ? COVER
-                : `https://image.mux.com/${PLAYBACK_ID}/thumbnail.png?width=640&time=${Math.max(s.start, 5)}`;
+            const from = Math.max(s.start, 5);
+            const base = `https://image.mux.com/${PLAYBACK_ID}`;
+            const still = `${base}/thumbnail.png?width=640&time=${from}`;
+            const gif = `${base}/animated.gif?width=320&start=${from}&end=${from + 6}&fps=8`;
             return `
                 <div class="scene-card" data-index="${i}" role="button" tabindex="0" aria-label="Ir a la escena ${s.title}">
-                    <img class="scene-thumb" src="${thumb}" alt="${s.title}" loading="lazy" />
+                    <img class="scene-thumb" src="${gif}" alt="${s.title}" loading="lazy"
+                         onerror="this.onerror=null;this.src='${still}'" />
                     <div class="scene-info">
                         <div class="scene-num">Escena ${i + 1}</div>
                         <div class="scene-title">${s.title}</div>
