@@ -63,7 +63,6 @@
             --media-object-fit: cover;
             --media-background-color: transparent;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out;
             pointer-events: none;
         }
         .bg-video-player.active { opacity: 0.4; }
@@ -91,26 +90,23 @@
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             padding: 40px;
             text-align: center;
             overflow-y: auto;
         }
 
-        .dvd-header {
-            margin-top: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .dvd-cover {
-            width: min(320px, 60vw);
-            max-height: 38vh;
-            object-fit: contain;
+        .bounce-logo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: min(260px, 50vw);
             height: auto;
             display: block;
+            z-index: 2;
+            pointer-events: none;
+            will-change: transform;
             filter: drop-shadow(0 4px 15px rgba(0,0,0,0.8));
         }
 
@@ -432,13 +428,10 @@
             <mux-player id="bg-player-2" class="bg-video-player" stream-type="on-demand" muted autoplay></mux-player>
         </div>
         <div class="dvd-overlay"></div>
+        <img src="/logo%20detras%20de%20las%20risas.png" alt="Detrás de las Risas" class="bounce-logo" id="bounce-logo" />
         <a href="/main.html" class="back-link">&larr; Volver a TOXI</a>
 
         <div class="dvd-content">
-            <div class="dvd-header">
-                <img src="/logo%20detras%20de%20las%20risas.png" alt="Detrás de las Risas" class="dvd-cover" />
-            </div>
-
             <div class="dvd-menu-wrapper">
                 <div class="dvd-menu-group" id="main-dvd-menu">
                     <div class="dvd-menu-item" id="menu-play" role="button" tabindex="0">Reproducir película</div>
@@ -565,7 +558,7 @@
             const swap = () => {
                 next.classList.add('active');
                 prev.classList.remove('active');
-                setTimeout(() => { if (!prev.classList.contains('active')) prev.pause(); }, 1500);
+                prev.pause();
             };
             const p = next.play();
             if (p && typeof p.then === 'function') p.then(swap).catch(swap);
@@ -575,11 +568,43 @@
             clearInterval(bgTimer);
             playRandomBgClip();
             bgTimer = setInterval(playRandomBgClip, 8000);
+            startBounce();
         }
         function stopBackground() {
             clearInterval(bgTimer);
             bgTimer = null;
             bgPlayers.forEach(p => { p.pause(); p.classList.remove('active'); });
+            stopBounce();
+        }
+
+        // ── Logo rebotando estilo DVD (velocidad constante, sin física) ──
+        const bounceLogo = document.getElementById('bounce-logo');
+        const BOUNCE_SPEED = 110; // px/s por eje
+        let bx = 40, by = 40, vx = BOUNCE_SPEED, vy = BOUNCE_SPEED;
+        let bounceRaf = null, bounceLast = 0;
+
+        function bounceStep(now) {
+            const dt = Math.min((now - bounceLast) / 1000, 0.1);
+            bounceLast = now;
+            const maxX = dvdContainer.clientWidth - bounceLogo.offsetWidth;
+            const maxY = dvdContainer.clientHeight - bounceLogo.offsetHeight;
+            bx += vx * dt;
+            by += vy * dt;
+            if (bx <= 0) { bx = 0; vx = Math.abs(vx); }
+            else if (bx >= maxX) { bx = Math.max(maxX, 0); vx = -Math.abs(vx); }
+            if (by <= 0) { by = 0; vy = Math.abs(vy); }
+            else if (by >= maxY) { by = Math.max(maxY, 0); vy = -Math.abs(vy); }
+            bounceLogo.style.transform = `translate(${bx}px, ${by}px)`;
+            bounceRaf = requestAnimationFrame(bounceStep);
+        }
+        function startBounce() {
+            if (bounceRaf) return;
+            bounceLast = performance.now();
+            bounceRaf = requestAnimationFrame(bounceStep);
+        }
+        function stopBounce() {
+            cancelAnimationFrame(bounceRaf);
+            bounceRaf = null;
         }
 
         // ── Menú ──
