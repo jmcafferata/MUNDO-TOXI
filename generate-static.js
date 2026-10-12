@@ -155,6 +155,7 @@ const sitemapUrls = [
     '/venado-tuerto-el-musical',
     '/nota-constante',
     '/otro-dia-en-la-red',
+    '/detras-de-las-risas',
     '/xplora-night-live',
     '/ariana-grande',
     '/mers-vlog',

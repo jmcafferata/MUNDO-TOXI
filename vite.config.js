@@ -87,6 +87,7 @@ export default defineConfig({
         trabajos: resolve(__dirname, 'trabajos.html'),
         notaConstante: resolve(__dirname, 'nota-constante.html'),
         otroDiaEnLaRed: resolve(__dirname, 'otro-dia-en-la-red.html'),
+        detrasDeLasRisas: resolve(__dirname, 'detras-de-las-risas.html'),
         audiont: resolve(__dirname, 'audiont.html'),
         creditos: resolve(__dirname, 'creditos.html'),
         radio: resolve(__dirname, 'radio.html'),
