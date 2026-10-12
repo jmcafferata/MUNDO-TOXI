@@ -69,6 +69,10 @@
       "destination": "/otro-dia-en-la-red.html"
     },
     {
+      "source": "/detras-de-las-risas",
+      "destination": "/detras-de-las-risas.html"
+    },
+    {
       "source": "/xplora-night-live",
       "destination": "/xplora-night-live.html"
     },
