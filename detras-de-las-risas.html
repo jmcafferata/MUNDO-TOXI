@@ -47,20 +47,6 @@
             justify-content: center;
         }
 
-        .dvd-bg {
-            position: absolute;
-            inset: -4%;
-            background: url('/detras%20de%20las%20risas%20pop%20art%20rectangulo.jpg') center / cover no-repeat;
-            opacity: 0.28;
-            filter: blur(2px);
-            animation: bgDrift 30s infinite alternate ease-in-out;
-            z-index: 1;
-        }
-        @keyframes bgDrift {
-            0%   { transform: scale(1) translate(0, 0); }
-            100% { transform: scale(1.08) translate(-1.5%, 1%); }
-        }
-
         .bg-video-container {
             position: absolute;
             inset: 0;
@@ -440,7 +426,6 @@
 
     <!-- MENÚ DVD -->
     <div id="dvd-container">
-        <div class="dvd-bg"></div>
         <div class="bg-video-container">
             <mux-player id="bg-player-1" class="bg-video-player" stream-type="on-demand" muted autoplay></mux-player>
             <mux-player id="bg-player-2" class="bg-video-player" stream-type="on-demand" muted autoplay></mux-player>
@@ -539,14 +524,14 @@
         const MOVIE_TITLE = 'Detrás de las Risas';
         const COVER = '/detras%20de%20las%20risas%20pop%20art%20rectangulo.jpg';
 
-        // start = segundo de inicio de cada escena (null = sin marcar).
+        // start = segundo de inicio de cada escena; thumb = segundo desde el cual se muestra la miniatura animada.
         const SCENES = [
-            { title: 'Orígenes',  start: 0 },     // 0:00
-            { title: 'Pandemia',  start: 572 },   // 9:32
-            { title: 'Cine',      start: 818 },   // 13:38
-            { title: 'Ascensor',  start: 1047 },  // 17:27
-            { title: 'Tech',      start: 1118 },  // 18:38
-            { title: 'Cierre',    start: 1480 },  // 24:40
+            { title: 'Orígenes',  start: 0,    thumb: 80 },    // 0:00 / 1:20
+            { title: 'Pandemia',  start: 572,  thumb: 602 },   // 9:32 / 10:02
+            { title: 'Cine',      start: 818,  thumb: 848 },   // 13:38 / 14:08
+            { title: 'Ascensor',  start: 1047, thumb: 1077 },  // 17:27 / 17:57
+            { title: 'Tech',      start: 1118, thumb: 1118 },  // 18:38
+            { title: 'Cierre',    start: 1480, thumb: 1480 },  // 24:40
         ];
 
         const dvdContainer = document.getElementById('dvd-container');
@@ -625,7 +610,7 @@
         // ── Escenas ──
         const sceneGrid = document.getElementById('scene-grid');
         sceneGrid.innerHTML = SCENES.map((s, i) => {
-            const from = Math.max(s.start, 5);
+            const from = s.thumb;
             const base = `https://image.mux.com/${PLAYBACK_ID}`;
             const still = `${base}/thumbnail.png?width=640&time=${from}`;
             const gif = `${base}/animated.gif?width=320&start=${from}&end=${from + 6}&fps=8`;
