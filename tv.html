@@ -330,6 +330,12 @@
             if (!slot || !slot.item) return;
             currentSlot = slot;
 
+            const normalizedTitle = String(slot.item.title || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+            if (normalizedTitle.includes('detras de las risas')) promoEl.remove();
+
             const targetId = slot.item.id;
             const targetSeconds = Math.max(0, slot.offsetMs / 1000);
 
