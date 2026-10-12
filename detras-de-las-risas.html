@@ -106,11 +106,12 @@
         }
 
         .dvd-cover {
-            width: min(520px, 80vw);
+            width: min(320px, 60vw);
+            max-height: 38vh;
+            object-fit: contain;
             height: auto;
             display: block;
-            border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.8));
         }
 
         .dvd-menu-wrapper {
@@ -435,7 +436,7 @@
 
         <div class="dvd-content">
             <div class="dvd-header">
-                <img src="/detras%20de%20las%20risas%20pop%20art%20rectangulo.jpg" alt="Detrás de las Risas" class="dvd-cover" />
+                <img src="/logo%20detras%20de%20las%20risas.png" alt="Detrás de las Risas" class="dvd-cover" />
             </div>
 
             <div class="dvd-menu-wrapper">
@@ -522,7 +523,6 @@
     <script>
         const PLAYBACK_ID = 'Zt024bfBG5LGLnsYHY9VrMe2LbvRlInCPZBlGnhTrEWU';
         const MOVIE_TITLE = 'Detrás de las Risas';
-        const COVER = '/detras%20de%20las%20risas%20pop%20art%20rectangulo.jpg';
 
         // start = segundo de inicio de cada escena; thumb = segundo desde el cual se muestra la miniatura animada.
         const SCENES = [
