@@ -79,6 +79,54 @@ body {
   text-decoration: none;
 }
 
+.entry-feature-banner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 1080px);
+  height: clamp(180px, 28vw, 380px);
+  margin: 0 auto;
+  overflow: hidden;
+  background: #111;
+  text-decoration: none;
+}
+
+.entry-feature-thumb {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.entry-feature-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.entry-feature-logo {
+  position: absolute;
+  z-index: 1;
+  width: min(62%, 500px);
+  max-height: 68%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.75));
+}
+
+.entry-feature-banner:hover .entry-feature-thumb,
+.entry-feature-banner:focus-visible .entry-feature-thumb {
+  transform: scale(1.03);
+}
+
+.entry-feature-banner:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
 .elo-banner img {
   width: 100%;
   height: 100%;
@@ -1326,4 +1374,3 @@ canvas {
   letter-spacing: 6px;
   box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
 }
-
