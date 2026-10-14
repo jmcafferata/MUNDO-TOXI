@@ -83,6 +83,7 @@ export default defineConfig({
         noticias: resolve(__dirname, 'noticias.html'),
         zapping: resolve(__dirname, 'zapping.html'),
         privacyPolicy: resolve(__dirname, 'privacy-policy.html'),
+        about: resolve(__dirname, 'about.html'),
         venadoTuertoElMusical: resolve(__dirname, 'venado-tuerto-el-musical.html'),
         trabajos: resolve(__dirname, 'trabajos.html'),
         notaConstante: resolve(__dirname, 'nota-constante.html'),
