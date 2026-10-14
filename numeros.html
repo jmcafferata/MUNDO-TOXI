@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Números — TOXI Media</title>
+    <meta property="og:title" content="Números — TOXI Media" />
+    <meta property="og:description" content="Cuántas horas de contenido tiene TOXI Media, por categoría." />
+    <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+    <link rel="icon" href="/favicon.ico" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0f0f0f;
+            --surface: #181818;
+            --border: #303030;
+            --text: #f1f1f1;
+            --muted: #aaaaaa;
+            --muted-dim: #717171;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            min-height: 100dvh;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            padding: 10px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo-link { display: flex; align-items: center; text-decoration: none; }
+        .logo-link img { height: 20px; }
+
+        main { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+        .hero { text-align: center; margin-bottom: 56px; }
+        .hero-label { color: var(--muted); font-size: 14px; letter-spacing: .12em; text-transform: uppercase; }
+        .hero-hours { font-size: clamp(64px, 16vw, 144px); font-weight: 700; line-height: 1.05; margin: 8px 0; }
+        .hero-sub { color: var(--muted); font-size: 18px; }
+
+        h2 { font-size: 20px; margin: 48px 0 6px; }
+        .note { color: var(--muted-dim); font-size: 13px; margin-bottom: 18px; }
+
+        .rows { display: flex; flex-direction: column; gap: 10px; }
+        .row {
+            display: grid;
+            grid-template-columns: 180px 1fr 110px;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+        .row-name { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .row-name small { display: block; color: var(--muted-dim); font-size: 12px; }
+        .bar { height: 8px; background: #262626; border-radius: 4px; overflow: hidden; }
+        .bar > span { display: block; height: 100%; background: #fff; border-radius: 4px; }
+        .row-value { text-align: right; font-variant-numeric: tabular-nums; font-size: 15px; }
+
+        @media (max-width: 600px) {
+            .row { grid-template-columns: 1fr 90px; }
+            .bar { grid-column: 1 / -1; order: 3; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a class="logo-link" href="/"><img src="/toxi-logo-white.png" alt="TOXI Media" /></a>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-label">Contenido total</div>
+            <div class="hero-hours" id="total-hours">—</div>
+            <div class="hero-sub" id="total-sub"></div>
+        </section>
+
+        <h2>Por tipo</h2>
+        <p class="note">Cada contenido tiene un solo tipo, así que estas horas suman el total.</p>
+        <div class="rows" id="by-type"></div>
+
+        <h2>Por colección</h2>
+        <p class="note">Un contenido puede pertenecer a varias colecciones, por lo que estas horas se solapan y no suman el total.</p>
+        <div class="rows" id="by-collection"></div>
+    </main>
+
+    <script type="module" src="./src/analytics.js"></script>
+    <script type="module">
+        import { CONTENT_SOURCE } from './src/content.js';
+
+        const videos = CONTENT_SOURCE.filter(v => v.duration > 0);
+        const totalSeconds = videos.reduce((sum, v) => sum + v.duration, 0);
+
+        const TYPE_LABELS = {
+            film: 'Películas',
+            short: 'Cortos',
+            series: 'Series',
+            event: 'Eventos',
+            live: 'En vivo',
+            other: 'Otros',
+        };
+
+        const fmtHours = (s) => (s / 3600).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const fmtHM = (s) => {
+            const h = Math.floor(s / 3600);
+            const m = Math.round((s % 3600) / 60);
+            return `${h} h ${String(m).padStart(2, '0')} min`;
+        };
+        const label = (key) => TYPE_LABELS[key] || key.replace(/-/g, ' ').replace(/^./, c => c.toUpperCase());
+
+        const group = (keysOf) => {
+            const map = new Map();
+            videos.forEach(v => keysOf(v).forEach(key => {
+                const entry = map.get(key) || { count: 0, seconds: 0 };
+                entry.count += 1;
+                entry.seconds += v.duration;
+                map.set(key, entry);
+            }));
+            return [...map.entries()].sort((a, b) => b[1].seconds - a[1].seconds);
+        };
+
+        const render = (containerId, entries, nameOf) => {
+            const max = entries.length ? entries[0][1].seconds : 1;
+            document.getElementById(containerId).innerHTML = entries.map(([key, e]) => `
+                <div class="row">
+                    <div class="row-name">${nameOf(key)}<small>${e.count} contenido${e.count === 1 ? '' : 's'}</small></div>
+                    <div class="bar"><span style="width:${(e.seconds / max * 100).toFixed(1)}%"></span></div>
+                    <div class="row-value">${fmtHours(e.seconds)} h</div>
+                </div>`).join('');
+        };
+
+        document.getElementById('total-hours').textContent = `${fmtHours(totalSeconds)} h`;
+        document.getElementById('total-sub').textContent = `${videos.length} contenidos · ${fmtHM(totalSeconds)}`;
+
+        render('by-type', group(v => [v.type || 'other']), label);
+        render('by-collection', group(v => v.collections || []), label);
+    </script>
+</body>
+</html>

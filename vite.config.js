@@ -109,6 +109,7 @@ export default defineConfig({
         content: resolve(__dirname, 'content.html'),
         player: resolve(__dirname, 'player.html'),
         laberintoNatal: resolve(__dirname, 'laberinto-natal.html'),
+        numeros: resolve(__dirname, 'numeros.html'),
       },
     },
   },
