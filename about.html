@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — TOXI Media</title>
+  <meta name="description" content="TOXI Media is a media content platform: an ecosystem that showcases a library of content. A product by Juan Manuel Cafferata and Fabrizio Sanguinetti." />
+  <link rel="icon" href="/favicon.ico" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="About — TOXI Media" />
+  <meta property="og:description" content="A media content platform: an ecosystem that showcases a library of content." />
+  <meta property="og:site_name" content="TOXI Media" />
+  <style>
+    @font-face {
+      font-family: 'Helvetica Now';
+      src: url('/HelveticaNowDisplay-Bold.otf') format('opentype');
+      font-weight: bold;
+    }
+    @font-face {
+      font-family: 'Helvetica Now';
+      src: url('/HelveticaNowDisplay-Light.otf') format('opentype');
+      font-weight: 300;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: #000;
+      color: #fff;
+      font-family: 'Helvetica Now', Helvetica, Arial, sans-serif;
+      font-weight: 300;
+      min-height: 100%;
+    }
+
+    header { padding: 40px 48px 0; }
+    header a {
+      font-weight: bold;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #fff;
+      text-decoration: none;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+    header a:hover { opacity: 1; }
+
+    main {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 80px 32px 120px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-weight: bold;
+      font-size: clamp(2.2rem, 6vw, 3.6rem);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      margin-bottom: 32px;
+    }
+
+    .lead {
+      font-size: 1.35rem;
+      line-height: 1.5;
+      color: #fff;
+      margin-bottom: 56px;
+    }
+
+    section { margin-bottom: 56px; }
+
+    h2 {
+      font-weight: bold;
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #222;
+    }
+
+    p {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: #bbb;
+    }
+    p + p { margin-top: 16px; }
+
+    .formats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .formats span {
+      border: 1px solid #333;
+      padding: 6px 14px;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #ccc;
+    }
+
+    .link {
+      display: inline-block;
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid #555;
+      padding-bottom: 2px;
+      transition: border-color 0.2s;
+    }
+    .link:hover { border-color: #fff; }
+
+    .cta {
+      border: 1px solid #333;
+      padding: 32px;
+    }
+    .cta p { color: #ddd; }
+    .cta a {
+      display: inline-block;
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #fff;
+      text-decoration: none;
+      border-bottom: 1px solid #fff;
+      padding-bottom: 2px;
+      transition: opacity 0.2s;
+    }
+    .cta a:hover { opacity: 0.6; }
+
+    footer {
+      text-align: center;
+      padding: 40px 32px 60px;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: #555;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 28px 24px 0; }
+      main { padding: 56px 24px 80px; }
+      .cta { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/">← TOXI MEDIA</a>
+</header>
+
+<main>
+  <p class="tag">About</p>
+  <h1>What is TOXI Media?</h1>
+  <p class="lead">TOXI Media is a media content platform: an ecosystem built to showcase a library of content.</p>
+
+  <section>
+    <h2>The ecosystem</h2>
+    <p>Film, podcasts, photography, text, virtual reality, live events, software and music all live in one place. Every piece in the library has its own space, and every space is connected to the rest of the ecosystem.</p>
+    <p>TOXI is a studio, a channel and an access system at once. The platform is where the library is discovered, watched, listened to and experienced.</p>
+    <div class="formats">
+      <span>Film</span>
+      <span>Podcast</span>
+      <span>Photo</span>
+      <span>Text</span>
+      <span>VR</span>
+      <span>Events</span>
+      <span>Software</span>
+      <span>Music</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>TOXI University</h2>
+    <p>TOXI University is the learning side of the ecosystem: courses and classes taught by specialists, covering history, technology, culture and new ideas.</p>
+    <a class="link" href="/university">Explore the courses →</a>
+  </section>
+
+  <section>
+    <h2>TOXI TV</h2>
+    <p>TOXI TV is a 24-hour live channel that broadcasts premieres, screenings and conferences in real time. Watch it on the web, on Android TV, iOS and Android.</p>
+    <a class="link" href="/tv">Watch TOXI TV →</a>
+  </section>
+
+  <section>
+    <h2>Who makes it</h2>
+    <p>TOXI Media is a product by Juan Manuel Cafferata and Fabrizio Sanguinetti.</p>
+  </section>
+
+  <section>
+    <h2>Want one for yourself?</h2>
+    <div class="cta">
+      <p>If you want us to build one for you, contact us.</p>
+      <a href="mailto:admin@toxi.media">admin@toxi.media</a>
+    </div>
+  </section>
+</main>
+
+<footer>© TOXI Media — toxi.media</footer>
+
+</body>
+</html>
