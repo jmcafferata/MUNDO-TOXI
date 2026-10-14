@@ -117,6 +117,10 @@
       "destination": "/content.html"
     },
     {
+      "source": "/numeros",
+      "destination": "/numeros.html"
+    },
+    {
       "source": "/player",
       "destination": "/player.html"
     },
