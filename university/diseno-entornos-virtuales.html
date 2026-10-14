@@ -161,29 +161,6 @@
             margin: 0 auto;
         }
 
-        .class-announcement {
-            margin: 2rem auto 3rem;
-            max-width: 620px;
-            padding: 1rem 1.25rem;
-            border: 1px solid rgba(255, 255, 255, .4);
-            background: rgba(255, 255, 255, .08);
-            color: #fff;
-            font-size: 1.05rem;
-            line-height: 1.5;
-        }
-
-        .class-announcement strong {
-            color: #fff;
-            text-transform: uppercase;
-            letter-spacing: .08em;
-            font-size: .85rem;
-        }
-
-        .class-announcement span {
-            color: rgba(255, 255, 255, .75);
-            font-weight: 300;
-        }
-
         .class-recording {
             width: 100%;
             aspect-ratio: 16 / 9;
@@ -735,7 +712,7 @@
                         <div class="countdown-unit"><strong id="countdown-minutes">00</strong><span>minutos</span></div>
                         <div class="countdown-unit"><strong id="countdown-seconds">00</strong><span>segundos</span></div>
                     </div>
-                    <p class="live-status" id="live-status">Martes 13 de octubre · 18:30 h</p>
+                    <p class="live-status" id="live-status">Martes 20 de octubre · 18:30 h</p>
                 </div>
                 <mux-player id="live-player" playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
                     metadata-video-title="Diseño de Entornos Virtuales — Próxima clase (TOXI VR)"
@@ -751,14 +728,6 @@
             <p>Una exploración integral de la percepción, la tecnología y el diseño de experiencias inmersivas.</p>
 
         </header>
-        <div class="class-announcement"><strong>Próxima clase en vivo</strong><br>Martes 13 de
-            octubre · 18:30 h<br><span>La clase pasada vimos iluminación precalculada y bakeo de materiales en objetos. La grabación está disponible mientras la subimos a Mux.</span>
-            <div class="class-recording">
-                <iframe src="https://www.youtube-nocookie.com/embed/Qpf_GX6FqHk"
-                    title="Clase anterior: iluminación precalculada y bakeo de materiales en Unity"
-                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-            </div>
-        </div>
         <div class="instructor-card">
             <h2>Equipo TOXI VR</h2>
             <p>Curso dictado por</p>
@@ -1050,6 +1019,19 @@
             </div>
         </section>
 
+        <section class="free-sample" aria-labelledby="baking-class-title">
+            <p class="free-sample-label">Clase práctica en vivo</p>
+            <h2 id="baking-class-title">Optimización y bakeo de materiales — Nacho Michalowicz</h2>
+            <p style="color:rgba(255,255,255,.65);font-weight:300;line-height:1.5;margin:0 0 1.25rem;">Clase práctica
+                en vivo sobre optimización, iluminación precalculada y bakeo de materiales en objetos, a cargo de
+                Nacho Michalowicz.</p>
+            <div class="class-recording">
+                <iframe src="https://www.youtube-nocookie.com/embed/Qpf_GX6FqHk"
+                    title="Diseño de entornos virtuales: optimización e introducción al bakeo de materiales"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </section>
+
         <section class="free-sample" aria-labelledby="lighting-class-title">
             <p class="free-sample-label">Clase práctica en vivo · Parte <span id="lighting-part-num">1</span> de 2
             </p>
@@ -1058,6 +1040,18 @@
                 sobre iluminación en Unity, con Nacho Michalowicz.</p>
             <mux-player id="lighting-player" playback-id="QqLyTeWoopNADlwAYMezmMa02x991J0101JpseHs02WNwGA"
                 metadata-video-title="Iluminación en Unity I con Nacho Michalowicz (TOXI VR)"
+                accent-color="#ffffff" controls playsinline></mux-player>
+        </section>
+
+        <section class="free-sample" aria-labelledby="exteriors-class-title">
+            <p class="free-sample-label">Clase práctica en vivo</p>
+            <h2 id="exteriors-class-title">Introducción al modelado de exteriores: edificio parisino — Nacho
+                Michalowicz</h2>
+            <p style="color:rgba(255,255,255,.65);font-weight:300;line-height:1.5;margin:0 0 1.25rem;">Clase práctica
+                en vivo sobre modelado de exteriores: construcción de un edificio parisino, a cargo de Nacho
+                Michalowicz.</p>
+            <mux-player id="exteriors-player" playback-id="gSLvDjrc01DoxIEyJIWRar00cQN5yKdTjplJ8x7xpemCU"
+                metadata-video-title="Introducción al modelado de exteriores: edificio parisino con Nacho Michalowicz (TOXI VR)"
                 accent-color="#ffffff" controls playsinline></mux-player>
         </section>
 
@@ -1085,7 +1079,7 @@
         const livePlayer = document.getElementById('live-player');
         const liveCountdown = document.getElementById('live-countdown');
         const liveStatus = document.getElementById('live-status');
-        const classDate = new Date('2026-10-13T18:30:00-03:00');
+        const classDate = new Date('2026-10-20T18:30:00-03:00');
         const countdownElements = {
             days: document.getElementById('countdown-days'),
             hours: document.getElementById('countdown-hours'),
@@ -1113,7 +1107,7 @@
                     liveStatus.textContent = 'En vivo ahora';
                     return;
                 }
-                liveStatus.textContent = 'La clase comienza el martes 13 de octubre a las 18:30 h';
+                liveStatus.textContent = 'La clase comienza el martes 20 de octubre a las 18:30 h';
             } catch (error) {
                 console.error('No se pudo consultar el estado del live:', error);
             }
