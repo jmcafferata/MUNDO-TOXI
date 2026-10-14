@@ -41,6 +41,10 @@
       "destination": "/privacy-policy.html"
     },
     {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
       "source": "/trabajos",
       "destination": "/trabajos.html"
     },
@@ -147,6 +151,10 @@
     {
       "source": "/laberinto-natal",
       "destination": "/laberinto-natal.html"
+    },
+    {
+      "source": "/university",
+      "destination": "/university.html"
     },
     {
       "source": "/university/historia-argentina",
