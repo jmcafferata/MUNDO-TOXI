@@ -1035,10 +1035,10 @@
         const originalLabel = submitBtn.textContent;
         submitBtn.textContent = 'Generando link de pago…';
         try {
-          const res = await fetch('/api/audiont-colaborar', {
+          const res = await fetch('/api/create-preference', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount }),
+            body: JSON.stringify({ purpose: 'audiont-colaboracion', amount }),
           });
           const data = await res.json().catch(() => ({}));
           if (!res.ok || !data.initPoint) throw new Error(data.error || 'No se pudo generar el link de pago');
