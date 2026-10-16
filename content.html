@@ -47,12 +47,14 @@
 
         .search-wrap {
             flex: 1;
+            min-width: 0;
             max-width: 640px;
             margin: 0 auto;
             display: flex;
         }
         #search {
             flex: 1;
+            min-width: 0;
             background: #121212;
             border: 1px solid var(--border);
             border-right: none;
@@ -168,6 +170,7 @@
         .watch-layout { display: flex; gap: 24px; align-items: flex-start; }
         .watch-main { flex: 1; min-width: 0; }
         #player-box {
+            position: relative;
             width: 100%;
             aspect-ratio: 16 / 9;
             background: #000;
@@ -202,6 +205,7 @@
 
         @media (max-width: 980px) {
             .watch-layout { flex-direction: column; }
+            .watch-main { width: 100%; }
             .watch-side { width: 100%; flex-direction: column; }
         }
         @media (max-width: 640px) {
@@ -210,6 +214,116 @@
             #grid-view, #watch-view { padding: 14px; }
             #grid { grid-template-columns: 1fr 1fr; gap: 18px 10px; }
             #popular-grid, #engaging-grid, #least-grid { grid-template-columns: 1fr 1fr; gap: 18px 10px; }
+        }
+
+        /* ── Créditos ── */
+        .credits-pill {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: var(--surface);
+            color: var(--text);
+            font: inherit;
+            font-size: 0.82rem;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .credits-pill:hover { background: #2a2a2a; }
+        .credits-pill.low { border-color: #f5a524; }
+        .credits-pill.empty { border-color: #ff4e45; color: #ff8a84; }
+        .credits-pill-time { color: var(--muted); font-variant-numeric: tabular-nums; }
+
+        #paywall {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(6px);
+        }
+        #paywall[hidden] { display: none; }
+
+        .buy-card { width: 100%; max-width: 520px; margin: auto; text-align: center; }
+        .buy-card h2 { font-size: 1.2rem; font-weight: 600; margin-bottom: 8px; }
+        .buy-card p { color: var(--muted); font-size: 0.86rem; line-height: 1.45; }
+        .packs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+        .pack-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 14px 8px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--surface);
+            color: var(--text);
+            font: inherit;
+            cursor: pointer;
+        }
+        .pack-btn:hover:not(:disabled) { border-color: #3ea6ff; background: #1f1f1f; }
+        .pack-btn:disabled { opacity: 0.6; cursor: wait; }
+        .pack-credits { font-size: 1.4rem; font-weight: 700; }
+        .pack-label { color: var(--muted); font-size: 0.74rem; }
+        .pack-price { margin-top: 6px; color: #3ea6ff; font-size: 0.92rem; font-weight: 600; }
+        .buy-error { min-height: 1.2em; margin-top: 10px; color: #ff6b6b; font-size: 0.82rem; }
+        .buy-note { margin-top: 4px; color: var(--muted-dim) !important; font-size: 0.74rem !important; }
+
+        #buy-dialog {
+            width: min(560px, calc(100% - 28px));
+            margin: auto;
+            padding: 24px 20px 18px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: #141414;
+            color: var(--text);
+        }
+        #buy-dialog::backdrop { background: rgba(0, 0, 0, 0.7); }
+        .dialog-close {
+            display: block;
+            margin: 6px auto 0;
+            padding: 6px 14px;
+            border: none;
+            background: none;
+            color: var(--muted);
+            font: inherit;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+        .dialog-close:hover { color: var(--text); }
+
+        #toast {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            z-index: 100;
+            max-width: calc(100% - 32px);
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: #f1f1f1;
+            color: #0f0f0f;
+            font-size: 0.88rem;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+            transform: translateX(-50%);
+        }
+        #toast[hidden] { display: none; }
+
+        @media (max-width: 640px) {
+            .credits-pill { padding: 6px 10px; }
+            .credits-pill-label { display: none; }
+            #player-box.blocked { aspect-ratio: auto; min-height: 330px; }
+            #paywall { padding: 14px; }
+            .packs { gap: 6px; }
+            .pack-btn { padding: 10px 4px; }
+            .pack-credits { font-size: 1.15rem; }
         }
     </style>
 </head>
@@ -223,6 +337,11 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </div>
         </div>
+        <button class="credits-pill" id="credits-pill" type="button" aria-haspopup="dialog">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+            <span><span id="credits-count">10</span><span class="credits-pill-label"> créditos</span></span>
+            <span class="credits-pill-time" id="credits-time"></span>
+        </button>
     </header>
 
     <div id="chips"></div>
@@ -263,6 +382,7 @@
                 </button>
                 <div id="player-box">
                     <mux-player id="player" stream-type="on-demand" autoplay preload="auto" default-hidden-captions></mux-player>
+                    <div id="paywall" hidden></div>
                 </div>
                 <h1 id="watch-title"></h1>
                 <div id="watch-sub"></div>
@@ -271,9 +391,14 @@
         </div>
     </div>
 
+    <dialog id="buy-dialog"></dialog>
+    <div id="toast" role="status" aria-live="polite" hidden></div>
+
     <script type="module" src="./src/analytics.js"></script>
     <script type="module">
         import { CONTENT } from './src/content.js';
+        import { createWallet } from './src/credits.js';
+        import { CREDIT_PACKS, DAILY_FREE_CREDITS, SECONDS_PER_CREDIT } from './src/credits-config.mjs';
 
         const videos = CONTENT.filter(v => v.title && v.id);
 
@@ -438,6 +563,8 @@
         const backBtn = document.getElementById('back-btn');
 
         function openWatch(video, pushState = true) {
+            currentVideo = video;
+            if (wallet.getBalance().canWatch) hidePaywall(); else showPaywall();
             player.setAttribute('playback-id', video.id);
             player.setAttribute('metadata-video-title', video.title);
             watchTitle.textContent = video.title;
@@ -466,10 +593,14 @@
             chipsEl.style.display = 'none';
             setLeaderboardsVisible(false);
             window.scrollTo({ top: 0 });
+            startMeter();
             if (pushState) history.pushState({ v: video.id }, '', `#v=${video.id}`);
         }
 
         function closeWatch(pushState = true) {
+            stopMeter();
+            currentVideo = null;
+            hidePaywall();
             player.removeAttribute('playback-id');
             watchView.style.display = 'none';
             gridView.style.display = 'block';
@@ -485,13 +616,247 @@
             if (video) openWatch(video, false); else closeWatch(false);
         });
 
+        // ── Créditos ──
+        // 1 crédito = 1 minuto de reproducción. El crédito se cobra apenas
+        // arranca cada minuto; al quedarse sin saldo el video se bloquea.
+        const wallet = createWallet();
+        const playerBox = document.getElementById('player-box');
+        const paywallEl = document.getElementById('paywall');
+        const buyDialog = document.getElementById('buy-dialog');
+        const creditsPill = document.getElementById('credits-pill');
+        const creditsCount = document.getElementById('credits-count');
+        const creditsTime = document.getElementById('credits-time');
+        const toastEl = document.getElementById('toast');
+        const RETURN_VIDEO_KEY = 'toxi.credits.returnVideo';
+        const FINAL_PAYMENT_STATUSES = ['rejected', 'cancelled', 'refunded', 'charged_back'];
+        const formatPrice = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format;
+        let currentVideo = null;
+        let blocked = false;
+
+        let toastTimer = null;
+        function showToast(message) {
+            toastEl.textContent = message;
+            toastEl.hidden = false;
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => { toastEl.hidden = true; }, 6000);
+        }
+
+        function creditsText(n) {
+            return `${n} ${n === 1 ? 'crédito' : 'créditos'}`;
+        }
+
+        function renderBalance(balance = wallet.getBalance()) {
+            creditsCount.textContent = balance.credits;
+            const inMinute = balance.secondsLeft > 0;
+            const secs = Math.ceil(balance.secondsLeft);
+            creditsTime.textContent = inMinute ? `· ${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}` : '';
+            creditsPill.classList.toggle('empty', !balance.canWatch);
+            creditsPill.classList.toggle('low', balance.canWatch && balance.credits < 3);
+            creditsPill.title = `${creditsText(balance.credits)} (${balance.free} gratis de hoy, ${balance.paid} comprados)`
+                + (inMinute ? ` — quedan ${secs} s del minuto en curso` : '');
+            if (blocked && balance.canWatch) {
+                // Se recargó el saldo (compra o día nuevo): sacamos el bloqueo y seguimos.
+                hidePaywall();
+                if (currentVideo) player.play?.()?.catch?.(() => {});
+            }
+        }
+
+        // Tarjeta con los paquetes a la venta (se usa en el bloqueo y en el diálogo).
+        function buildBuyCard(title, text, withClose = false) {
+            const card = document.createElement('div');
+            card.className = 'buy-card';
+            card.innerHTML = `
+                <h2></h2>
+                <p class="buy-text"></p>
+                <div class="packs">
+                    ${CREDIT_PACKS.map(pack => `
+                        <button class="pack-btn" type="button" data-pack="${pack.id}">
+                            <span class="pack-credits">${pack.credits}</span>
+                            <span class="pack-label">créditos · ${pack.credits} min</span>
+                            <span class="pack-price">${formatPrice(pack.price)}</span>
+                        </button>`).join('')}
+                </div>
+                <p class="buy-error" role="alert"></p>
+                <p class="buy-note">Pagás con Mercado Pago. Los créditos comprados no vencen.</p>
+                ${withClose ? '<button class="dialog-close" type="button">Cerrar</button>' : ''}
+            `;
+            card.querySelector('h2').textContent = title;
+            card.querySelector('.buy-text').textContent = text;
+            card.querySelectorAll('.pack-btn').forEach(btn => {
+                btn.onclick = () => buyPack(btn.dataset.pack, card);
+            });
+            card.querySelector('.dialog-close')?.addEventListener('click', () => buyDialog.close());
+            return card;
+        }
+
+        async function buyPack(packId, card) {
+            const buttons = card.querySelectorAll('.pack-btn');
+            const errorEl = card.querySelector('.buy-error');
+            buttons.forEach(b => { b.disabled = true; });
+            errorEl.textContent = '';
+            try {
+                const response = await fetch('/api/create-preference', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ purpose: 'creditos', pack: packId, returnPath: location.pathname }),
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok || !data.initPoint) throw new Error(data.error || 'No se pudo iniciar el pago');
+                // Al volver de Mercado Pago reabrimos el video que estaba mirando.
+                if (currentVideo) sessionStorage.setItem(RETURN_VIDEO_KEY, currentVideo.id);
+                else sessionStorage.removeItem(RETURN_VIDEO_KEY);
+                location.href = data.initPoint;
+            } catch (error) {
+                console.error('[TOXI][CREDITOS] error iniciando pago', error);
+                errorEl.textContent = `${error.message}. Probá de nuevo en un momento.`;
+                buttons.forEach(b => { b.disabled = false; });
+            }
+        }
+
+        function showPaywall() {
+            blocked = true;
+            player.pause?.();
+            if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+            paywallEl.replaceChildren(buildBuyCard(
+                'Se terminaron tus créditos',
+                `Cada crédito es 1 minuto de reproducción. Mañana vas a tener ${DAILY_FREE_CREDITS} créditos gratis otra vez, o podés comprar más ahora y seguir mirando.`,
+            ));
+            paywallEl.hidden = false;
+            playerBox.classList.add('blocked');
+        }
+
+        function hidePaywall() {
+            blocked = false;
+            paywallEl.hidden = true;
+            paywallEl.replaceChildren();
+            playerBox.classList.remove('blocked');
+        }
+
+        creditsPill.addEventListener('click', () => {
+            const { credits, free, paid } = wallet.getBalance();
+            buyDialog.replaceChildren(buildBuyCard(
+                `Tenés ${creditsText(credits)}`,
+                `${free} gratis de hoy y ${paid} comprados. Cada crédito es 1 minuto de reproducción y todos los días recibís ${DAILY_FREE_CREDITS} gratis.`,
+                true,
+            ));
+            buyDialog.showModal();
+        });
+        buyDialog.addEventListener('click', event => {
+            if (event.target === buyDialog) buyDialog.close(); // click en el fondo
+        });
+
+        // Medidor de reproducción: solo cuenta tiempo mientras el video avanza
+        // de verdad (no en pausa, cargando ni con la computadora suspendida).
+        const meter = { timer: null, lastWall: 0, lastMediaTime: 0 };
+
+        function startMeter() {
+            if (meter.timer) return;
+            meter.lastWall = performance.now();
+            meter.lastMediaTime = player.currentTime || 0;
+            meter.timer = setInterval(tickMeter, 250);
+        }
+
+        function stopMeter() {
+            clearInterval(meter.timer);
+            meter.timer = null;
+        }
+
+        function tickMeter() {
+            const now = performance.now();
+            const wallDelta = (now - meter.lastWall) / 1000;
+            const mediaTime = player.currentTime || 0;
+            const mediaDelta = Math.abs(mediaTime - meter.lastMediaTime) / (player.playbackRate || 1);
+            meter.lastWall = now;
+            meter.lastMediaTime = mediaTime;
+            if (blocked || player.paused || player.ended || mediaDelta === 0) return;
+            // Si el temporizador se demoró (pestaña en segundo plano) usamos lo que
+            // avanzó el video; si se saltó hacia adelante, el tiempo real.
+            const watched = Math.min(wallDelta, mediaDelta + 1);
+            if (!wallet.consume(watched)) showPaywall();
+        }
+
+        // El crédito del primer minuto se cobra en cuanto arranca la reproducción.
+        player.addEventListener('play', () => {
+            if (blocked || !wallet.getBalance().canWatch) showPaywall();
+        });
+        player.addEventListener('playing', () => {
+            if (!currentVideo) return;
+            if (!wallet.consume(0)) showPaywall();
+        });
+
+        wallet.subscribe(renderBalance);
+        window.addEventListener('storage', event => wallet.handleStorageEvent(event));
+        // Refresca el saldo cada tanto para detectar el cambio de día (créditos gratis nuevos).
+        setInterval(() => renderBalance(), 30000);
+
+        // Consulta un pago de créditos y, si está aprobado, suma los créditos (una sola vez).
+        async function confirmCreditsPayment(paymentId, announce) {
+            try {
+                const response = await fetch('/api/create-preference', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ purpose: 'creditos-confirmar', paymentId }),
+                });
+                const data = await response.json().catch(() => ({}));
+                if (response.status === 400 || response.status === 404) {
+                    wallet.removePendingPayment(paymentId);
+                    if (announce) showToast(data.error || 'No pudimos validar el pago.');
+                    return;
+                }
+                if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+
+                if (data.status === 'approved' && data.credits > 0) {
+                    if (wallet.addPurchasedCredits(paymentId, data.credits)) {
+                        showToast(`¡Listo! Sumaste ${creditsText(data.credits)}.`);
+                    }
+                } else if (FINAL_PAYMENT_STATUSES.includes(data.status)) {
+                    wallet.removePendingPayment(paymentId);
+                    if (announce) showToast('El pago fue rechazado. No se sumaron créditos.');
+                } else if (announce) {
+                    showToast('Tu pago está pendiente. Vamos a sumar los créditos apenas se apruebe.');
+                }
+            } catch (error) {
+                console.warn('[TOXI][CREDITOS] no se pudo confirmar el pago', paymentId, error);
+                if (announce) showToast('No pudimos confirmar el pago ahora. Lo volvemos a intentar la próxima vez que entres.');
+            }
+        }
+
+        // Vuelta desde Mercado Pago: ?creditos=ok|error|pendiente&payment_id=...&status=...
+        async function handlePaymentReturn() {
+            const params = new URLSearchParams(location.search);
+            if (!params.has('creditos')) return;
+            const paymentId = params.get('payment_id') || params.get('collection_id');
+            history.replaceState(history.state, '', location.pathname + location.hash);
+
+            if (!paymentId || paymentId === 'null') {
+                showToast('El pago no se completó. No se sumaron créditos.');
+                return;
+            }
+            if (wallet.isRedeemed(paymentId)) return;
+            wallet.addPendingPayment(paymentId);
+            await confirmCreditsPayment(paymentId, true);
+        }
+
+        async function checkPendingPayments() {
+            for (const paymentId of wallet.getPendingPayments()) {
+                await confirmCreditsPayment(paymentId, false);
+            }
+        }
+
         // ── Init ──
         renderChips();
         renderGrid();
         renderLeaderboards();
-        const initialId = new URLSearchParams(location.hash.slice(1)).get('v');
+        renderBalance();
+        const returnVideoId = sessionStorage.getItem(RETURN_VIDEO_KEY);
+        sessionStorage.removeItem(RETURN_VIDEO_KEY);
+        const initialId = new URLSearchParams(location.hash.slice(1)).get('v') || returnVideoId;
         const initialVideo = initialId && videos.find(v => v.id === initialId);
-        if (initialVideo) openWatch(initialVideo, false);
+        if (initialVideo) {
+            openWatch(initialVideo, false);
+            if (!location.hash) history.replaceState({ v: initialVideo.id }, '', `#v=${initialVideo.id}`);
+        }
+        handlePaymentReturn().finally(checkPendingPayments);
     </script>
 </body>
 </html>
