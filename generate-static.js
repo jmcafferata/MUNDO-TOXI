@@ -95,8 +95,16 @@ function buildSitemap(urls) {
 
 let count = 0;
 
+// Slugs with their own landing page (e.g. audiont.html) must not get a generated plantform copy,
+// because a static public/<slug>/index.html shadows the Vercel rewrite to <slug>.html.
+const hasDedicatedPage = (slug) => fs.existsSync(`${slug}.html`);
+
 for (const p of projects) {
   if (!p.slug) continue;
+  if (hasDedicatedPage(p.slug)) {
+    process.stdout.write(`  [proyecto] ${p.slug} (página propia, se omite)\n`);
+    continue;
+  }
   const dir = path.join('public', p.slug);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(
@@ -136,7 +144,7 @@ for (const t of talentos) {
 const slugSet = new Set();
 
 for (const p of projects) {
-  if (p.slug) slugSet.add(p.slug);
+  if (p.slug && !hasDedicatedPage(p.slug)) slugSet.add(p.slug);
 }
 
 for (const t of talentos) {
