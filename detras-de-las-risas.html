@@ -1,4 +1,3 @@
-Agregar detras de las risas a la index de toxi, arriba de Elo. Con el thumb como imagen y el logo. Tambuen agregar otro dia en la red, toxi university<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8" />
@@ -478,6 +477,7 @@ Agregar detras de las risas a la index de toxi, arriba de Elo. Con el thumb como
                 id="mux-player"
                 slot="media"
                 stream-type="on-demand"
+                autoplay
                 playsinline
                 crossorigin
             ></mux-video>
@@ -725,6 +725,7 @@ Agregar detras de las risas a la index de toxi, arriba de Elo. Con el thumb como
                 player.setAttribute('metadata-video-title', MOVIE_TITLE);
                 player.setAttribute('playback-id', PLAYBACK_ID);
             }
+            player.autoplay = true;
             if (startAt > 0 || player.currentTime > 0) seekTo(startAt);
             const p = player.play();
             if (p && typeof p.then === 'function') p.catch(() => {});
