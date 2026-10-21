@@ -712,7 +712,7 @@
                         <div class="countdown-unit"><strong id="countdown-minutes">00</strong><span>minutos</span></div>
                         <div class="countdown-unit"><strong id="countdown-seconds">00</strong><span>segundos</span></div>
                     </div>
-                    <p class="live-status" id="live-status">Martes 20 de octubre · 18:30 h</p>
+                    <p class="live-status" id="live-status">Martes 27 de octubre · 18:30 h</p>
                 </div>
                 <mux-player id="live-player" playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
                     metadata-video-title="Diseño de Entornos Virtuales — Próxima clase (TOXI VR)"
@@ -1055,6 +1055,17 @@
                 accent-color="#ffffff" controls playsinline></mux-player>
         </section>
 
+        <section class="free-sample" aria-labelledby="modular-street-class-title">
+            <p class="free-sample-label">Clase práctica en vivo</p>
+            <h2 id="modular-street-class-title">Modelado de exteriores: edificio parisino y calle modular — Nacho
+                Michalowicz</h2>
+            <p style="color:rgba(255,255,255,.65);font-weight:300;line-height:1.5;margin:0 0 1.25rem;">Clase práctica
+                en vivo sobre modelado de exteriores: continuamos con el edificio parisino y armamos una calle
+                modular, a cargo de Nacho Michalowicz.</p>
+            <mux-player id="modular-street-player" playback-id="NDFcRjNdJcxYiV2Bp2boMmIPZIO02rVhJZyFcuApkZiQ"
+                metadata-video-title="Modelado de exteriores: edificio parisino y calle modular con Nacho Michalowicz (TOXI VR)"
+                accent-color="#ffffff" controls playsinline></mux-player>
+        </section>
 
         <footer>
             <div class="location"><span>📍</span> Rodríguez Peña 158, Buenos Aires</div>
@@ -1079,7 +1090,7 @@
         const livePlayer = document.getElementById('live-player');
         const liveCountdown = document.getElementById('live-countdown');
         const liveStatus = document.getElementById('live-status');
-        const classDate = new Date('2026-10-20T18:30:00-03:00');
+        const classDate = new Date('2026-10-27T18:30:00-03:00');
         const countdownElements = {
             days: document.getElementById('countdown-days'),
             hours: document.getElementById('countdown-hours'),
@@ -1107,7 +1118,7 @@
                     liveStatus.textContent = 'En vivo ahora';
                     return;
                 }
-                liveStatus.textContent = 'La clase comienza el martes 20 de octubre a las 18:30 h';
+                liveStatus.textContent = 'La clase comienza el martes 27 de octubre a las 18:30 h';
             } catch (error) {
                 console.error('No se pudo consultar el estado del live:', error);
             }

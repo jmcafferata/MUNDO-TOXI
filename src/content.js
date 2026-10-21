@@ -145,6 +145,7 @@ export const CONTENT_SOURCE = [
     { id: 'aPZpe01oZ9XaLOplOK6GIbDgGxknK6r18wEPOmrNQTRc', duration: 225, title: 'Esfuércese — Otro Día en la Red 2x14', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   { id: '9QFMEWdi6lM4n7JWnS3jw8AmnzKX4mmvR9vWejsj3CA', duration: 190, title: 'Odelando bajo la lluvia — Otro Día en la Red 2x16', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
     {id: 'Wf2eL028ATt6ZPvx00jswAMkQbJtg4qTZpre02pal8xtno', duration: 100, title: 'ODELaR 360', slug: '', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
+    { id: 'HJM6He1V008a81Rm002DaayCbhJm85mwiNau52yeM026Ec', duration: 374, title: 'Relájese', slug: '', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
   
 
 
@@ -181,6 +182,10 @@ export const CONTENT_SOURCE = [
   { id: '8vsNgManYCAW6OAl3IJIRoWrqlQs4eIXWOwtxhrq5Ug', duration: 400, title: 'ELO', slug: '', type: 'documental', year: 2026, onTV: true, collections: ['moniyisus'] },
   
   
+  // ── SINCRONIZADO DESDE MUX (2026-10-20) ────────────────────
+  // TODO: completar duration (segundos) y activar onTV cuando se confirme el playback ID.
+  { id: 'NDFcRjNdJcxYiV2Bp2boMmIPZIO02rVhJZyFcuApkZiQ', duration: 0, title: 'Modelado de exteriores: edificio parisino y calle modular, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: false, collections: ['toxi-vr', 'toxi-university'] },
+
   // ── SINCRONIZADO DESDE MUX (2026-10-13) ────────────────────
   { id: 'gSLvDjrc01DoxIEyJIWRar00cQN5yKdTjplJ8x7xpemCU', duration: 8207, title: 'Introducción al modelado de exteriores: edificio parisino, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
 
