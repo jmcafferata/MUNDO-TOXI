@@ -19,7 +19,7 @@ import requests
 # --- CONFIGURACION -----------------------------------------------------------
 
 # sessionid extraida del browser (URL-decoded)
-IG_SESSIONID = ""
+IG_SESSIONID = os.getenv("IG_SESSIONID", "")
 
 HASHTAGS = [
     "acordeon",

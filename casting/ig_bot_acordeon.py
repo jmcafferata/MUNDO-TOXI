@@ -5,8 +5,8 @@ import os
 from instagrapi import Client
 
 # Credenciales de Instagram (@toxi.media)
-IG_USERNAME = os.getenv("IG_TOXI_USERNAME", "toxi.media")  # completar o setear variable de entorno
-IG_PASSWORD = os.getenv("IG_TOXI_PASSWORD", "")  # actualizar si cambia
+IG_USERNAME = os.getenv("IG_TOXI_USERNAME", "toxi.media")
+IG_PASSWORD = os.getenv("IG_TOXI_PASSWORD", "")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_FILE = os.path.join(BASE_DIR, "acordionistas_contactos.csv")
