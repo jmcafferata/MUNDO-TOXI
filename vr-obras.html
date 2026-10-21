@@ -230,21 +230,10 @@ AFRAME.registerComponent('pinch-toggle', {
           plane.setAttribute('width', dims.w);
           plane.setAttribute('height', dims.h);
           plane.setAttribute('src', '/vr-obras/' + obra.file);
-          plane.setAttribute('material', 'shader: flat; transparent: true;');
+          plane.setAttribute('material', 'shader: flat; transparent: true; color: #0d0d0d;');
           plane.setAttribute('keep-aspect-ratio', '');
-          
-          const infoText = document.createElement('a-text');
-          const dimString = obra.dimensions ? obra.dimensions : "Dim. variables";
-          infoText.setAttribute('value', `Obra #${obra.id}\n${dimString}`);
-          infoText.setAttribute('align', 'center');
-          infoText.setAttribute('color', '#A0A0A0'); 
-          infoText.setAttribute('width', '2.5'); 
-          
-          const textYPos = -(dims.h / 2) - 0.2; 
-          infoText.setAttribute('position', `0 ${textYPos} 0`);
 
           obraEntity.appendChild(plane);
-          obraEntity.appendChild(infoText);
           container.appendChild(obraEntity);
 
           if (zPos < window.corridorEndZ) {
@@ -274,10 +263,10 @@ AFRAME.registerComponent('pinch-toggle', {
     })();
   </script>
   <a-scene 
-    fog="type: exponential; color: #0a0a0f; density: 0.035"
+    fog="type: exponential; color: #000000; density: 0.035"
     webxr="referenceSpaceType: local-floor; optionalFeatures: local-floor, bounded-floor, hand-tracking;">
     
-    <a-sky color="#0a0a0f"></a-sky>
+    <a-sky color="#000000"></a-sky>
 
     <!-- Generador del pasillo de obras -->
     <a-entity spawn-corridor></a-entity>
