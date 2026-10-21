@@ -101,6 +101,7 @@ export default defineConfig({
         mersVlog: resolve(__dirname, 'mers-vlog.html'),
         mersVlogCast: resolve(__dirname, 'mers-vlog-cast.html'),
         vr: resolve(__dirname, 'vr.html'),
+        'vr-obras': resolve(__dirname, 'vr-obras.html'),
         reporteXimena: resolve(__dirname, 'reporte-ximena.html'),
         schedule: resolve(__dirname, 'schedule.html'),
         turingAdmin: resolve(__dirname, 'turing-admin.html'),
