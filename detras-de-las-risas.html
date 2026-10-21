@@ -280,18 +280,40 @@
             display: none;
             position: fixed;
             inset: 0;
+            height: 100vh;
+            height: 100dvh;
             background: #000;
             z-index: 100;
         }
         #player-view.active { display: block; }
 
         #player-view mux-player {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             display: block;
             background: #000;
             --media-object-fit: contain;
             --media-background-color: #000;
+            --controls-backdrop-color: rgb(0 0 0 / 60%);
+        }
+
+        @media (max-width: 700px) {
+            #player-view mux-player::part(control-bar) {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            #player-view mux-player::part(bottom time range) {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            #player-view mux-player::part(bottom play button),
+            #player-view mux-player::part(bottom seek-backward button),
+            #player-view mux-player::part(bottom seek-forward button),
+            #player-view mux-player::part(bottom time display) {
+                display: inline-flex !important;
+            }
         }
 
         .player-ui-btn {
