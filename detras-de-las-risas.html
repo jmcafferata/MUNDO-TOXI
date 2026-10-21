@@ -9,8 +9,6 @@
     <meta property="og:image" content="/detras%20de%20las%20risas%20pop%20art%20rectangulo.jpg" />
     <link rel="icon" href="/favicon.ico" />
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@0/+esm"></script>
     <style>
         @font-face {
             font-family: 'Helvetica Now';
@@ -287,92 +285,13 @@
         }
         #player-view.active { display: block; }
 
-        #player-view media-controller {
+        #player-view mux-player {
             width: 100vw;
             height: 100vh;
             display: block;
             background: #000;
             --media-object-fit: contain;
             --media-background-color: #000;
-        }
-        #player-view mux-video {
-            width: 100%;
-            height: 100%;
-            display: block;
-            background: #000;
-            object-fit: contain;
-        }
-        #player-view media-control-bar { display: none !important; }
-
-        .custom-controls {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.85) 100%);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: 12px 16px 20px;
-            z-index: 120;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .controls-row { display: flex; align-items: center; gap: 8px; }
-        .control-btn {
-            background: transparent;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            transition: background 0.15s ease;
-            flex-shrink: 0;
-        }
-        .control-btn:hover { background: rgba(255, 255, 255, 0.12); }
-        .control-btn svg { width: 24px; height: 24px; fill: currentColor; }
-
-        .progress-container {
-            flex: 1;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.25);
-            border-radius: 3px;
-            cursor: pointer;
-            position: relative;
-        }
-        .progress-bar {
-            height: 100%;
-            background: #fff;
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.1s linear;
-        }
-        .scene-marker {
-            position: absolute;
-            top: -3px;
-            width: 2px;
-            height: 12px;
-            background: #ffcc00;
-            pointer-events: none;
-        }
-        .time-display {
-            font-size: 14px;
-            color: #fff;
-            min-width: 100px;
-            text-align: right;
-            flex-shrink: 0;
-            margin-left: auto;
-        }
-        @media (max-width: 640px) {
-            .custom-controls { padding: 10px 12px 16px; gap: 10px; }
-            .control-btn svg { width: 22px; height: 22px; }
-            .time-display { font-size: 13px; min-width: 85px; }
-        }
-        @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            .custom-controls { padding-bottom: max(20px, calc(env(safe-area-inset-bottom) + 8px)); }
         }
 
         .player-ui-btn {
@@ -472,45 +391,13 @@
             <button class="player-ui-btn" id="btn-back">&larr; Menú</button>
             <span id="player-title"></span>
         </div>
-        <media-controller>
-            <mux-video
-                id="mux-player"
-                slot="media"
-                stream-type="on-demand"
-                autoplay
-                playsinline
-                crossorigin
-            ></mux-video>
-        </media-controller>
-        <div class="custom-controls ui-fade" id="custom-controls">
-            <div class="progress-container" id="progress-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-            <div class="controls-row">
-                <button class="control-btn" id="play-btn" aria-label="Play/Pausa">
-                    <svg viewBox="0 0 24 24" id="play-icon"><path d="M8 5v14l11-7z"/></svg>
-                </button>
-                <button class="control-btn" id="backward-btn" aria-label="Retroceder 10s">
-                    <svg viewBox="0 0 24 24"><path d="M11.99 5V1l-5 5 5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6h-2c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-                </button>
-                <button class="control-btn" id="forward-btn" aria-label="Adelantar 10s">
-                    <svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/></svg>
-                </button>
-                <button class="control-btn" id="prev-btn" aria-label="Escena anterior">
-                    <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-                </button>
-                <button class="control-btn" id="next-btn" aria-label="Escena siguiente">
-                    <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-                </button>
-                <span class="time-display" id="time-display">0:00 / 0:00</span>
-                <button class="control-btn" id="mute-btn" aria-label="Silenciar/Activar sonido">
-                    <svg viewBox="0 0 24 24" id="volume-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-                </button>
-                <button class="control-btn" id="fullscreen-btn" aria-label="Pantalla completa">
-                    <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-                </button>
-            </div>
-        </div>
+        <mux-player
+            id="mux-player"
+            stream-type="on-demand"
+            controls
+            playsinline
+            preload="metadata"
+        ></mux-player>
     </div>
 
     <script>
@@ -656,20 +543,6 @@
         // ── Reproductor ──
         const btnBack = document.getElementById('btn-back');
         const titleEl = document.getElementById('player-title');
-        const playBtn = document.getElementById('play-btn');
-        const playIcon = document.getElementById('play-icon');
-        const volumeIcon = document.getElementById('volume-icon');
-        const progressContainer = document.getElementById('progress-container');
-        const progressBar = document.getElementById('progress-bar');
-        const timeDisplay = document.getElementById('time-display');
-
-        function formatTime(s) {
-            if (!isFinite(s)) return '0:00';
-            const h = Math.floor(s / 3600);
-            const m = Math.floor((s % 3600) / 60);
-            const sec = Math.floor(s % 60).toString().padStart(2, '0');
-            return h ? `${h}:${String(m).padStart(2, '0')}:${sec}` : `${m}:${sec}`;
-        }
         function markedScenes() {
             return SCENES.map((s, i) => ({ ...s, index: i })).filter(s => s.start != null);
         }
@@ -681,35 +554,6 @@
         function updateTitle() {
             const sc = currentScene();
             titleEl.textContent = sc ? `${MOVIE_TITLE} — ${sc.title}` : MOVIE_TITLE;
-        }
-        function updateProgress() {
-            const d = player.duration;
-            progressBar.style.width = ((player.currentTime / d) * 100 || 0) + '%';
-            timeDisplay.textContent = `${formatTime(player.currentTime)} / ${formatTime(d)}`;
-            updateTitle();
-        }
-        function renderMarkers() {
-            progressContainer.querySelectorAll('.scene-marker').forEach(m => m.remove());
-            const d = player.duration;
-            if (!isFinite(d) || !d) return;
-            markedScenes().forEach(s => {
-                if (s.start <= 0) return;
-                const m = document.createElement('div');
-                m.className = 'scene-marker';
-                m.style.left = (s.start / d * 100) + '%';
-                m.title = s.title;
-                progressContainer.appendChild(m);
-            });
-        }
-        function updatePlayIcon() {
-            playIcon.innerHTML = player.paused
-                ? '<path d="M8 5v14l11-7z"/>'
-                : '<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>';
-        }
-        function updateVolumeIcon() {
-            volumeIcon.innerHTML = player.muted
-                ? '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>'
-                : '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>';
         }
 
         function seekTo(t) {
@@ -730,7 +574,7 @@
             const p = player.play();
             if (p && typeof p.then === 'function') p.catch(() => {});
             updateTitle();
-            showUI();
+            showTopBar();
         }
 
         function exitToMenu() {
@@ -742,65 +586,34 @@
             startBackground();
         }
 
-        function jumpScene(dir) {
-            const marked = markedScenes();
-            if (!marked.length) return;
-            const t = player.currentTime || 0;
-            if (dir > 0) {
-                const next = marked.find(s => s.start > t + 0.5);
-                if (next) player.currentTime = next.start;
-            } else {
-                const earlier = marked.filter(s => s.start < t - 3);
-                player.currentTime = earlier.length ? earlier[earlier.length - 1].start : 0;
-            }
-        }
-
-        playBtn.addEventListener('click', () => { player.paused ? player.play() : player.pause(); });
-        document.getElementById('backward-btn').addEventListener('click', () => { player.currentTime = Math.max(0, player.currentTime - 10); });
-        document.getElementById('forward-btn').addEventListener('click', () => { player.currentTime = Math.min(player.duration || 0, player.currentTime + 10); });
-        document.getElementById('prev-btn').addEventListener('click', () => jumpScene(-1));
-        document.getElementById('next-btn').addEventListener('click', () => jumpScene(1));
-        document.getElementById('mute-btn').addEventListener('click', () => { player.muted = !player.muted; updateVolumeIcon(); });
-        document.getElementById('fullscreen-btn').addEventListener('click', () => {
-            if (!document.fullscreenElement) (playerView.requestFullscreen || playerView.webkitRequestFullscreen)?.call(playerView);
-            else (document.exitFullscreen || document.webkitExitFullscreen)?.call(document);
-        });
-        progressContainer.addEventListener('click', e => {
-            const rect = progressContainer.getBoundingClientRect();
-            if (isFinite(player.duration)) player.currentTime = ((e.clientX - rect.left) / rect.width) * player.duration;
-        });
         btnBack.addEventListener('click', exitToMenu);
 
-        player.addEventListener('play', updatePlayIcon);
-        player.addEventListener('pause', updatePlayIcon);
-        player.addEventListener('timeupdate', updateProgress);
-        player.addEventListener('loadedmetadata', () => { updateProgress(); renderMarkers(); });
-        player.addEventListener('durationchange', renderMarkers);
-        player.addEventListener('volumechange', updateVolumeIcon);
+        player.addEventListener('timeupdate', updateTitle);
         player.addEventListener('ended', exitToMenu);
 
         document.addEventListener('keydown', e => {
             if (playerView.classList.contains('active')) {
-                if (e.key === ' ') { e.preventDefault(); playBtn.click(); }
-                else if (e.key === 'ArrowLeft') document.getElementById('backward-btn').click();
-                else if (e.key === 'ArrowRight') document.getElementById('forward-btn').click();
+                if (e.key === ' ' && e.target === document.body) {
+                    e.preventDefault();
+                    player.paused ? player.play() : player.pause();
+                }
+                else if (e.key === 'ArrowLeft' && e.target === document.body) player.currentTime = Math.max(0, player.currentTime - 10);
+                else if (e.key === 'ArrowRight' && e.target === document.body) player.currentTime = Math.min(player.duration || 0, player.currentTime + 10);
                 else if (e.key === 'Escape' && !document.fullscreenElement) exitToMenu();
-                showUI();
+                showTopBar();
             } else if (e.key === 'Escape' && lastSubmenu) {
                 showMainMenu();
             }
         });
 
-        // ── UI fade ──
+        // ── Top bar fade ──
         let uiTimer;
-        function showUI() {
-            playerView.querySelectorAll('.ui-fade').forEach(el => el.classList.remove('hidden'));
+        function showTopBar() {
+            playerView.querySelector('.player-top-bar').classList.remove('hidden');
             clearTimeout(uiTimer);
-            uiTimer = setTimeout(() => {
-                playerView.querySelectorAll('.ui-fade').forEach(el => el.classList.add('hidden'));
-            }, 3000);
+            uiTimer = setTimeout(() => playerView.querySelector('.player-top-bar').classList.add('hidden'), 3000);
         }
-        ['mousemove', 'touchstart', 'click'].forEach(ev => playerView.addEventListener(ev, showUI));
+        ['mousemove', 'touchstart', 'click'].forEach(ev => playerView.addEventListener(ev, showTopBar));
 
         startBackground();
     </script>
