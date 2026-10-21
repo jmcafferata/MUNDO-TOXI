@@ -95,6 +95,35 @@
       return { w: 1, h: 1 }; 
     }
 
+    AFRAME.registerShader('world-vignette', {
+      schema: {
+        color: { type: 'color', default: '#000000' },
+        radius: { type: 'number', default: 5 },
+        fade: { type: 'number', default: 5 }
+      },
+      vertexShader: `
+        varying vec3 vWorldPosition;
+        void main() {
+          vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+          vWorldPosition = worldPosition.xyz;
+          gl_Position = projectionMatrix * viewMatrix * worldPosition;
+        }
+      `,
+      fragmentShader: `
+        precision mediump float;
+        varying vec3 vWorldPosition;
+        uniform vec3 color;
+        uniform float radius;
+        uniform float fade;
+
+        void main() {
+          float dist = length(vWorldPosition);
+          float alpha = smoothstep(radius, radius + fade, dist);
+          gl_FragColor = vec4(color, alpha);
+        }
+      `
+    });
+
     // Componente para conservar el aspecto real de las fotos
     AFRAME.registerComponent('keep-aspect-ratio', {
       init: function () {
@@ -230,7 +259,7 @@ AFRAME.registerComponent('pinch-toggle', {
           plane.setAttribute('width', dims.w);
           plane.setAttribute('height', dims.h);
           plane.setAttribute('src', '/vr-obras/' + obra.file);
-          plane.setAttribute('material', 'shader: flat; transparent: true; color: #0d0d0d;');
+          plane.setAttribute('material', 'shader: flat; transparent: true;');
           plane.setAttribute('keep-aspect-ratio', '');
 
           obraEntity.appendChild(plane);
@@ -267,6 +296,12 @@ AFRAME.registerComponent('pinch-toggle', {
     webxr="referenceSpaceType: local-floor; optionalFeatures: local-floor, bounded-floor, hand-tracking;">
     
     <a-sky color="#000000"></a-sky>
+
+    <a-sphere
+      position="0 1.6 0"
+      radius="12"
+      material="shader: world-vignette; color: #000000; radius: 5; fade: 5; side: back; transparent: true; opacity: 1;">
+    </a-sphere>
 
     <!-- Generador del pasillo de obras -->
     <a-entity spawn-corridor></a-entity>
