@@ -484,14 +484,16 @@
 
 </div>
 
-<script>
+<script type="module">
+import { CONTENT } from './src/content.js';
+
 // ── CONFIG ───────────────────────────────────────────────────────────────────
 let PX_PER_HOUR = 80;
 const HOURS     = 24;
 const SNAP_MIN  = 5;   // snap to 5-minute grid
 
 // ── PLAYLIST ─────────────────────────────────────────────────────────────────
-const PLAYLIST = [
+const LEGACY_PLAYLIST = [
   { id: 'iytKgjz1JJhz3Kl01WLcTCFZ9DTVClWf00kn71ACPW1AU',       duration: 339.548,     title: 'Hotel Oriente — Las Nenas' },
   { id: 'iVB2ZU00L1WZDQJpqXrIAMg02Cmq4l6C2kKnP02sNP01CQM',    duration: 687.228,     title: 'Hotel Oriente (Detrás de Escena) — Las Nenas' },
   { id: 'IHikcrMnpK00Dxsyb7xKpi1qpju01I00JmCpNXXrhg1WZg',      duration: 163.081,     title: 'Detective Noir — Chavo Escrotito' },
@@ -562,6 +564,18 @@ const PLAYLIST = [
   { id: 'N5ISPSMoo502IHjTdvQt02GeR7xgJUiCFTlxrBLLIhpcg',       duration: 2580.9,      title: 'Literatura y Realidad Virtual — Ana Arzoumanian (TOXI University)' },
   { id: 'irasB01gOUsUd4E4Iy6yVvp7CYMwYMVB00nr4BKU8tn38',       duration: 539.566667,  title: 'Ana Arzoumanian en TV Pública — Inteligencia Artificial Hoy' },
   { id: 'RSWU4WdVz3eD3yoZalubHKBGZMfB00Z00PJgK7KVp6zN00',      duration: 5803.5,      title: 'Masterclass de Python — Nicolás Martorell (Xplora Academy)' },
+];
+
+// Keep old item indexes stable for schedules already saved in local storage.
+const LEGACY_PLAYLIST_IDS = new Set(LEGACY_PLAYLIST.map(item => item.id));
+const CONTENT_BY_ID = new Map(
+  CONTENT
+    .filter(item => item.id && item.title && Number.isFinite(item.duration) && item.duration >= 0)
+    .map(item => [item.id, item])
+);
+const PLAYLIST = [
+  ...LEGACY_PLAYLIST.map(item => CONTENT_BY_ID.get(item.id) || item),
+  ...[...CONTENT_BY_ID.values()].filter(item => !LEGACY_PLAYLIST_IDS.has(item.id)),
 ];
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
@@ -718,14 +732,27 @@ function buildSidebar() {
     el.draggable = true;
     el.dataset.idx = i;
 
-    el.innerHTML = `
-      <img class="lib-thumb"
-           src="https://image.mux.com/${item.id}/thumbnail.png?time=4&width=112&height=64"
-           loading="lazy" alt="" onerror="this.style.opacity='.2'" />
-      <div class="lib-info">
-        <div class="lib-title" title="${item.title}">${item.title}</div>
-        <div class="lib-dur">${fmtDur(item.duration)}</div>
-      </div>`;
+    const thumb = document.createElement('img');
+    thumb.className = 'lib-thumb';
+    thumb.src = `https://image.mux.com/${item.id}/thumbnail.png?time=4&width=112&height=64`;
+    thumb.loading = 'lazy';
+    thumb.alt = '';
+    thumb.addEventListener('error', () => { thumb.style.opacity = '.2'; });
+
+    const info = document.createElement('div');
+    info.className = 'lib-info';
+
+    const title = document.createElement('div');
+    title.className = 'lib-title';
+    title.title = item.title;
+    title.textContent = item.title;
+
+    const duration = document.createElement('div');
+    duration.className = 'lib-dur';
+    duration.textContent = fmtDur(item.duration);
+
+    info.append(title, duration);
+    el.append(thumb, info);
 
     el.addEventListener('dragstart', onLibDragStart);
     el.addEventListener('dragend',   () => { el.classList.remove('dragging'); currentDrag = null; });
