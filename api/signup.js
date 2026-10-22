@@ -1,7 +1,9 @@
 // api/signup.js
 import nodemailer from 'nodemailer';
-import { randomInt } from 'node:crypto';
+import { randomBytes, randomInt } from 'node:crypto';
 import { Redis } from '@upstash/redis';
+
+const SESSION_TTL_SECONDS = 60 * 60 * 24 * 90;
 
 const CODE_PREFIX = 'toxi:code:';
 const RESERVED_CODES = ['2058', '1985', '1927', '8694', '3435'];
@@ -211,7 +213,12 @@ async function verifyCode(req, res, body, url, token) {
     }
 
     const owner = await redis.get(`${CODE_PREFIX}${code}`);
-    return res.status(200).json({ valid: Boolean(owner) });
+    if (!owner) return res.status(200).json({ valid: false });
+
+    // El token (no la clave de 4 dígitos) identifica la cuenta en el resto del sitio.
+    const sessionToken = randomBytes(24).toString('hex');
+    await redis.set(`toxi:session:${sessionToken}`, code, { ex: SESSION_TTL_SECONDS });
+    return res.status(200).json({ valid: true, token: sessionToken });
   } catch (error) {
     console.error('Error verifying code:', error);
     return res.status(500).json({ valid: false });

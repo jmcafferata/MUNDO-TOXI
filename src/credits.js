@@ -9,7 +9,7 @@
 //
 // Cada operación vuelve a leer localStorage antes de escribir, así varias
 // pestañas abiertas comparten el mismo saldo.
-import { DAILY_FREE_CREDITS, SECONDS_PER_CREDIT } from './credits-config.mjs';
+import { DAILY_FREE_CREDITS, SECONDS_PER_CREDIT, consumeFrom } from './credits-config.mjs';
 
 const STORAGE_KEY = 'toxi.credits.v1';
 const MAX_REMEMBERED_PAYMENTS = 200;
@@ -87,21 +87,30 @@ export function createWallet({ storage = safeStorage(), now = () => new Date() }
      */
     consume(seconds = 0) {
       const state = read();
-      let remaining = Math.max(0, Number(seconds) || 0);
-      let ok = true;
-      for (;;) {
-        const used = Math.min(remaining, state.secondsLeft);
-        state.secondsLeft -= used;
-        remaining -= used;
-        if (state.secondsLeft > 0) break;
-        if (state.free > 0) state.free -= 1;
-        else if (state.paid > 0) state.paid -= 1;
-        else { ok = false; break; }
-        state.secondsLeft = SECONDS_PER_CREDIT;
-        if (remaining <= 0) break;
-      }
+      const ok = consumeFrom(state, seconds);
       write(state);
       return ok;
+    },
+
+    /**
+     * Reemplaza el saldo por el de la cuenta (servidor). `extraSeconds` son
+     * segundos ya vistos que el servidor todavía no recibió.
+     */
+    applyRemote(remote, extraSeconds = 0) {
+      const state = read();
+      state.free = Math.min(DAILY_FREE_CREDITS, toCount(remote?.free));
+      state.paid = Math.floor(toCount(remote?.paid));
+      state.secondsLeft = Math.min(SECONDS_PER_CREDIT, toCount(remote?.secondsLeft));
+      if (extraSeconds > 0) consumeFrom(state, extraSeconds);
+      write(state);
+    },
+
+    markRedeemed(paymentId) {
+      const id = String(paymentId);
+      const state = read();
+      state.pending = state.pending.filter(p => p !== id);
+      if (!state.redeemed.includes(id)) state.redeemed.push(id);
+      write(state);
     },
 
     /** Suma créditos comprados. Cada pago se acredita una sola vez. */

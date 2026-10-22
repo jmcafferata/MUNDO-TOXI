@@ -638,7 +638,9 @@ export function initPaywall({ musicFile, onEnter }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code }),
       });
-      valid = resp.ok && (await resp.json()).valid === true;
+      const data = resp.ok ? await resp.json() : {};
+      valid = data.valid === true;
+      if (valid && data.token) localStorage.setItem('toxi.session', data.token);
     } catch (err) {
       console.warn('Code verification failed', err);
     }

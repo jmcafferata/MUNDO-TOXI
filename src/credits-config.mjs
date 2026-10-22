@@ -17,3 +17,27 @@ export const CREDIT_PACKS = [
 ];
 
 export const findCreditPack = (id) => CREDIT_PACKS.find(pack => pack.id === String(id));
+
+/**
+ * Descuenta segundos reproducidos de `state` ({ free, paid, secondsLeft }) y lo
+ * modifica en el lugar. Cada vez que se termina un minuto (o no había ninguno en
+ * curso) se cobra el crédito del siguiente, primero de los gratis y después de
+ * los comprados. `seconds = 0` solo asegura que haya un minuto en curso.
+ * Devuelve false si se quedó sin saldo. Lo usan el navegador y el servidor.
+ */
+export function consumeFrom(state, seconds = 0) {
+  let remaining = Math.max(0, Number(seconds) || 0);
+  let ok = true;
+  for (;;) {
+    const used = Math.min(remaining, state.secondsLeft);
+    state.secondsLeft -= used;
+    remaining -= used;
+    if (state.secondsLeft > 0) break;
+    if (state.free > 0) state.free -= 1;
+    else if (state.paid > 0) state.paid -= 1;
+    else { ok = false; break; }
+    state.secondsLeft = SECONDS_PER_CREDIT;
+    if (remaining <= 0) break;
+  }
+  return ok;
+}

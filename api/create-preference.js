@@ -1,5 +1,80 @@
 import { MercadoPagoConfig, Payment, Preference } from 'mercadopago';
-import { findCreditPack } from '../src/credits-config.mjs';
+import { Redis } from '@upstash/redis';
+import { DAILY_FREE_CREDITS, SECONDS_PER_CREDIT, consumeFrom, findCreditPack } from '../src/credits-config.mjs';
+
+const SESSION_RE = /^[a-f0-9]{48}$/;
+const MAX_SECONDS_PER_SYNC = 300;
+
+function getRedis() {
+  const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
+  if (!UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) return null;
+  return new Redis({ url: UPSTASH_REDIS_REST_URL, token: UPSTASH_REDIS_REST_TOKEN });
+}
+
+// Devuelve la clave personal dueña de la sesión, o null si el token no es válido.
+async function resolveMember(redis, token) {
+  if (!SESSION_RE.test(String(token || ''))) return null;
+  const code = await redis.get(`toxi:session:${token}`);
+  return code === null || code === undefined ? null : String(code).padStart(4, '0');
+}
+
+const walletKey = (code) => `toxi:wallet:${code}`;
+const paidKey = (code) => `toxi:wallet:${code}:paid`;
+const toCount = (v) => (Number.isFinite(Number(v)) && Number(v) >= 0 ? Number(v) : 0);
+const argentinaDay = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' });
+
+// Los créditos gratis se renuevan cada día; los comprados viven en un contador
+// aparte para que una compra y un consumo simultáneos no se pisen.
+async function loadWallet(redis, code) {
+  const [saved, paid] = await Promise.all([redis.get(walletKey(code)), redis.get(paidKey(code))]);
+  const day = argentinaDay();
+  const sameDay = saved?.day === day;
+  return {
+    day,
+    free: sameDay ? Math.min(DAILY_FREE_CREDITS, toCount(saved.free)) : DAILY_FREE_CREDITS,
+    paid: Math.floor(toCount(paid)),
+    secondsLeft: Math.min(SECONDS_PER_CREDIT, toCount(saved?.secondsLeft)),
+  };
+}
+
+async function saveWallet(redis, code, before, after) {
+  await redis.set(walletKey(code), { day: after.day, free: after.free, secondsLeft: after.secondsLeft });
+  if (after.paid !== before.paid) await redis.decrby(paidKey(code), before.paid - after.paid);
+}
+
+// Saldo de la cuenta; si llegan segundos vistos, los descuenta antes de responder.
+async function syncWallet(req, res) {
+  const redis = getRedis();
+  if (!redis) return res.status(500).json({ error: 'Error de configuración del servidor' });
+  try {
+    const code = await resolveMember(redis, req.body?.token);
+    if (!code) return res.status(401).json({ error: 'Sesión inválida' });
+
+    const seconds = Math.min(MAX_SECONDS_PER_SYNC, toCount(req.body?.seconds));
+    const before = await loadWallet(redis, code);
+    const after = { ...before };
+    const ok = req.body?.seconds === undefined ? true : consumeFrom(after, seconds);
+    await saveWallet(redis, code, before, after);
+    return res.status(200).json({ ok, wallet: after });
+  } catch (error) {
+    console.error('[TOXI][CREDITOS] error sincronizando saldo', error?.message || error);
+    return res.status(500).json({ error: 'No se pudo sincronizar el saldo' });
+  }
+}
+
+// Acredita un pago aprobado a la cuenta, una sola vez por pago en todo el sistema.
+async function creditAccount(redis, code, paymentId, credits) {
+  const key = `toxi:payment:${paymentId}`;
+  const reserved = await redis.set(key, code, { nx: true });
+  if (!reserved) return false;
+  try {
+    await redis.incrby(paidKey(code), credits);
+  } catch (error) {
+    await redis.del(key).catch(() => {});
+    throw error;
+  }
+  return true;
+}
 
 const COLLAB_MIN_AMOUNT = 500;
 const COLLAB_MAX_AMOUNT = 1000000;
@@ -148,7 +223,22 @@ async function confirmCreditsPayment(req, res, client) {
     return res.status(400).json({ error: 'El monto del pago no coincide con el paquete' });
   }
 
-  return res.status(200).json({ paymentId, status, credits: pack.credits });
+  if (!req.body?.token) {
+    return res.status(200).json({ paymentId, status, credits: pack.credits });
+  }
+
+  const redis = getRedis();
+  if (!redis) return res.status(500).json({ error: 'Error de configuración del servidor' });
+  try {
+    const code = await resolveMember(redis, req.body.token);
+    if (!code) return res.status(401).json({ error: 'Sesión inválida' });
+    const redeemed = await creditAccount(redis, code, paymentId, pack.credits);
+    const wallet = await loadWallet(redis, code);
+    return res.status(200).json({ paymentId, status, credits: pack.credits, redeemed, wallet });
+  } catch (error) {
+    console.error('[TOXI][CREDITOS] error acreditando pago', paymentId, error?.message || error);
+    return res.status(500).json({ error: 'No se pudo acreditar el pago' });
+  }
 }
 
 // Serverless function for Vercel to create a Mercado Pago preference.
@@ -156,6 +246,10 @@ async function confirmCreditsPayment(req, res, client) {
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  if (req.body?.purpose === 'creditos-saldo') {
+    return syncWallet(req, res);
   }
 
   const accessToken = process.env.MP_ACCESS_TOKEN;

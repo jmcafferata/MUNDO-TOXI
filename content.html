@@ -827,6 +827,7 @@
             // avanzó el video; si se saltó hacia adelante, el tiempo real.
             const watched = Math.min(wallDelta, mediaDelta + 1);
             if (!wallet.consume(watched)) showPaywall();
+            remote.pending += watched;
         }
 
         // El crédito del primer minuto se cobra en cuanto arranca la reproducción.
@@ -836,6 +837,7 @@
         player.addEventListener('playing', () => {
             if (!currentVideo) return;
             if (!wallet.consume(0)) showPaywall();
+            syncAccount();
         });
 
         wallet.subscribe(renderBalance);
@@ -843,15 +845,64 @@
         // Refresca el saldo cada tanto para detectar el cambio de día (créditos gratis nuevos).
         setInterval(() => renderBalance(), 30000);
 
+        // ── Cuenta: el saldo vive en el servidor, atado a la clave personal ──
+        // Sin sesión (invitado o claves fijas) el saldo queda solo en este navegador.
+        const SESSION_KEY = 'toxi.session';
+        const remote = { token: localStorage.getItem(SESSION_KEY), pending: 0, inflight: false, idleTicks: 0 };
+
+        async function syncAccount() {
+            if (!remote.token || remote.inflight) return;
+            remote.inflight = true;
+            const sent = remote.pending;
+            remote.pending = 0;
+            try {
+                const response = await fetch('/api/create-preference', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ purpose: 'creditos-saldo', token: remote.token, seconds: sent }),
+                    keepalive: true,
+                });
+                if (response.status === 401) {
+                    localStorage.removeItem(SESSION_KEY);
+                    remote.token = null;
+                    return;
+                }
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+                // Lo visto mientras viajaba el pedido todavía no está en el servidor.
+                wallet.applyRemote(data.wallet, remote.pending);
+            } catch (error) {
+                remote.pending += sent;
+                console.warn('[TOXI][CREDITOS] no se pudo sincronizar con la cuenta', error);
+            } finally {
+                remote.inflight = false;
+            }
+        }
+
+        setInterval(() => {
+            if (remote.pending > 0 || ++remote.idleTicks >= 4) {
+                remote.idleTicks = 0;
+                syncAccount();
+            }
+        }, 15000);
+        document.addEventListener('visibilitychange', () => { if (document.hidden) syncAccount(); });
+        window.addEventListener('pagehide', syncAccount);
+
         // Consulta un pago de créditos y, si está aprobado, suma los créditos (una sola vez).
         async function confirmCreditsPayment(paymentId, announce) {
             try {
                 const response = await fetch('/api/create-preference', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ purpose: 'creditos-confirmar', paymentId }),
+                    body: JSON.stringify({ purpose: 'creditos-confirmar', paymentId, token: remote.token || undefined }),
                 });
                 const data = await response.json().catch(() => ({}));
+                if (response.status === 401 && remote.token) {
+                    localStorage.removeItem(SESSION_KEY);
+                    remote.token = null;
+                    if (announce) showToast('Tu sesión venció. Ingresá con tu clave personal para acreditar el pago.');
+                    return;
+                }
                 if (response.status === 400 || response.status === 404) {
                     wallet.removePendingPayment(paymentId);
                     if (announce) showToast(data.error || 'No pudimos validar el pago.');
@@ -860,7 +911,11 @@
                 if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
 
                 if (data.status === 'approved' && data.credits > 0) {
-                    if (wallet.addPurchasedCredits(paymentId, data.credits)) {
+                    if (data.wallet) {
+                        wallet.applyRemote(data.wallet, remote.pending);
+                        wallet.markRedeemed(paymentId);
+                        if (data.redeemed) showToast(`¡Listo! Sumaste ${creditsText(data.credits)}.`);
+                    } else if (wallet.addPurchasedCredits(paymentId, data.credits)) {
                         showToast(`¡Listo! Sumaste ${creditsText(data.credits)}.`);
                     }
                 } else if (FINAL_PAYMENT_STATUSES.includes(data.status)) {
@@ -898,6 +953,7 @@
         }
 
         // ── Init ──
+        syncAccount();
         renderChips();
         renderGrid();
         renderLeaderboards();
