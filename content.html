@@ -78,6 +78,40 @@
             flex-shrink: 0;
         }
 
+        /* ── Destacados (scroll horizontal) ── */
+        #featured-strip {
+            display: flex;
+            gap: 14px;
+            padding: 16px 24px 0;
+            overflow-x: auto;
+            scroll-snap-type: x proximity;
+            scrollbar-width: none;
+        }
+        #featured-strip::-webkit-scrollbar { display: none; }
+        .featured-card {
+            position: relative;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 180px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #111;
+            scroll-snap-align: start;
+            text-decoration: none;
+        }
+        .featured-card img { height: 100%; width: auto; display: block; }
+        .featured-card--logo { width: 320px; background: #000; }
+        .featured-card--logo img { height: auto; width: 70%; }
+        .featured-card .featured-logo { position: absolute; height: auto; width: 60%; max-height: 68%; object-fit: contain; filter: drop-shadow(0 4px 14px rgba(0,0,0,.75)); }
+        .featured-card:hover { outline: 2px solid #fff; }
+        @media (max-width: 600px) {
+            #featured-strip { padding: 12px 14px 0; }
+            .featured-card { height: 130px; }
+            .featured-card--logo { width: 230px; }
+        }
+
         /* ── Filtros (chips) ── */
         #chips {
             display: flex;
@@ -344,6 +378,22 @@
         </button>
     </header>
 
+    <section id="featured-strip" aria-label="Destacados">
+        <a class="featured-card" href="/detras-de-las-risas" aria-label="Detrás de las Risas">
+            <img src="/detras%20de%20las%20risas%20pop%20art%20rectangulo.jpg" alt="Detrás de las Risas" loading="lazy" />
+        </a>
+        <a class="featured-card" href="/otro-dia-en-la-red" aria-label="Otro Día en la Red">
+            <img src="https://image.mux.com/QUElHo8r5HtNqfh02XfGKm85jUJ01iTGbkyn2D4BeYNZI/thumbnail.png?width=640&time=5" alt="" loading="lazy" />
+            <img class="featured-logo" src="/logo%20otro%20dia%20en%20la%20red.png" alt="Otro Día en la Red" loading="lazy" />
+        </a>
+        <a class="featured-card featured-card--logo" href="/university.html" aria-label="TOXI University">
+            <img class="featured-logo" src="/university-logo.png" alt="TOXI University" loading="lazy" />
+        </a>
+        <a class="featured-card" href="/elo" aria-label="ELO">
+            <img src="/elo-thumb.jpg" alt="ELO" loading="lazy" />
+        </a>
+    </section>
+
     <div id="chips"></div>
 
     <section id="popular-section" aria-labelledby="popular-title" hidden>
@@ -439,6 +489,7 @@
             .map(([c]) => c);
 
         const chipsEl = document.getElementById('chips');
+        const featuredEl = document.getElementById('featured-strip');
         let activeChip = 'todos';
         function renderChips() {
             chipsEl.innerHTML = '';
@@ -591,6 +642,7 @@
             gridView.style.display = 'none';
             watchView.style.display = 'block';
             chipsEl.style.display = 'none';
+            featuredEl.style.display = 'none';
             setLeaderboardsVisible(false);
             window.scrollTo({ top: 0 });
             startMeter();
@@ -605,6 +657,7 @@
             watchView.style.display = 'none';
             gridView.style.display = 'block';
             chipsEl.style.display = 'flex';
+            featuredEl.style.display = 'flex';
             setLeaderboardsVisible(!searchEl.value.trim() && activeChip === 'todos');
             if (pushState) history.pushState({}, '', location.pathname);
         }
