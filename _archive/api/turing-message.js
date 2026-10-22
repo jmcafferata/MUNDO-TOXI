@@ -1,6 +1,6 @@
 // POST /api/turing-message  → user sends a follow-up message
 
-const ADMIN_NUMBER = '541138186820';
+const ADMIN_NUMBER = process.env.ADMIN_WHATSAPP_NUMBER || '';
 
 function sbUrl() { return process.env.SUPABASE_URL; }
 function sbKey()  { return process.env.SUPABASE_SERVICE_KEY; }

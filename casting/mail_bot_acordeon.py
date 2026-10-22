@@ -17,9 +17,9 @@ SMTP_PORT = 465  # SSL
 IMAP_SERVER = "imap.zoho.com"
 IMAP_PORT = 993  # SSL
 
-EMAIL_ACCOUNT = "admin@toxi.media"
-EMAIL_PASSWORD = "FQmR8ZPd7Rvq"
-NOTIFICATION_EMAIL = "fabro.san@gmail.com"
+EMAIL_ACCOUNT = os.getenv("EMAIL_ACCOUNT", "admin@toxi.media")
+EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD", "")
+NOTIFICATION_EMAIL = os.getenv("NOTIFICATION_EMAIL", "admin@toxi.media")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_FILE = os.path.join(BASE_DIR, "acordionistas_contactos.csv")

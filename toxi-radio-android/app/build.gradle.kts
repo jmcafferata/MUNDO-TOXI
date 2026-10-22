@@ -20,10 +20,11 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("C:/Users/JM/toxi tv.jks")
-            storePassword = "tT16033544!"
-            keyAlias = "key0"
-            keyPassword = "tT16033544!"
+            val keystorePath = System.getenv("KEYSTORE_PATH") ?: (project.findProperty("RELEASE_STORE_FILE") as? String) ?: "keystore.jks"
+            storeFile = file(keystorePath)
+            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: (project.findProperty("RELEASE_STORE_PASSWORD") as? String) ?: ""
+            keyAlias = System.getenv("KEY_ALIAS") ?: (project.findProperty("RELEASE_KEY_ALIAS") as? String) ?: "key0"
+            keyPassword = System.getenv("KEY_PASSWORD") ?: (project.findProperty("RELEASE_KEY_PASSWORD") as? String) ?: ""
         }
     }
 

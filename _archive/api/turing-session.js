@@ -1,7 +1,7 @@
 // POST /api/turing-session  → create new session + first message
 // GET  /api/turing-session?id=<uuid> → poll session data
 
-const ADMIN_NUMBER = '541138186820';
+const ADMIN_NUMBER = process.env.ADMIN_WHATSAPP_NUMBER || '';
 
 function sbUrl() { return process.env.SUPABASE_URL; }
 function sbKey()  { return process.env.SUPABASE_SERVICE_KEY; }

@@ -4,3 +4,9 @@ dist/
 ios/
 android/
 *.orig.*
+*.p8
+*.key
+*.pem
+*.p12
+*.mobileprovision
+.env*

@@ -26,10 +26,10 @@ from instagrapi.exceptions import LoginRequired, UserNotFound, ClientError
 # ------ CONFIGURACIÓN ------------------------------------------------------------------------------------------------------------------------
 
 IG_USERNAME = os.getenv("IG_TOXI_USERNAME", "toxi.media")
-IG_PASSWORD = os.getenv("IG_TOXI_PASSWORD", "chisteinterno113!")
+IG_PASSWORD = os.getenv("IG_TOXI_PASSWORD", "")
 # sessionid extraída del navegador (sin URL-encoding)
-IG_SESSIONID = "54344379129:IWaEVmenIBDsy9:24:AYiAN083t29rnFgU5sq6TjiTny3LqIFiBopzfqZy4I8"
-IG_USER_ID = IG_SESSIONID.split(":")[0]  # "54344379129"
+IG_SESSIONID = os.getenv("IG_SESSIONID", "")
+IG_USER_ID = IG_SESSIONID.split(":")[0] if ":" in IG_SESSIONID else ""
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_FILE = os.path.join(BASE_DIR, "acordionistas_contactos.csv")

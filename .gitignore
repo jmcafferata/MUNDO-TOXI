@@ -5,17 +5,36 @@ dist
 dev-dist
 utils
 .vercel
+# Environment & secrets
+.env
 .env*.local
+.env.*
+*.p8
+*.key
+*.pem
+*.jks
+*.keystore
+*.p12
+*.pfx
+toxitv-credentials.json
 
 toxi-tv-android
 
-# Internal tools (not for deployment)
+# Android builds
+toxi-radio-android/.gradle/
+toxi-radio-android/app/build/
+toxi-radio-android/app/release/
+toxi-radio-android/local.properties
+
+# Internal tools & sensitive data (not for deployment)
 dashboard.html
 dashboard-server.js
 api/drive-projects.js
 notes/
-
-toxitv-credentials.json
+candidatos/
+casting/*.csv
+casting/dms_enviados.txt
+casting/ig_session.json
 
 # Fotos originales de productos (se commitean solo las optimizadas en public/store/)
 store-source/*
