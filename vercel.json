@@ -67,6 +67,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/subscribe-university",
+      "destination": "/api/signup?kind=university"
+    },
+    {
       "source": "/moneda/:id",
       "destination": "/api/moneda?id=:id"
     },

@@ -42,6 +42,8 @@ export default async function handler(req, res) {
   }
 
   const email = String(body.email || '').trim();
+  const isUniversity = req.query?.kind === 'university';
+  const courseName = (String(body.course || '').trim() || 'Clases de Historia').replace(/[\r\n]/g, ' ').slice(0, 100);
   if (!EMAIL_RE.test(email) || email.length > 254) {
     return res.status(400).json({ error: 'Dirección de email inválida' });
   }
@@ -53,7 +55,7 @@ export default async function handler(req, res) {
   }
 
   const redis = new Redis({ url: UPSTASH_REDIS_REST_URL, token: UPSTASH_REDIS_REST_TOKEN });
-  const emailKey = `signup:email:${email.toLowerCase()}`;
+  const emailKey = `signup:${isUniversity ? 'uni:' + courseName.toLowerCase() : 'email'}:${email.toLowerCase()}`;
   let emailReserved = false;
 
   try {
@@ -85,6 +87,17 @@ export default async function handler(req, res) {
       auth: { user: ZOHO_EMAIL, pass: ZOHO_PASSWORD },
     });
     const from = `"TOXI Media" <${ZOHO_EMAIL}>`;
+
+    if (isUniversity) {
+      const when = new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+      await transporter.sendMail({
+        from: `"Toxi University Bot" <${ZOHO_EMAIL}>`,
+        to: ZOHO_EMAIL,
+        subject: `Nueva Inscripción - ${courseName}: ${email}`,
+        text: `Nueva persona interesada en el curso "${courseName}":\n\nEmail: ${email}\nFecha: ${when}`,
+      });
+      return res.status(200).json({ success: true, message: 'Email enviado correctamente' });
+    }
 
     await transporter.sendMail({
       from,
