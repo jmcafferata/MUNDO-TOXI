@@ -620,14 +620,43 @@ export function initPaywall({ musicFile, onEnter }) {
       markSuccess(currentCode);
       setTimeout(() => {
         closeKeypad(true);
-        if (keypadMode === 'app') {
-          window.location.href = '/app.html';
-        } else {
-          // Take to main as requested
-          window.location.href = '/main.html';
-        }
+        window.location.href = keypadMode === 'app' ? '/app.html' : '/content';
       }, 1200);
     } else {
+      verifyPersonalCode(currentCode);
+    }
+  }
+
+  let verifying = false;
+  async function verifyPersonalCode(code) {
+    if (verifying) return;
+    verifying = true;
+    let valid = false;
+    try {
+      const resp = await fetch('/api/signup?kind=verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+      valid = resp.ok && (await resp.json()).valid === true;
+    } catch (err) {
+      console.warn('Code verification failed', err);
+    }
+    verifying = false;
+
+    if (valid) {
+      markSuccess(code);
+      setTimeout(() => {
+        closeKeypad(true);
+        window.location.href = '/content';
+      }, 1200);
+    } else {
+      showWrongCode();
+    }
+  }
+
+  function showWrongCode() {
+    {
       console.log('Code wrong! Playing error sound');
       const s = soundWrong.cloneNode();
       s.volume = 0.5;

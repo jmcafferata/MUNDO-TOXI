@@ -1,6 +1,13 @@
 // api/signup.js
 import nodemailer from 'nodemailer';
+import { randomInt } from 'node:crypto';
 import { Redis } from '@upstash/redis';
+
+const CODE_PREFIX = 'toxi:code:';
+const RESERVED_CODES = ['2058', '1985', '1927', '8694', '3435'];
+const VERIFY_IP_LIMIT = 10;
+const VERIFY_WINDOW_SECONDS = 10 * 60;
+const VERIFY_GLOBAL_DAILY_LIMIT = 3000;
 
 const ADMIN_RECIPIENTS = ['jmcafferata@gmail.com', 'fabro.san@gmail.com'];
 const EMAIL_RE = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/;
@@ -35,6 +42,11 @@ export default async function handler(req, res) {
   }
 
   const body = req.body || {};
+  const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
+
+  if (req.query?.kind === 'verify') {
+    return verifyCode(req, res, body, UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN);
+  }
 
   // Honeypot: los bots completan este campo oculto; respondemos OK sin enviar nada.
   if (body.website) {
@@ -48,7 +60,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Dirección de email inválida' });
   }
 
-  const { ZOHO_EMAIL, ZOHO_PASSWORD, UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = process.env;
+  const { ZOHO_EMAIL, ZOHO_PASSWORD } = process.env;
   if (!ZOHO_EMAIL || !ZOHO_PASSWORD || !UPSTASH_REDIS_REST_URL || !UPSTASH_REDIS_REST_TOKEN) {
     console.error('Missing ZOHO or UPSTASH environment variables');
     return res.status(500).json({ error: 'Error de configuración del servidor' });
@@ -57,6 +69,9 @@ export default async function handler(req, res) {
   const redis = new Redis({ url: UPSTASH_REDIS_REST_URL, token: UPSTASH_REDIS_REST_TOKEN });
   const emailKey = `signup:${isUniversity ? 'uni:' + courseName.toLowerCase() : 'email'}:${email.toLowerCase()}`;
   let emailReserved = false;
+  let newCodeKey = null;
+  let personalCode = null;
+  let isNewMember = false;
 
   try {
     const ipKey = `signup:ip:${getIp(req)}`;
@@ -73,12 +88,35 @@ export default async function handler(req, res) {
       return res.status(429).json({ error: 'Servicio saturado. Probá más tarde.' });
     }
 
-    // Una sola bienvenida por dirección; no revelamos si ya existía.
-    const reserved = await redis.set(emailKey, Date.now(), { nx: true });
-    if (!reserved) {
-      return res.status(200).json({ success: true });
+    if (isUniversity) {
+      // Una sola inscripción por persona y curso; no revelamos si ya existía.
+      const reserved = await redis.set(emailKey, Date.now(), { nx: true });
+      if (!reserved) return res.status(200).json({ success: true });
+      emailReserved = true;
+    } else {
+      let existing = await redis.get(emailKey);
+      // Registros de prueba anteriores guardaban una marca de tiempo en vez de una clave.
+      if (existing !== null && !/^\d{1,4}$/.test(String(existing))) {
+        await redis.del(emailKey);
+        existing = null;
+      }
+      if (existing !== null) {
+        // Ya registrado: reenviamos su misma clave, sin avisar al admin.
+        personalCode = String(existing).padStart(4, '0');
+      } else {
+        personalCode = await allocateCode(redis, email);
+        newCodeKey = `${CODE_PREFIX}${personalCode}`;
+        const reserved = await redis.set(emailKey, personalCode, { nx: true });
+        if (!reserved) {
+          await redis.del(newCodeKey);
+          newCodeKey = null;
+          personalCode = String(await redis.get(emailKey)).padStart(4, '0');
+        } else {
+          emailReserved = true;
+          isNewMember = true;
+        }
+      }
     }
-    emailReserved = true;
 
     const transporter = nodemailer.createTransport({
       host: 'smtp.zoho.com',
@@ -99,26 +137,30 @@ export default async function handler(req, res) {
       return res.status(200).json({ success: true, message: 'Email enviado correctamente' });
     }
 
-    await transporter.sendMail({
-      from,
-      to: ADMIN_RECIPIENTS,
-      subject: `Nuevo registro en TOXI Media: ${email}`,
-      text: `Nueva persona registrada.\n\nEmail: ${email}\nFecha: ${new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })}`,
-    });
+    if (isNewMember) {
+      await transporter.sendMail({
+        from,
+        to: ADMIN_RECIPIENTS,
+        subject: `Nuevo registro en TOXI Media: ${email}`,
+        text: `Nueva persona registrada.\n\nEmail: ${email}\nFecha: ${new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })}`,
+      });
+    }
 
     await transporter.sendMail({
       from,
       to: email,
       subject: '¡Bienvenido/a a TOXI Media!',
-      text: 'Bienvenido/a a TOXI Media.\n\nYa podés explorar todo nuestro contenido: https://toxi.media/content\n\nEl equipo de TOXI Media',
+      text: `Bienvenido/a a TOXI Media.\n\nTu clave personal es: ${personalCode}\n\nIngresala en https://toxi.media para acceder a todo nuestro contenido: https://toxi.media/content\n\nEl equipo de TOXI Media`,
       html: `
         <div style="font-family: Helvetica, Arial, sans-serif; color: #111; max-width: 480px; margin: 0 auto; padding: 24px;">
           <h1 style="margin: 0 0 16px;">¡Bienvenido/a a TOXI Media!</h1>
-          <p>Gracias por sumarte. Ya podés explorar todo nuestro contenido.</p>
+          <p>Gracias por sumarte. Esta es tu clave personal:</p>
+          <p style="font-size: 2.4rem; letter-spacing: 0.4em; font-weight: bold; margin: 16px 0;">${personalCode}</p>
+          <p>Ingresala en el teclado de <a href="https://toxi.media">toxi.media</a> para acceder a todo el contenido.</p>
           <p style="margin: 28px 0;">
             <a href="https://toxi.media/content" style="background: #000; color: #fff; padding: 14px 28px; border-radius: 6px; text-decoration: none; font-weight: bold;">Ir al contenido</a>
           </p>
-          <p style="color: #666; font-size: 0.9rem;">El equipo de TOXI Media</p>
+          <p style="color: #666; font-size: 0.9rem;">Es personal: no la compartas. El equipo de TOXI Media</p>
         </div>
       `,
     });
@@ -127,6 +169,51 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('Error in signup:', error);
     if (emailReserved) await redis.del(emailKey).catch(() => {});
+    if (newCodeKey) await redis.del(newCodeKey).catch(() => {});
     return res.status(500).json({ error: 'Error al enviar el email' });
+  }
+}
+
+// Reserva atómicamente una clave de 4 dígitos libre (SET NX) y la asocia al email.
+async function allocateCode(redis, email) {
+  for (let i = 0; i < 50; i++) {
+    const code = String(randomInt(0, 10000)).padStart(4, '0');
+    if (RESERVED_CODES.includes(code)) continue;
+    if (await redis.set(`${CODE_PREFIX}${code}`, email.toLowerCase(), { nx: true })) return code;
+  }
+  throw new Error('No free personal codes available');
+}
+
+async function verifyCode(req, res, body, url, token) {
+  if (!url || !token) {
+    return res.status(500).json({ error: 'Error de configuración del servidor' });
+  }
+  const code = String(body.code || '');
+  if (!/^\d{4}$/.test(code)) {
+    return res.status(400).json({ valid: false });
+  }
+
+  const redis = new Redis({ url, token });
+  try {
+    // Con solo 10.000 combinaciones, limitamos los intentos para frenar la fuerza bruta.
+    const ipKey = `verify:ip:${getIp(req)}`;
+    const attempts = await redis.incr(ipKey);
+    if (attempts === 1) await redis.expire(ipKey, VERIFY_WINDOW_SECONDS);
+    if (attempts > VERIFY_IP_LIMIT) {
+      return res.status(429).json({ valid: false, error: 'Demasiados intentos. Probá más tarde.' });
+    }
+
+    const dayKey = `verify:global:${new Date().toISOString().slice(0, 10)}`;
+    const dayCount = await redis.incr(dayKey);
+    if (dayCount === 1) await redis.expire(dayKey, 60 * 60 * 24);
+    if (dayCount > VERIFY_GLOBAL_DAILY_LIMIT) {
+      return res.status(429).json({ valid: false, error: 'Servicio saturado. Probá más tarde.' });
+    }
+
+    const owner = await redis.get(`${CODE_PREFIX}${code}`);
+    return res.status(200).json({ valid: Boolean(owner) });
+  } catch (error) {
+    console.error('Error verifying code:', error);
+    return res.status(500).json({ valid: false });
   }
 }
