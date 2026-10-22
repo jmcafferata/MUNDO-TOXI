@@ -649,6 +649,7 @@
         }
     </style>
     <script type="module" src="./src/analytics.js"></script>
+    <script type="module" src="./src/site-navbar.js"></script>
 </head>
 <body>
 
@@ -980,7 +981,8 @@
         // ── Interacciones del Menú de DVD ──
         document.getElementById('menu-play-all').addEventListener('click', () => {
             stopDvdBackground();
-            playEpisode(ALL_EPISODES[0].id);
+            playAllLoop = true;
+            playEpisode(ALL_EPISODES[0].id, true);
         });
 
         document.getElementById('menu-episodes').addEventListener('click', () => {
@@ -1059,6 +1061,7 @@
         const progressContainer = document.getElementById('progress-container');
         const progressBar = document.getElementById('progress-bar');
         const timeDisplay = document.getElementById('time-display');
+        let playAllLoop = false;
 
         function formatTime(seconds) {
             if (!isFinite(seconds)) return '0:00';
@@ -1106,14 +1109,14 @@
             const currentId = player.getAttribute('playback-id');
             const idx = ALL_EPISODES.findIndex(e => e.id === currentId);
             if (idx > 0) {
-                playEpisode(ALL_EPISODES[idx - 1].id);
+                playEpisode(ALL_EPISODES[idx - 1].id, true);
             }
         });
         nextBtn.addEventListener('click', () => {
             const currentId = player.getAttribute('playback-id');
             const idx = ALL_EPISODES.findIndex(e => e.id === currentId);
             if (idx >= 0 && idx < ALL_EPISODES.length - 1) {
-                playEpisode(ALL_EPISODES[idx + 1].id);
+                playEpisode(ALL_EPISODES[idx + 1].id, true);
             }
         });
         player.addEventListener('play', updatePlayIcon);
@@ -1122,10 +1125,11 @@
         player.addEventListener('loadedmetadata', updateProgress);
         player.addEventListener('volumechange', updateVolumeIcon);
 
-        function playEpisode(id) {
+        function playEpisode(id, preservePlayAll = false) {
             stopDvdBackground(); // Asegurarnos de pausar videos de fondo
             const ep = ALL_EPISODES.find(e => e.id === id) || SPECIALS.find(e => e.id === id);
             if (!ep) return;
+            if (!preservePlayAll) playAllLoop = false;
             player.setAttribute('metadata-video-title', ep.title);
             player.setAttribute('playback-id', id);
             epTitleEl.textContent = ep.season ? `T${ep.season} · EP ${ep.num} — ${ep.title}` : ep.title;
@@ -1138,6 +1142,7 @@
         }
 
         btnBack.addEventListener('click', () => {
+            playAllLoop = false;
             player.pause();
             playerView.classList.remove('active');
             gridView.style.display = 'block';
@@ -1148,7 +1153,9 @@
             const currentId = player.getAttribute('playback-id');
             const idx = ALL_EPISODES.findIndex(e => e.id === currentId);
             if (idx >= 0 && idx < ALL_EPISODES.length - 1) {
-                playEpisode(ALL_EPISODES[idx + 1].id);
+                playEpisode(ALL_EPISODES[idx + 1].id, true);
+            } else if (idx === ALL_EPISODES.length - 1 && playAllLoop) {
+                playEpisode(ALL_EPISODES[0].id, true);
             } else {
                 btnBack.click();
             }
