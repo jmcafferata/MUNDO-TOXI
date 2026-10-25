@@ -74,6 +74,7 @@ export default defineConfig({
         store: resolve(__dirname, 'store.html'),
         hotelOriente: resolve(__dirname, 'hotel-oriente.html'),
         elo: resolve(__dirname, 'elo.html'),
+        advoluta: resolve(__dirname, 'advoluta.html'),
         conradoHerzfeld: resolve(__dirname, 'conrado-herzfeld.html'),
         detectiveNoir: resolve(__dirname, 'detective-noir.html'),
         hedonismoYSeduccion: resolve(__dirname, 'hedonismo-y-seduccion.html'),
