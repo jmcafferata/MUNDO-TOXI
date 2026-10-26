@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>ToxiCréditos — TOXI.Media</title>
-  <meta name="description" content="ToxiCréditos: la moneda de TOXI.Media. Hoy, 1 crédito = $100 ARS = 1 audio transcripto en Audion't." />
+  <meta name="description" content="ToxiCréditos: la moneda de TOXI.Media. Hoy, 1 crédito = 1 audio transcripto en Audion't." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://toxi.media/creditos" />
   <meta property="og:title" content="ToxiCréditos — TOXI.Media" />
-  <meta property="og:description" content="Hoy, 1 ToxiCrédito vale $100 ARS y equivale a un audio transcripto en Audion't." />
+  <meta property="og:description" content="Hoy, 1 ToxiCrédito equivale a un audio transcripto en Audion't." />
   <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="/favicon.ico" />
@@ -307,6 +307,46 @@
       display: block;
     }
 
+    /* ── BUY ── */
+    .buy-box {
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 40px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+    .buy-label { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: rgba(255,255,255,0.6); margin-bottom: 12px; }
+    .buy-input {
+      width: 100%;
+      background: #000;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 14px 16px;
+      font-family: inherit;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+    }
+    .buy-input:focus { outline: none; border-color: #25d366; }
+    .buy-hint { font-size: 0.78rem; color: rgba(255,255,255,0.4); line-height: 1.5; margin: 10px 0 24px; }
+    .buy-packs { display: grid; gap: 12px; }
+    .buy-pack {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      background: transparent;
+      border: 1px solid rgba(37,211,102,0.4);
+      color: #fff;
+      padding: 16px 20px;
+      font-family: inherit;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .buy-pack:hover:not(:disabled) { background: rgba(37,211,102,0.12); border-color: #25d366; }
+    .buy-pack:disabled { opacity: 0.5; cursor: wait; }
+    .buy-pack-price { color: #25d366; font-weight: bold; }
+    .buy-error { color: #ff6b6b; font-size: 0.85rem; min-height: 1.2em; margin: 16px 0 0; }
+
     @media (max-width: 600px) {
       .nav { padding: 16px 20px; }
       .hero { padding: 110px 20px 60px; }
@@ -339,7 +379,7 @@
       Se cargan una vez y se consumen a medida que usás cada herramienta.
     </p>
     <div class="cta-group">
-      <a href="https://wa.me/5491132576432?text=comprar" target="_blank" rel="noopener" class="btn-primary">
+      <a href="#comprar" class="btn-primary">
         Comprar créditos
       </a>
       <a href="https://wa.me/5491132576432?text=cuantos%20creditos%20tengo" target="_blank" rel="noopener" class="btn-ghost">
@@ -357,11 +397,23 @@
       <p class="value-rate">
         1 <span class="highlight">ToxiCrédito</span>
         <span class="eq">=</span>
-        $100 ARS
-        <span class="eq">=</span>
         1 <span class="highlight">audio transcripto</span>
       </p>
       <p class="value-note">Hoy, en Audion't, cada crédito transcribe un audio de WhatsApp.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- BUY -->
+  <section class="section" id="comprar">
+    <p class="section-label">Comprar créditos</p>
+    <div class="buy-box">
+      <label class="buy-label" for="buy-phone">Tu número de WhatsApp, con código de país</label>
+      <input id="buy-phone" class="buy-input" type="tel" inputmode="numeric" autocomplete="tel" placeholder="5491112345678" />
+      <p class="buy-hint">Argentina: 54 9 + código de área + número, sin 0 ni 15. Los créditos se acreditan a este número.</p>
+      <div id="buy-packs" class="buy-packs"><span class="buy-hint">Cargando packs…</span></div>
+      <p id="buy-error" class="buy-error" role="alert"></p>
     </div>
   </section>
 
@@ -384,12 +436,12 @@
       <div class="feature">
         <span class="feature-icon">🔄</span>
         <h4 class="feature-title">El valor puede cambiar</h4>
-        <p class="feature-desc">El valor del crédito y su equivalencia en pesos argentinos pueden actualizarse sin previo aviso.</p>
+        <p class="feature-desc">El precio de los packs y el valor del crédito pueden actualizarse sin previo aviso.</p>
       </div>
       <div class="feature">
         <span class="feature-icon">📲</span>
         <h4 class="feature-title">Todo por WhatsApp</h4>
-        <p class="feature-desc">Comprás, consultás tu saldo y usás tus créditos sin apps ni registros, directamente desde WhatsApp.</p>
+        <p class="feature-desc">Comprás y consultás tu saldo desde esta página o por WhatsApp, y usás tus créditos directamente desde WhatsApp.</p>
       </div>
     </div>
   </section>
@@ -415,6 +467,73 @@
     </div>
   </footer>
 
+  <script>
+    (function () {
+      var API = 'https://audiont-1-jmcafferata.replit.app';
+      var phoneInput = document.getElementById('buy-phone');
+      var packsEl = document.getElementById('buy-packs');
+      var errorEl = document.getElementById('buy-error');
+
+      function formatArs(n) {
+        return '$' + Number(n).toLocaleString('es-AR') + ' ARS';
+      }
+
+      function setError(msg) { errorEl.textContent = msg || ''; }
+
+      function buy(pack, buttons) {
+        var digits = phoneInput.value.replace(/\D/g, '');
+        if (!/^[1-9]\d{7,14}$/.test(digits)) {
+          setError('Ingresá tu número de WhatsApp con código de país, por ejemplo 5491112345678.');
+          phoneInput.focus();
+          return;
+        }
+        setError('');
+        buttons.forEach(function (b) { b.disabled = true; });
+
+        fetch(API + '/api/create-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userNumber: digits, packageId: pack.id })
+        })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+          .then(function (res) {
+            var url = res.data && (res.data.initPoint || res.data.url);
+            if (!res.ok || !url) throw new Error('create-payment failed');
+            window.location.href = url;
+          })
+          .catch(function () {
+            setError('No pudimos generar el pago. Probá de nuevo en unos minutos.');
+            buttons.forEach(function (b) { b.disabled = false; });
+          });
+      }
+
+      fetch(API + '/api/packages')
+        .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+        .then(function (packs) {
+          packsEl.textContent = '';
+          var buttons = [];
+          packs.forEach(function (pack) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'buy-pack';
+            var name = document.createElement('span');
+            name.textContent = pack.credits + ' créditos';
+            var price = document.createElement('span');
+            price.className = 'buy-pack-price';
+            price.textContent = formatArs(pack.priceARS);
+            btn.appendChild(name);
+            btn.appendChild(price);
+            btn.addEventListener('click', function () { buy(pack, buttons); });
+            buttons.push(btn);
+            packsEl.appendChild(btn);
+          });
+        })
+        .catch(function () {
+          packsEl.textContent = '';
+          setError('No pudimos cargar los packs. Recargá la página.');
+        });
+    })();
+  </script>
   <script type="module" src="./src/creditos-coin.js"></script>
 </body>
 </html>
