@@ -5,6 +5,13 @@ import { NetworkFirst } from 'workbox-strategies';
 precacheAndRoute(self.__WB_MANIFEST);
 cleanupOutdatedCaches();
 
+// HTML navigations: always try the network first so users get the newest
+// deploy on every visit; fall back to the cached copy only when offline.
+registerRoute(
+  ({ request }) => request.mode === 'navigate',
+  new NetworkFirst({ cacheName: 'pages-cache', networkTimeoutSeconds: 5 })
+);
+
 registerRoute(
   ({ request }) => request.url.endsWith('.json'),
   new NetworkFirst({ cacheName: 'json-cache', networkTimeoutSeconds: 3 })
@@ -101,7 +108,10 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (!cacheName.includes('workbox-precache')) {
+          const keep = cacheName.includes('workbox-precache') ||
+            cacheName === 'pages-cache' ||
+            cacheName === 'json-cache';
+          if (!keep) {
             return caches.delete(cacheName);
           }
         })

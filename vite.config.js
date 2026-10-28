@@ -32,8 +32,11 @@ export default defineConfig({
         type: 'module'
       },
       injectManifest: {
-        globPatterns: ['**/*.{js,css,html,png,svg,ico,glb,mp3,otf}'],
-        globIgnores: ['index.html', 'detras-de-las-risas.html'],
+        // Never precache HTML: pages must always come from the network so
+        // users get the newest deploy immediately (SW-cached HTML was the
+        // reason users saw stale versions outside incognito).
+        globPatterns: ['**/*.{js,css,png,svg,ico,glb,mp3,otf}'],
+        globIgnores: ['**/*.html'],
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024
       },
       includeAssets: ['world.svg', 'logo.glb'],
