@@ -328,23 +328,30 @@
     .buy-input:focus { outline: none; border-color: #25d366; }
     .buy-hint { font-size: 0.78rem; color: rgba(255,255,255,0.4); line-height: 1.5; margin: 10px 0 24px; }
     .buy-packs { display: grid; gap: 12px; }
-    .buy-pack {
+    .buy-total {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      color: rgba(255,255,255,0.65);
+      padding: 8px 0;
+    }
+    .buy-total strong { color: #25d366; font-size: 1.2rem; }
+    .buy-pack {
       width: 100%;
-      background: transparent;
-      border: 1px solid rgba(37,211,102,0.4);
-      color: #fff;
+      background: #25d366;
+      border: 0;
+      color: #000;
       padding: 16px 20px;
       font-family: inherit;
       font-size: 1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       cursor: pointer;
       transition: all 0.3s;
     }
-    .buy-pack:hover:not(:disabled) { background: rgba(37,211,102,0.12); border-color: #25d366; }
+    .buy-pack:hover:not(:disabled) { background: #1fba57; }
     .buy-pack:disabled { opacity: 0.5; cursor: wait; }
-    .buy-pack-price { color: #25d366; font-weight: bold; }
     .buy-error { color: #ff6b6b; font-size: 0.85rem; min-height: 1.2em; margin: 16px 0 0; }
 
     @media (max-width: 600px) {
@@ -399,7 +406,7 @@
         <span class="eq">=</span>
         1 <span class="highlight">audio transcripto</span>
       </p>
-      <p class="value-note">Hoy, en Audion't, cada crédito transcribe un audio de WhatsApp.</p>
+      <p class="value-note">1 crédito = 1 audio = $100 ARS. Elegí la cantidad que quieras.</p>
     </div>
   </section>
 
@@ -412,7 +419,13 @@
       <label class="buy-label" for="buy-phone">Tu número de WhatsApp, con código de país</label>
       <input id="buy-phone" class="buy-input" type="tel" inputmode="numeric" autocomplete="tel" placeholder="5491112345678" />
       <p class="buy-hint">Argentina: 54 9 + código de área + número, sin 0 ni 15. Los créditos se acreditan a este número.</p>
-      <div id="buy-packs" class="buy-packs"><span class="buy-hint">Cargando packs…</span></div>
+      <label class="buy-label" for="buy-credits">Cantidad de créditos (1 crédito = 1 audio)</label>
+      <input id="buy-credits" class="buy-input" type="number" inputmode="numeric" min="1" step="1" value="1" />
+      <p class="buy-hint">Cada crédito cuesta $100 ARS. Podés comprar la cantidad que quieras.</p>
+      <div class="buy-packs">
+        <div class="buy-total"><span>Total a pagar</span><strong id="buy-total">$100 ARS</strong></div>
+        <button id="buy-button" class="buy-pack" type="button">Continuar a MercadoPago</button>
+      </div>
       <p id="buy-error" class="buy-error" role="alert"></p>
     </div>
   </section>
@@ -471,7 +484,9 @@
     (function () {
       var API = 'https://audiont-1-jmcafferata.replit.app';
       var phoneInput = document.getElementById('buy-phone');
-      var packsEl = document.getElementById('buy-packs');
+      var creditsInput = document.getElementById('buy-credits');
+      var totalEl = document.getElementById('buy-total');
+      var buyButton = document.getElementById('buy-button');
       var errorEl = document.getElementById('buy-error');
 
       function formatArs(n) {
@@ -480,20 +495,33 @@
 
       function setError(msg) { errorEl.textContent = msg || ''; }
 
-      function buy(pack, buttons) {
+      function updateTotal() {
+        var credits = Number(creditsInput.value);
+        totalEl.textContent = Number.isSafeInteger(credits) && credits > 0
+          ? formatArs(credits * 100)
+          : '—';
+      }
+
+      function buy() {
         var digits = phoneInput.value.replace(/\D/g, '');
         if (!/^[1-9]\d{7,14}$/.test(digits)) {
           setError('Ingresá tu número de WhatsApp con código de país, por ejemplo 5491112345678.');
           phoneInput.focus();
           return;
         }
+        var credits = Number(creditsInput.value);
+        if (!Number.isSafeInteger(credits) || credits < 1 || !Number.isSafeInteger(credits * 100)) {
+          setError('Ingresá una cantidad entera de créditos mayor que cero.');
+          creditsInput.focus();
+          return;
+        }
         setError('');
-        buttons.forEach(function (b) { b.disabled = true; });
+        buyButton.disabled = true;
 
         fetch(API + '/api/create-payment', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userNumber: digits, packageId: pack.id })
+          body: JSON.stringify({ userNumber: digits, credits: credits })
         })
           .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
           .then(function (res) {
@@ -503,35 +531,13 @@
           })
           .catch(function () {
             setError('No pudimos generar el pago. Probá de nuevo en unos minutos.');
-            buttons.forEach(function (b) { b.disabled = false; });
+            buyButton.disabled = false;
           });
       }
 
-      fetch(API + '/api/packages')
-        .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
-        .then(function (packs) {
-          packsEl.textContent = '';
-          var buttons = [];
-          packs.forEach(function (pack) {
-            var btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'buy-pack';
-            var name = document.createElement('span');
-            name.textContent = pack.credits + ' créditos';
-            var price = document.createElement('span');
-            price.className = 'buy-pack-price';
-            price.textContent = formatArs(pack.priceARS);
-            btn.appendChild(name);
-            btn.appendChild(price);
-            btn.addEventListener('click', function () { buy(pack, buttons); });
-            buttons.push(btn);
-            packsEl.appendChild(btn);
-          });
-        })
-        .catch(function () {
-          packsEl.textContent = '';
-          setError('No pudimos cargar los packs. Recargá la página.');
-        });
+      creditsInput.addEventListener('input', updateTotal);
+      buyButton.addEventListener('click', buy);
+      updateTotal();
     })();
   </script>
   <script type="module" src="./src/creditos-coin.js"></script>
