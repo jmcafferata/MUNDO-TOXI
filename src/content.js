@@ -184,7 +184,9 @@ export const CONTENT_SOURCE = [
   
   // ── SINCRONIZADO DESDE MUX (2026-10-20) ────────────────────
   // TODO: completar duration (segundos) y activar onTV cuando se confirme el playback ID.
-  { id: 'NDFcRjNdJcxYiV2Bp2boMmIPZIO02rVhJZyFcuApkZiQ', duration: 0, title: 'Modelado de exteriores: edificio parisino y calle modular, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: false, collections: ['toxi-vr', 'toxi-university'] },
+    { id: 'aDEVkhCCP28l6ZG8d9AruqnBfdmBPCqaMlZA01vfWnyM', duration: 9364, title: 'Modelado de exteriores: edificio parisino y calle modular II, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
+
+  { id: 'YbSeScIr2I7NY1bJrUogNRecZo8tZqXCnzxNwPJQGqA', duration: 7814, title: 'Modelado de exteriores: edificio parisino y calle modular I, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
 
   // ── SINCRONIZADO DESDE MUX (2026-10-13) ────────────────────
   { id: 'gSLvDjrc01DoxIEyJIWRar00cQN5yKdTjplJ8x7xpemCU', duration: 8207, title: 'Introducción al modelado de exteriores: edificio parisino, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
