@@ -144,9 +144,9 @@ export const CONTENT_SOURCE = [
   { id: 'llA8A1EJ02j3ikArgeN9Rp1IFQz2zyN2NVXZZYksYhIo', duration: 276, title: 'Búsquese — Otro Día en la Red 2x13', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
     { id: 'aPZpe01oZ9XaLOplOK6GIbDgGxknK6r18wEPOmrNQTRc', duration: 225, title: 'Esfuércese — Otro Día en la Red 2x14', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
     {id: 'Wf2eL028ATt6ZPvx00jswAMkQbJtg4qTZpre02pal8xtno', duration: 100, title: 'ODELaR 360 — Otro Día en la Red 2x15', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
-  { id: '9QFMEWdi6lM4n7JWnS3jw8AmnzKX4mmvR9vWejsj3CA', duration: 190, title: 'Odelando bajo la lluvia — Otro Día en la Red 2x16', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
-    { id: 'HJM6He1V008a81Rm002DaayCbhJm85mwiNau52yeM026Ec', duration: 374, title: 'Relájese — Otro Día en la Red 2x17', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
-  { id: 'eB02ewl01bmuOcWcoIy6Dfqox027bfw3XZiX6hlamwd3Rw', duration: 266, title: 'Por qué el humanoide CREE — Otro Día en la Red 2x18', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
+  { id: '9QFMEWdi6lM4n7JWnS3jw8AmnzKX4mmvR9vWejsj3CA', duration: 190, title: 'Odelando bajo la lluvia — Otro Día en la Red 2x16', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, release: '2026-10-15T12:00:00', collections: ['otro-dia-en-la-red'] },
+    { id: 'HJM6He1V008a81Rm002DaayCbhJm85mwiNau52yeM026Ec', duration: 374, title: 'Relájese — Otro Día en la Red 2x17', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, release: '2026-10-22T12:00:00', collections: ['otro-dia-en-la-red'] },
+  { id: 'eB02ewl01bmuOcWcoIy6Dfqox027bfw3XZiX6hlamwd3Rw', duration: 266, title: 'Por qué el humanoide CREE — Otro Día en la Red 2x18', slug: 'otro-dia-en-la-red', type: 'narrativo', year: 2026, onTV: true, release: '2026-10-29T15:08:00', collections: ['otro-dia-en-la-red'] },
 
   
 
