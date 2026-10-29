@@ -328,6 +328,18 @@
     .buy-input:focus { outline: none; border-color: #25d366; }
     .buy-hint { font-size: 0.78rem; color: rgba(255,255,255,0.4); line-height: 1.5; margin: 10px 0 24px; }
     .buy-packs { display: grid; gap: 12px; }
+    .buy-presets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0 20px; }
+    .buy-preset {
+      background: transparent;
+      border: 1px solid rgba(37,211,102,0.4);
+      color: #fff;
+      padding: 12px 8px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .buy-preset:hover, .buy-preset[aria-pressed="true"] { background: rgba(37,211,102,0.14); border-color: #25d366; }
+    .buy-preset strong { display: block; color: #25d366; margin-bottom: 4px; }
+    .buy-preset span { font-size: 0.8rem; }
     .buy-total {
       display: flex;
       justify-content: space-between;
@@ -419,6 +431,13 @@
       <label class="buy-label" for="buy-phone">Tu número de WhatsApp, con código de país</label>
       <input id="buy-phone" class="buy-input" type="tel" inputmode="numeric" autocomplete="tel" placeholder="5491112345678" />
       <p class="buy-hint">Argentina: 54 9 + código de área + número, sin 0 ni 15. Los créditos se acreditan a este número.</p>
+      <p class="buy-label">Packs</p>
+      <div class="buy-presets" aria-label="Packs disponibles">
+        <button class="buy-preset" type="button" data-credits="1" aria-pressed="true"><strong>1 audio</strong><span>$100</span></button>
+        <button class="buy-preset" type="button" data-credits="10" aria-pressed="false"><strong>10 audios</strong><span>$1.000</span></button>
+        <button class="buy-preset" type="button" data-credits="30" aria-pressed="false"><strong>30 audios</strong><span>$3.000</span></button>
+      </div>
+      <p class="buy-hint">También podés indicar una cantidad distinta.</p>
       <label class="buy-label" for="buy-credits">Cantidad de créditos (1 crédito = 1 audio)</label>
       <input id="buy-credits" class="buy-input" type="number" inputmode="numeric" min="1" step="1" value="1" />
       <p class="buy-hint">Cada crédito cuesta $100 ARS. Podés comprar la cantidad que quieras.</p>
@@ -488,6 +507,7 @@
       var totalEl = document.getElementById('buy-total');
       var buyButton = document.getElementById('buy-button');
       var errorEl = document.getElementById('buy-error');
+      var presetButtons = Array.from(document.querySelectorAll('.buy-preset'));
 
       function formatArs(n) {
         return '$' + Number(n).toLocaleString('es-AR') + ' ARS';
@@ -536,6 +556,15 @@
       }
 
       creditsInput.addEventListener('input', updateTotal);
+      presetButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          creditsInput.value = button.dataset.credits;
+          presetButtons.forEach(function (preset) {
+            preset.setAttribute('aria-pressed', preset === button ? 'true' : 'false');
+          });
+          updateTotal();
+        });
+      });
       buyButton.addEventListener('click', buy);
       updateTotal();
     })();
