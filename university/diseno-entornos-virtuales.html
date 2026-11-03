@@ -715,7 +715,7 @@
                         <div class="countdown-unit"><strong id="countdown-minutes">00</strong><span>minutos</span></div>
                         <div class="countdown-unit"><strong id="countdown-seconds">00</strong><span>segundos</span></div>
                     </div>
-                    <p class="live-status" id="live-status">Martes 3 de noviembre · 18:30 h</p>
+                    <p class="live-status" id="live-status">Martes 10 de noviembre · 18:30 h</p>
                 </div>
                 <mux-player id="live-player" playback-id="LNRUGbgliNpiaJzOIWLIPn801PFMxBFHNKMtvhdvJsms"
                     metadata-video-title="Diseño de Entornos Virtuales — Próxima clase (TOXI VR)"
@@ -1080,7 +1080,16 @@
                 accent-color="#ffffff" controls playsinline></mux-player>
         </section>
 
-        <footer>
+                        <section class="free-sample" aria-labelledby="geometry-nodes-class-title">
+                            <p class="free-sample-label">Clase práctica en vivo</p>
+                            <h2 id="geometry-nodes-class-title">Introducción a los nodos de geometría — Nacho Michalowicz</h2>
+                            <p style="color:rgba(255,255,255,.65);font-weight:300;line-height:1.5;margin:0 0 1.25rem;">Clase práctica en vivo: introducción a los nodos de geometría, a cargo de Nacho Michalowicz.</p>
+                            <mux-player id="geometry-nodes-player" playback-id="o1YqWmOiy00PvMXWFJ2W65ThZNjesWBJMYIirOQ01agSk"
+                                metadata-video-title="Introducción a los nodos de geometría con Nacho Michalowicz (TOXI VR)"
+                                accent-color="#ffffff" controls playsinline></mux-player>
+                        </section>
+
+                        <footer>
             <div class="location"><span>📍</span> Rodríguez Peña 158, Buenos Aires</div>
             <div style="margin-top:3rem;opacity:.3;font-size:.8rem;">© 2026 TOXI Media</div>
         </footer>
@@ -1103,7 +1112,7 @@
         const livePlayer = document.getElementById('live-player');
         const liveCountdown = document.getElementById('live-countdown');
         const liveStatus = document.getElementById('live-status');
-        const classDate = new Date('2026-11-03T18:30:00-03:00');
+        const classDate = new Date('2026-11-10T18:30:00-03:00');
         const countdownElements = {
             days: document.getElementById('countdown-days'),
             hours: document.getElementById('countdown-hours'),
@@ -1131,7 +1140,7 @@
                     liveStatus.textContent = 'En vivo ahora';
                     return;
                 }
-                liveStatus.textContent = 'La clase comienza el martes 3 de noviembre a las 18:30 h';
+                liveStatus.textContent = 'La clase comienza el martes 10 de noviembre a las 18:30 h';
             } catch (error) {
                 console.error('No se pudo consultar el estado del live:', error);
             }
