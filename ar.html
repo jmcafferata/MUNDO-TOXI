@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>TOXI AR</title>
+    <meta property="og:title" content="TOXI AR" />
+    <meta property="og:description" content="Los canales de TOXI rodeándote en realidad aumentada." />
+    <meta property="og:image" content="https://toxi.media/toxi-media-og.jpg" />
+    <link rel="icon" href="/favicon.ico" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #05060a;
+            color: #fff;
+            font-family: 'Helvetica Now', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #cam {
+            position: fixed; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            display: none;
+        }
+        #cam.on { display: block; }
+
+        #scene {
+            position: fixed; inset: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            display: block;
+            touch-action: none;
+        }
+
+        #hud {
+            position: fixed; inset: 0;
+            z-index: 5;
+            pointer-events: none;
+            display: none;
+        }
+        #hud.on { display: block; }
+
+        .hud-btn {
+            position: absolute;
+            top: calc(16px + env(safe-area-inset-top, 0px));
+            pointer-events: auto;
+            background: rgba(0,0,0,0.55);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 10px 16px;
+            font-family: inherit;
+            font-size: 0.68rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            border-radius: 3px;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        #btn-exit { left: 16px; }
+        #btn-sound { right: 16px; }
+
+        #info {
+            position: absolute;
+            left: 0; right: 0;
+            bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+            padding: 0 24px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-shadow: 0 1px 12px rgba(0,0,0,0.9);
+            pointer-events: none;
+        }
+        #info-channel { font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: rgba(255,255,255,0.65); }
+        #info-title { font-size: 1rem; font-weight: 500; }
+        #info-hint { font-size: 0.62rem; letter-spacing: 0.08em; color: rgba(255,255,255,0.45); }
+
+        #intro {
+            position: fixed; inset: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            padding: 32px;
+            text-align: center;
+            background: radial-gradient(ellipse at center, rgba(10,12,22,0.55) 0%, #000 85%);
+        }
+        #intro.hidden { display: none; }
+        .intro-logo { height: 24px; opacity: 0.9; }
+        .intro-title { font-size: 1.9rem; font-weight: 700; letter-spacing: 0.28em; text-transform: uppercase; }
+        .intro-copy { max-width: 380px; font-size: 0.85rem; line-height: 1.5; color: rgba(255,255,255,0.6); }
+        .intro-buttons { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+        .intro-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.4);
+            color: #fff;
+            padding: 15px 34px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .intro-btn:hover { background: rgba(255,255,255,0.1); border-color: #fff; }
+        .intro-btn.secondary { border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.55); font-size: 0.68rem; padding: 11px 24px; }
+        #intro-status { min-height: 1.2em; font-size: 0.7rem; color: rgba(255,255,255,0.45); letter-spacing: 0.05em; }
+    </style>
+</head>
+<body>
+    <video id="cam" playsinline muted autoplay></video>
+    <canvas id="scene"></canvas>
+
+    <div id="hud">
+        <button class="hud-btn" id="btn-exit">Salir</button>
+        <button class="hud-btn" id="btn-sound">Sonido: on</button>
+        <div id="info">
+            <div id="info-channel"></div>
+            <div id="info-title"></div>
+            <div id="info-hint">Mirá un canal para reproducirlo · tocá el video para pasar al siguiente</div>
+        </div>
+    </div>
+
+    <div id="intro">
+        <img class="intro-logo" src="/toxi-logo-white.png" alt="TOXI Media" />
+        <div class="intro-title">TOXI AR</div>
+        <div class="intro-copy">Los canales de TOXI te rodean. Cada canal es una pila de videos que se apilan en profundidad: girá, mirá uno para que suene y tocalo para pasar al siguiente.</div>
+        <div class="intro-buttons">
+            <button class="intro-btn" id="btn-enter">Entrar en AR</button>
+            <button class="intro-btn secondary" id="btn-preview">Vista 360° sin cámara</button>
+        </div>
+        <div id="intro-status"></div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import Hls from 'hls.js';
+        import { COLLECTIONS } from './src/content.js';
+
+        // ── Configuración ──
+        const HIDDEN_COLLECTIONS = new Set(['tv', 'radio', 'narrativo', 'documental', 'evento', 'promocional', 'musical', 'vivo']);
+        const MAX_PER_STACK = 10;   // videos por canal
+        const VISIBLE_SLOTS = 7;    // capas visibles en profundidad
+        const CARD_W = 0.64;
+        const CARD_H = CARD_W * 9 / 16;
+        const SLOT_DEPTH = 0.2;     // metros entre capas
+        const FOCUS_COS = 0.92;     // ~23° de cono de mirada
+
+        const $ = id => document.getElementById(id);
+        const canvas = $('scene');
+        const camEl = $('cam');
+        const hud = $('hud');
+        const intro = $('intro');
+        const introStatus = $('intro-status');
+
+        // ── Datos: un canal por colección ──
+        const channels = Object.entries(COLLECTIONS)
+            .filter(([name]) => !HIDDEN_COLLECTIONS.has(name))
+            .map(([name, videos]) => ({
+                name,
+                videos: videos
+                    .filter(v => v.id && v.duration > 0)
+                    .sort((a, b) => Date.parse(b.release || 0) - Date.parse(a.release || 0))
+                    .slice(0, MAX_PER_STACK),
+                total: videos.length,
+            }))
+            .filter(c => c.videos.length)
+            .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
+
+        const prettyName = name => name.replace(/-/g, ' ').toUpperCase();
+        const thumbUrl = v => `https://image.mux.com/${v.id}/thumbnail.jpg?width=640&height=360&fit_mode=smartcrop&time=${v.thumbnailTime || 1}`;
+        const streamUrl = v => `https://stream.mux.com/${v.id}.m3u8`;
+
+        // ── Three.js ──
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setClearColor(0x000000, 0);
+        renderer.xr.enabled = true;
+        renderer.xr.setReferenceSpaceType('local');
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.05, 50);
+        const raycaster = new THREE.Raycaster();
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.setCrossOrigin('anonymous');
+
+        function resize() {
+            renderer.setSize(window.innerWidth, window.innerHeight, false);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // ── Video compartido: solo suena un video a la vez ──
+        const videoEl = document.createElement('video');
+        videoEl.playsInline = true;
+        videoEl.crossOrigin = 'anonymous';
+        videoEl.setAttribute('playsinline', '');
+        Object.assign(videoEl.style, { position: 'fixed', width: '2px', height: '2px', opacity: '0', pointerEvents: 'none', left: '0', top: '0' });
+        document.body.appendChild(videoEl);
+        const videoTex = new THREE.VideoTexture(videoEl);
+        videoTex.colorSpace = THREE.SRGBColorSpace;
+
+        let hls = null;
+        let activeCard = null;
+        let soundOn = true;
+        const placeholderTex = (() => {
+            const c = document.createElement('canvas');
+            c.width = c.height = 2;
+            c.getContext('2d').fillStyle = '#10121a';
+            c.getContext('2d').fillRect(0, 0, 2, 2);
+            const t = new THREE.CanvasTexture(c);
+            t.colorSpace = THREE.SRGBColorSpace;
+            return t;
+        })();
+
+        function stopVideo() {
+            if (activeCard) {
+                activeCard.mat.map = activeCard.thumb || placeholderTex;
+                activeCard.mat.needsUpdate = true;
+                activeCard = null;
+            }
+            if (hls) { hls.destroy(); hls = null; }
+            videoEl.pause();
+            videoEl.removeAttribute('src');
+            videoEl.load();
+        }
+
+        function playCard(card) {
+            if (activeCard === card) return;
+            stopVideo();
+            activeCard = card;
+            const url = streamUrl(card.video);
+            if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+                videoEl.src = url;
+            } else if (Hls.isSupported()) {
+                hls = new Hls({ capLevelToPlayerSize: true, maxBufferLength: 12 });
+                hls.loadSource(url);
+                hls.attachMedia(videoEl);
+            } else {
+                return;
+            }
+            videoEl.muted = !soundOn;
+            const start = () => videoEl.play().catch(() => {
+                // Sin permiso de audio: reproducir en silencio antes que no reproducir.
+                videoEl.muted = true;
+                videoEl.play().catch(() => {});
+            });
+            start();
+            const onPlaying = () => {
+                videoEl.removeEventListener('playing', onPlaying);
+                if (activeCard !== card) return;
+                card.mat.map = videoTex;
+                card.mat.needsUpdate = true;
+            };
+            videoEl.addEventListener('playing', onPlaying);
+        }
+
+        videoEl.addEventListener('ended', () => {
+            if (focused) { advance(focused); }
+        });
+
+        // ── Etiquetas ──
+        function drawLabel(stack) {
+            const ctx = stack.labelCtx;
+            const w = stack.labelCanvas.width, h = stack.labelCanvas.height;
+            ctx.clearRect(0, 0, w, h);
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(0,0,0,0.9)';
+            ctx.shadowBlur = 16;
+            ctx.fillStyle = '#fff';
+            ctx.font = '700 64px "Helvetica Neue", Helvetica, Arial, sans-serif';
+            ctx.fillText(prettyName(stack.name), w / 2, 100);
+            const front = stack.order[0];
+            let title = front.video.title || '';
+            if (title.length > 44) title = title.slice(0, 43) + '…';
+            ctx.fillStyle = 'rgba(255,255,255,0.8)';
+            ctx.font = '400 42px "Helvetica Neue", Helvetica, Arial, sans-serif';
+            ctx.fillText(title, w / 2, 168);
+            ctx.fillStyle = 'rgba(255,255,255,0.5)';
+            ctx.font = '400 32px "Helvetica Neue", Helvetica, Arial, sans-serif';
+            ctx.fillText(`${stack.total} videos`, w / 2, 220);
+            stack.labelTex.needsUpdate = true;
+        }
+
+        // ── Pilas alrededor del usuario ──
+        const stacks = [];
+        const ringRadius = Math.max(2.2, (channels.length * (CARD_W + 0.2)) / (2 * Math.PI));
+
+        channels.forEach((channel, i) => {
+            const theta = (i / channels.length) * Math.PI * 2;
+            const dir = new THREE.Vector3(Math.sin(theta), 0, -Math.cos(theta));
+            const group = new THREE.Group();
+            scene.add(group);
+
+            const stack = {
+                name: channel.name,
+                total: channel.total,
+                theta,
+                dir,
+                group,
+                order: [],
+                anchor: dir.clone().multiplyScalar(ringRadius),
+            };
+
+            channel.videos.forEach((video, k) => {
+                const mat = new THREE.MeshBasicMaterial({ map: placeholderTex, transparent: true, depthWrite: false, toneMapped: false });
+                const mesh = new THREE.Mesh(new THREE.PlaneGeometry(CARD_W, CARD_H), mat);
+                mesh.rotation.y = -theta;
+                const card = {
+                    video, mesh, mat, stack,
+                    thumb: null, thumbRequested: false,
+                    slotCur: k, slotTarget: k,
+                    opCur: 0, scaleCur: 1,
+                };
+                mesh.userData.card = card;
+                group.add(mesh);
+                stack.order.push(card);
+            });
+
+            const labelCanvas = document.createElement('canvas');
+            labelCanvas.width = 1024;
+            labelCanvas.height = 256;
+            const labelTex = new THREE.CanvasTexture(labelCanvas);
+            labelTex.colorSpace = THREE.SRGBColorSpace;
+            const label = new THREE.Mesh(
+                new THREE.PlaneGeometry(CARD_W * 1.4, CARD_W * 1.4 / 4),
+                new THREE.MeshBasicMaterial({ map: labelTex, transparent: true, depthWrite: false, toneMapped: false })
+            );
+            label.rotation.y = -theta;
+            label.renderOrder = 10;
+            group.add(label);
+            Object.assign(stack, { labelCanvas, labelCtx: labelCanvas.getContext('2d'), labelTex, label });
+
+            drawLabel(stack);
+            layoutStack(stack, true);
+            stacks.push(stack);
+        });
+
+        function loadThumb(card) {
+            if (card.thumbRequested) return;
+            card.thumbRequested = true;
+            textureLoader.load(thumbUrl(card.video), tex => {
+                tex.colorSpace = THREE.SRGBColorSpace;
+                card.thumb = tex;
+                if (activeCard !== card || card.mat.map !== videoTex) {
+                    card.mat.map = tex;
+                    card.mat.needsUpdate = true;
+                }
+            }, undefined, () => {});
+        }
+
+        function layoutStack(stack, snap = false) {
+            stack.order.forEach((card, slot) => {
+                const wrapped = slot > card.slotTarget + 1;
+                card.slotTarget = slot;
+                if (snap || wrapped) {
+                    card.slotCur = slot;
+                    if (wrapped) card.opCur = 0;
+                }
+                if (slot < VISIBLE_SLOTS) loadThumb(card);
+            });
+        }
+
+        function advance(stack) {
+            if (stack.order.length < 2) return;
+            stack.order.push(stack.order.shift());
+            afterReorder(stack);
+        }
+
+        function bringToFront(stack, card) {
+            const idx = stack.order.indexOf(card);
+            if (idx <= 0) return;
+            // Las capas que estaban delante pasan al fondo, conservando el orden.
+            stack.order.push(...stack.order.splice(0, idx));
+            afterReorder(stack);
+        }
+
+        function afterReorder(stack) {
+            layoutStack(stack);
+            drawLabel(stack);
+            if (stack === focused) {
+                playCard(stack.order[0]);
+                updateInfo();
+            }
+        }
+
+        // ── Foco por mirada ──
+        let focused = null;
+        let candidate = null;
+        let candidateSince = 0;
+        const camPos = new THREE.Vector3();
+        const camDir = new THREE.Vector3();
+        const tmp = new THREE.Vector3();
+
+        function setFocus(stack) {
+            if (focused === stack) return;
+            focused = stack;
+            if (stack) playCard(stack.order[0]);
+            else stopVideo();
+            updateInfo();
+        }
+
+        function updateFocus(now) {
+            const cam = renderer.xr.isPresenting ? renderer.xr.getCamera() : camera;
+            cam.getWorldPosition(camPos);
+            cam.getWorldDirection(camDir);
+            let best = null;
+            let bestDot = FOCUS_COS;
+            for (const stack of stacks) {
+                tmp.copy(stack.anchor).sub(camPos).normalize();
+                const d = tmp.dot(camDir);
+                if (d > bestDot) { bestDot = d; best = stack; }
+            }
+            if (best !== candidate) { candidate = best; candidateSince = now; }
+            // Al mirar entre canales se mantiene el foco un rato antes de apagar el video.
+            const dwell = candidate ? 450 : 1800;
+            if (candidate !== focused && now - candidateSince > dwell) setFocus(candidate);
+        }
+
+        function updateInfo() {
+            $('info-channel').textContent = focused ? prettyName(focused.name) : '';
+            $('info-title').textContent = focused ? focused.order[0].video.title : 'Girá para explorar los canales';
+        }
+
+        // ── Animación de las pilas ──
+        function animate(dt) {
+            const k = Math.min(1, dt * 8);
+            for (const stack of stacks) {
+                const isFocused = stack === focused;
+                for (const card of stack.order) {
+                    const slot = card.slotTarget;
+                    card.slotCur += (slot - card.slotCur) * k;
+                    const opTarget = slot < VISIBLE_SLOTS ? 1 - slot * 0.1 : 0;
+                    card.opCur += (opTarget - card.opCur) * k;
+                    const scaleTarget = isFocused && slot === 0 ? 1.1 : 1;
+                    card.scaleCur += (scaleTarget - card.scaleCur) * k;
+
+                    const radius = ringRadius + card.slotCur * SLOT_DEPTH;
+                    card.mesh.position.set(stack.dir.x * radius, card.slotCur * 0.07, stack.dir.z * radius);
+                    card.mesh.scale.setScalar(card.scaleCur);
+                    card.mat.opacity = Math.max(0, card.opCur);
+                    card.mat.color.setScalar(Math.max(0.25, 1 - card.slotCur * 0.1));
+                    card.mesh.visible = card.opCur > 0.01;
+                    card.mesh.renderOrder = -card.slotCur;
+                }
+                const labelRadius = ringRadius - 0.02;
+                stack.label.position.set(stack.dir.x * labelRadius, -CARD_H / 2 - 0.12, stack.dir.z * labelRadius);
+            }
+        }
+
+        // ── Interacción: tocar una capa ──
+        const tempMatrix = new THREE.Matrix4();
+
+        function pickFromRay() {
+            const meshes = [];
+            for (const stack of stacks) {
+                for (const card of stack.order) {
+                    if (card.mesh.visible && card.slotTarget < VISIBLE_SLOTS) meshes.push(card.mesh);
+                }
+            }
+            const hit = raycaster.intersectObjects(meshes, false)[0];
+            if (!hit) return;
+            const card = hit.object.userData.card;
+            const stack = card.stack;
+            setFocus(stack);
+            candidate = stack;
+            candidateSince = performance.now();
+            if (stack.order[0] === card) advance(stack);
+            else bringToFront(stack, card);
+        }
+
+        const controller = renderer.xr.getController(0);
+        scene.add(controller);
+        controller.addEventListener('select', () => {
+            tempMatrix.identity().extractRotation(controller.matrixWorld);
+            raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+            raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+            pickFromRay();
+        });
+
+        // ── Modo cámara + giroscopio (sin WebXR) o vista 360° con arrastre ──
+        const euler = new THREE.Euler();
+        const q1 = new THREE.Quaternion(-Math.sqrt(0.5), 0, 0, Math.sqrt(0.5));
+        const q0 = new THREE.Quaternion();
+        const zAxis = new THREE.Vector3(0, 0, 1);
+        const yawFix = new THREE.Quaternion();
+        const yAxis = new THREE.Vector3(0, 1, 0);
+        const gyro = { active: false, quat: new THREE.Quaternion(), yaw0: null };
+        const look = { yaw: 0, pitch: 0 };
+        let flatMode = false;
+        let camStream = null;
+
+        function onDeviceOrientation(e) {
+            if (e.alpha === null || e.alpha === undefined) return;
+            const orient = THREE.MathUtils.degToRad(screen.orientation?.angle ?? window.orientation ?? 0);
+            euler.set(THREE.MathUtils.degToRad(e.beta), THREE.MathUtils.degToRad(e.alpha), -THREE.MathUtils.degToRad(e.gamma), 'YXZ');
+            gyro.quat.setFromEuler(euler);
+            gyro.quat.multiply(q1);
+            gyro.quat.multiply(q0.setFromAxisAngle(zAxis, -orient));
+            if (gyro.yaw0 === null) {
+                // El primer canal queda al frente al entrar.
+                gyro.yaw0 = new THREE.Euler().setFromQuaternion(gyro.quat, 'YXZ').y;
+            }
+            gyro.active = true;
+        }
+
+        function updateFlatCamera() {
+            if (gyro.active) {
+                yawFix.setFromAxisAngle(yAxis, -gyro.yaw0);
+                camera.quaternion.copy(yawFix).multiply(gyro.quat);
+            } else {
+                camera.quaternion.setFromEuler(euler.set(look.pitch, look.yaw, 0, 'YXZ'));
+            }
+        }
+
+        let dragging = false, dragMoved = 0, lastX = 0, lastY = 0;
+        canvas.addEventListener('pointerdown', e => {
+            if (renderer.xr.isPresenting) return;
+            dragging = true; dragMoved = 0; lastX = e.clientX; lastY = e.clientY;
+            canvas.setPointerCapture(e.pointerId);
+        });
+        canvas.addEventListener('pointermove', e => {
+            if (!dragging) return;
+            const dx = e.clientX - lastX, dy = e.clientY - lastY;
+            dragMoved += Math.abs(dx) + Math.abs(dy);
+            lastX = e.clientX; lastY = e.clientY;
+            if (!gyro.active) {
+                look.yaw -= dx * 0.005;
+                look.pitch = THREE.MathUtils.clamp(look.pitch - dy * 0.005, -1.2, 1.2);
+            }
+        });
+        canvas.addEventListener('pointerup', e => {
+            if (!dragging) return;
+            dragging = false;
+            if (dragMoved > 8) return;
+            const rect = canvas.getBoundingClientRect();
+            const ndc = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
+            camera.updateMatrixWorld();
+            raycaster.setFromCamera(ndc, camera);
+            pickFromRay();
+        });
+
+        async function startCamera() {
+            try {
+                camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
+                camEl.srcObject = camStream;
+                camEl.classList.add('on');
+                await camEl.play().catch(() => {});
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function stopCamera() {
+            camStream?.getTracks().forEach(t => t.stop());
+            camStream = null;
+            camEl.srcObject = null;
+            camEl.classList.remove('on');
+        }
+
+        async function enableGyro() {
+            // iOS exige pedir el permiso dentro del gesto del usuario.
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                try {
+                    if ((await DeviceOrientationEvent.requestPermission()) !== 'granted') return;
+                } catch (e) { return; }
+            }
+            window.addEventListener('deviceorientation', onDeviceOrientation);
+        }
+
+        function disableGyro() {
+            window.removeEventListener('deviceorientation', onDeviceOrientation);
+            gyro.active = false;
+            gyro.yaw0 = null;
+        }
+
+        // ── Entrar / salir ──
+        let xrSession = null;
+
+        function showHud(on) {
+            intro.classList.toggle('hidden', on);
+            hud.classList.toggle('on', on);
+            updateInfo();
+        }
+
+        async function enterXR() {
+            const session = await navigator.xr.requestSession('immersive-ar', {
+                optionalFeatures: ['local-floor', 'dom-overlay'],
+                domOverlay: { root: hud },
+            });
+            xrSession = session;
+            session.addEventListener('end', () => { xrSession = null; leave(true); });
+            await renderer.xr.setSession(session);
+            showHud(true);
+        }
+
+        async function enterFlat(withCamera) {
+            flatMode = true;
+            if (withCamera) {
+                const gyroReady = enableGyro();
+                const camReady = startCamera();
+                await Promise.all([gyroReady, camReady]);
+            }
+            showHud(true);
+        }
+
+        function leave(fromSessionEnd = false) {
+            if (xrSession && !fromSessionEnd) { xrSession.end().catch(() => {}); return; }
+            flatMode = false;
+            setFocus(null);
+            candidate = null;
+            disableGyro();
+            stopCamera();
+            showHud(false);
+        }
+
+        // Los botones del overlay no deben disparar un "select" sobre la escena.
+        hud.querySelectorAll('button').forEach(b => b.addEventListener('beforexrselect', e => e.preventDefault()));
+
+        $('btn-exit').addEventListener('click', () => leave());
+        $('btn-sound').addEventListener('click', () => {
+            soundOn = !soundOn;
+            videoEl.muted = !soundOn;
+            $('btn-sound').textContent = 'Sonido: ' + (soundOn ? 'on' : 'off');
+        });
+
+        $('btn-preview').addEventListener('click', () => enterFlat(false));
+        $('btn-enter').addEventListener('click', async () => {
+            introStatus.textContent = '';
+            try {
+                if (xrSupported) await enterXR();
+                else await enterFlat(true);
+            } catch (e) {
+                introStatus.textContent = 'No se pudo iniciar AR. Probá la vista 360°.';
+            }
+        });
+
+        let xrSupported = false;
+        (async () => {
+            try {
+                xrSupported = !!navigator.xr && await navigator.xr.isSessionSupported('immersive-ar');
+            } catch (e) {}
+            if (!xrSupported) {
+                $('btn-enter').textContent = 'Entrar con cámara';
+                introStatus.textContent = 'Tu navegador no ofrece AR nativo: usamos la cámara y el giroscopio.';
+            }
+            if (!channels.length) {
+                $('btn-enter').disabled = true;
+                introStatus.textContent = 'No hay canales disponibles.';
+            }
+        })();
+
+        // ── Loop ──
+        const clock = new THREE.Clock();
+        renderer.setAnimationLoop(() => {
+            const dt = Math.min(clock.getDelta(), 0.1);
+            const now = performance.now();
+            if (!renderer.xr.isPresenting && flatMode) updateFlatCamera();
+            if (renderer.xr.isPresenting || flatMode) updateFocus(now);
+            animate(dt);
+            if (videoEl.readyState >= videoEl.HAVE_CURRENT_DATA && activeCard?.mat.map === videoTex) videoTex.needsUpdate = true;
+            renderer.render(scene, camera);
+        });
+    </script>
+</body>
+</html>
