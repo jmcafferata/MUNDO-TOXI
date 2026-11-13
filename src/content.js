@@ -184,25 +184,14 @@ export const CONTENT_SOURCE = [
   { id: '4vD7FFR27nzm8yLOPGcVHRaAHd01ODSw6RBQpMgLEU01E', duration: 582, title: 'Ex Embajada Yugoslava — Recorrido', slug: '', type: 'documental', year: 2026, onTV: true, release: '2026-10-16T18:00:00', collections: ['toxi-documentales'] },
   
   
-  // ── SINCRONIZADO DESDE MUX (2026-11-03) ────────────────────
+  // ── ENTORNOS VIRTUALES ────────────────────
+  { id: 'SXEeBitzDlCdMfNiG3crdF02I02FtNogSsl1K8kDGFbzo', duration: 6862 , title: 'Generador de árboles procedural, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, release: '2026-11-10T20:38:49', collections: ['toxi-vr', 'toxi-university'] },
   { id: 'o1YqWmOiy00PvMXWFJ2W65ThZNjesWBJMYIirOQ01agSk', duration: 6544, title: 'Introducción a los nodos de geometría, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, release: '2026-11-03T20:38:49', collections: ['toxi-vr', 'toxi-university'] },
-
-  // ── SINCRONIZADO DESDE MUX (2026-10-20) ────────────────────
-  // TODO: completar duration (segundos) y activar onTV cuando se confirme el playback ID.
-
-  
     { id: 'aDEVkhCCP28l6ZG8d9AruqnBfdmBPCqaMlZA01vfWnyM', duration: 9364, title: 'Modelado de exteriores: edificio parisino y calle modular II, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, release: '2026-10-27T18:39:40', collections: ['toxi-vr', 'toxi-university'] },
-
   { id: 'YbSeScIr2I7NY1bJrUogNRecZo8tZqXCnzxNwPJQGqA', duration: 7814, title: 'Modelado de exteriores: edificio parisino y calle modular I, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, release: '2026-10-20T19:05:08', collections: ['toxi-vr', 'toxi-university'] },
-
-  // ── SINCRONIZADO DESDE MUX (2026-10-13) ────────────────────
   { id: 'gSLvDjrc01DoxIEyJIWRar00cQN5yKdTjplJ8x7xpemCU', duration: 8207, title: 'Introducción al modelado de exteriores: edificio parisino, con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, collections: ['toxi-vr', 'toxi-university'] },
-
-  // ── SINCRONIZADO DESDE MUX (2026-10-06) ────────────────────
   { id: 'QqLyTeWoopNADlwAYMezmMa02x991J0101JpseHs02WNwGA', duration: 3609, title: 'Iluminación en Unity I con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, release: '2026-10-06T18:26:43', collections: ['toxi-vr', 'toxi-university'] },
   { id: 'jE00IywasZxwgoBKGP102m3a7TiIZ25fog68VCNhf00Uzg', duration: 1743, title: 'Iluminación en Unity II con Nacho Michalowicz — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, release: '2026-10-06T19:49:00', collections: ['toxi-vr', 'toxi-university'] },
-
-  // ── SINCRONIZADO DESDE MUX (2026-09-08) ────────────────────
   { id: 'MBLpySzVnCNiQ701A53UNEvw2T12LmDxK00yeHfCFcfVE', duration: 2598, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 01 — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, release: '2026-09-08T17:27:36', collections: ['toxi-vr', 'toxi-university'] },
   { id: 'GMKwIO6JSZrspQvXnhuZNqVrP01TR00PL4aMWNMRoAHFg', duration: 5287, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 02 — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, release: '2026-09-08T18:12:28', collections: ['toxi-vr', 'toxi-university'] },
   { id: 'ZnTUHNdUe200Q4KcIetZCrPesk027de2f3du4RPujKsRA', duration: 213, title: 'Introducción al texturizado y ensamblado con Nacho Michalowicz 03 — Diseño de entornos virtuales', slug: '', type: 'vivo', year: 2026, onTV: true, release: '2026-09-08T19:43:14', collections: ['toxi-vr', 'toxi-university'] },

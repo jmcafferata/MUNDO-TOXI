@@ -26,6 +26,14 @@ npm run build      # genera /dist
 git push           # Vercel hace el deploy automático en merge a main
 ```
 
+## Vistas de Otro día en la red
+
+La sección de `numeros.html` consulta `api/odelar-views.mjs`. Configurar en Vercel las variables de servidor `YOUTUBE_API_KEY`, `IG_ACCESS_TOKEN`, `MUX_TOKEN_ID` y `MUX_TOKEN_SECRET`; para desarrollo local pueden guardarse en `.env.local`, que está ignorado por Git. No usar prefijos `VITE_` para estas credenciales. La clave de YouTube necesita YouTube Data API v3 y el token de Instagram Unified Login necesita acceso a la cuenta profesional y los permisos `instagram_basic` e `instagram_manage_insights`.
+
+Los IDs de capítulos completos se mantienen en `lib/odelar-episodes.mjs`: YouTube se cotejó con la playlist de la serie (y el 2x15, ausente de la playlist, por título y duración) y los Reels con títulos, duración o confirmación editorial. Al publicar nuevos capítulos, verificar y agregar sus IDs allí; no se incluyen clips automáticamente. El orden de 1x03 y 1x04 en YouTube difiere de la página de la serie y se vinculan por título. Para 1x07 se usa el ID de Mux de la página de la serie.
+
+YouTube e Instagram aportan vistas acumuladas; Mux aporta únicamente su período disponible y la página muestra sus fechas. Los totales son parciales cuando falta una publicación o fuente y no representan espectadores únicos. Las llamadas a funciones de Vercel requieren un entorno compatible con funciones serverless; `npm run dev` de Vite por sí solo no ejecuta `api/`.
+
 ## Estructura
 
 ```
