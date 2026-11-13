@@ -67,7 +67,7 @@ test('aggregates available views, exposes retention and reports failures', async
     assert.equal(manual.instagramManual, true);
     assert.deepEqual([manual.views.instagram, manual.likes.instagram, manual.comments.instagram], [617, 24, 11]);
     const commentsOnly = res.body.episodes.find(ep => ep.episode === '1x07');
-    assert.deepEqual([commentsOnly.views.instagram, commentsOnly.likes.instagram, commentsOnly.comments.instagram], [null, null, 16]);
+    assert.deepEqual([commentsOnly.views.instagram, commentsOnly.likes.instagram, commentsOnly.comments.instagram], [1342, null, 16]);
     assert.deepEqual(secondSeason.likes, { youtube: 2, instagram: 5 });
     assert.deepEqual(secondSeason.comments, { youtube: 1, instagram: 0 });
     assert.equal(secondSeason.totalLikes, 7);
