@@ -1,0 +1,42 @@
+name: Instagram Reels publisher
+
+on:
+  schedule:
+    - cron: '0 21 14 11 *'
+    - cron: '0 0 15 11 *'
+    - cron: '0 15 15 11 *'
+    - cron: '0 21 15 11 *'
+    - cron: '0 0 16 11 *'
+    - cron: '0 15 16 11 *'
+    - cron: '0 21 16 11 *'
+    - cron: '0 0 17 11 *'
+    - cron: '0 15 17 11 *'
+    # catch-up in case a scheduled run was delayed or dropped
+    - cron: '30 */6 14-18 11 *'
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: 'Dry run (do not publish)'
+        type: boolean
+        default: true
+
+concurrency:
+  group: ig-publish
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Publish due Reel
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        run: node tools/ig-publish.mjs ${{ github.event_name == 'workflow_dispatch' && inputs.dry && '--dry' || '' }}
