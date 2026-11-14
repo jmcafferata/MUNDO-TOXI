@@ -1,22 +1,10 @@
 // Publishes the oldest due Reel from the queue to Instagram (videos hosted in Vercel Blob).
 // A Reel counts as already posted when its caption is on the account's recent media, so reruns are safe.
 // Env: IG_ACCESS_TOKEN, IG_USER_ID. Pass --dry to only report what would be published.
-const BLOB = 'https://ilw9jqu6vllksucj.public.blob.vercel-storage.com/ig';
+import { QUEUE } from './reels-queue.mjs';
+
 const API = 'https://graph.facebook.com/v21.0';
 const dry = process.argv.includes('--dry');
-
-const QUEUE = [
-  { n: 2, publishAt: '2026-11-14T21:00:00Z' },
-  { n: 3, publishAt: '2026-11-15T00:00:00Z' },
-  { n: 4, publishAt: '2026-11-15T15:00:00Z' },
-  { n: 5, publishAt: '2026-11-15T21:00:00Z' },
-  { n: 6, publishAt: '2026-11-16T00:00:00Z' },
-  { n: 7, publishAt: '2026-11-16T15:00:00Z' },
-  { n: 8, publishAt: '2026-11-16T21:00:00Z' },
-  { n: 9, publishAt: '2026-11-17T00:00:00Z' },
-  { n: 10, publishAt: '2026-11-17T15:00:00Z' },
-  { n: 11, publishAt: '2026-11-17T21:00:00Z' },
-].map((i) => ({ ...i, caption: `Entrevista a Nicolás Martorell (Parte ${i.n})`, url: `${BLOB}/parte-${i.n}.mp4` }));
 
 const { IG_ACCESS_TOKEN: TOKEN, IG_USER_ID: IG_ID } = process.env;
 if (!TOKEN || !IG_ID) throw new Error('Missing IG_ACCESS_TOKEN / IG_USER_ID');

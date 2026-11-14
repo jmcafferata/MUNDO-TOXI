@@ -41,3 +41,20 @@ jobs:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
         run: node tools/ig-publish.mjs ${{ github.event_name == 'workflow_dispatch' && inputs.dry && '--dry' || '' }}
+
+  youtube:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Publish due Short
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: |
+          if [ -z "$YT_REFRESH_TOKEN" ]; then echo "YouTube secrets not configured, skipping"; exit 0; fi
+          node tools/yt-publish.mjs ${{ github.event_name == 'workflow_dispatch' && inputs.dry && '--dry' || '' }}
