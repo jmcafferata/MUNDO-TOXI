@@ -15,6 +15,7 @@ const QUEUE = [
   { n: 8, publishAt: '2026-11-16T21:00:00Z' },
   { n: 9, publishAt: '2026-11-17T00:00:00Z' },
   { n: 10, publishAt: '2026-11-17T15:00:00Z' },
+  { n: 11, publishAt: '2026-11-17T21:00:00Z' },
 ].map((i) => ({ ...i, caption: `Entrevista a Nicolás Martorell (Parte ${i.n})`, url: `${BLOB}/parte-${i.n}.mp4` }));
 
 const { IG_ACCESS_TOKEN: TOKEN, IG_USER_ID: IG_ID } = process.env;
