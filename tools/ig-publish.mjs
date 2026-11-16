@@ -5,6 +5,8 @@ import { QUEUE } from './reels-queue.mjs';
 
 const API = 'https://graph.facebook.com/v21.0';
 const dry = process.argv.includes('--dry');
+// Invited as collaborators on every Reel; they must accept the invite in the Instagram app.
+const COLLABORATORS = ['jmcafferata', 'mneuronico'];
 
 const { IG_ACCESS_TOKEN: TOKEN, IG_USER_ID: IG_ID } = process.env;
 if (!TOKEN || !IG_ID) throw new Error('Missing IG_ACCESS_TOKEN / IG_USER_ID');
@@ -41,6 +43,7 @@ const container = await graph('POST', `${API}/${IG_ID}/media`, {
   video_url: item.url,
   caption: item.caption,
   share_to_feed: 'true',
+  collaborators: JSON.stringify(COLLABORATORS),
 });
 
 for (let i = 0; ; i++) {
