@@ -10,6 +10,6 @@ export const QUEUE = [
   { n: 7, publishAt: '2026-11-16T15:00:00Z' },
   { n: 8, publishAt: '2026-11-16T21:00:00Z' },
   { n: 9, publishAt: '2026-11-17T00:00:00Z' },
-  { n: 10, publishAt: '2026-11-17T15:00:00Z' },
-  { n: 11, publishAt: '2026-11-17T21:00:00Z' },
-].map((i) => ({ ...i, caption: `Entrevista a Nicolás Martorell (Parte ${i.n})`, url: `${BLOB}/parte-${i.n}.mp4` }));
+  { n: 10, publishAt: '2026-11-18T00:00:00Z', file: 'parte-10-v2' },
+  { n: 11, publishAt: '2026-11-18T15:00:00Z', file: 'parte-11-v2' },
+].map((i) => ({ ...i, caption: `Entrevista a Nicolás Martorell (Parte ${i.n})`, url: `${BLOB}/${i.file ?? `parte-${i.n}`}.mp4` }));
