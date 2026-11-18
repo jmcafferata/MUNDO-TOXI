@@ -107,6 +107,10 @@
       "destination": "/api/signup?kind=university"
     },
     {
+      "source": "/pagar/:code",
+      "destination": "https://audiont-1-jmcafferata.replit.app/pay/:code"
+    },
+    {
       "source": "/moneda/:id",
       "destination": "/api/moneda?id=:id"
     },
