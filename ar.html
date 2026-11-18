@@ -573,14 +573,19 @@
             camEl.classList.remove('on');
         }
 
+        // En iOS un aviso de permiso puede no resolverse nunca: no dejar la UI esperando.
+        const withTimeout = (promise, ms, fallback) =>
+            Promise.race([promise, new Promise(resolve => setTimeout(() => resolve(fallback), ms))]);
+
         async function enableGyro() {
             // iOS exige pedir el permiso dentro del gesto del usuario.
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 try {
-                    if ((await DeviceOrientationEvent.requestPermission()) !== 'granted') return;
-                } catch (e) { return; }
+                    if ((await DeviceOrientationEvent.requestPermission()) !== 'granted') return false;
+                } catch (e) { return false; }
             }
             window.addEventListener('deviceorientation', onDeviceOrientation);
+            return true;
         }
 
         function disableGyro() {
@@ -611,12 +616,13 @@
 
         async function enterFlat(withCamera) {
             flatMode = true;
-            if (withCamera) {
-                const gyroReady = enableGyro();
-                const camReady = startCamera();
-                await Promise.all([gyroReady, camReady]);
-            }
+            // Entrar ya: los permisos se piden de a uno (iOS pisa avisos simultáneos)
+            // y si alguno falla se sigue con arrastre y sin cámara.
             showHud(true);
+            if (withCamera) {
+                await withTimeout(enableGyro(), 15000, false);
+                await withTimeout(startCamera(), 15000, false);
+            }
         }
 
         function leave(fromSessionEnd = false) {
@@ -657,7 +663,7 @@
             } catch (e) {}
             if (!xrSupported) {
                 $('btn-enter').textContent = 'Entrar con cámara';
-                introStatus.textContent = 'Tu navegador no ofrece AR nativo: usamos la cámara y el giroscopio.';
+                introStatus.textContent = 'Usamos la cámara y el giroscopio de tu teléfono. Aceptá los permisos que te pida.';
             }
             if (!channels.length) {
                 $('btn-enter').disabled = true;
