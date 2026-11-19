@@ -13,3 +13,12 @@ export const QUEUE = [
   { n: 10, publishAt: '2026-11-17T21:00:00Z', file: 'parte-10-v2' },
   { n: 11, publishAt: '2026-11-17T21:01:00Z', file: 'parte-11-v2' },
 ].map((i) => ({ ...i, caption: `Entrevista a Nicolás Martorell (Parte ${i.n})`, url: `${BLOB}/${i.file ?? `parte-${i.n}`}.mp4` }));
+
+// Full interview is 4:01, over the 3:00 Shorts limit, so on YouTube it goes up as a regular video.
+QUEUE.push({
+  n: 'completa',
+  publishAt: '2026-11-17T21:30:00Z',
+  caption: 'Entrevista a Nicolás Martorell (Completa)',
+  url: `${BLOB}/completa.mp4`,
+  short: false,
+});

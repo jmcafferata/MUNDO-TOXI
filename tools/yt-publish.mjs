@@ -57,8 +57,8 @@ const start = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?u
   },
   body: JSON.stringify({
     snippet: {
-      title: `${item.caption} #Shorts`,
-      description: `${item.caption}\n\n#Shorts`,
+      title: item.short === false ? item.caption : `${item.caption} #Shorts`,
+      description: item.short === false ? item.caption : `${item.caption}\n\n#Shorts`,
       categoryId: '24',
       defaultLanguage: 'es',
     },
@@ -74,4 +74,4 @@ const uploaded = await json(
     body: video,
   }),
 );
-console.log(`published "${item.caption}" -> https://youtube.com/shorts/${uploaded.id} (privacy: ${uploaded.status?.privacyStatus})`);
+console.log(`published "${item.caption}" -> https://youtube.com/${item.short === false ? 'watch?v=' : 'shorts/'}${uploaded.id} (privacy: ${uploaded.status?.privacyStatus})`);
