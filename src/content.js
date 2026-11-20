@@ -147,7 +147,9 @@ export const CONTENT_SOURCE = [
     {id: 'Wf2eL028ATt6ZPvx00jswAMkQbJtg4qTZpre02pal8xtno', duration: 100, title: 'ODELaR 360 — Otro día en la red 2x17', slug: '', type: 'narrativo', year: 2026, onTV: true, collections: ['otro-dia-en-la-red'] },
     { id: 'HJM6He1V008a81Rm002DaayCbhJm85mwiNau52yeM026Ec', duration: 374, title: 'Relájese — Otro día en la red 2x18', slug: '', type: 'narrativo', year: 2026, onTV: true, release: '2026-10-20T22:18:01', collections: ['otro-dia-en-la-red'] },
      { id: 'g4wyn42A0002WL5Bxzyh01FpK42vLLiBS15eIb01IHP1528', title: '¿Quiere ser su propio explotador? — Otro día en la red 2x19', duration: 176, slug: '', type: 'narrativo', year: 2026, onTV: true, release: '2026-11-05T22:18:01', collections: ['otro-dia-en-la-red']},
-     { id: '2IfniYe5SYoskkAGQDfedv8VxP9OQZvIVU7o2E1fs900', title: 'Post-ODELaR — Otro día en la red 2x20', duration: 149, slug: '', type: 'narrativo', year: 2026, onTV: true, release: '2026-12-05T22:18:01', collections: ['otro-dia-en-la-red']},
+     { id: '2IfniYe5SYoskkAGQDfedv8VxP9OQZvIVU7o2E1fs900', title: 'Post-ODELaR — Otro día en la red 2x20', duration: 149, slug: '', type: 'narrativo', year: 2026, onTV: true, release: '2026-11-12T22:18:01', collections: ['otro-dia-en-la-red']},
+     {id:'022eSJM00rqJ0142OnRP9SYvim87u7xvk00mWC8LpA9EeFA', title: 'ODELaR Animal', duration: 280,type: 'narrativo', year: 2026, onTV: true, release: '2026-12-19T22:18:01', collections: ['otro-dia-en-la-red']},
+
   
 
 
