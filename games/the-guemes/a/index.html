@@ -53,12 +53,12 @@
   </div>
   <div class="list hidden" id="helpList">
     <div class="help">Left stick        move
-Right stick ←→    turn
-Right stick ↑↓    climb / descend
-L2 or Shift       turbo
-+ or R            start the flight again
-− or M            sound on / off
-Keyboard          W A S D, arrow keys</div>
+ZL / ZR           turn left / right
+L / R             descend / climb
+B or Shift        turbo
++                 start the flight again
+−                 sound on / off
+Keyboard          W A S D move, arrows turn and climb, M sound</div>
     <div class="item" data-a="back">Back</div>
   </div>
 </div>
@@ -72,9 +72,10 @@ Keyboard          W A S D, arrow keys</div>
 </div></div>
 <script>
 "use strict";
-// Controls: left stick = move (forward/back/sideways), right stick = turn (left/right) and height (up/down).
+// Controls: left stick = move (forward/back/sideways); ZR / ZL or right stick = turn; R / L or right stick = height.
 // "+" on the controller, or R on the keyboard, puts the drone back on the charging station and makes everything dark again.
-// Hold Shift, or L2 / ZL on the controller, for turbo (twice the speed).
+// Controller: left stick moves; ZR / ZL turn (the right stick too, where the browser reports it); R climbs, L descends; hold B for turbo.
+// Keyboard: W A S D move, arrows turn / climb, Shift for turbo.
 // The game is called The Güemes. It opens on a main menu (a side view of the farm going through sunrise and sunset).
 // First training course: an intro (name, choice of drone, briefing by Kury, the boss), then find the lagoon and land on its island.
 // Time of day runs during a flight (1 game hour = 40 s): each flight starts before dawn, so the sun rises; sunset comes later,
@@ -251,18 +252,28 @@ function lerpColor(stops, h) {                                  // stops: [[heig
 }
 const LAND = [[-2, [38, 84, 58]], [-1, [52, 110, 66]], [0, [86, 140, 72]], [0.5, [140, 160, 84]], [0.8, [180, 172, 100]], [1, [205, 186, 120]], [1.4, [232, 218, 160]]];   // moist (low) to dry (high)
 const SEA = [[-5, [14, 44, 86]], [-3, [24, 78, 140]], [-2, [62, 132, 190]]];
-function buildTexture(art) {
-  const n = tex.width, img = tex.getContext("2d").createImageData(n, n), d = img.data;
-  const hAt = (i, j) => heights[Math.min(T_N - 1, Math.max(0, j)) * T_N + Math.min(T_N - 1, Math.max(0, i))];
-  for (let py = 0; py < n; py++) for (let px = 0; px < n; px++) {
-    const fi = px / TEX / T_RES, fj = py / TEX / T_RES, i = Math.min(Math.floor(fi), T_N - 2), j = Math.min(Math.floor(fj), T_N - 2), a = fi - i, b = fj - j;
-    const h = (hAt(i, j) * (1 - a) + hAt(i + 1, j) * a) * (1 - b) + (hAt(i, j + 1) * (1 - a) + hAt(i + 1, j + 1) * a) * b;
-    const water = h < WATER;
-    let c = lerpColor(water ? SEA : LAND, h);
-    const shade = water ? 1 : Math.max(0.7, Math.min(1.3, 1 + (hAt(i - 1, j - 1) - hAt(i + 1, j + 1)) * 0.45));      // light from the north-west corner of the map frame
-    const k = (py * n + px) * 4; d[k] = c[0] * shade; d[k + 1] = c[1] * shade; d[k + 2] = c[2] * shade; d[k + 3] = 255;
+// Colouring the ground from the heights is 4 million pixels of arithmetic: several seconds on a slow browser, which would trigger
+// the "script is taking a long time" warning. So it is skipped when the painted map covers the ground anyway, and otherwise done
+// a few rows at a time, letting the browser breathe in between.
+async function buildTexture(art) {
+  const n = tex.width, g = tex.getContext("2d");
+  if (art) { g.fillStyle = "#4f8a4a"; g.fillRect(0, 0, n, n); }
+  else {
+    const img = g.createImageData(n, n), d = img.data;
+    const hAt = (i, j) => heights[Math.min(T_N - 1, Math.max(0, j)) * T_N + Math.min(T_N - 1, Math.max(0, i))];
+    for (let py = 0; py < n; py++) {
+      for (let px = 0; px < n; px++) {
+        const fi = px / TEX / T_RES, fj = py / TEX / T_RES, i = Math.min(Math.floor(fi), T_N - 2), j = Math.min(Math.floor(fj), T_N - 2), a = fi - i, b = fj - j;
+        const h = (hAt(i, j) * (1 - a) + hAt(i + 1, j) * a) * (1 - b) + (hAt(i, j + 1) * (1 - a) + hAt(i + 1, j + 1) * a) * b;
+        const water = h < WATER;
+        let c = lerpColor(water ? SEA : LAND, h);
+        const shade = water ? 1 : Math.max(0.7, Math.min(1.3, 1 + (hAt(i - 1, j - 1) - hAt(i + 1, j + 1)) * 0.45));      // light from the north-west corner of the map frame
+        const k = (py * n + px) * 4; d[k] = c[0] * shade; d[k + 1] = c[1] * shade; d[k + 2] = c[2] * shade; d[k + 3] = 255;
+      }
+      if (py % 50 === 49) await new Promise(r => setTimeout(r, 0));
+    }
+    g.putImageData(img, 0, 0);
   }
-  const g = tex.getContext("2d"); g.putImageData(img, 0, 0);
   // fields, roads, trees and buildings are painted in once; then the map's edge, and everything outside the L is cut away (the charging station is drawn live)
   g.save(); g.scale(TEX, TEX); g.lineJoin = g.lineCap = "round";
   const poly = (pts) => { g.beginPath(); pts.forEach(([u, v], i) => i ? g.lineTo(u, v) : g.moveTo(u, v)); g.closePath(); };
@@ -314,7 +325,7 @@ function buildTexture(art) {
     heights = new Float32Array(T_N * T_N);
     for (let k = 0; k < T_N * T_N; k++) heights[k] = (d[k * 4] - T_ZERO) * T_PER_LEVEL;
     const art = new Image();                                     // then the optional painted layer; missing is fine
-    const done = (a) => { buildTexture(a); reset(); window.__terrainReady = true; };
+    const done = (a) => buildTexture(a).then(() => { reset(); window.__terrainReady = true; });
     art.onload = () => done(art); art.onerror = () => done(null);
     art.src = MAP_ART || "map-art.png";
   };
@@ -382,7 +393,7 @@ function pickPad() {
   const pads = navigator.getGamepads ? navigator.getGamepads() : [];
   let best = null;
   for (const p of pads) {
-    if (!p || !p.connected || p.axes.length < 4) continue;
+    if (!p || !p.connected || p.axes.length < 2) continue;        // the Switch browser reports only the left stick
     if (/pro controller|057e/i.test(p.id)) return p;
     if (!best) best = p;
   }
@@ -394,12 +405,15 @@ function readInput() {
   const p = pickPad(); S.pad = p ? p.id : null;
   if (p) {
     [inp.lx, inp.ly] = stick(p.axes[0], p.axes[1]);
-    [inp.rx, inp.ry] = stick(p.axes[2], p.axes[3]);
+    [inp.rx, inp.ry] = stick(p.axes[2] || 0, p.axes[3] || 0);   // right stick, where the browser reports it ...
+    const btn = i => p.buttons[i] ? Math.max(p.buttons[i].value || 0, p.buttons[i].pressed ? 1 : 0) : 0;
+    const turn = btn(7) - btn(6), lift = btn(5) - btn(4);          // ... and the shoulders always: ZR / ZL turn, R / L climb / descend
+    if (turn) inp.rx = turn; if (lift) inp.ry = -lift;
     const plus = !!(p.buttons[9] && p.buttons[9].pressed);
     if (plus && !prevPlus) { reset(); S.clock = 5.4; }
     prevPlus = plus;
   }
-  S.turbo = !!(keys.ShiftLeft || keys.ShiftRight || (p && p.buttons[6] && (p.buttons[6].pressed || p.buttons[6].value > 0.5)));   // Shift, or L2 / ZL
+  S.turbo = !!(keys.ShiftLeft || keys.ShiftRight || (p && p.buttons[0] && p.buttons[0].pressed));   // Shift, or B held
   const k = (a, b) => (keys[a] ? 1 : 0) - (keys[b] ? 1 : 0);
   const kx = k("KeyD", "KeyA"), ky = k("KeyS", "KeyW");
   if (kx || ky) { const m = Math.hypot(kx, ky); inp.lx = kx / m; inp.ly = ky / m; }
@@ -751,28 +765,30 @@ function buildMotor(ac, out, noise) {
     for (const r of rotors) r.o.frequency.setTargetAtTime(hz * r.k, t, T);
     filter.frequency.setTargetAtTime(350 + 2600 * spin, t, T);
     lfo.frequency.setTargetAtTime(6 + 34 * spin, t, T);
-    vol.gain.setTargetAtTime(spin > 0 ? 0.05 + 0.09 * spin : 0, t, spin > 0 ? T : 0.25);
-    airVol.gain.setTargetAtTime(0.12 * rush, t, 0.15); band.frequency.setTargetAtTime(700 + 1800 * rush, t, 0.15);
+    vol.gain.setTargetAtTime(spin > 0 ? 0.16 + 0.24 * spin : 0, t, spin > 0 ? T : 0.25);
+    airVol.gain.setTargetAtTime(0.3 * rush, t, 0.15); band.frequency.setTargetAtTime(700 + 1800 * rush, t, 0.15);
   } };
 }
 function clickAt(ac, out, noise, t) {                            // one typewriter key
   const src = ac.createBufferSource(); src.buffer = noise;
   const band = ac.createBiquadFilter(); band.type = "bandpass"; band.frequency.value = 2200 + Math.random() * 1400; band.Q.value = 3;
-  const g = ac.createGain(); g.gain.setValueAtTime(0.5, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+  const g = ac.createGain(); g.gain.setValueAtTime(0.9, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
   src.connect(band); band.connect(g); g.connect(out); src.start(t, Math.random() * 0.5, 0.06);
   const knock = ac.createOscillator(); knock.frequency.value = 140 + Math.random() * 30; const kg = ac.createGain();
-  kg.gain.setValueAtTime(0.25, t); kg.gain.exponentialRampToValueAtTime(0.001, t + 0.03); knock.connect(kg); kg.connect(out); knock.start(t); knock.stop(t + 0.04);
+  kg.gain.setValueAtTime(0.5, t); kg.gain.exponentialRampToValueAtTime(0.001, t + 0.03); knock.connect(kg); kg.connect(out); knock.start(t); knock.stop(t + 0.04);
 }
 function soundStart() {                                          // called on every key press / click / button; only the first does anything
   const AC = window.AudioContext || window.webkitAudioContext;
   if (SND.ac) { if (SND.ac.state === "suspended") SND.ac.resume(); return; }
   if (!AC) return;
   try {
-    SND.ac = new AC(); SND.master = SND.ac.createGain(); SND.master.gain.value = SND.muted ? 0 : 0.6; SND.master.connect(SND.ac.destination);
+    SND.ac = new AC(); SND.master = SND.ac.createGain(); SND.master.gain.value = SND.muted ? 0 : 1;
+    const limiter = SND.ac.createDynamicsCompressor(); limiter.threshold.value = -12; limiter.knee.value = 6; limiter.ratio.value = 12; limiter.attack.value = 0.003; limiter.release.value = 0.1;
+    SND.master.connect(limiter); limiter.connect(SND.ac.destination);
     SND.noise = noiseBuffer(SND.ac); SND.motor = buildMotor(SND.ac, SND.master, SND.noise);
   } catch (e) { SND.ac = null; }
 }
-function toggleMute() { SND.muted = !SND.muted; if (SND.master) SND.master.gain.setTargetAtTime(SND.muted ? 0 : 0.6, SND.ac.currentTime, 0.05); menuLabels(); }
+function toggleMute() { SND.muted = !SND.muted; if (SND.master) SND.master.gain.setTargetAtTime(SND.muted ? 0 : 1, SND.ac.currentTime, 0.05); menuLabels(); }
 function typeClick(ch) { if (SND.ac && !SND.muted && ch !== " ") clickAt(SND.ac, SND.master, SND.noise, SND.ac.currentTime); }
 function soundFrame() {
   if (!SND.motor) return;
