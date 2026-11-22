@@ -121,6 +121,8 @@ export default defineConfig({
         theGuemesA: resolve(__dirname, 'games/the-guemes/a/index.html'),
         theGuemesB: resolve(__dirname, 'games/the-guemes/b/index.html'),
         theGuemesBB: resolve(__dirname, 'games/the-guemes/b/b/index.html'),
+        theGuemesAAA: resolve(__dirname, 'games/the-guemes/a/a/a/index.html'),
+        theGuemesBBB: resolve(__dirname, 'games/the-guemes/b/b/b/index.html'),
       },
     },
   },
