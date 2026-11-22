@@ -68,6 +68,19 @@
         #btn-exit { left: 16px; }
         #btn-sound { right: 16px; }
 
+        #hud-status {
+            position: absolute;
+            left: 16px; right: 16px;
+            top: calc(70px + env(safe-area-inset-top, 0px));
+            padding: 10px 14px;
+            text-align: center;
+            font-size: 0.75rem;
+            background: rgba(0,0,0,0.65);
+            border-radius: 3px;
+            display: none;
+        }
+        #hud-status.on { display: block; }
+
         #info {
             position: absolute;
             left: 0; right: 0;
@@ -126,6 +139,7 @@
     <div id="hud">
         <button class="hud-btn" id="btn-exit">Salir</button>
         <button class="hud-btn" id="btn-sound">Sonido: on</button>
+        <div id="hud-status"></div>
         <div id="info">
             <div id="info-channel"></div>
             <div id="info-title"></div>
@@ -555,13 +569,20 @@
         });
 
         async function startCamera() {
+            if (!navigator.mediaDevices?.getUserMedia) {
+                setStatus(window.isSecureContext ? 'Este navegador no permite usar la cámara. Abrí el link en Safari.' : 'La cámara requiere HTTPS. Abrí el link https://.');
+                return false;
+            }
             try {
                 camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
                 camEl.srcObject = camStream;
                 camEl.classList.add('on');
-                await camEl.play().catch(() => {});
+                await withTimeout(camEl.play().catch(() => {}), 4000);
                 return true;
             } catch (e) {
+                setStatus(e?.name === 'NotAllowedError'
+                    ? 'Cámara bloqueada: Ajustes > Safari > Cámara > Permitir, y recargá.'
+                    : 'No se pudo abrir la cámara (' + (e?.name || 'error') + ').');
                 return false;
             }
         }
@@ -577,12 +598,27 @@
         const withTimeout = (promise, ms, fallback) =>
             Promise.race([promise, new Promise(resolve => setTimeout(() => resolve(fallback), ms))]);
 
+        let statusTimer = 0;
+        function setStatus(msg, ms = 8000) {
+            const el = $('hud-status');
+            el.textContent = msg;
+            el.classList.toggle('on', !!msg);
+            clearTimeout(statusTimer);
+            if (msg) statusTimer = setTimeout(() => setStatus(''), ms);
+        }
+
         async function enableGyro() {
             // iOS exige pedir el permiso dentro del gesto del usuario.
             if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                 try {
-                    if ((await DeviceOrientationEvent.requestPermission()) !== 'granted') return false;
-                } catch (e) { return false; }
+                    if ((await DeviceOrientationEvent.requestPermission()) !== 'granted') {
+                        setStatus('Movimiento denegado: arrastrá con el dedo para mirar alrededor.');
+                        return false;
+                    }
+                } catch (e) {
+                    setStatus('Sin permiso de movimiento: arrastrá con el dedo para mirar alrededor.');
+                    return false;
+                }
             }
             window.addEventListener('deviceorientation', onDeviceOrientation);
             return true;
