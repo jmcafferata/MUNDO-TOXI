@@ -1,0 +1,32 @@
+{
+ "side": 250,
+ "resolution": 0.5,
+ "samples": 501,
+ "frame": "u, v in metres in the map's own frame, measured from the east corner (the hill); the north-west long side is the line v = 250, the other long side is u = 0",
+ "height_m": "(pixel - 200) / 40",
+ "water_level_m": -2,
+ "seed": 20261121,
+ "min_m": -4,
+ "max_m": 1.361,
+ "lagoon": {
+  "u": 125,
+  "v": 220,
+  "diameter": 45,
+  "bottom_m": -4
+ },
+ "island": {
+  "diameter": 15,
+  "top_m": 0.8
+ },
+ "hill": {
+  "u": 0,
+  "v": 0,
+  "diameter": 6,
+  "top_m": 1
+ },
+ "helipad": {
+  "u": 0.7071067811865476,
+  "v": 0.7071067811865476,
+  "diameter": 2
+ }
+}
