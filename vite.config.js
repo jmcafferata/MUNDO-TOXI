@@ -118,6 +118,8 @@ export default defineConfig({
         laberintoNatal: resolve(__dirname, 'laberinto-natal.html'),
         numeros: resolve(__dirname, 'numeros.html'),
         ar: resolve(__dirname, 'ar.html'),
+        theGuemesA: resolve(__dirname, 'games/the-guemes/a/index.html'),
+        theGuemesB: resolve(__dirname, 'games/the-guemes/b/index.html'),
       },
     },
   },
