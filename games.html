@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Games — TOXI Media</title>
-  <meta name="description" content="Games made at TOXI Media. Download The Güemes for Windows: fly a drone over a farm, find the lagoon and photograph the herd." />
+  <meta name="description" content="Games made at TOXI Media." />
   <link rel="icon" href="/favicon.ico" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Games — TOXI Media" />
-  <meta property="og:description" content="Games made at TOXI Media. Download The Güemes for Windows." />
+  <meta property="og:description" content="Games made at TOXI Media." />
   <meta property="og:site_name" content="TOXI Media" />
   <style>
     @font-face {
@@ -93,24 +93,14 @@
     }
     p + p { margin-top: 16px; }
 
-    .facts {
+    .downloads {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 24px;
+      gap: 12px;
+      margin-top: 8px;
     }
-    .facts span {
-      border: 1px solid #333;
-      padding: 6px 14px;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #ccc;
-    }
-
     .download {
       display: inline-block;
-      margin-top: 28px;
       font-weight: bold;
       font-size: 1.1rem;
       color: #000;
@@ -127,6 +117,7 @@
       line-height: 1.6;
       color: #777;
     }
+    .note code { color: #aaa; font-size: 0.85em; }
 
     footer {
       text-align: center;
@@ -156,15 +147,12 @@
 
   <section class="game">
     <h2>The Güemes</h2>
-    <p>You are a drone pilot at a farm in Argentina. Everything is dark until your drone's camera has seen it, and the day goes by while you fly.</p>
-    <p>Day 1: find the lagoon and land on the island. Day 2: take a picture of the 7 cows and 2 horses, all together.</p>
-    <div class="facts">
-      <span>Windows 10 / 11 (64-bit)</span>
-      <span>Controller or keyboard</span>
-      <span>36 MB</span>
+    <div class="downloads">
+      <a class="download" href="https://archivos.toxi.media/games/the-guemes/the-guemes-windows-v4.zip" download>Download for Windows</a>
+      <a class="download" href="https://archivos.toxi.media/games/the-guemes/the-guemes-mac-v1.zip" download>Download for Mac</a>
     </div>
-    <a class="download" href="https://archivos.toxi.media/games/the-guemes/the-guemes-windows-v4.zip" download>Download for Windows</a>
-    <p class="note">Unzip the file, then run <strong>TheGuemes.exe</strong> from inside the folder. Windows may say it doesn't recognise the app: choose “More info”, then “Run anyway”.</p>
+    <p class="note">Windows: unzip, then run <strong>TheGuemes.exe</strong>. If it says it doesn't recognise the app, choose “More info”, then “Run anyway”.</p>
+    <p class="note">Mac: unzip. If it won't open, right-click <strong>TheGuemes.app</strong> and choose “Open”, or run <code>xattr -cr TheGuemes.app</code> in the Terminal.</p>
   </section>
 </main>
 
