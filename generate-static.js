@@ -159,6 +159,7 @@ const sitemapUrls = [
   ...[
     '/privacy-policy',
     '/trabajos',
+    '/games',
     '/audiont',
     '/venado-tuerto-el-musical',
     '/nota-constante',

@@ -92,6 +92,7 @@ export default defineConfig({
         about: resolve(__dirname, 'about.html'),
         venadoTuertoElMusical: resolve(__dirname, 'venado-tuerto-el-musical.html'),
         trabajos: resolve(__dirname, 'trabajos.html'),
+        games: resolve(__dirname, 'games.html'),
         notaConstante: resolve(__dirname, 'nota-constante.html'),
         otroDiaEnLaRed: resolve(__dirname, 'otro-dia-en-la-red.html'),
         detrasDeLasRisas: resolve(__dirname, 'detras-de-las-risas.html'),

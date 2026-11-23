@@ -131,6 +131,10 @@
       "destination": "/trabajos.html"
     },
     {
+      "source": "/games",
+      "destination": "/games.html"
+    },
+    {
       "source": "/store",
       "destination": "/store.html"
     },

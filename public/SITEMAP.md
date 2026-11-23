@@ -79,6 +79,7 @@
 | Nota Constante | `nota-constante.html` | Content page |
 | Otro Día en la Red | `otro-dia-en-la-red.html` | Daily content |
 | Trabajos | `trabajos.html` | Portfolio/Works |
+| Games | `games.html` | Games index (The Güemes download) |
 | Onboarding | `onboarding.html` | User onboarding |
 | Plantform | `plantform.html` | Platform page |
 | Toxi One Pager | `toxi-one-pager.html` | Single page summary |
